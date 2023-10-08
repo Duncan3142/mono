@@ -1,28 +1,39 @@
 {
-	"name": "@duncan3142/prettier-config",
+	"name": "@duncan3142/eslint-config",
 	"repository": "https://github.com/duncan3142/node-config",
 	"publishConfig": {
 		"registry": "https://npm.pkg.github.com",
 		"access": "restricted"
 	},
-	"description": "Prettier config",
+	"description": "ESLint config",
 	"keywords": [],
 	"version": "0.0.1",
 	"author": "Duncan Giles",
-	"type": "module",
+	"type": "commonjs",
 	"license": "MIT",
 	"engines": {
 		"node": ">=18",
 		"npm": ">=9"
 	},
+	"main": "./eslint.config.js",
 	"exports": {
-		"./.prettierrc.json": "./.prettierrc.json"
+		".": "./eslint.config.js"
 	},
 	"files": [
-		".prettierrc.json"
+		"eslint.config.js"
 	],
 	"peerDependencies": {
-		"prettier": "^3.0.0"
+		"@types/eslint": "^8.44.0",
+		"@typescript-eslint/eslint-plugin": "^6.0.0",
+		"@typescript-eslint/parser": "^6.0.0",
+		"eslint": "^8.44.0",
+		"eslint-import-resolver-typescript": "^3.5.5",
+		"eslint-plugin-eslint-comments": "^3.2.0",
+		"eslint-plugin-import": "^2.27.5",
+		"eslint-plugin-promise": "^6.1.1"
+	},
+	"dependencies": {
+		"eslint-config-prettier": "^9.0.0"
 	},
 	"scripts": {
 		"clean": "rm -rf .prettier .package",
@@ -30,6 +41,7 @@
 		"format:fix": "prettier --write --cache --cache-location='.prettier/cache' --cache-strategy content ."
 	},
 	"devDependencies": {
-		"prettier": "^3.0.3"
+		"prettier": "^3.0.3",
+		"@duncan3142/prettier-config": "^0.0.1"
 	}
 }

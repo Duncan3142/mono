@@ -20,6 +20,10 @@
 			"outputs": [],
 			"dependsOn": []
 		},
+		"format:fix": {
+			"outputs": [],
+			"dependsOn": []
+		},
 		"assets": {
 			"outputs": [],
 			"dependsOn": ["^assets"]

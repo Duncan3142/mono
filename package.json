@@ -20,6 +20,7 @@
 		"format:fix": "prettier --write --cache --cache-location='.prettier/cache' --cache-strategy content .",
 		"turbo:clean": "turbo run clean --cache-dir=\"./.turbo\"",
 		"turbo:format": "turbo run format --cache-dir=\"./.turbo\"",
+		"turbo:format:fix": "turbo run format:fix --cache-dir=\"./.turbo\"",
 		"turbo:assets": "turbo run assets --cache-dir=\"./.turbo\"",
 		"turbo:test": "turbo run test --cache-dir=\"./.turbo\"",
 		"turbo:build": "turbo run build --cache-dir=\"./.turbo\""

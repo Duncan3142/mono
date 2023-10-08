@@ -1,11 +1,11 @@
 {
-	"name": "@duncan3142/prettier-config",
+	"name": "@duncan3142/tsc-config",
 	"repository": "https://github.com/duncan3142/node-config",
 	"publishConfig": {
 		"registry": "https://npm.pkg.github.com",
 		"access": "restricted"
 	},
-	"description": "Prettier config",
+	"description": "Typescript config",
 	"keywords": [],
 	"version": "0.0.1",
 	"author": "Duncan Giles",
@@ -16,13 +16,14 @@
 		"npm": ">=9"
 	},
 	"exports": {
-		"./.prettierrc.json": "./.prettierrc.json"
+		"./tsconfig.json": "./tsconfig.json"
 	},
 	"files": [
-		".prettierrc.json"
+		"tsconfig.json"
 	],
 	"peerDependencies": {
-		"prettier": "^3.0.0"
+		"@types/node": "^18.17.1",
+		"typescript": "^5.1.6"
 	},
 	"scripts": {
 		"clean": "rm -rf .prettier .package",
@@ -30,6 +31,7 @@
 		"format:fix": "prettier --write --cache --cache-location='.prettier/cache' --cache-strategy content ."
 	},
 	"devDependencies": {
-		"prettier": "^3.0.3"
+		"prettier": "^3.0.3",
+		"@duncan3142/prettier-config": "^0.0.1"
 	}
 }
