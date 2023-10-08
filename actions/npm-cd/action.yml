@@ -1,0 +1,23 @@
+name: "NPM CD"
+description: "NPM CD"
+
+runs:
+  using: "composite"
+
+  steps:
+    - name: Env vars
+      uses: Duncan3142/mono/actions/common-env@main
+    - name: Bash scripts
+      uses: Duncan3142/mono/shell/bash@main
+    - name: Git scripts
+      uses: Duncan3142/mono/shell/git@main
+    - name: GitHub scripts
+      uses: Duncan3142/mono/shell/github@main
+    - name: NPM scripts
+      uses: Duncan3142/mono/shell/npm@main
+    - name: Volta setup
+      uses: Duncan3142/mono/actions/volta@main
+    - name: NPM CD
+      shell: bash
+      run: |
+        '${{ github.action_path }}/exec.sh'

@@ -10,9 +10,6 @@ node_modules
 # VS Code
 !.vscode
 
-# ESLint
-!.eslintrc.cjs
-
 # Git
 !.gitignore
 
@@ -21,15 +18,14 @@ node_modules
 
 # NPM
 !.npmrc
-!.npmignore
 package-lock.json
-
-# NVM
-!.nvmrc
 
 # Prettier
 !.prettierignore
-!.prettierrc.json
+!.prettierrc.js
 
 # Changesets
 !.changeset
+
+# Packages
+pkgs

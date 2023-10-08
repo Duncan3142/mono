@@ -1,0 +1,34 @@
+name: "Common Env"
+description: "Common action env variables"
+
+runs:
+  using: "composite"
+
+  steps:
+    - name: Environment
+      shell: bash
+      run: |
+        LBIN=/home/runner/.local/bin
+        mkdir -p "$LBIN"
+        LLIB=/home/runner/.local/mono
+        mkdir -p "$LLIB"
+        MONO_LOGS_ROOT=/tmp/mono/logs
+        mkdir -p "$MONO_LOGS_ROOT"
+        FORCE_COLOR=3
+        GIT_REMOTE=origin
+
+        echo "LBIN=$LBIN" >> "$GITHUB_ENV"
+        echo "LLIB=$LLIB" >> "$GITHUB_ENV"
+        echo "MONO_LOGS_ROOT=$MONO_LOGS_ROOT" >> "$GITHUB_ENV"
+        echo "FORCE_COLOR=$FORCE_COLOR" >> "$GITHUB_ENV"
+        echo "GIT_REMOTE=$GIT_REMOTE" >> "$GITHUB_ENV"
+
+        echo "GIT_ACTOR=$GIT_ACTOR" >> "$GITHUB_ENV"
+        echo "GIT_SERVER_URL=$GIT_SERVER_URL" >> "$GITHUB_ENV"
+        echo "GIT_REPOSITORY=$GIT_REPOSITORY" >> "$GITHUB_ENV"
+        echo "GIT_WORKSPACE=$GIT_WORKSPACE" >> "$GITHUB_ENV"
+      env:
+        GIT_ACTOR: ${{ github.actor }}
+        GIT_SERVER_URL: ${{ github.server_url }}
+        GIT_REPOSITORY: ${{ github.repository }}
+        GIT_WORKSPACE: ${{ github.workspace }}

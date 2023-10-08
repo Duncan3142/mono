@@ -1,4 +1,3 @@
 #!/usr/bin/env sh
-. "$(dirname -- "$0")/_/husky.sh"
 
-echo npm exec commitlint --edit
+# npm exec -- commitlint --edit ${1}

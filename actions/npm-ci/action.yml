@@ -1,0 +1,19 @@
+name: "NPM CI"
+description: "NPM CI"
+
+runs:
+  using: "composite"
+
+  steps:
+    - name: Env vars
+      uses: Duncan3142/mono/actions/common-env@main
+    - name: Bash scripts
+      uses: Duncan3142/mono/shell/bash@main
+    - name: Git scripts
+      uses: Duncan3142/mono/shell/git@main
+    - name: Volta setup
+      uses: Duncan3142/mono/actions/volta@main
+    - name: NPM CI
+      shell: bash
+      run: |
+        '${{ github.action_path }}/exec.sh'

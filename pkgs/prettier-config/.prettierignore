@@ -1,0 +1,13 @@
+# Node
+node_modules
+
+# Hidden
+.*
+
+# NPM
+!.npmrc
+package-lock.json
+
+# Prettier
+!.prettierignore
+!.prettierrc.js

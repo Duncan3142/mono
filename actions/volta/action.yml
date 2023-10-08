@@ -1,0 +1,29 @@
+name: "Setup Volta"
+description: "Setup Volta"
+
+runs:
+  using: "composite"
+  steps:
+    - name: Environment
+      shell: bash
+      run: |
+        VOLTA_HOME="$HOME/.volta"
+        NPM_CACHE="$HOME/.npm"
+        echo "VOLTA_HOME=$VOLTA_HOME" >> "$GITHUB_ENV"
+        echo "NPM_CACHE=$NPM_CACHE" >> "$GITHUB_ENV"
+        echo "$VOLTA_HOME/bin" >> "$GITHUB_PATH"
+    - name: Cache
+      uses: actions/cache@v4.0.2
+      with:
+        path: |
+          ${{ env.VOLTA_HOME }}
+          ${{ env.NPM_CACHE }}
+        key: volta-${{ env.MONO_WORK_DIR }}
+    - name: Download
+      shell: bash
+      run: |
+        if which volta 2> /dev/null; then
+          volta setup
+        else
+          curl https://get.volta.sh | bash
+        fi
