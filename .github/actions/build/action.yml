@@ -15,4 +15,4 @@ runs:
         npm exec changeset status
     - name: Build
       shell: bash
-      run: npm run build
+      run: npm run turbo:build
