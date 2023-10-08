@@ -1,0 +1,35 @@
+# Node
+node_modules
+
+# Hidden
+.*
+
+# Husky
+!.husky/_
+
+# VS Code
+!.vscode
+
+# ESLint
+!.eslintrc.cjs
+
+# Git
+!.gitignore
+
+# GitHub
+!.github
+
+# NPM
+!.npmrc
+!.npmignore
+package-lock.json
+
+# NVM
+!.nvmrc
+
+# Prettier
+!.prettierignore
+!.prettierrc.json
+
+# Changesets
+!.changeset

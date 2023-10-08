@@ -1,0 +1,70 @@
+{
+	"name": "@duncan3142/<PKG_NAME>",
+	"repository": "https://github.com/duncan3142/<REPO_NAME>",
+	"publishConfig": {
+		"registry": "https://npm.pkg.github.com"
+	},
+	"description": "<PKG_DESCRIPTION>",
+	"keywords": [],
+	"version": "0.0.1",
+	"author": "Duncan Giles",
+	"type": "module",
+	"license": "MIT",
+	"engines": {
+		"node": ">=18",
+		"npm": ">=9"
+	},
+	"imports": {
+		"#lib/*.js": {
+			"import": "./.tsc/dist/lib/*.js"
+		}
+	},
+	"exports": {
+		"./lib/*": {
+			"types": "./.tsc/dist/lib/*.d.ts",
+			"import": "./.tsc/dist/lib/*.js"
+		}
+	},
+	"files": [
+		".tsc/dist/lib/**/*.js",
+		".tsc/dist/lib/**/*.ts",
+		".tsc/dist/lib/**/*.map"
+	],
+	"scripts": {
+		"prepare": "./.husky/install.sh",
+		"clean": "rm -rf .eslint .prettier .tsc .coverage .package",
+		"format:prettier": "prettier --check --cache --cache-location='.prettier/cache' --cache-strategy content .",
+		"format:prettier:fix": "prettier --write --cache --cache-location='.prettier/cache' --cache-strategy content .",
+		"format": "turbo run format:all --cache-dir=\"./.turbo\"",
+		"assets:tsc": "tsc --build",
+		"assets:tsc:watch": "tsc --build --watch",
+		"assets": "turbo run assets:all --cache-dir=\"./.turbo\"",
+		"test:eslint": "eslint --max-warnings 0 --cache --cache-location '.eslint/cache' --cache-strategy content .",
+		"test:eslint:fix": "eslint --fix --max-warnings 0 --cache --cache-location '.eslint/cache' --cache-strategy content .",
+		"test:node": "node --test .tsc/test/",
+		"test": "turbo run test:all --cache-dir=\"./.turbo\"",
+		"build": "turbo run build:all --cache-dir=\"./.turbo\""
+	},
+	"devDependencies": {
+		"@changesets/cli": "^2.26.2",
+		"@commitlint/config-conventional": "^17.7.0",
+		"@duncan3142/eslint-config": "^1.0.25",
+		"@duncan3142/prettier-config": "^1.0.11",
+		"@duncan3142/tsc-config": "^1.0.12",
+		"@types/node": "^18.18.3",
+		"@typescript-eslint/eslint-plugin": "^6.7.4",
+		"@typescript-eslint/parser": "^6.7.4",
+		"commitlint": "^17.7.2",
+		"eslint": "^8.50.0",
+		"eslint-import-resolver-typescript": "^3.6.1",
+		"eslint-plugin-eslint-comments": "^3.2.0",
+		"eslint-plugin-import": "^2.28.1",
+		"eslint-plugin-promise": "^6.1.1",
+		"husky": "^8.0.3",
+		"prettier": "^3.0.3",
+		"typescript": "^5.2.2",
+		"turbo": "1.10.15"
+	},
+	"dependencies": {},
+	"peerDependencies": {}
+}

@@ -1,0 +1,31 @@
+name: "Setup"
+description: "Setup runtime"
+inputs:
+  packages-token:
+    description: "GitHub Packages token"
+    required: true
+  github-actor:
+    description: "GitHub actor"
+    required: true
+runs:
+  using: "composite"
+  steps:
+    - name: Git Config
+      shell: bash
+      run: |
+        git config --global user.name "$GITHUB_ACTOR"
+        git config --global user.email "$GITHUB_ACTOR@users.noreply.github.com"
+      env:
+        GITHUB_ACTOR: ${{ inputs.github-actor }}
+    - name: Setup Node
+      uses: actions/setup-node@v3
+      with:
+        check-latest: true
+        cache: "npm"
+        node-version-file: ".nvmrc"
+    - name: Install
+      shell: bash
+      run: |
+        npm ci
+      env:
+        GH_PACKAGES_TOKEN: ${{ inputs.packages-token }}

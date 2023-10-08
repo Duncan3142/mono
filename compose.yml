@@ -1,0 +1,21 @@
+services:
+  template:
+    build: .
+    restart: always
+    hostname: ${TEMPLATE_HOST}
+    container_name: ${TEMPLATE_HOST}
+    ports:
+      - ${TEMPLATE_PORT}:4873
+    networks:
+      - template
+    environment:
+      TEMPLATE_ENV: ${TEMPLATE_ENV}
+    volumes:
+      - template:/var/lib/tempate
+
+networks:
+  template:
+    driver: bridge
+
+volumes:
+  template:
