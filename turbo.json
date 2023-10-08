@@ -2,37 +2,35 @@
 	"$schema": "https://turborepo.org/schema.json",
 	"globalDependencies": ["package.json", ".env"],
 	"pipeline": {
-		"format:prettier": {
-			"outputs": [".prettier/**"],
+		"//#clean": {
+			"outputs": [],
+			"dependsOn": [],
+			"cache": false
+		},
+		"clean": {
+			"outputs": [],
+			"dependsOn": [],
+			"cache": false
+		},
+		"//#format": {
+			"outputs": [],
 			"dependsOn": []
 		},
-		"format:all": {
+		"format": {
 			"outputs": [],
-			"dependsOn": ["format:prettier"]
-		},
-		"assets:tsc": {
-			"outputs": [".tsc/**"],
 			"dependsOn": []
 		},
-		"assets:all": {
+		"assets": {
 			"outputs": [],
-			"dependsOn": ["assets:tsc"]
+			"dependsOn": ["^assets"]
 		},
-		"test:eslint": {
-			"outputs": [".eslint/**"],
-			"dependsOn": ["assets:all"]
-		},
-		"test:node": {
-			"outputs": [".coverage/**"],
-			"dependsOn": ["assets:all"]
-		},
-		"test:all": {
+		"test": {
 			"outputs": [],
-			"dependsOn": ["test:eslint", "test:node"]
+			"dependsOn": ["assets"]
 		},
-		"build:all": {
+		"build": {
 			"outputs": [],
-			"dependsOn": ["format:all", "assets:all", "test:all"]
+			"dependsOn": ["//#format", "format", "assets", "test"]
 		}
 	}
 }

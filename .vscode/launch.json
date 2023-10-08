@@ -12,6 +12,8 @@
 			"autoAttachChildProcesses": true,
 			"skipFiles": ["<node_internals>/**", "**/node_modules/**"],
 			"smartStep": true,
+			"localRoot": "${workspaceFolder}",
+			"cwd": "${workspaceFolder}",
 			"console": "integratedTerminal",
 			"program": "${workspaceFolder}/${relativeFile}",
 			"sourceMaps": true,

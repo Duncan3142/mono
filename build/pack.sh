@@ -2,5 +2,5 @@
 set -e
 
 npm run build
-mkdir -p .package
-npm pack --pack-destination .package
+npm exec --ws mkdir -p .package
+npm pack --ws --pack-destination .package

@@ -1,0 +1,34 @@
+{
+	"name": "@duncan3142/prettier-config",
+	"repository": "https://github.com/duncan3142/node-config",
+	"publishConfig": {
+		"registry": "https://npm.pkg.github.com"
+	},
+	"description": "Prettier config",
+	"keywords": [],
+	"version": "0.0.1",
+	"author": "Duncan Giles",
+	"type": "module",
+	"license": "MIT",
+	"engines": {
+		"node": ">=18",
+		"npm": ">=9"
+	},
+	"exports": {
+		"./.prettierrc.json": "./.prettierrc.json"
+	},
+	"files": [
+		".prettierrc.json"
+	],
+	"peerDependencies": {
+		"prettier": "^3.0.0"
+	},
+	"scripts": {
+		"clean": "rm -rf .prettier .package",
+		"format": "prettier --check --cache --cache-location='.prettier/cache' --cache-strategy content .",
+		"format:fix": "prettier --write --cache --cache-location='.prettier/cache' --cache-strategy content ."
+	},
+	"devDependencies": {
+		"prettier": "^3.0.3"
+	}
+}
