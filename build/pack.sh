@@ -2,5 +2,7 @@
 set -e
 
 npm run turbo:build
-npm exec --ws mkdir -p .package
-npm pack --ws --pack-destination .package
+for p in $(npm query .workspace | jq '.[].path' -r);
+do
+  (cd $p; mkdir -p .package; npm pack --pack-destination .package);
+done;
