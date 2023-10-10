@@ -21,14 +21,14 @@
 	"files": [
 		"tsconfig.json"
 	],
-	"peerDependencies": {
-		"@types/node": "^18.17.1",
-		"typescript": "^5.1.6"
-	},
 	"scripts": {
 		"clean": "rm -rf .prettier .package",
 		"format": "prettier --check --cache --cache-location='.prettier/cache' --cache-strategy content .",
 		"format:fix": "prettier --write --cache --cache-location='.prettier/cache' --cache-strategy content ."
+	},
+	"peerDependencies": {
+		"@types/node": "^18.17.1",
+		"typescript": "^5.1.6"
 	},
 	"devDependencies": {
 		"prettier": "^3.0.3",

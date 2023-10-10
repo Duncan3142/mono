@@ -7,6 +7,8 @@ on:
 
 permissions:
   packages: write
+  pull-requests: write
+  contents: write
 
 concurrency:
   group: ${{ github.workflow }}
@@ -20,7 +22,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          token: ${{ secrets.GH_REPO_CONTENT }}
+          token: ${{ secrets.GITHUB_TOKEN }}
       - name: Setup
         uses: ./.github/actions/setup
         with:
@@ -34,5 +36,5 @@ jobs:
           setupGitUser: false
           createGithubReleases: true
         env:
-          GITHUB_TOKEN: ${{ secrets.GH_REPO_CONTENT }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GH_PACKAGES_TOKEN: ${{ secrets.GITHUB_TOKEN }}

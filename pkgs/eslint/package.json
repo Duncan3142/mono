@@ -22,6 +22,11 @@
 	"files": [
 		"eslint.config.js"
 	],
+	"scripts": {
+		"clean": "rm -rf .prettier .package",
+		"format": "prettier --check --cache --cache-location='.prettier/cache' --cache-strategy content .",
+		"format:fix": "prettier --write --cache --cache-location='.prettier/cache' --cache-strategy content ."
+	},
 	"peerDependencies": {
 		"@types/eslint": "^8.44.0",
 		"@typescript-eslint/eslint-plugin": "^6.0.0",
@@ -34,11 +39,6 @@
 	},
 	"dependencies": {
 		"eslint-config-prettier": "^9.0.0"
-	},
-	"scripts": {
-		"clean": "rm -rf .prettier .package",
-		"format": "prettier --check --cache --cache-location='.prettier/cache' --cache-strategy content .",
-		"format:fix": "prettier --write --cache --cache-location='.prettier/cache' --cache-strategy content ."
 	},
 	"devDependencies": {
 		"prettier": "^3.0.3",
