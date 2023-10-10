@@ -21,13 +21,13 @@
 	"files": [
 		".prettierrc.json"
 	],
-	"peerDependencies": {
-		"prettier": "^3.0.0"
-	},
 	"scripts": {
 		"clean": "rm -rf .prettier .package",
 		"format": "prettier --check --cache --cache-location='.prettier/cache' --cache-strategy content .",
 		"format:fix": "prettier --write --cache --cache-location='.prettier/cache' --cache-strategy content ."
+	},
+	"peerDependencies": {
+		"prettier": "^3.0.0"
 	},
 	"devDependencies": {
 		"prettier": "^3.0.3"
