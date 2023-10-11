@@ -15,6 +15,10 @@
 		{
 			"path": "pkgs/tsc-config",
 			"name": "tsc-config"
+		},
+		{
+			"path": "pkgs/xis",
+			"name": "xis"
 		}
 	],
 	"settings": {
