@@ -7,6 +7,7 @@ inputs:
   github-actor:
     description: "GitHub actor"
     required: true
+
 runs:
   using: "composite"
   steps:
@@ -20,12 +21,16 @@ runs:
     - uses: pnpm/action-setup@v2
       with:
         version: latest
+      env:
+        GH_PACKAGES_TOKEN: ${{ inputs.packages-token }}
     - name: Setup Node
       uses: actions/setup-node@v3
       with:
         check-latest: true
         cache: "pnpm"
         node-version-file: ".nvmrc"
+      env:
+        GH_PACKAGES_TOKEN: ${{ inputs.packages-token }}
     - name: Install
       shell: bash
       run: |
