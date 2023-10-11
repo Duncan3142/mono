@@ -28,8 +28,7 @@
 		"@duncan3142/prettier-config": "^0.1.0",
 		"commitlint": "^17.7.2",
 		"husky": "^8.0.3",
+		"prettier": "^3.0.3",
 		"turbo": "1.10.15"
-	},
-	"dependencies": {},
-	"peerDependencies": {}
+	}
 }
