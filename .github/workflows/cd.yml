@@ -28,6 +28,8 @@ jobs:
         with:
           packages-token: ${{ secrets.GITHUB_TOKEN }}
           github-actor: ${{ github.actor }}
+        env:
+          GH_PACKAGES_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Changesets
         id: changesets
         uses: changesets/action@v1
