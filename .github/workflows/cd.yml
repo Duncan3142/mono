@@ -18,6 +18,9 @@ jobs:
   publish:
     name: Publish
     runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GH_PACKAGES_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -27,8 +30,6 @@ jobs:
         uses: ./.github/actions/setup
         with:
           github-actor: ${{ github.actor }}
-        env:
-          GH_PACKAGES_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Changesets
         id: changesets
         uses: changesets/action@v1
@@ -36,6 +37,3 @@ jobs:
           publish: ./build/publish.sh
           setupGitUser: false
           createGithubReleases: true
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GH_PACKAGES_TOKEN: ${{ secrets.GITHUB_TOKEN }}

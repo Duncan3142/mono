@@ -15,8 +15,8 @@ importers:
         specifier: ^17.7.0
         version: 17.7.0
       '@duncan3142/prettier-config':
-        specifier: ^0.1.0
-        version: link:pkgs/prettier
+        specifier: ^0.0.2
+        version: 0.0.2(prettier@3.0.3)
       commitlint:
         specifier: ^17.7.2
         version: 17.7.2
@@ -482,6 +482,15 @@ packages:
     engines: {node: '>=12'}
     dependencies:
       '@jridgewell/trace-mapping': 0.3.9
+    dev: true
+
+  /@duncan3142/prettier-config@0.0.2(prettier@3.0.3):
+    resolution: {integrity: sha512-8uohkBlkY3Mxi0By8VyiB5FX/DRkwpOyKMO8t7VlFh4OquLS0Q8CcllQf5RuEQ88NJU+GBWi67J07VKe03J2Yw==, tarball: https://npm.pkg.github.com/download/@duncan3142/prettier-config/0.0.2/693225ee38889fc52b95e731c339005eb7053b65}
+    engines: {node: '>=18', npm: '>=9'}
+    peerDependencies:
+      prettier: ^3.0.0
+    dependencies:
+      prettier: 3.0.3
     dev: true
 
   /@eslint-community/eslint-utils@4.4.0(eslint@8.51.0):

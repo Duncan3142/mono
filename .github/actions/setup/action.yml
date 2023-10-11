@@ -1,6 +1,9 @@
 name: "Setup"
 description: "Setup runtime"
 inputs:
+  # packages-token:
+  #   description: "GitHub Packages token"
+  #   required: true
   github-actor:
     description: "GitHub actor"
     required: true
@@ -28,3 +31,5 @@ runs:
       shell: bash
       run: |
         pnpm install --frozen-lockfile
+      # env:
+      #   GH_PACKAGES_TOKEN: ${{ inputs.packages-token }}
