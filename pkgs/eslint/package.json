@@ -13,7 +13,7 @@
 	"license": "MIT",
 	"engines": {
 		"node": ">=18",
-		"npm": ">=9"
+		"pnpm": ">=8"
 	},
 	"main": "./eslint.config.js",
 	"exports": {
@@ -41,15 +41,7 @@
 		"eslint-config-prettier": "^9.0.0"
 	},
 	"devDependencies": {
-		"prettier": "^3.0.3",
 		"@duncan3142/prettier-config": "^0.1.0",
-		"@types/eslint": "^8.44.0",
-		"@typescript-eslint/eslint-plugin": "^6.0.0",
-		"@typescript-eslint/parser": "^6.0.0",
-		"eslint": "^8.44.0",
-		"eslint-import-resolver-typescript": "^3.5.5",
-		"eslint-plugin-eslint-comments": "^3.2.0",
-		"eslint-plugin-import": "^2.27.5",
-		"eslint-plugin-promise": "^6.1.1"
+		"prettier": "^3.0.0"
 	}
 }

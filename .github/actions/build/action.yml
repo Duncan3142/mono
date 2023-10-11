@@ -12,7 +12,7 @@ runs:
       if: inputs.skip-changesets != 'true'
       shell: bash
       run: |
-        npm exec changeset status
+        pnpm exec changeset status
     - name: Build
       shell: bash
-      run: npm run turbo:build
+      run: pnpm run turbo:build

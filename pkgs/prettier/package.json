@@ -13,7 +13,7 @@
 	"license": "MIT",
 	"engines": {
 		"node": ">=18",
-		"npm": ">=9"
+		"pnpm": ">=8"
 	},
 	"exports": {
 		"./.prettierrc.json": "./.prettierrc.json"
@@ -30,6 +30,6 @@
 		"prettier": "^3.0.0"
 	},
 	"devDependencies": {
-		"prettier": "^3.0.3"
+		"prettier": "^3.0.0"
 	}
 }

@@ -1,12 +1,10 @@
 name: "Setup"
 description: "Setup runtime"
 inputs:
-  packages-token:
-    description: "GitHub Packages token"
-    required: true
   github-actor:
     description: "GitHub actor"
     required: true
+
 runs:
   using: "composite"
   steps:
@@ -17,15 +15,16 @@ runs:
         git config --global user.email "$GITHUB_ACTOR@users.noreply.github.com"
       env:
         GITHUB_ACTOR: ${{ inputs.github-actor }}
+    - uses: pnpm/action-setup@v2
+      with:
+        version: latest
     - name: Setup Node
       uses: actions/setup-node@v3
       with:
         check-latest: true
-        cache: "npm"
+        cache: "pnpm"
         node-version-file: ".nvmrc"
     - name: Install
       shell: bash
       run: |
-        npm ci
-      env:
-        GH_PACKAGES_TOKEN: ${{ inputs.packages-token }}
+        pnpm install --frozen-lockfile
