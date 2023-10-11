@@ -4,6 +4,10 @@ node_modules
 # Hidden
 .*
 
+# PNPM
+!.npmrc
+pnpm-lock.yaml
+
 # Prettier
 !.prettierignore
 !.prettierrc.json

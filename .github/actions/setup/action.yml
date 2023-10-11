@@ -21,11 +21,11 @@ runs:
       uses: actions/setup-node@v3
       with:
         check-latest: true
-        cache: "npm"
+        cache: "pnpm"
         node-version-file: ".nvmrc"
     - name: Install
       shell: bash
       run: |
-        npm ci
+        npm install --frozen-lockfile
       env:
         GH_PACKAGES_TOKEN: ${{ inputs.packages-token }}

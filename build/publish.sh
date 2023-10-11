@@ -2,7 +2,7 @@
 set -e
 
 echo Running build...
-npm run turbo:build
+pnpm run turbo:build
 echo Running publish...
-npm exec changeset publish
+pnpm exec changeset publish
 git push --follow-tags

@@ -1,8 +1,8 @@
 #!/bin/sh
 set -e
 
-npm run turbo:build
-for p in $(npm query .workspace | jq '.[].path' -r);
+pnpm run turbo:build
+for p in $(pnpm -r list --depth=-1 --json | jq 'del(.[0]) | .[].path' -r);
 do
   (cd $p; mkdir -p .package; npm pack --pack-destination .package);
 done;

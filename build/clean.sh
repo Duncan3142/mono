@@ -1,9 +1,8 @@
 #!/bin/sh
 set -e
 
-npm run turbo:clean;
-for p in $(npm query .workspace | jq '.[].path' -r);
+pnpm run turbo:clean;
+for p in $(pnpm -r list --depth=-1 --json | jq '.[].path' -r);
 do
-  (cd $p; rm -rf node_modules .turbo);
+  (cd $p; rm -rf node_modules .turbo package-lock.json);
 done;
-rm -rf node_modules .turbo package-lock.json;
