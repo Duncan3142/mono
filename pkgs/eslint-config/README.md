@@ -26,7 +26,7 @@
 		<img src="readme/logo.png" alt="Logo" width="80" height="80">
 	</a>
 
-<h3 align="center">Node Tooling Config</h3>
+<h3 align="center">ESLint Config</h3>
 
 <p align="center">
 	A Typescript template repository for packages or services

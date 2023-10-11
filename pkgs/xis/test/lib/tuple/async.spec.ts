@@ -1,0 +1,73 @@
+import { it } from "node:test"
+import { deepEqual } from "node:assert/strict"
+import { assertLeft, assertRight, type ExtractValue } from "#util/either.js"
+import { tuple } from "#check/tuple/async.js"
+
+import { string } from "#check/string/string.js"
+import { array } from "#check/array/async.js"
+import { unknown } from "#check/unknown.js"
+
+import { literal } from "#check/literal.js"
+import { number } from "#check/number/number.js"
+
+import { CheckSide } from "#core/context.js"
+
+const check = tuple([
+	// break
+	string,
+	// break
+	array(unknown),
+	// break
+	number,
+	// break
+	literal(null),
+])
+
+void it("should pass a matching tuple", async () => {
+	const res = await check.parse(["oneTwoCatDog", [], 0, null], {
+		args: undefined,
+		path: [],
+	})
+
+	assertRight(res)
+
+	const expected: ExtractValue<typeof res> = ["oneTwoCatDog", [], 0, null]
+
+	deepEqual(res.extract(), expected)
+})
+
+void it("should fail an invalid elements tuple", async () => {
+	const res = await check.parse(["meow", [], false, undefined], {
+		args: undefined,
+		path: [],
+	})
+
+	assertLeft(res)
+
+	const expected: ExtractValue<typeof res> = [
+		{
+			name: "INVALID_TYPE",
+			expected: "number",
+			path: [
+				{
+					segment: 2,
+					side: CheckSide.Value,
+				},
+			],
+			received: "boolean",
+		},
+		{
+			expected: null,
+			name: "LITERAL",
+			path: [
+				{
+					segment: 3,
+					side: CheckSide.Value,
+				},
+			],
+			value: undefined,
+		},
+	]
+
+	deepEqual(res.extract(), expected)
+})

@@ -23,13 +23,13 @@
 <br />
 <div align="center">
 	<a href="https://github.com/Duncan3142/js-pkgs">
-		<img src="readme/logo.png" alt="Logo" width="80" height="80">
+		<img src="https://github.com/Duncan3142/js-pkgs/blob/d271ee49df1d5dd538d5b6e20f9ed7c09d29a994/logo.png?raw=true" alt="Logo" width="80" height="80">
 	</a>
 
-<h3 align="center">Node Tooling Config</h3>
+<h3 align="center">Xis</h3>
 
 <p align="center">
-	A Typescript template repository for packages or services
+	Typescript object validation & transformation library
 	<br />
 	<a href="https://github.com/Duncan3142/js-pkgs"><strong>Explore the docs</strong></a>
 </p>
@@ -51,28 +51,25 @@
 			<ul>
 				<li><a href="#prerequisites">Prerequisites</a></li>
 				<li><a href="#installation">Installation</a></li>
-				<li><a href="#environment">Environment</a></li>
 			</ul>
 		</li>
 		<li><a href="#usage">Usage</a></li>
 		<li><a href="#license">License</a></li>
 		<li><a href="#contact">Contact</a></li>
-
-  </ol>
-
+	</ol>
 </details>
 
 <!-- ABOUT THE PROJECT -->
 
 ## About The Project
 
-A typescript template repository
+Typescript object validation & transformation
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 ### Built With
 
-- [Turborepo](https://turborepo.org/)
+- [Purify](https://gigobyte.github.io/purify/)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -83,21 +80,14 @@ A typescript template repository
 ### Prerequisites
 
 - [Node.js](https://nodejs.org/)
-- [pnpm](https://pnpm.io/)
 
 ### Installation
 
 Install packages
 
 ```sh
-pnpm i
+npm i
 ```
-
-### Environment
-
-See [example.env](./example.env) for details on available environment variables
-
-<p align="right">(<a href="#top">back to top</a>)</p>
 
 <!-- USAGE EXAMPLES -->
 
@@ -106,10 +96,8 @@ See [example.env](./example.env) for details on available environment variables
 To build the package and run all tests, run the following command
 
 ```sh
-pnpm test
+npm run build
 ```
-
-For use with an IDE, select the Typescript version found in `./node_modules/typescript/lib`
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 

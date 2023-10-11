@@ -1,0 +1,37 @@
+{
+	"name": "@duncan3142/tsc-config",
+	"repository": "https://github.com/duncan3142/js-pkgs",
+	"publishConfig": {
+		"registry": "https://npm.pkg.github.com",
+		"access": "restricted"
+	},
+	"description": "Typescript config",
+	"keywords": [],
+	"version": "0.1.0",
+	"author": "Duncan Giles",
+	"type": "module",
+	"license": "MIT",
+	"engines": {
+		"node": ">=18",
+		"pnpm": ">=8"
+	},
+	"exports": {
+		"./tsconfig.json": "./tsconfig.json"
+	},
+	"files": [
+		"tsconfig.json"
+	],
+	"scripts": {
+		"clean": "rm -rf .prettier .package",
+		"format": "prettier --check --cache --cache-location='.prettier/cache' --cache-strategy content .",
+		"format:fix": "prettier --write --cache --cache-location='.prettier/cache' --cache-strategy content ."
+	},
+	"peerDependencies": {
+		"@types/node": "^18.17.1",
+		"typescript": "^5.1.6"
+	},
+	"devDependencies": {
+		"@duncan3142/prettier-config": "^0.1.0",
+		"prettier": "^3.0.0"
+	}
+}
