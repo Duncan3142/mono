@@ -61,7 +61,7 @@ importers:
         version: 6.1.1(eslint@8.51.0)
     devDependencies:
       '@duncan3142/prettier-config':
-        specifier: ^0.1.0
+        specifier: ^0.1.1
         version: link:../prettier
       prettier:
         specifier: ^3.0.0
@@ -83,7 +83,7 @@ importers:
         version: 5.2.2
     devDependencies:
       '@duncan3142/prettier-config':
-        specifier: ^0.1.0
+        specifier: ^0.1.1
         version: link:../prettier
       prettier:
         specifier: ^3.0.0
