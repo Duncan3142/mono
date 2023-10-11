@@ -1,6 +1,6 @@
 {
-	"name": "@duncan3142/node-config",
-	"repository": "https://github.com/duncan3142/node-config",
+	"name": "@duncan3142/js-pkgs",
+	"repository": "https://github.com/duncan3142/js-pkgs",
 	"description": "Node tooling config",
 	"private": true,
 	"author": "Duncan Giles",

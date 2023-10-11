@@ -5,16 +5,16 @@
 			"name": "/"
 		},
 		{
-			"path": "pkgs/eslint",
-			"name": "eslint"
+			"path": "pkgs/eslint-config",
+			"name": "eslint-config"
 		},
 		{
-			"path": "pkgs/prettier",
-			"name": "prettier"
+			"path": "pkgs/prettier-config",
+			"name": "prettier-config"
 		},
 		{
-			"path": "pkgs/tsc",
-			"name": "tsc"
+			"path": "pkgs/tsc-config",
+			"name": "tsc-config"
 		}
 	],
 	"settings": {
