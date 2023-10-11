@@ -1,0 +1,13 @@
+{
+	"extends": ["//"],
+	"pipeline": {
+		"format": {
+			"outputs": [".prettier/**"],
+			"dependsOn": []
+		},
+		"format:fix": {
+			"outputs": [".prettier/**"],
+			"dependsOn": []
+		}
+	}
+}

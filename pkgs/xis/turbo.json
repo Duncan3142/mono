@@ -1,5 +1,4 @@
 {
-	"globalDependencies": ["package.json", ".env"],
 	"extends": ["//"],
 	"pipeline": {
 		"format": {
