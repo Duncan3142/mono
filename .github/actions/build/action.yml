@@ -1,9 +1,6 @@
 name: "Build"
 description: "Build package"
 inputs:
-  # packages-token:
-  #   description: "GitHub Packages token"
-  #   required: true
   skip-changesets:
     description: "Skip changeset check"
     required: false
@@ -16,10 +13,6 @@ runs:
       shell: bash
       run: |
         pnpm exec changeset status
-      # env:
-      #   GH_PACKAGES_TOKEN: ${{ inputs.packages-token }}
     - name: Build
       shell: bash
       run: pnpm run turbo:build
-      # env:
-      #   GH_PACKAGES_TOKEN: ${{ inputs.packages-token }}
