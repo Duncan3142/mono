@@ -22,14 +22,10 @@ jobs:
       - name: Setup
         uses: ./.github/actions/setup
         with:
-          packages-token: ${{ secrets.GITHUB_TOKEN }}
           github-actor: ${{ github.actor }}
         env:
           GH_PACKAGES_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Build
         uses: ./.github/actions/build
         with:
-          packages-token: ${{ secrets.GITHUB_TOKEN }}
           skip-changesets: ${{ github.event.pull_request.title == 'Version Packages' }}
-        env:
-          GH_PACKAGES_TOKEN: ${{ secrets.GITHUB_TOKEN }}

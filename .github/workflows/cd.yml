@@ -26,7 +26,6 @@ jobs:
       - name: Setup
         uses: ./.github/actions/setup
         with:
-          packages-token: ${{ secrets.GITHUB_TOKEN }}
           github-actor: ${{ github.actor }}
         env:
           GH_PACKAGES_TOKEN: ${{ secrets.GITHUB_TOKEN }}
