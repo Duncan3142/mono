@@ -16,7 +16,7 @@ import turboJson from "#templates/turbo.json.hbs.js"
 
 export default (plop: NodePlopAPI, name = "pkg") => {
 	plop.setGenerator(name, {
-		description: "Create a new library",
+		description: "Create a new package",
 		prompts: [
 			{
 				type: "input",
