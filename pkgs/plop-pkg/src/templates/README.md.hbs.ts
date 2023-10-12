@@ -29,7 +29,7 @@ export default `<div id="top"></div>
 <h3 align="center">{{ name }}</h3>
 
 <p align="center">
-	{{ description }}}
+	{{ description }}
 	<br />
 	<a href="https://github.com/Duncan3142/js-pkgs/tree/main/pkgs/{{ dashCase name }}"><strong>Explore the docs</strong></a>
 </p>
