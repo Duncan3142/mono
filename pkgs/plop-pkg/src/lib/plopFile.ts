@@ -14,8 +14,8 @@ import tsconfigConfig from "#templates/tsconfig.config.json.hbs.js"
 import tsconfigTest from "#templates/tsconfig.test.json.hbs.js"
 import turboJson from "#templates/turbo.json.hbs.js"
 
-export default (plop: NodePlopAPI) => {
-	plop.setGenerator("pkg", {
+export default (plop: NodePlopAPI, name = "pkg") => {
+	plop.setGenerator(name, {
 		description: "Create a new library",
 		prompts: [
 			{

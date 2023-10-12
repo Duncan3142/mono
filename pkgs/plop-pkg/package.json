@@ -24,6 +24,10 @@
 		}
 	},
 	"exports": {
+		".": {
+			"types": "./.tsc/dist/lib/plopFile.d.ts",
+			"import": "./.tsc/dist/lib/plopFile.js"
+		},
 		"./*": {
 			"types": "./.tsc/dist/lib/*.d.ts",
 			"import": "./.tsc/dist/lib/*.js"
