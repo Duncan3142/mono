@@ -1,7 +1,7 @@
 {
 	"name": "@duncan3142/js-pkgs",
 	"repository": "https://github.com/duncan3142/js-pkgs",
-	"description": "Node tooling config",
+	"description": "JavaScript All The Things",
 	"private": true,
 	"author": "Duncan Giles",
 	"type": "module",
