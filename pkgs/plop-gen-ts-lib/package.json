@@ -1,6 +1,6 @@
 {
-	"name": "@duncan3142/xis",
-	"repository": "https://github.com/duncan3142/plop-gen-ts-lib",
+	"name": "@duncan3142/plop-gen-ts-lib",
+	"repository": "https://github.com/duncan3142/js-pkgs",
 	"publishConfig": {
 		"registry": "https://npm.pkg.github.com",
 		"access": "restricted"
@@ -16,7 +16,7 @@
 		"pnpm": ">=8"
 	},
 	"imports": {
-		"#/*.js": {
+		"#lib/*.js": {
 			"import": "./.tsc/dist/lib/*.js"
 		}
 	},
