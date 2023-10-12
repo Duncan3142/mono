@@ -7,7 +7,7 @@
 	},
 	"description": "ESLint config",
 	"keywords": [],
-	"version": "0.1.0",
+	"version": "0.0.1",
 	"author": "Duncan Giles",
 	"type": "commonjs",
 	"license": "MIT",
@@ -41,7 +41,7 @@
 		"eslint-config-prettier": "^9.0.0"
 	},
 	"devDependencies": {
-		"@duncan3142/prettier-config": "^0.1.0",
+		"@duncan3142/prettier-config": "^0.0.1",
 		"prettier": "^3.0.0"
 	}
 }
