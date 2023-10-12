@@ -56,7 +56,6 @@
 
 ## About The Project
 
-{{ name }}
 Plop Typescript Package Template
 
 <p align="right">(<a href="#top">back to top</a>)</p>
