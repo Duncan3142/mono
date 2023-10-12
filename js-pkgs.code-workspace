@@ -19,6 +19,10 @@
 		{
 			"path": "pkgs/xis",
 			"name": "xis"
+		},
+		{
+			"path": "pkgs/plop-pkg",
+			"name": "plop-pkg"
 		}
 	],
 	"settings": {
@@ -29,7 +33,12 @@
 			"**/CVS": true,
 			"**/.DS_Store": true,
 			"**/Thumbs.db": true,
-			"pkgs": true
+			"pkgs": true,
+			".prettier": true,
+			".turbo": true,
+			"node_modules": true,
+			".tsc": true,
+			".eslint": true
 		},
 		"explorerExclude.backup": {},
 		"editor.insertSpaces": false

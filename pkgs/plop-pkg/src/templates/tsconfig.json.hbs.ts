@@ -1,0 +1,10 @@
+export default `{
+	"$schema": "https://json.schemastore.org/tsconfig",
+	"include": [],
+	"references": [
+		{ "path": "./tsconfig.build.json" },
+		{ "path": "./tsconfig.test.json" },
+		{ "path": "./tsconfig.config.json" }
+	]
+}
+`

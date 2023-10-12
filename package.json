@@ -1,7 +1,7 @@
 {
 	"name": "@duncan3142/js-pkgs",
 	"repository": "https://github.com/duncan3142/js-pkgs",
-	"description": "Node tooling config",
+	"description": "JavaScript All The Things",
 	"private": true,
 	"author": "Duncan Giles",
 	"type": "module",
@@ -25,9 +25,11 @@
 	"devDependencies": {
 		"@changesets/cli": "^2.26.2",
 		"@commitlint/config-conventional": "^17.7.0",
+		"@duncan3142/plop-pkg": "^0.0.0",
 		"@duncan3142/prettier-config": "^0.0.1",
 		"commitlint": "^17.7.2",
 		"husky": "^8.0.3",
+		"plop": "^4.0.0",
 		"prettier": "^3.0.3",
 		"turbo": "1.10.15"
 	}

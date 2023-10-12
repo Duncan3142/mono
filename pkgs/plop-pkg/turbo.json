@@ -1,0 +1,21 @@
+{
+	"extends": ["//"],
+	"pipeline": {
+		"format": {
+			"outputs": [".prettier/**"],
+			"dependsOn": []
+		},
+		"format:fix": {
+			"outputs": [".prettier/**"],
+			"dependsOn": []
+		},
+		"assets": {
+			"outputs": [".tsc/**"],
+			"dependsOn": ["^assets"]
+		},
+		"test": {
+			"outputs": [".eslint/**"],
+			"dependsOn": ["assets"]
+		}
+	}
+}
