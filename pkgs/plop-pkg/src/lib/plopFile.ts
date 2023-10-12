@@ -97,7 +97,7 @@ export default (plop: NodePlopAPI, genName = "pkg") => {
 			},
 			{
 				type: "add",
-				path: "pkgs/{{ dashCase name }}/turbo.json.js",
+				path: "pkgs/{{ dashCase name }}/turbo.json",
 				template: turboJson,
 			},
 		],
