@@ -3,5 +3,8 @@
 	"changelog": "@changesets/cli/changelog",
 	"commit": "@changesets/cli/commit",
 	"access": "restricted",
-	"baseBranch": "origin/main"
+	"baseBranch": "origin/main",
+	"bumpVersionsWithWorkspaceProtocolOnly": true,
+	"updateInternalDependencies": "minor",
+	"privatePackages": { "version": true, "tag": true }
 }
