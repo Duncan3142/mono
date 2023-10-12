@@ -1,4 +1,4 @@
-{
+export default `{
 	"$schema": "https://json.schemastore.org/tsconfig",
 	"extends": "./tsconfig.base.json",
 	"compilerOptions": {
@@ -9,3 +9,4 @@
 	},
 	"include": ["src/**/*"]
 }
+`

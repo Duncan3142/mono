@@ -1,5 +1,5 @@
-{
-	"name": "@duncan3142/plop-gen-ts-lib",
+export default `{
+	"name": "@duncan3142/{{ name }}",
 	"repository": "https://github.com/duncan3142/js-pkgs",
 	"publishConfig": {
 		"registry": "https://npm.pkg.github.com",
@@ -27,9 +27,9 @@
 		}
 	},
 	"files": [
-		".tsc/dist/lib/**/*.js",
-		".tsc/dist/lib/**/*.ts",
-		".tsc/dist/lib/**/*.map"
+		".tsc/dist/**/*.js",
+		".tsc/dist/**/*.ts",
+		".tsc/dist/**/*.map"
 	],
 	"scripts": {
 		"clean": "rm -rf .eslint .prettier .tsc .coverage .package",
@@ -60,3 +60,4 @@
 		"typescript": "^5.1.6"
 	}
 }
+`

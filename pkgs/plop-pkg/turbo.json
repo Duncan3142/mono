@@ -13,17 +13,9 @@
 			"outputs": [".tsc/**"],
 			"dependsOn": ["^assets"]
 		},
-		"test:eslint": {
+		"test": {
 			"outputs": [".eslint/**"],
 			"dependsOn": ["assets"]
-		},
-		"test:node": {
-			"outputs": [".coverage/**"],
-			"dependsOn": ["assets"]
-		},
-		"test": {
-			"outputs": [],
-			"dependsOn": ["test:eslint", "test:node"]
 		}
 	}
 }

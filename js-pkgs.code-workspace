@@ -21,8 +21,8 @@
 			"name": "xis"
 		},
 		{
-			"path": "pkgs/plop-gen-ts-lib",
-			"name": "plop-gen-ts-lib"
+			"path": "pkgs/plop-pkg",
+			"name": "plop-pkg"
 		}
 	],
 	"settings": {

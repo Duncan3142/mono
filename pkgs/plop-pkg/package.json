@@ -1,11 +1,11 @@
 {
-	"name": "@duncan3142/plop-gen-ts-lib",
+	"name": "@duncan3142/plop-pkg",
 	"repository": "https://github.com/duncan3142/js-pkgs",
 	"publishConfig": {
 		"registry": "https://npm.pkg.github.com",
 		"access": "restricted"
 	},
-	"description": "Plop Typescript Library Template",
+	"description": "Plop Typescript Package Template",
 	"keywords": [],
 	"version": "0.0.0",
 	"author": "Duncan Giles",
@@ -18,6 +18,9 @@
 	"imports": {
 		"#lib/*.js": {
 			"import": "./.tsc/dist/lib/*.js"
+		},
+		"#templates/*.js": {
+			"import": "./.tsc/dist/templates/*.js"
 		}
 	},
 	"exports": {
@@ -27,9 +30,9 @@
 		}
 	},
 	"files": [
-		".tsc/dist/lib/**/*.js",
-		".tsc/dist/lib/**/*.ts",
-		".tsc/dist/lib/**/*.map"
+		".tsc/dist/**/*.js",
+		".tsc/dist/**/*.ts",
+		".tsc/dist/**/*.map"
 	],
 	"scripts": {
 		"clean": "rm -rf .eslint .prettier .tsc .coverage .package",
@@ -41,10 +44,13 @@
 		"test:eslint:fix": "eslint --fix --max-warnings 0 --cache --cache-location '.eslint/cache' --cache-strategy content .",
 		"test:node": "node --test .tsc/test/"
 	},
-	"peerDependencies": {},
+	"peerDependencies": {
+		"plop": "^4.0.0"
+	},
 	"dependencies": {},
 	"devDependencies": {
 		"prettier": "^3.0.3",
+		"plop": "^4.0.0",
 		"@duncan3142/prettier-config": "^0.1.0",
 		"@duncan3142/tsc-config": "^0.1.0",
 		"@duncan3142/eslint-config": "^0.1.0",

@@ -1,4 +1,4 @@
-# Node
+export default `# Node
 node_modules
 
 # Hidden
@@ -14,3 +14,4 @@ pnpm-lock.yaml
 # Prettier
 !.prettierignore
 !.prettierrc.json
+`

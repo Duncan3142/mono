@@ -1,4 +1,4 @@
-{
+export default `{
 	"extends": ["//"],
 	"pipeline": {
 		"format": {
@@ -27,3 +27,4 @@
 		}
 	}
 }
+`

@@ -1,4 +1,4 @@
-<div id="top"></div>
+export default `<div id="top"></div>
 <!--
 *** Thanks for checking out the Best-README-Template. If you have a suggestion
 *** that would make this better, please fork the repo and create a pull request
@@ -85,9 +85,9 @@ Typescript object validation & transformation
 
 Install packages
 
-```sh
+\`\`\`sh
 npm i
-```
+\`\`\`
 
 <!-- USAGE EXAMPLES -->
 
@@ -95,9 +95,9 @@ npm i
 
 To build the package and run all tests, run the following command
 
-```sh
+\`\`\`sh
 npm run build
-```
+\`\`\`
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -126,3 +126,4 @@ Project Link: [https://github.com/Duncan3142/js-pkgs](https://github.com/Duncan3
 [license-url]: ./LICENSE.txt
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://linkedin.com/in/duncan3142
+`
