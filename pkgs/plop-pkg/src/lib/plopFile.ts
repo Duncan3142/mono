@@ -14,8 +14,8 @@ import tsconfigConfig from "#templates/tsconfig.config.json.hbs.js"
 import tsconfigTest from "#templates/tsconfig.test.json.hbs.js"
 import turboJson from "#templates/turbo.json.hbs.js"
 
-export default (plop: NodePlopAPI, name = "pkg") => {
-	plop.setGenerator(name, {
+export default (plop: NodePlopAPI, genName = "pkg") => {
+	plop.setGenerator(genName, {
 		description: "Create a new package",
 		prompts: [
 			{
@@ -32,72 +32,72 @@ export default (plop: NodePlopAPI, name = "pkg") => {
 		actions: [
 			{
 				type: "add",
-				path: "pkgs/{{name}}/src/lib/hello.ts",
+				path: "pkgs/{{ dashCase name }}/src/lib/hello.ts",
 				template: hello,
 			},
 			{
 				type: "add",
-				path: "pkgs/{{name}}/test/lib/hello.ts",
+				path: "pkgs/{{ dashCase name }}/test/lib/hello.ts",
 				template: helloSpec,
 			},
 			{
 				type: "add",
-				path: "pkgs/{{name}}/.eslintrc.cjs",
+				path: "pkgs/{{ dashCase name }}/.eslintrc.cjs",
 				template: eslintrc,
 			},
 			{
 				type: "add",
-				path: "pkgs/{{name}}/.prettierignore",
+				path: "pkgs/{{ dashCase name }}/.prettierignore",
 				template: prettierIgnore,
 			},
 			{
 				type: "add",
-				path: "pkgs/{{name}}/.prettierrc.json",
+				path: "pkgs/{{ dashCase name }}/.prettierrc.json",
 				template: prettierrc,
 			},
 			{
 				type: "add",
-				path: "pkgs/{{name}}/LICENSE.txt",
+				path: "pkgs/{{ dashCase name }}/LICENSE.txt",
 				template: LICENSE,
 			},
 			{
 				type: "add",
-				path: "pkgs/{{name}}/package.json",
+				path: "pkgs/{{ dashCase name }}/package.json",
 				template: packageJson,
 			},
 			{
 				type: "add",
-				path: "pkgs/{{name}}/README.md",
+				path: "pkgs/{{ dashCase name }}/README.md",
 				template: README,
 			},
 			{
 				type: "add",
-				path: "pkgs/{{name}}/tsconfig.json",
+				path: "pkgs/{{ dashCase name }}/tsconfig.json",
 				template: tsconfig,
 			},
 			{
 				type: "add",
-				path: "pkgs/{{name}}/tsconfig.base.json",
+				path: "pkgs/{{ dashCase name }}/tsconfig.base.json",
 				template: tsconfigBase,
 			},
 			{
 				type: "add",
-				path: "pkgs/{{name}}/tsconfig.build.json",
+				path: "pkgs/{{ dashCase name }}/tsconfig.build.json",
 				template: tsconfigBuild,
 			},
 			{
 				type: "add",
-				path: "pkgs/{{name}}/tsconfig.config.json",
+				path: "pkgs/{{ dashCase name }}/tsconfig.config.json",
 				template: tsconfigConfig,
 			},
 			{
 				type: "add",
-				path: "pkgs/{{name}}/tsconfig.test.json",
+				path: "pkgs/{{ dashCase name }}/tsconfig.test.json",
 				template: tsconfigTest,
 			},
 			{
 				type: "add",
-				path: "pkgs/{{name}}/turbo.json.js",
+				path: "pkgs/{{ dashCase name }}/turbo.json.js",
 				template: turboJson,
 			},
 		],

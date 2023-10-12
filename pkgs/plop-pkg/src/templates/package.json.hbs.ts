@@ -1,11 +1,11 @@
 export default `{
-	"name": "@duncan3142/{{ name }}",
+	"name": "@duncan3142/{{ dashCase name }}",
 	"repository": "https://github.com/duncan3142/js-pkgs",
 	"publishConfig": {
 		"registry": "https://npm.pkg.github.com",
 		"access": "restricted"
 	},
-	"description": "Plop Typescript Library Template",
+	"description": "{{ description }}",
 	"keywords": [],
 	"version": "0.0.0",
 	"author": "Duncan Giles",
