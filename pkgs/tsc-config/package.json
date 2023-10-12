@@ -7,7 +7,7 @@
 	},
 	"description": "Typescript config",
 	"keywords": [],
-	"version": "0.0.1",
+	"version": "0.1.0",
 	"author": "Duncan Giles",
 	"type": "module",
 	"license": "MIT",
@@ -31,7 +31,7 @@
 		"typescript": "^5.1.6"
 	},
 	"devDependencies": {
-		"@duncan3142/prettier-config": "^0.0.1",
+		"@duncan3142/prettier-config": "^0.1.0",
 		"prettier": "^3.0.0"
 	}
 }
