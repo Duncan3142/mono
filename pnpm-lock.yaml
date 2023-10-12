@@ -15,7 +15,7 @@ importers:
         specifier: ^17.7.0
         version: 17.7.0
       '@duncan3142/plop-pkg':
-        specifier: ^0.0.0
+        specifier: workspace:^0.0.0
         version: link:pkgs/plop-pkg
       '@duncan3142/prettier-config':
         specifier: ^0.0.1
