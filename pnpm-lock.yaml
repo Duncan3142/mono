@@ -15,7 +15,7 @@ importers:
         specifier: ^17.7.0
         version: 17.7.0
       '@duncan3142/prettier-config':
-        specifier: ^0.1.0
+        specifier: ^0.0.1
         version: link:pkgs/prettier-config
       commitlint:
         specifier: ^17.7.2
@@ -61,7 +61,7 @@ importers:
         version: 6.1.1(eslint@8.51.0)
     devDependencies:
       '@duncan3142/prettier-config':
-        specifier: ^0.1.0
+        specifier: ^0.0.1
         version: link:../prettier-config
       prettier:
         specifier: ^3.0.0
@@ -83,7 +83,7 @@ importers:
         version: 5.2.2
     devDependencies:
       '@duncan3142/prettier-config':
-        specifier: ^0.1.0
+        specifier: ^0.0.1
         version: link:../prettier-config
       prettier:
         specifier: ^3.0.0
@@ -96,13 +96,13 @@ importers:
         version: 2.0.1
     devDependencies:
       '@duncan3142/eslint-config':
-        specifier: ^0.1.0
+        specifier: ^0.0.1
         version: link:../eslint-config
       '@duncan3142/prettier-config':
-        specifier: ^0.1.0
+        specifier: ^0.0.1
         version: link:../prettier-config
       '@duncan3142/tsc-config':
-        specifier: ^0.1.0
+        specifier: ^0.0.1
         version: link:../tsc-config
       '@types/eslint':
         specifier: ^8.44.0
