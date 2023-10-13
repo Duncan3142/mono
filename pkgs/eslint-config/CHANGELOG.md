@@ -1,5 +1,11 @@
 # @duncan3142/eslint-config
 
+## 0.1.1
+
+### Patch Changes
+
+- 2f2b813: Logo url
+
 ## 0.1.0
 
 ### Minor Changes
