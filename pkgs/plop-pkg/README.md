@@ -23,7 +23,7 @@
 <br />
 <div align="center">
 	<a href="https://github.com/Duncan3142/js-pkgs/tree/main/pkgs/plop-pkg">
-		<img src="https://github.com/Duncan3142/js-pkgs/blob/d271ee49df1d5dd538d5b6e20f9ed7c09d29a994/logo.png?raw=true" alt="Logo" width="80" height="80">
+		<img src="https://raw.githubusercontent.com/Duncan3142/js-pkgs/main/logo.png" alt="Logo" width="80" height="80">
 	</a>
 
 <h3 align="center">Plop Pkg</h3>
