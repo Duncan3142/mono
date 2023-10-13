@@ -23,10 +23,10 @@
 <br />
 <div align="center">
 	<a href="https://github.com/Duncan3142/js-pkgs">
-		<img src="readme/logo.png" alt="Logo" width="80" height="80">
+		<img src="https://raw.githubusercontent.com/Duncan3142/js-pkgs/main/logo.png" alt="Logo" width="80" height="80">
 	</a>
 
-<h3 align="center">Typescript Template</h3>
+<h3 align="center">ESLint Config</h3>
 
 <p align="center">
 	A Typescript template repository for packages or services
