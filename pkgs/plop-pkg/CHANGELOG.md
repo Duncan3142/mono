@@ -4,6 +4,12 @@
 
 ### Patch Changes
 
+- fc1cef0: Version
+
+## 0.0.1
+
+### Patch Changes
+
 - 67eb538: Test
 
 ## 0.0.1
