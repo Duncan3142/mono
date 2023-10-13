@@ -5,6 +5,6 @@
 	"access": "restricted",
 	"baseBranch": "origin/main",
 	"bumpVersionsWithWorkspaceProtocolOnly": true,
-	"updateInternalDependencies": "patch",
+	"updateInternalDependencies": "minor",
 	"privatePackages": { "version": true, "tag": true }
 }
