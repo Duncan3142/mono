@@ -15,7 +15,7 @@ importers:
         specifier: ^17.7.0
         version: 17.7.0
       '@duncan3142/plop-pkg':
-        specifier: workspace:^0.0.0
+        specifier: workspace:*
         version: link:pkgs/plop-pkg
       '@duncan3142/prettier-config':
         specifier: ^0.0.1
@@ -68,7 +68,7 @@ importers:
     devDependencies:
       '@duncan3142/prettier-config':
         specifier: ^0.1.0
-        version: link:../prettier-config
+        version: 0.1.0(prettier@3.0.3)
       prettier:
         specifier: ^3.0.0
         version: 3.0.3
@@ -77,13 +77,13 @@ importers:
     devDependencies:
       '@duncan3142/eslint-config':
         specifier: ^0.1.0
-        version: link:../eslint-config
+        version: 0.1.0(@types/eslint@8.44.4)(@typescript-eslint/eslint-plugin@6.7.5)(@typescript-eslint/parser@6.7.5)(eslint-import-resolver-typescript@3.6.1)(eslint-plugin-eslint-comments@3.2.0)(eslint-plugin-import@2.28.1)(eslint-plugin-promise@6.1.1)(eslint@8.51.0)
       '@duncan3142/prettier-config':
         specifier: ^0.1.0
-        version: link:../prettier-config
+        version: 0.1.0(prettier@3.0.3)
       '@duncan3142/tsc-config':
         specifier: ^0.1.0
-        version: link:../tsc-config
+        version: 0.1.0(@types/node@18.18.4)(typescript@5.2.2)
       '@types/eslint':
         specifier: ^8.44.0
         version: 8.44.4
@@ -138,7 +138,7 @@ importers:
     devDependencies:
       '@duncan3142/prettier-config':
         specifier: ^0.1.0
-        version: link:../prettier-config
+        version: 0.1.0(prettier@3.0.3)
       prettier:
         specifier: ^3.0.0
         version: 3.0.3
@@ -151,13 +151,13 @@ importers:
     devDependencies:
       '@duncan3142/eslint-config':
         specifier: ^0.1.0
-        version: link:../eslint-config
+        version: 0.1.0(@types/eslint@8.44.4)(@typescript-eslint/eslint-plugin@6.7.5)(@typescript-eslint/parser@6.7.5)(eslint-import-resolver-typescript@3.6.1)(eslint-plugin-eslint-comments@3.2.0)(eslint-plugin-import@2.28.1)(eslint-plugin-promise@6.1.1)(eslint@8.51.0)
       '@duncan3142/prettier-config':
         specifier: ^0.1.0
-        version: link:../prettier-config
+        version: 0.1.0(prettier@3.0.3)
       '@duncan3142/tsc-config':
         specifier: ^0.1.0
-        version: link:../tsc-config
+        version: 0.1.0(@types/node@18.18.4)(typescript@5.2.2)
       '@types/eslint':
         specifier: ^8.44.0
         version: 8.44.4
@@ -586,6 +586,30 @@ packages:
       '@jridgewell/trace-mapping': 0.3.9
     dev: true
 
+  /@duncan3142/eslint-config@0.1.0(@types/eslint@8.44.4)(@typescript-eslint/eslint-plugin@6.7.5)(@typescript-eslint/parser@6.7.5)(eslint-import-resolver-typescript@3.6.1)(eslint-plugin-eslint-comments@3.2.0)(eslint-plugin-import@2.28.1)(eslint-plugin-promise@6.1.1)(eslint@8.51.0):
+    resolution: {integrity: sha512-v3g1sAcymEprpf+DQmuokx5nL7c5oi+IhkdpyhMnlAFlSszkR3M2qFR33PhZ4xECbFlztaScDf0d1rvLIC2f/g==, tarball: https://npm.pkg.github.com/download/@duncan3142/eslint-config/0.1.0/397135b2e30dd61c0b509bff060e19bde9bcac50}
+    engines: {node: '>=18', pnpm: '>=8'}
+    peerDependencies:
+      '@types/eslint': ^8.44.0
+      '@typescript-eslint/eslint-plugin': ^6.0.0
+      '@typescript-eslint/parser': ^6.0.0
+      eslint: ^8.44.0
+      eslint-import-resolver-typescript: ^3.5.5
+      eslint-plugin-eslint-comments: ^3.2.0
+      eslint-plugin-import: ^2.27.5
+      eslint-plugin-promise: ^6.1.1
+    dependencies:
+      '@types/eslint': 8.44.4
+      '@typescript-eslint/eslint-plugin': 6.7.5(@typescript-eslint/parser@6.7.5)(eslint@8.51.0)(typescript@5.2.2)
+      '@typescript-eslint/parser': 6.7.5(eslint@8.51.0)(typescript@5.2.2)
+      eslint: 8.51.0
+      eslint-config-prettier: 9.0.0(eslint@8.51.0)
+      eslint-import-resolver-typescript: 3.6.1(@typescript-eslint/parser@6.7.5)(eslint-plugin-import@2.28.1)(eslint@8.51.0)
+      eslint-plugin-eslint-comments: 3.2.0(eslint@8.51.0)
+      eslint-plugin-import: 2.28.1(@typescript-eslint/parser@6.7.5)(eslint-import-resolver-typescript@3.6.1)(eslint@8.51.0)
+      eslint-plugin-promise: 6.1.1(eslint@8.51.0)
+    dev: true
+
   /@duncan3142/prettier-config@0.0.1(prettier@3.0.3):
     resolution: {integrity: sha512-wNd4yaSPFOqrgAkJtuuDYIhm5/kdlqtRL/KnRFHVUgMNX9lWOxrZ2g3N/OEROX1DMlw7pCHPE2KI8jjvX+DE/g==, tarball: https://npm.pkg.github.com/download/@duncan3142/prettier-config/0.0.1/196d7d7cbca84aa8e563f6d1d9fa569bef3188a4}
     engines: {node: '>=18', pnpm: '>=8'}
@@ -593,6 +617,26 @@ packages:
       prettier: ^3.0.0
     dependencies:
       prettier: 3.0.3
+    dev: true
+
+  /@duncan3142/prettier-config@0.1.0(prettier@3.0.3):
+    resolution: {integrity: sha512-UH+Yz+G2RbaCOqD1Oel4oLBYxs4ugmLsCacg3U1NCKQ8XI928V9E34mhMlCW2Cd/OY9sYTOCceaTLqMET9CZcA==, tarball: https://npm.pkg.github.com/download/@duncan3142/prettier-config/0.1.0/7d8238e0a993744f57f5e083a4bad7ce30dbf2ab}
+    engines: {node: '>=18', pnpm: '>=8'}
+    peerDependencies:
+      prettier: ^3.0.0
+    dependencies:
+      prettier: 3.0.3
+    dev: true
+
+  /@duncan3142/tsc-config@0.1.0(@types/node@18.18.4)(typescript@5.2.2):
+    resolution: {integrity: sha512-YqPyq8JNTLeEO7x3z9Tp7fOO7lnnqSnxU8OJeGe63K8FnU0VoaTDutD6CZ3RA333BBPuDCm/76tKFbGZUvjW0A==, tarball: https://npm.pkg.github.com/download/@duncan3142/tsc-config/0.1.0/89f75a599dbf988690c8cf3b77474dd908018cb1}
+    engines: {node: '>=18', pnpm: '>=8'}
+    peerDependencies:
+      '@types/node': ^18.17.1
+      typescript: ^5.1.6
+    dependencies:
+      '@types/node': 18.18.4
+      typescript: 5.2.2
     dev: true
 
   /@eslint-community/eslint-utils@4.4.0(eslint@8.51.0):
@@ -1692,7 +1736,6 @@ packages:
       eslint: '>=7.0.0'
     dependencies:
       eslint: 8.51.0
-    dev: false
 
   /eslint-import-resolver-node@0.3.9:
     resolution: {integrity: sha512-WFj2isz22JahUv+B788TlO3N6zL3nNJGU8CcZbPZvVEkBPaJdCV4vy5wyghty5ROFbCRnm132v8BScu5/1BQ8g==}
