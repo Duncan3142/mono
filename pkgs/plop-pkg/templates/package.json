@@ -1,16 +1,11 @@
-{{{{raw}}}}
 {
-{{{{/raw}}}}
 	"name": "@duncan3142/{{ dashCase name }}",
-{{{{raw}}}}
 	"repository": "https://github.com/duncan3142/js-pkgs",
 	"publishConfig": {
 		"registry": "https://npm.pkg.github.com",
 		"access": "restricted"
 	},
-{{{{/raw}}}}
 	"description": "{{ description }}",
-{{{{raw}}}}
 	"keywords": [],
 	"version": "0.0.0",
 	"author": "Duncan Giles",
@@ -65,4 +60,3 @@
 		"typescript": "^5.1.6"
 	}
 }
-{{{{/raw}}}}
