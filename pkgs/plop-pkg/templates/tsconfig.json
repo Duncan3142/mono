@@ -1,4 +1,4 @@
-export default `{
+{
 	"$schema": "https://json.schemastore.org/tsconfig",
 	"include": [],
 	"references": [
@@ -7,4 +7,3 @@ export default `{
 		{ "path": "./tsconfig.config.json" }
 	]
 }
-`

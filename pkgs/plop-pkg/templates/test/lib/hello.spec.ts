@@ -1,4 +1,4 @@
-export default `import { describe, it } from "node:test"
+import { describe, it } from "node:test"
 import { equal } from "node:assert/strict"
 
 void describe("hello", () => {
@@ -6,4 +6,3 @@ void describe("hello", () => {
 		equal(1, 1)
 	})
 })
-`

@@ -18,9 +18,6 @@
 	"imports": {
 		"#lib/*.js": {
 			"import": "./.tsc/dist/lib/*.js"
-		},
-		"#templates/*.js": {
-			"import": "./.tsc/dist/templates/*.js"
 		}
 	},
 	"exports": {
@@ -36,7 +33,8 @@
 	"files": [
 		".tsc/dist/**/*.js",
 		".tsc/dist/**/*.ts",
-		".tsc/dist/**/*.map"
+		".tsc/dist/**/*.map",
+		"templates/**/*"
 	],
 	"scripts": {
 		"clean": "rm -rf .eslint .prettier .tsc .coverage .package",
@@ -51,7 +49,9 @@
 	"peerDependencies": {
 		"plop": "^4.0.0"
 	},
-	"dependencies": {},
+	"dependencies": {
+		"find-up": "^6.0.0"
+	},
 	"devDependencies": {
 		"prettier": "^3.0.3",
 		"plop": "^4.0.0",

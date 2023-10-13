@@ -10,6 +10,7 @@ const project = [
 module.exports = {
 	root: true,
 	extends: ["@duncan3142"],
+	ignorePatterns: ["templates"],
 	parserOptions: {
 		project,
 	},
