@@ -1,11 +1,17 @@
-import type { NodePlopAPI } from "plop"
+import type { AddManyActionConfig, NodePlopAPI } from "plop"
 import { pkgRoot } from "./root.js"
 import { dirname } from "node:path"
 
-export default (plop: NodePlopAPI, genName = "pkg") => {
-	const TEMPLATES = "templates"
-	const root = pkgRoot(dirname(import.meta.url))
-	const base = `${root}/${TEMPLATES}`
+export interface Props {
+	name?: string
+}
+
+export default (plop: NodePlopAPI, props?: Props) => {
+	const { name: genName = "pkg" } = props ?? {}
+	const TEMPLATES_DIR = "templates"
+	const rootDir = pkgRoot(dirname(import.meta.url))
+	const baseDir = `${rootDir}/${TEMPLATES_DIR}`
+	const pattern = `${baseDir}/**`
 	plop.setGenerator(genName, {
 		description: "Create a new package",
 		prompts: [
@@ -24,9 +30,9 @@ export default (plop: NodePlopAPI, genName = "pkg") => {
 			{
 				type: "addMany",
 				destination: "pkgs/{{ dashCase name }}",
-				base: `${base}/`,
-				path: `${base}/**`,
-			},
+				base: `${baseDir}/`,
+				templateFiles: pattern,
+			} satisfies Omit<AddManyActionConfig, "path" | "globOptions">,
 		],
 	})
 }
