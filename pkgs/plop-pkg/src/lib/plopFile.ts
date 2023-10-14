@@ -11,7 +11,7 @@ export default (plop: NodePlopAPI, props?: Props) => {
 	const TEMPLATES_DIR = "templates"
 	const rootDir = pkgRoot(dirname(import.meta.url))
 	const baseDir = `${rootDir}/${TEMPLATES_DIR}`
-	const pattern = `${baseDir}/**`
+	const pattern = `${baseDir}/**/*`
 	plop.setGenerator(genName, {
 		description: "Create a new package",
 		prompts: [
@@ -32,7 +32,10 @@ export default (plop: NodePlopAPI, props?: Props) => {
 				destination: "pkgs/{{ dashCase name }}",
 				base: `${baseDir}/`,
 				templateFiles: pattern,
-			} satisfies Omit<AddManyActionConfig, "path" | "globOptions">,
+				globOptions: {
+					dot: true,
+				},
+			} satisfies Omit<AddManyActionConfig, "path">,
 		],
 	})
 }
