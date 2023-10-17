@@ -3,7 +3,7 @@ import { findUpSync, findUpStop } from "find-up"
 import { readdirSync } from "node:fs"
 
 export const pkgRoot = (cwd: string) => {
-	// const PACKAGE_JSON = "package.json"
+	const PACKAGE_JSON = "package.json"
 	const url = new URL(cwd)
 	const packageJson = findUpSync(
 		(dir) => {
@@ -11,7 +11,7 @@ export const pkgRoot = (cwd: string) => {
 			const contents = readdirSync(dir, {
 				withFileTypes: true,
 			})
-			return contents.find((file) => file.name === "package.json")?.name
+			return contents.find((file) => file.name === PACKAGE_JSON)?.name
 		},
 		{
 			cwd: url.pathname,

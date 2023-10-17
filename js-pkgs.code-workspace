@@ -36,7 +36,7 @@
 			"pkgs": true,
 			".prettier": true,
 			".turbo": true,
-			"node_modules": true,
+			"node_modules": false,
 			".tsc": true,
 			".eslint": true
 		},

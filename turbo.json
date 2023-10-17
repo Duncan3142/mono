@@ -1,6 +1,13 @@
 {
 	"$schema": "https://turborepo.org/schema.json",
-	"globalDependencies": ["package.json", ".env"],
+	"globalDependencies": [
+		".env",
+		".npmrc",
+		".prettierrc.json",
+		".prettierignore",
+		"commitlint.config.cjs",
+		"package.json"
+	],
 	"pipeline": {
 		"//#clean": {
 			"outputs": [],
