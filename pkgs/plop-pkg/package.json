@@ -7,7 +7,7 @@
 	},
 	"description": "Plop Typescript Package Template",
 	"keywords": [],
-	"version": "0.0.3",
+	"version": "0.0.4",
 	"author": "Duncan Giles",
 	"type": "module",
 	"license": "MIT",

@@ -1,5 +1,11 @@
 # @duncan3142/plop-pkg
 
+## 0.0.4
+
+### Patch Changes
+
+- 730479c: Use const package.json string
+
 ## 0.0.3
 
 ### Patch Changes
