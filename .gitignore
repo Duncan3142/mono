@@ -26,6 +26,9 @@ node_modules
 # NVM
 !.nvmrc
 
+# Commitzen
+!.czrc
+
 # Prettier
 !.prettierignore
 !.prettierrc.json
