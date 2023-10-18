@@ -21,7 +21,7 @@
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-	<a href="https://github.com/Duncan3142/js-pkgs/tree/main/pkgs/{{ dashCase name }}">
+	<a href="https://github.com/Duncan3142/js-pkgs/tree/main/pkgs/xstate">
 		<img
 			src="https://raw.githubusercontent.com/Duncan3142/js-pkgs/main/logo.png"
 			alt="Logo"
@@ -30,12 +30,12 @@
 		/>
 	</a>
 
-	<h3 align="center">{{ name }}</h3>
+	<h3 align="center">XState</h3>
 
 	<p align="center">
-		{{ description }}
+		XState Sandbox
 		<br />
-		<a href="https://github.com/Duncan3142/js-pkgs/tree/main/pkgs/{{ dashCase name }}"><strong
+		<a href="https://github.com/Duncan3142/js-pkgs/tree/main/pkgs/xstate"><strong
 			>Explore the docs</strong></a>
 	</p>
 
@@ -61,7 +61,7 @@
 
 ## About The Project
 
-{{ description }}
+XState Sandbox
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -92,13 +92,13 @@ See [LICENSE.txt](./LICENSE.txt) for more information.
 
 Duncan Giles - duncan3142@gmail.com
 
-Project Link: [https://github.com/Duncan3142/js-pkgs/tree/main/pkgs/{{ dashCase name }}](https://github.com/Duncan3142/js-pkgs/tree/main/pkgs/{{ dashCase name }})
+Project Link: [https://github.com/Duncan3142/js-pkgs/tree/main/pkgs/xstate](https://github.com/Duncan3142/js-pkgs/tree/main/pkgs/xstate)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
 
-[license-shield]: https://img.shields.io/github/license/Duncan3142/js-pkgs/tree/main/pkgs/{{ dashCase name }}.svg?style=for-the-badge [license-url]: ./LICENSE.txt [linkedin-shield]:
+[license-shield]: https://img.shields.io/github/license/Duncan3142/js-pkgs/tree/main/pkgs/xstate.svg?style=for-the-badge [license-url]: ./LICENSE.txt [linkedin-shield]:
 https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://linkedin.com/in/duncan3142

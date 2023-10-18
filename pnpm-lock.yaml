@@ -202,6 +202,55 @@ importers:
         specifier: ^5.1.6
         version: 5.2.2
 
+  pkgs/xstate:
+    dependencies:
+      xstate:
+        specifier: beta
+        version: 5.0.0-beta.34
+    devDependencies:
+      '@duncan3142/eslint-config':
+        specifier: ^0.1.0
+        version: 0.1.0(@types/eslint@8.44.4)(@typescript-eslint/eslint-plugin@6.7.5)(@typescript-eslint/parser@6.7.5)(eslint-import-resolver-typescript@3.6.1)(eslint-plugin-eslint-comments@3.2.0)(eslint-plugin-import@2.28.1)(eslint-plugin-promise@6.1.1)(eslint@8.51.0)
+      '@duncan3142/prettier-config':
+        specifier: ^0.1.0
+        version: 0.1.0(prettier@3.0.3)
+      '@duncan3142/tsc-config':
+        specifier: ^0.1.0
+        version: 0.1.0(@types/node@18.18.4)(typescript@5.2.2)
+      '@types/eslint':
+        specifier: ^8.44.0
+        version: 8.44.4
+      '@types/node':
+        specifier: ^18.17.1
+        version: 18.18.4
+      '@typescript-eslint/eslint-plugin':
+        specifier: ^6.0.0
+        version: 6.7.5(@typescript-eslint/parser@6.7.5)(eslint@8.51.0)(typescript@5.2.2)
+      '@typescript-eslint/parser':
+        specifier: ^6.0.0
+        version: 6.7.5(eslint@8.51.0)(typescript@5.2.2)
+      eslint:
+        specifier: ^8.44.0
+        version: 8.51.0
+      eslint-import-resolver-typescript:
+        specifier: ^3.5.5
+        version: 3.6.1(@typescript-eslint/parser@6.7.5)(eslint-plugin-import@2.28.1)(eslint@8.51.0)
+      eslint-plugin-eslint-comments:
+        specifier: ^3.2.0
+        version: 3.2.0(eslint@8.51.0)
+      eslint-plugin-import:
+        specifier: ^2.27.5
+        version: 2.28.1(@typescript-eslint/parser@6.7.5)(eslint-import-resolver-typescript@3.6.1)(eslint@8.51.0)
+      eslint-plugin-promise:
+        specifier: ^6.1.1
+        version: 6.1.1(eslint@8.51.0)
+      prettier:
+        specifier: ^3.0.3
+        version: 3.0.3
+      typescript:
+        specifier: ^5.1.6
+        version: 5.2.2
+
 packages:
 
   /@aashutoshrathi/word-wrap@1.2.6:
@@ -4465,6 +4514,10 @@ packages:
 
   /wrappy@1.0.2:
     resolution: {integrity: sha512-l4Sp/DRseor9wL6EvV2+TuQn63dMkPjZ/sp9XkghTEbV9KlPS1xUsZ3u7/IQO4wxtcFB4bgpQPRcR3QCvezPcQ==}
+
+  /xstate@5.0.0-beta.34:
+    resolution: {integrity: sha512-blGMNp1kogr7dC96hLnulXF5OS8lddlW1or4wUTqaDHYKZACdTvCuAuT3yTrNcDDR/ihZJtFc0NvMfZ8PBsJRg==}
+    dev: false
 
   /y18n@4.0.3:
     resolution: {integrity: sha512-JKhqTOwSrqNA1NY5lSztJ1GrBiUodLMmIZuLiDaMRJ+itFd+ABVE8XBjOvIWL+rSqNDC74LCSFmlb/U4UZ4hJQ==}
