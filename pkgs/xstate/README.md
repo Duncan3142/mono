@@ -29,16 +29,13 @@
 			height="80"
 		/>
 	</a>
-
 	<h3 align="center">XState</h3>
-
 	<p align="center">
 		XState Sandbox
 		<br />
 		<a href="https://github.com/Duncan3142/js-pkgs/tree/main/pkgs/xstate"><strong
 			>Explore the docs</strong></a>
 	</p>
-
 </div>
 
 <!-- TABLE OF CONTENTS -->
