@@ -42,21 +42,21 @@
 		"test:node": "node --test .tsc/test/"
 	},
 	"dependencies": {
-		"xstate": "beta",
-		"purify-ts": "^2.0.1"
+		"purify-ts": "^2.0.1",
+		"xstate": "beta"
 	},
 	"devDependencies": {
 		"@duncan3142/eslint-config": "^0.1.1",
 		"@duncan3142/prettier-config": "^0.1.1",
-		"@duncan3142/tsc-config": "^0.1.1",
+		"@duncan3142/tsc-config": "workspace:*",
 		"@types/eslint": "^8.44.6",
-		"@types/node": "^18.17.1",
-		"@typescript-eslint/eslint-plugin": "^6.8.0",
-		"@typescript-eslint/parser": "^6.8.0",
-		"eslint": "^8.44.0",
+		"@types/node": "^20.8.8",
+		"@typescript-eslint/eslint-plugin": "^6.9.0",
+		"@typescript-eslint/parser": "^6.9.0",
+		"eslint": "^8.52.0",
 		"eslint-import-resolver-typescript": "^3.5.5",
 		"eslint-plugin-eslint-comments": "^3.2.0",
-		"eslint-plugin-import": "^2.27.5",
+		"eslint-plugin-import": "^2.29.0",
 		"eslint-plugin-promise": "^6.1.1",
 		"prettier": "^3.0.3",
 		"typescript": "^5.1.6"

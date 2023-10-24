@@ -19,11 +19,15 @@ interface CounterMachineTypes {
 		| { type: "init"; count: number }
 }
 
+export interface CounterMachineProps {
+	input: CounterMachineTypes["context"]
+}
+
 export const counterMachine = createMachine(
 	{
 		types: {} as CounterMachineTypes,
 		id: "counter",
-		context: ({ input }: { input: CounterMachineTypes["context"] }) => {
+		context: ({ input }: CounterMachineProps) => {
 			return {
 				count: input.count,
 			}

@@ -1,6 +1,6 @@
 import { describe, it, mock } from "node:test"
-import { equal, deepEqual } from "node:assert/strict"
-import { counterMachine } from "#lib/machine.js"
+import { deepEqual } from "node:assert/strict"
+import { counterMachine } from "#lib/counter.js"
 import { createActor } from "xstate"
 import { Just } from "purify-ts/Maybe"
 
@@ -25,8 +25,10 @@ void describe("counterMachine", () => {
 		counterActor.send({ type: "decrement" })
 		counterActor.stop()
 
-		equal(fn.mock.callCount(), 12)
+		counterActor.getSnapshot().can({ type: "lock" })
+
 		const args = fn.mock.calls.map((c) => c.arguments)
+
 		deepEqual(args, [
 			[null],
 			[null],
