@@ -1,22 +1,14 @@
 import { createMachine, assign } from "xstate"
-import { Just, Nothing, type Maybe } from "purify-ts/Maybe"
 
 interface CounterMachineTypes {
 	context: {
-		count: Maybe<number>
+		count: number
 	}
-	actions:
-		| { type: "up" }
-		| { type: "down" }
-		| { type: "reset" }
-		| { type: "init"; params: { count: number } }
-	events:
-		| { type: "unlock" }
-		| { type: "increment" }
-		| { type: "decrement" }
-		| { type: "lock" }
-		| { type: "reset" }
-		| { type: "init"; count: number }
+	actions: { type: "up" } | { type: "down" } | { type: "reset" }
+
+	events: { type: "increment" } | { type: "decrement" } | { type: "reset" } | { type: "store" }
+
+	// actors: { type: "store" }
 }
 
 export interface CounterMachineProps {
@@ -32,30 +24,17 @@ export const counterMachine = createMachine(
 				count: input.count,
 			}
 		},
-		initial: "reset",
+		initial: "counting",
 		states: {
-			locked: {
-				on: {
-					unlock: "unlocked",
-				},
-			},
-			reset: {
-				entry: "reset",
-				on: {
-					init: {
-						actions: {
-							type: "init",
-							params: ({ event: { count } }) => {
-								return {
-									count,
-								}
-							},
-						},
-						target: "unlocked",
+			storing: {
+				invoke: {
+					src: "store",
+					input: ({ context }) => {
+						return { count: context.count }
 					},
 				},
 			},
-			unlocked: {
+			counting: {
 				on: {
 					increment: {
 						actions: "up",
@@ -63,26 +42,23 @@ export const counterMachine = createMachine(
 					decrement: {
 						actions: "down",
 					},
-					reset: "reset",
-					lock: "locked",
+					reset: {
+						actions: "reset",
+					},
+					store: {
+						target: "storing",
+					},
 				},
 			},
 		},
 	},
 	{
 		actions: {
-			up: assign({ count: ({ context: { count } }) => count.map((c) => c + 1) }),
+			up: assign({ count: ({ context: { count } }) => count + 1 }),
 			down: assign({
-				count: ({ context: { count } }) => count.map((c) => c - 1),
+				count: ({ context: { count } }) => count - 1,
 			}),
-			reset: assign({ count: () => Nothing }),
-			init: assign({
-				count: ({
-					action: {
-						params: { count },
-					},
-				}) => Just(count),
-			}),
+			reset: assign({ count: () => 0 }),
 		},
 	}
 )
