@@ -22,6 +22,6 @@ void describe("counterMachine", () => {
 
 		const args = fn.mock.calls.map((c) => c.arguments)
 
-		deepEqual(args, [[8], [9], [10], [0], [-1], [-2], [-3], [-3]])
+		deepEqual(args, [[8], [9], [10], [0], [-1], [-2], [-3]])
 	})
 })
