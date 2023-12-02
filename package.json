@@ -23,16 +23,16 @@
 		"turbo:build": "turbo run build --cache-dir=\"./.turbo\""
 	},
 	"devDependencies": {
-		"@changesets/cli": "^2.26.2",
-		"@commitlint/cli": "^18.0.0",
-		"@commitlint/config-conventional": "^18.0.0",
-		"@commitlint/cz-commitlint": "^18.0.0",
+		"@changesets/cli": "^2.27.1",
+		"@commitlint/cli": "^18.4.3",
+		"@commitlint/config-conventional": "^18.4.3",
+		"@commitlint/cz-commitlint": "^18.4.3",
 		"@duncan3142/plop-pkg": "workspace:*",
 		"@duncan3142/prettier-config": "^0.1.1",
 		"commitizen": "^4.3.0",
 		"husky": "^8.0.3",
 		"plop": "^4.0.0",
-		"prettier": "^3.0.3",
+		"prettier": "^3.1.0",
 		"turbo": "1.10.16"
 	}
 }

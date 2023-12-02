@@ -82,8 +82,8 @@ export type BaseProp = Prop<BaseKey, XisBase>
 export type UnionToIntersection<T> = [T] extends [never]
 	? undefined
 	: (T extends any ? (x: T) => void : never) extends (x: infer R) => void
-	? R
-	: never
+	  ? R
+	  : never
 
 export interface MissingPropertyIssue extends XisIssue<"MISSING_PROPERTY"> {}
 

@@ -38,10 +38,10 @@
 		"eslint-plugin-promise": "^6.1.1"
 	},
 	"dependencies": {
-		"eslint-config-prettier": "^9.0.0"
+		"eslint-config-prettier": "^9.1.0"
 	},
 	"devDependencies": {
 		"@duncan3142/prettier-config": "^0.1.1",
-		"prettier": "^3.0.0"
+		"prettier": "^3.1.0"
 	}
 }

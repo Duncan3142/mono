@@ -1,0 +1,9 @@
+#cloud-config
+#vim:syntax=yaml
+users:
+# A user by the name 'ec2-user' is created in the image by default.
+- default
+- name: ec2-user
+  ssh-authorized-keys:
+    - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDoOvw76nRkepfBxcgDZISnBMunFKIlE9hhCq9Gr70KyOd8oJAxW0hoLkILW0MMSeKMfmw9R78dKxvHv949YvkbLVyJ8AcI1cCmabtlIccNpIX8f3ICQ+D/MX5mkEZAnnyxP31yPbID1T+Y1cFnbO14t+CcbDqNkxf8UPDc59A0B2pp8bLns+au5z8tOzDtk5UXiTYLWQnTTfnuBRc70XPJr2LRrgEvpkKcWc7M7evPqOk5N/cvMJHPL7wNzCmI1JMZGfO7ARbrj1mg3V/usQ97a4eEX2nzl7df+8PMZTne5ymZbiPAto+1a11Gu6TVyREMw4+Z7jVv73T52iOwZqeS9kHt2QuuvFVGmjDuWj7V3SESxH12y+D6ussV8zaV3wHCa5LU8Q1f5081icQRU8B0EUGCc4BtUV6TGV0zdm++74JwCw+q15p/EZfl02BuZlg19SSuC3FV4DroSanlHnLJyOc/E1fSSsehopg/+T1U93Sk8OqNpmsRzf8mShMDjh6K7yPV1ng3kEUkWU+sd22Jzr9P3tTWWdmS0zDqHoSjbmVMHLUd0qpibky3vw++xX7OATHJ1HVOkiYBM8s4sdFAMS+6tFgaDfEiBlfUNL/Eti0ZlwK/m02bzREmyPC2sK2ijXVlE7AgNN7pju2QkhMmc1H3NgRDGnMNmupaseOw0w== dg@l14
+# In the above line, replace ssh key with the content of your ssh public key.
