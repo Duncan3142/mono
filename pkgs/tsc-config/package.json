@@ -32,6 +32,6 @@
 	},
 	"devDependencies": {
 		"@duncan3142/prettier-config": "^0.1.1",
-		"prettier": "^3.1.0"
+		"prettier": "^3.1.1"
 	}
 }
