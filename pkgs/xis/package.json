@@ -65,16 +65,16 @@
 		"@duncan3142/eslint-config": "^0.1.1",
 		"@duncan3142/prettier-config": "^0.1.1",
 		"@duncan3142/tsc-config": "workspace:*",
-		"@types/eslint": "^8.56.1",
-		"@types/node": "^20.10.6",
-		"@typescript-eslint/eslint-plugin": "^6.17.0",
-		"@typescript-eslint/parser": "^6.17.0",
+		"@types/eslint": "^8.56.2",
+		"@types/node": "^20.11.4",
+		"@typescript-eslint/eslint-plugin": "^6.19.0",
+		"@typescript-eslint/parser": "^6.19.0",
 		"eslint": "^8.56.0",
 		"eslint-import-resolver-typescript": "^3.6.1",
 		"eslint-plugin-eslint-comments": "^3.2.0",
 		"eslint-plugin-import": "^2.29.1",
 		"eslint-plugin-promise": "^6.1.1",
-		"prettier": "^3.1.1",
+		"prettier": "^3.2.2",
 		"typescript": "^5.3.3"
 	}
 }
