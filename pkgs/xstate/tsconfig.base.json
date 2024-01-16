@@ -3,6 +3,7 @@
 	"extends": "@duncan3142/tsc-config/tsconfig.json",
 	"compilerOptions": {
 		"noEmit": false,
+		"skipLibCheck": true,
 		"exactOptionalPropertyTypes": false,
 		"paths": {
 			"#lib/*": ["./src/lib/*"]

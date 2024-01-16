@@ -140,17 +140,18 @@ export type SchemaCore<S extends [...Array<BaseProp>], Acc = unknown> = S extend
 	? SchemaCore<Rest, Acc & { [P in K as ExKey<P>]: Check }>
 	: Acc
 
-export type SchemaShape<S extends [...Array<BaseProp>]> = SchemaCore<S> extends infer SC
-	? RecordIntersection<
-			Mutable<Pick<SC, MutableKeys<S>[number]>>,
-			Readonly<Pick<SC, ReadonlyKeys<S>[number]>>
-		> extends infer RM
+export type SchemaShape<S extends [...Array<BaseProp>]> =
+	SchemaCore<S> extends infer SC
 		? RecordIntersection<
-				Required<Pick<RM, RequiredKeys<S>[number]>>,
-				Partial<Pick<RM, OptionalKeys<S>[number]>>
-			>
+				Mutable<Pick<SC, MutableKeys<S>[number]>>,
+				Readonly<Pick<SC, ReadonlyKeys<S>[number]>>
+			> extends infer RM
+			? RecordIntersection<
+					Required<Pick<RM, RequiredKeys<S>[number]>>,
+					Partial<Pick<RM, OptionalKeys<S>[number]>>
+				>
+			: never
 		: never
-	: never
 
 export const ShapeCheckMode = {
 	PASS_THROUGH: "passThrough",
@@ -182,21 +183,23 @@ export type ShapePropExecIssues<
 	? ShapePropExecIssues<Rest, Acc | ExExecIssues<C>>
 	: Acc
 
-export type StripShapeIn<S extends [...Array<BaseProp>]> = SchemaShape<S> extends infer SS
-	? {
-			[P in keyof SS]: Exclude<SS[P], undefined> extends infer C extends XisBase
-				? ExIn<C>
-				: never
-		}
-	: never
+export type StripShapeIn<S extends [...Array<BaseProp>]> =
+	SchemaShape<S> extends infer SS
+		? {
+				[P in keyof SS]: Exclude<SS[P], undefined> extends infer C extends XisBase
+					? ExIn<C>
+					: never
+			}
+		: never
 
-export type StripShapeOut<S extends [...Array<BaseProp>]> = SchemaShape<S> extends infer SS
-	? {
-			[P in keyof SS]: Exclude<SS[P], undefined> extends infer C extends XisBase
-				? ExOut<C>
-				: never
-		}
-	: never
+export type StripShapeOut<S extends [...Array<BaseProp>]> =
+	SchemaShape<S> extends infer SS
+		? {
+				[P in keyof SS]: Exclude<SS[P], undefined> extends infer C extends XisBase
+					? ExOut<C>
+					: never
+			}
+		: never
 
 export type ShapeIn<S extends [...Array<BaseProp>], CM extends ShapeCheckMode> = [CM] extends [
 	PassThrough | Strip,

@@ -13,16 +13,11 @@ export type ExecResult<Issues extends XisIssueBase, Out> =
 
 export type ExecResultBase = ExecResult<XisIssueBase, unknown>
 
-export type ExExecResultIssues<R extends ExecResultBase> = R extends ExecResult<
-	infer Issues,
-	any
->
-	? Issues
-	: never
+export type ExExecResultIssues<R extends ExecResultBase> =
+	R extends ExecResult<infer Issues, any> ? Issues : never
 
-export type ExExecResultOut<R extends ExecResultBase> = R extends ExecResult<any, infer Out>
-	? Out
-	: never
+export type ExExecResultOut<R extends ExecResultBase> =
+	R extends ExecResult<any, infer Out> ? Out : never
 
 export type XisFn<
 	In,
