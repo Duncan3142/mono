@@ -1,13 +1,13 @@
 {
-	"name": "@duncan3142/plop-pkg",
+	"name": "@duncan3142/xstate",
 	"repository": "https://github.com/duncan3142/js-pkgs",
 	"publishConfig": {
 		"registry": "https://npm.pkg.github.com",
 		"access": "restricted"
 	},
-	"description": "Plop Typescript Package Template",
+	"description": "XState Sandbox",
 	"keywords": [],
-	"version": "0.0.4",
+	"version": "0.0.0",
 	"author": "Duncan Giles",
 	"type": "module",
 	"license": "MIT",
@@ -21,10 +21,6 @@
 		}
 	},
 	"exports": {
-		".": {
-			"types": "./.tsc/dist/lib/plopFile.d.ts",
-			"import": "./.tsc/dist/lib/plopFile.js"
-		},
 		"./*": {
 			"types": "./.tsc/dist/lib/*.d.ts",
 			"import": "./.tsc/dist/lib/*.js"
@@ -33,8 +29,7 @@
 	"files": [
 		".tsc/dist/**/*.js",
 		".tsc/dist/**/*.ts",
-		".tsc/dist/**/*.map",
-		"templates/**/*"
+		".tsc/dist/**/*.map"
 	],
 	"scripts": {
 		"clean": "rm -rf .eslint .prettier .tsc .coverage .package",
@@ -46,11 +41,9 @@
 		"test:eslint:fix": "eslint --fix --max-warnings 0 --cache --cache-location '.eslint/cache' --cache-strategy content .",
 		"test:node": "node --test .tsc/test/"
 	},
-	"peerDependencies": {
-		"plop": "^4.0.0"
-	},
 	"dependencies": {
-		"find-up": "^7.0.0"
+		"purify-ts": "^2.0.3",
+		"xstate": "^5.5.1"
 	},
 	"devDependencies": {
 		"@duncan3142/eslint-config": "^0.1.1",
@@ -65,7 +58,7 @@
 		"eslint-plugin-eslint-comments": "^3.2.0",
 		"eslint-plugin-import": "^2.29.1",
 		"eslint-plugin-promise": "^6.1.1",
-		"plop": "^4.0.1",
+		"expect": "^29.7.0",
 		"prettier": "^3.2.2",
 		"typescript": "^5.3.3"
 	}

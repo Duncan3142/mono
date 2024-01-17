@@ -59,22 +59,22 @@
 		"purify-ts": "^2.0.1"
 	},
 	"dependencies": {
-		"purify-ts": "^2.0.1"
+		"purify-ts": "^2.0.3"
 	},
 	"devDependencies": {
-		"prettier": "^3.0.3",
-		"@duncan3142/prettier-config": "^0.1.0",
-		"@duncan3142/tsc-config": "^0.1.0",
-		"@duncan3142/eslint-config": "^0.1.0",
-		"@types/eslint": "^8.44.0",
-		"@typescript-eslint/eslint-plugin": "^6.0.0",
-		"@typescript-eslint/parser": "^6.0.0",
-		"eslint": "^8.44.0",
-		"eslint-import-resolver-typescript": "^3.5.5",
+		"@duncan3142/eslint-config": "^0.1.1",
+		"@duncan3142/prettier-config": "^0.1.1",
+		"@duncan3142/tsc-config": "workspace:*",
+		"@types/eslint": "^8.56.2",
+		"@types/node": "^20.11.4",
+		"@typescript-eslint/eslint-plugin": "^6.19.0",
+		"@typescript-eslint/parser": "^6.19.0",
+		"eslint": "^8.56.0",
+		"eslint-import-resolver-typescript": "^3.6.1",
 		"eslint-plugin-eslint-comments": "^3.2.0",
-		"eslint-plugin-import": "^2.27.5",
+		"eslint-plugin-import": "^2.29.1",
 		"eslint-plugin-promise": "^6.1.1",
-		"@types/node": "^18.17.1",
-		"typescript": "^5.1.6"
+		"prettier": "^3.2.2",
+		"typescript": "^5.3.3"
 	}
 }

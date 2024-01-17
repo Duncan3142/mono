@@ -77,5 +77,5 @@ export const isTupleOf = <Length extends number>(
 						expected,
 						actual: arr.length,
 					},
-			  ])
+				])
 	)

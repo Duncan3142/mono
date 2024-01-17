@@ -2,28 +2,32 @@
 	"folders": [
 		{
 			"path": ".",
-			"name": "/"
+			"name": "/",
 		},
 		{
 			"path": "pkgs/eslint-config",
-			"name": "eslint-config"
+			"name": "eslint-config",
 		},
 		{
 			"path": "pkgs/prettier-config",
-			"name": "prettier-config"
+			"name": "prettier-config",
 		},
 		{
 			"path": "pkgs/tsc-config",
-			"name": "tsc-config"
+			"name": "tsc-config",
 		},
 		{
 			"path": "pkgs/xis",
-			"name": "xis"
+			"name": "xis",
 		},
 		{
 			"path": "pkgs/plop-pkg",
-			"name": "plop-pkg"
-		}
+			"name": "plop-pkg",
+		},
+		{
+			"path": "pkgs/xstate",
+			"name": "xstate",
+		},
 	],
 	"settings": {
 		"files.exclude": {
@@ -36,12 +40,12 @@
 			"pkgs": true,
 			".prettier": true,
 			".turbo": true,
-			"node_modules": false,
+			"node_modules": true,
 			".tsc": true,
-			".eslint": true
+			".eslint": true,
 		},
 		"explorerExclude.backup": {},
-		"editor.insertSpaces": false
+		"editor.insertSpaces": false,
 	},
 	"launch": {
 		// Use IntelliSense to learn about possible attributes.
@@ -62,8 +66,8 @@
 				"console": "integratedTerminal",
 				"program": "${workspaceFolder}/${relativeFile}",
 				"sourceMaps": true,
-				"outFiles": ["${workspaceFolder}/.tsc/**/*.js"]
-			}
-		]
-	}
+				"outFiles": ["${workspaceFolder}/.tsc/**/*.js"],
+			},
+		],
+	},
 }

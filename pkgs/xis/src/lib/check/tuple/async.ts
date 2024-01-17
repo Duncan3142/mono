@@ -60,7 +60,7 @@ export class XisTupleAsync<Schema extends [...Array<XisBase>]> extends XisAsync<
 
 		return Promise.all(
 			value.map<ExecResultAsync<XisIssueBase, unknown>>((elem, index) => {
-				const check = this.#checks[index]!
+				const check = this.#checks[index]
 				return Promise.resolve(
 					invoke(
 						mode,

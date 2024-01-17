@@ -27,11 +27,11 @@
 		"format:fix": "prettier --write --cache --cache-location='.prettier/cache' --cache-strategy content ."
 	},
 	"peerDependencies": {
-		"@types/node": "^18.17.1",
+		"@types/node": "^20.8.8",
 		"typescript": "^5.1.6"
 	},
 	"devDependencies": {
-		"@duncan3142/prettier-config": "^0.1.0",
-		"prettier": "^3.0.0"
+		"@duncan3142/prettier-config": "^0.1.1",
+		"prettier": "^3.2.2"
 	}
 }

@@ -55,7 +55,7 @@ export class XisTupleSync<Schema extends [...Array<XisSyncBase>]> extends XisSyn
 		type Res = ExInvoke<this, InvokeMode>
 
 		const mapped = value.map<ExecResultSync<XisIssueBase, unknown>>((elem, index) => {
-			const check = this.#checks[index]!
+			const check = this.#checks[index]
 			return invoke(
 				mode,
 				check,

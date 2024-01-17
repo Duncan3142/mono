@@ -29,7 +29,7 @@ export class XisInstanceOf<T> extends XisSync<T, InstanceOfIssue> {
 			typeName === "null" || typeName === "undefined"
 				? String(value)
 				: // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-				  (Object.getPrototypeOf(value).constructor.name as string)
+					(Object.getPrototypeOf(value).constructor.name as string)
 		const err = {
 			name: "INSTANCE_OF",
 			expected: this.#ctor.name,
