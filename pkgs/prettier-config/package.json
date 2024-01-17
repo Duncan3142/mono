@@ -7,7 +7,7 @@
 	},
 	"description": "Prettier config",
 	"keywords": [],
-	"version": "0.1.1",
+	"version": "0.1.2",
 	"author": "Duncan Giles",
 	"type": "module",
 	"license": "MIT",
