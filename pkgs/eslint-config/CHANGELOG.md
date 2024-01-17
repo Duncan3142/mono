@@ -1,5 +1,11 @@
 # @duncan3142/eslint-config
 
+## 0.1.2
+
+### Patch Changes
+
+- dbc65c6: Node 20
+
 ## 0.1.1
 
 ### Patch Changes

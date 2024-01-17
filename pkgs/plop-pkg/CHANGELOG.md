@@ -1,5 +1,11 @@
 # @duncan3142/plop-pkg
 
+## 0.0.5
+
+### Patch Changes
+
+- dbc65c6: Node 20
+
 ## 0.0.4
 
 ### Patch Changes
