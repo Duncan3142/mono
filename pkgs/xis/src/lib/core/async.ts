@@ -1,8 +1,9 @@
-import type { XisCtx, XisOptArgs } from "#core/context.js"
+import type { XisArg, XisCtxBase } from "#core/context.js"
 import type { XisIssueBase } from "#core/error.js"
 import type { EitherAsync } from "purify-ts/EitherAsync"
-import type { ExecResultSync, ParseResultSync } from "./sync.js"
-import { XisBookKeeping } from "./book-keeping.js"
+import type { ExecResultSync } from "./sync.js"
+import { BookkeepingError, type XisBookKeeping } from "./book-keeping.js"
+import type { XisPropsBase } from "./prop.js"
 
 export type ExecEitherAsync<Issues extends XisIssueBase, Out> = EitherAsync<Array<Issues>, Out>
 
@@ -15,28 +16,35 @@ export type XisAsyncFn<
 	in In,
 	out Issues extends XisIssueBase = never,
 	out Out = In,
-	Args extends XisOptArgs = undefined,
-> = (value: In, ctx: XisCtx<Args>) => ExecResultAsync<Issues, Out>
+	Ctx extends XisCtxBase = undefined,
+> = (args: XisArg<In, Ctx>) => ExecResultAsync<Issues, Out>
 
-export type ParseResultAsync<
-	GuardIssues extends XisIssueBase,
-	ExecIssues extends XisIssueBase,
-	Out,
-> = Promise<ParseResultSync<GuardIssues, ExecIssues, Out>>
-export type ParseResultAsyncBase = ParseResultAsync<XisIssueBase, XisIssueBase, unknown>
+const ASYNC = "ASYNC"
 
 export abstract class XisAsync<
 	In,
-	GuardIssues extends XisIssueBase = never,
-	ExecIssues extends XisIssueBase = never,
+	Issues extends XisIssueBase = never,
 	Out = In,
-	Args extends XisOptArgs = undefined,
-> extends XisBookKeeping<In, GuardIssues, ExecIssues, Out, Args> {
-	abstract exec(value: In, ctx: XisCtx<Args>): ExecResultAsync<ExecIssues, Out>
-	abstract parse(
-		value: unknown,
-		ctx: XisCtx<Args>
-	): ParseResultAsync<GuardIssues, ExecIssues, Out>
+	Props extends XisPropsBase = XisPropsBase,
+	Ctx extends XisCtxBase = undefined,
+> {
+	#props: Props
+	get mode(): typeof ASYNC {
+		return ASYNC
+	}
+	get nullable(): Props["nullable"] {
+		return this.props.nullable
+	}
+	get props(): Props {
+		return this.#props
+	}
+	constructor(props: Props) {
+		this.#props = props
+	}
+	get types(): XisBookKeeping<In, Issues, Out, Ctx> {
+		throw new BookkeepingError()
+	}
+	abstract exec(args: XisArg<In, Ctx>): ExecResultAsync<Issues, Out>
 }
 
-export type XisAsyncBase = XisAsync<any, XisIssueBase, XisIssueBase, unknown, any>
+export type XisAsyncBase = XisAsync<any, XisIssueBase, unknown, any, any>

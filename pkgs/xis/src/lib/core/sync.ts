@@ -1,7 +1,8 @@
-import type { XisCtx, XisOptArgs } from "#core/context.js"
+import type { XisArg, XisCtxBase } from "#core/context.js"
 import type { Either } from "purify-ts/Either"
 import type { XisIssueBase } from "#core/error.js"
-import { XisBookKeeping } from "./book-keeping.js"
+import { BookkeepingError, type XisBookKeeping } from "./book-keeping.js"
+import type { XisPropsBase } from "./prop.js"
 
 export type ExecResultSync<Issues extends XisIssueBase, Out> = Either<Array<Issues>, Out>
 export type ExecResultSyncBase = ExecResultSync<XisIssueBase, unknown>
@@ -10,28 +11,70 @@ export type XisSyncFn<
 	in In,
 	out Issues extends XisIssueBase = never,
 	out Out = In,
-	Args extends XisOptArgs = undefined,
-> = (value: In, ctx: XisCtx<Args>) => ExecResultSync<Issues, Out>
+	Ctx extends XisCtxBase = undefined,
+> = (args: XisArg<In, Ctx>) => ExecResultSync<Issues, Out>
 
-export type ParseResultSync<
-	GuardIssues extends XisIssueBase,
-	ExecIssues extends XisIssueBase,
-	Out,
-> = ExecResultSync<GuardIssues | ExecIssues, Out>
-export type ParseResultSyncBase = ParseResultSync<XisIssueBase, XisIssueBase, unknown>
+const SYNC = "SYNC"
 
 export abstract class XisSync<
 	In,
-	GuardIssues extends XisIssueBase = never,
-	ExecIssues extends XisIssueBase = never,
+	Issues extends XisIssueBase = never,
 	Out = In,
-	Args extends XisOptArgs = undefined,
-> extends XisBookKeeping<In, GuardIssues, ExecIssues, Out, Args> {
-	abstract exec(value: In, ctx: XisCtx<Args>): ExecResultSync<ExecIssues, Out>
-	abstract parse(
-		value: unknown,
-		ctx: XisCtx<Args>
-	): ParseResultSync<GuardIssues, ExecIssues, Out>
+	Props extends XisPropsBase = XisPropsBase,
+	Ctx extends XisCtxBase = undefined,
+> {
+	#props: Props
+	get mode(): typeof SYNC {
+		return SYNC
+	}
+	get nullable(): Props["nullable"] {
+		return this.props.nullable
+	}
+	get props(): Props {
+		return this.#props
+	}
+	constructor(props: Props) {
+		this.#props = props
+	}
+
+	get types(): XisBookKeeping<In, Issues, Out, Ctx> {
+		throw new BookkeepingError()
+	}
+	abstract exec(args: XisArg<In, Ctx>): ExecResultSync<Issues, Out>
 }
 
-export type XisSyncBase = XisSync<any, XisIssueBase, XisIssueBase, unknown, any>
+export type XisSyncBase = XisSync<any, XisIssueBase, unknown, any, any>
+
+// interface TestProps extends XisPropsBase {
+// 	limit: number
+// }
+
+// interface TestCtx extends XisCtx {
+// 	getFloor: () => number
+// }
+
+// export class TestClass<Props extends TestProps> extends XisSync<
+// 	number,
+// 	XisIssue<"TOO_HIGH">,
+// 	number,
+// 	Props,
+// 	TestCtx
+// > {
+// 	exec(arg: XisArg<number, TestCtx>): ExecResultSync<XisIssue<"TOO_HIGH">, number> {
+// 		const { value, ctx, path } = arg
+// 		const { limit } = this.props
+// 		const floor = ctx.getFloor()
+// 		if (value < limit && value > floor) {
+// 			return Right(value)
+// 		} else {
+// 			return Left([{ name: "TOO_HIGH", path }])
+// 		}
+// 	}
+// }
+
+// const test = new TestClass({
+// 	limit: 10,
+// 	nullable: true,
+// })
+
+// test.nullable

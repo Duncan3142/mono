@@ -1,28 +1,21 @@
-import type { XisOptArgs } from "./context.js"
+import type { XisCtxBase } from "./context.js"
 import type { XisIssueBase } from "./error.js"
 
-interface XBK<
+export interface XisBookKeeping<
 	In,
-	GuardIssues extends XisIssueBase = never,
-	ExecIssues extends XisIssueBase = never,
+	Issues extends XisIssueBase = never,
 	Out = In,
-	Args extends XisOptArgs = undefined,
+	Ctx extends XisCtxBase = undefined,
 > {
 	i: In
-	gi: GuardIssues
-	ei: ExecIssues
+	is: Issues
 	o: Out
-	a: Args
+	c: Ctx
 }
 
-export class XisBookKeeping<
-	In,
-	GuardIssues extends XisIssueBase = never,
-	ExecIssues extends XisIssueBase = never,
-	Out = In,
-	Args extends XisOptArgs = undefined,
-> {
-	get _bk(): XBK<In, GuardIssues, ExecIssues, Out, Args> {
-		throw new Error("This is type-system book keeping")
+export class BookkeepingError extends Error {
+	override name = "BookkeepingError" as const
+	constructor() {
+		super("Do not access this property, it is bookkeeping for the type-system")
 	}
 }

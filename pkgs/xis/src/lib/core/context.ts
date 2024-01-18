@@ -20,36 +20,40 @@ export type XisPathSegments = ReadonlyArray<PathSegment>
 
 type XisBasic = string | number | boolean | undefined | symbol | object | null | Array<XisBasic>
 
-export interface XisArgs {
+export interface XisCtx {
 	[prop: TruePropertyKey]:
 		| XisBasic
-		| XisArgs
-		| Array<XisArgs>
+		| XisCtx
+		| Array<XisCtx>
 		| Promise<XisBasic>
-		| Promise<XisArgs | Array<XisArgs>>
+		| Promise<XisCtx | Array<XisCtx>>
 		| ((
 				...args: Array<any>
-		  ) => XisBasic | XisArgs | Array<XisArgs> | Promise<XisBasic | XisArgs | Array<XisArgs>>)
+		  ) => XisBasic | XisCtx | Array<XisCtx> | Promise<XisBasic | XisCtx | Array<XisCtx>>)
 }
 
-export type XisOptArgs = undefined | XisArgs
+export type XisCtxBase = XisCtx | undefined
 
-export type XisBuildArgs<
-	Current extends XisOptArgs,
-	Next extends XisOptArgs,
-> = Current extends undefined ? Next : Next extends undefined ? Current : Current & Next
+export type XisBuildCtx<Current extends XisCtxBase, Next extends XisCtxBase> = [
+	Current,
+] extends [undefined]
+	? Next
+	: [Next] extends [undefined]
+		? Current
+		: Current & Next
 
-export interface XisCtx<XisArgs extends XisOptArgs> {
+export interface XisArg<In, Ctx extends XisCtxBase> {
+	value: In
 	path: XisPath
-	args: XisArgs
+	ctx: Ctx
 }
 
-export type XisCtxBase = XisCtx<XisOptArgs>
+export type XisArgBase = XisArg<any, XisCtxBase>
 
-export const addElement = <Args extends XisOptArgs>(
-	ctx: XisCtx<Args>,
+export const addElement = <In, Ctx extends XisCtxBase>(
+	ctx: XisArg<In, Ctx>,
 	elem: PathElement
-): XisCtx<Args> => {
+): XisArg<In, Ctx> => {
 	const { segment, side } = elem
 	return {
 		...ctx,
