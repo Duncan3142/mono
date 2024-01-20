@@ -1,9 +1,8 @@
 import type { XisArg, XisCtxBase } from "#core/context.js"
 import type { Either } from "purify-ts/Either"
-import { type Maybe, Just, Nothing } from "purify-ts/Maybe"
 import type { XisIssueBase } from "#core/error.js"
 import { BookkeepingError, type XisBookKeeping } from "./book-keeping.js"
-import type { XisPropsBase } from "./prop.js"
+import type { XisProps } from "./prop.js"
 
 export type ExecResultSync<Issues extends XisIssueBase, Out> = Either<Array<Issues>, Out>
 export type ExecResultSyncBase = ExecResultSync<XisIssueBase, unknown>
@@ -12,7 +11,7 @@ export type XisSyncFn<
 	in In,
 	out Issues extends XisIssueBase = never,
 	out Out = In,
-	Ctx extends XisCtxBase = undefined,
+	Ctx extends XisCtxBase = null,
 > = (args: XisArg<In, Ctx>) => ExecResultSync<Issues, Out>
 
 const SYNC = "SYNC"
@@ -21,18 +20,15 @@ export abstract class XisSync<
 	In,
 	Issues extends XisIssueBase = never,
 	Out = In,
-	Props extends XisPropsBase = XisPropsBase,
-	Ctx extends XisCtxBase = undefined,
+	Props extends XisProps<Issues> = XisProps<Issues>,
+	Ctx extends XisCtxBase = null,
 > {
 	#props: Props
 	get mode(): typeof SYNC {
 		return SYNC
 	}
-	get messages(): Maybe<Props["messages"]> {
-		if (this.props.messages === undefined) {
-			return Nothing
-		}
-		return Just(this.props.messages)
+	get messages(): Props["messages"] {
+		return this.props.messages
 	}
 	get props(): Props {
 		return this.#props
@@ -40,7 +36,6 @@ export abstract class XisSync<
 	constructor(props: Props) {
 		this.#props = props
 	}
-
 	get types(): XisBookKeeping<In, Issues, Out, Ctx> {
 		throw new BookkeepingError()
 	}
@@ -49,38 +44,72 @@ export abstract class XisSync<
 
 export type XisSyncBase = XisSync<any, XisIssueBase, unknown, any, any>
 
-// interface TestProps extends XisPropsBase {
+/* ---------------------------------- Test ---------------------------------- */
+
+// type TestIssue = XisIssue<"TOO_HIGH"> | XisIssue<"TOO_LOW">
+
+// interface TestProps extends XisProps<TestIssue> {
 // 	limit: number
+// 	messages: {
+// 		TOO_HIGH?: string | ((limit: number) => string)
+// 		TOO_LOW?: string | ((floor: number) => string)
+// 	} | null
 // }
 
-// interface TestCtx extends XisCtx {
+// interface TestCtxObj extends XisCtxObj {
 // 	getFloor: () => number
 // }
 
 // export class TestClass<Props extends TestProps> extends XisSync<
 // 	number,
-// 	XisIssue<"TOO_HIGH">,
+// 	TestIssue,
 // 	number,
 // 	Props,
-// 	TestCtx
+// 	TestCtxObj
 // > {
-// 	exec(arg: XisArg<number, TestCtx>): ExecResultSync<XisIssue<"TOO_HIGH">, number> {
+// 	exec(arg: XisArg<number, TestCtxObj>): ExecResultSync<TestIssue, number> {
 // 		const { value, ctx, path } = arg
 // 		const { limit } = this.props
 // 		const floor = ctx.getFloor()
 // 		if (value < limit && value > floor) {
 // 			return Right(value)
+// 		} else if (value < floor) {
+// 			const builder = this.messages?.TOO_LOW
+// 			const message =
+// 				builder === undefined
+// 					? "Too low"
+// 					: typeof builder === "string"
+// 						? builder
+// 						: builder(floor)
+
+// 			return Left([{ name: "TOO_LOW", message, path }])
 // 		} else {
-// 			return Left([{ name: "TOO_HIGH", path }])
+// 			const builder = this.messages?.TOO_HIGH
+// 			const message =
+// 				builder === undefined
+// 					? "Too high"
+// 					: typeof builder === "string"
+// 						? builder
+// 						: builder(floor)
+// 			return Left([{ name: "TOO_HIGH", message, path }])
 // 		}
 // 	}
 // }
 
 // const test = new TestClass({
 // 	limit: 10,
+// 	// messages: null,
 // 	messages: {
 // 		TOO_HIGH: (limit: number) => `Must be less than ${limit}`,
 // 	},
 // })
 
-// test.messages.extract()?.TOO_HIGH(10)
+// test.exec({
+// 	value: 11,
+// 	path: [],
+// 	ctx: {
+// 		getFloor: () => 0,
+// 	},
+// })
+
+// export const m = test.messages.TOO_HIGH(10)

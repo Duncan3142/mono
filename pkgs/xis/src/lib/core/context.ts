@@ -20,25 +20,29 @@ export type XisPathSegments = ReadonlyArray<PathSegment>
 
 type XisBasic = string | number | boolean | undefined | symbol | object | null | Array<XisBasic>
 
-export interface XisCtx {
+export interface XisCtxObj {
 	[prop: TruePropertyKey]:
 		| XisBasic
-		| XisCtx
-		| Array<XisCtx>
+		| XisCtxObj
+		| Array<XisCtxObj>
 		| Promise<XisBasic>
-		| Promise<XisCtx | Array<XisCtx>>
+		| Promise<XisCtxObj | Array<XisCtxObj>>
 		| ((
 				...args: Array<any>
-		  ) => XisBasic | XisCtx | Array<XisCtx> | Promise<XisBasic | XisCtx | Array<XisCtx>>)
+		  ) =>
+				| XisBasic
+				| XisCtxObj
+				| Array<XisCtxObj>
+				| Promise<XisBasic | XisCtxObj | Array<XisCtxObj>>)
 }
 
-export type XisCtxBase = XisCtx | undefined
+export type XisCtxBase = XisCtxObj | null
 
 export type XisBuildCtx<Current extends XisCtxBase, Next extends XisCtxBase> = [
 	Current,
-] extends [undefined]
+] extends [null]
 	? Next
-	: [Next] extends [undefined]
+	: [Next] extends [null]
 		? Current
 		: Current & Next
 

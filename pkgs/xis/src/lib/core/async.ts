@@ -3,11 +3,9 @@ import type { XisIssueBase } from "#core/error.js"
 import type { EitherAsync } from "purify-ts/EitherAsync"
 import type { ExecResultSync } from "./sync.js"
 import { BookkeepingError, type XisBookKeeping } from "./book-keeping.js"
-import type { XisPropsBase } from "./prop.js"
-import { Nothing, type Maybe, Just } from "purify-ts/Maybe"
+import type { XisProps } from "./prop.js"
 
 export type ExecEitherAsync<Issues extends XisIssueBase, Out> = EitherAsync<Array<Issues>, Out>
-
 export type ExecResultAsync<Issues extends XisIssueBase, Out> = Promise<
 	ExecResultSync<Issues, Out>
 >
@@ -17,7 +15,7 @@ export type XisAsyncFn<
 	in In,
 	out Issues extends XisIssueBase = never,
 	out Out = In,
-	Ctx extends XisCtxBase = undefined,
+	Ctx extends XisCtxBase = null,
 > = (args: XisArg<In, Ctx>) => ExecResultAsync<Issues, Out>
 
 const ASYNC = "ASYNC"
@@ -26,18 +24,15 @@ export abstract class XisAsync<
 	In,
 	Issues extends XisIssueBase = never,
 	Out = In,
-	Props extends XisPropsBase = XisPropsBase,
-	Ctx extends XisCtxBase = undefined,
+	Props extends XisProps<Issues> = XisProps<Issues>,
+	Ctx extends XisCtxBase = null,
 > {
 	#props: Props
 	get mode(): typeof ASYNC {
 		return ASYNC
 	}
-	get messages(): Maybe<Props["messages"]> {
-		if (this.props.messages === undefined) {
-			return Nothing
-		}
-		return Just(this.props.messages)
+	get messages(): Props["messages"] {
+		return this.props.messages
 	}
 	get props(): Props {
 		return this.#props

@@ -5,7 +5,7 @@ export interface XisBookKeeping<
 	In,
 	Issues extends XisIssueBase = never,
 	Out = In,
-	Ctx extends XisCtxBase = undefined,
+	Ctx extends XisCtxBase = null,
 > {
 	i: In
 	is: Issues
