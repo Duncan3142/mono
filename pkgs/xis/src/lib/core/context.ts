@@ -51,14 +51,14 @@ export interface XisArg<In, Ctx extends XisCtxBase> {
 export type XisArgBase = XisArg<any, XisCtxBase>
 
 export const addElement = <In, Ctx extends XisCtxBase>(
-	ctx: XisArg<In, Ctx>,
+	args: XisArg<In, Ctx>,
 	elem: PathElement
 ): XisArg<In, Ctx> => {
 	const { segment, side } = elem
 	return {
-		...ctx,
+		...args,
 		path: [
-			...ctx.path,
+			...args.path,
 			{
 				segment,
 				side,

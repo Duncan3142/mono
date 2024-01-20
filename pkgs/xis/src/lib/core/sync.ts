@@ -1,5 +1,6 @@
 import type { XisArg, XisCtxBase } from "#core/context.js"
 import type { Either } from "purify-ts/Either"
+import { type Maybe, Just, Nothing } from "purify-ts/Maybe"
 import type { XisIssueBase } from "#core/error.js"
 import { BookkeepingError, type XisBookKeeping } from "./book-keeping.js"
 import type { XisPropsBase } from "./prop.js"
@@ -27,8 +28,11 @@ export abstract class XisSync<
 	get mode(): typeof SYNC {
 		return SYNC
 	}
-	get nullable(): Props["nullable"] {
-		return this.props.nullable
+	get messages(): Maybe<Props["messages"]> {
+		if (this.props.messages === undefined) {
+			return Nothing
+		}
+		return Just(this.props.messages)
 	}
 	get props(): Props {
 		return this.#props
@@ -74,7 +78,9 @@ export type XisSyncBase = XisSync<any, XisIssueBase, unknown, any, any>
 
 // const test = new TestClass({
 // 	limit: 10,
-// 	nullable: true,
+// 	messages: {
+// 		TOO_HIGH: (limit: number) => `Must be less than ${limit}`,
+// 	},
 // })
 
-// test.nullable
+// test.messages.extract()?.TOO_HIGH(10)

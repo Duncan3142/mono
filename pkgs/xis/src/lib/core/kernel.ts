@@ -42,8 +42,6 @@ export type ExIssues<T extends XisBase> = T["types"]["is"]
 
 export type ExOut<T extends XisBase> = T["types"]["o"]
 
-export type ExProps<T extends XisBase> = T["props"]
-
 export type ExCtx<T extends XisBase> = T["types"]["c"]
 
 export type ExArg<T extends XisBase> = XisArg<ExIn<T>, ExCtx<T>>

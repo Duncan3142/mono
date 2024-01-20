@@ -1,8 +1,9 @@
 export type MessageBuilder = (...args: Array<any>) => string
 
-export interface XisProps<Nullable extends boolean> {
-	nullable: Nullable
-	messages?: Record<string, string | MessageBuilder>
+export type BaseMessages = Record<string, string | MessageBuilder>
+
+export interface XisProps<Messages extends BaseMessages> {
+	messages?: Messages
 }
 
-export type XisPropsBase = XisProps<boolean>
+export type XisPropsBase = XisProps<BaseMessages>
