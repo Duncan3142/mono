@@ -3,7 +3,7 @@ import type { XisIssueBase } from "#core/error.js"
 import type { EitherAsync } from "purify-ts/EitherAsync"
 import type { ExecResultSync } from "./sync.js"
 import { BookkeepingError, type XisBookKeeping } from "./book-keeping.js"
-import type { XisProps } from "./prop.js"
+import type { XisMessages } from "./prop.js"
 
 export type ExecEitherAsync<Issues extends XisIssueBase, Out> = EitherAsync<Array<Issues>, Out>
 export type ExecResultAsync<Issues extends XisIssueBase, Out> = Promise<
@@ -24,26 +24,17 @@ export abstract class XisAsync<
 	In,
 	Issues extends XisIssueBase = never,
 	Out = In,
-	Props extends XisProps<Issues> = XisProps<Issues>,
+	Messages extends XisMessages<Issues> = XisMessages<Issues>,
 	Ctx extends XisCtxBase = null,
 > {
-	#props: Props
 	get mode(): typeof ASYNC {
 		return ASYNC
 	}
-	get messages(): Props["messages"] {
-		return this.props.messages
-	}
-	get props(): Props {
-		return this.#props
-	}
-	constructor(props: Props) {
-		this.#props = props
-	}
+	abstract get messages(): Messages
+	abstract exec(args: XisArg<In, Ctx>): ExecResultAsync<Issues, Out>
 	get types(): XisBookKeeping<In, Issues, Out, Ctx> {
 		throw new BookkeepingError()
 	}
-	abstract exec(args: XisArg<In, Ctx>): ExecResultAsync<Issues, Out>
 }
 
-export type XisAsyncBase = XisAsync<any, XisIssueBase, unknown, any, any>
+export type XisAsyncBase = XisAsync<any, XisIssueBase, unknown, XisMessages<XisIssueBase>, any>

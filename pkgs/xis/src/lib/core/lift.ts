@@ -1,47 +1,60 @@
 import type { ExIn, ExIssues, ExOut, ExArg, ExCtx } from "#core/kernel.js"
 import { XisAsync, type ExecResultAsync } from "#core/async.js"
-import type { XisSync, XisSyncBase } from "./sync.js"
+import { XisSync, type ExecResultSync, type XisSyncBase } from "./sync.js"
 import type { XisProps } from "./prop.js"
+import type { XisArg } from "./context.js"
+import type { XisIssue } from "./error.js"
+import { Right } from "purify-ts"
 
-export interface XisLiftProps<X extends XisSyncBase> extends XisProps<X["props"]["messages"]> {
+export interface XisLiftProps<X extends XisSyncBase> extends XisProps<ExIssues<X>> {
 	inner: X
+	messages: X["messages"]
 }
 
 export type XisLiftPropsBase = XisLiftProps<XisSyncBase>
 
-export class XisLift<P extends XisLiftPropsBase> extends XisAsync<
-	ExIn<P["inner"]>,
-	ExIssues<P["inner"]>,
-	ExOut<ExIn<P["inner"]>>,
-	P,
-	ExCtx<ExIn<P["inner"]>>
+export class XisLift<X extends XisSyncBase> extends XisAsync<
+	ExIn<X>,
+	ExIssues<X>,
+	ExOut<X>,
+	XisLiftProps<X>,
+	ExCtx<ExIn<X>>
 > {
-	override get messages(): P["inner"]["messages"] {
-		return this.inner.messages
-	}
-	get inner(): P["inner"] {
+	get inner(): X {
 		return this.props.inner
 	}
-	exec(args: ExArg<P["inner"]>): ExecResultAsync<ExIssues<P["inner"]>, ExOut<P["inner"]>> {
+	exec(args: ExArg<X>): ExecResultAsync<ExIssues<X>, ExOut<X>> {
 		return Promise.resolve(this.inner.exec(args))
 	}
 }
 
-export const lift = <X extends XisSyncBase>(inner: X): XisLift<XisLiftProps<X>> =>
-	new XisLift({ inner })
+export const lift = <X extends XisSyncBase>(inner: X): XisLift<X> =>
+	new XisLift({ inner, messages: inner.messages })
 
-type XT = XisSync<
-	number,
-	{ name: "BAD"; path: [] },
-	string,
-	{ messages: { HELLO: string } },
-	{ now: Date }
->
+/* ---------------------------------- TEST ---------------------------------- */
 
-let inner!: XT
+// type XTIssues = XisIssue<"BAD">
 
-inner.messages
+// type XTCtx = { now: Date }
 
-const x = lift(inner)
+// export class XT extends XisSync<number, XTIssues, string, XisProps<XTIssues>, XTCtx> {
+// 	override exec(args: XisArg<number, XTCtx>): ExecResultSync<XTIssues, string> {
+// 		return Right(`Hello ${args.ctx.now.toISOString()}`)
+// 	}
+// }
 
-x.messages
+// let inner!: XT
+
+// inner.messages
+
+// const x = lift(inner)
+
+// x.messages
+
+// export const a = x.exec({
+// 	value: 1,
+// 	path: [],
+// 	ctx: {
+// 		now: new Date(),
+// 	},
+// })

@@ -17,6 +17,11 @@ import {
 import { Left, Right } from "purify-ts/Either"
 import type { ExecResultSync } from "#core/sync.js"
 
+export type PlainKey = [TruePropertyKey]
+export type ReadOnlyKey = ["readonly", TruePropertyKey]
+export type OptionalKey = [TruePropertyKey, "?"]
+export type ReadOnlyOptionalKey = ["readonly", TruePropertyKey, "?"]
+
 export type Key<
 	Key extends TruePropertyKey,
 	ReadOnly extends boolean,

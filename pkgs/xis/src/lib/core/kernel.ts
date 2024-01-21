@@ -5,7 +5,7 @@ import type { XisIssueBase } from "#core/error.js"
 import type { ExecResultSync, ExecResultSyncBase, XisSync, XisSyncFn } from "./sync.js"
 import type { ExecResultAsync, XisAsync, XisAsyncFn } from "./async.js"
 import { Left } from "purify-ts/Either"
-import type { XisProps } from "./prop.js"
+import type { XisMessages } from "./prop.js"
 
 export type ExecResult<Issues extends XisIssueBase, Out> =
 	| ExecResultSync<Issues, Out>
@@ -29,11 +29,11 @@ export type Xis<
 	In,
 	Issues extends XisIssueBase = never,
 	Out = In,
-	Props extends XisProps<Issues> = XisProps<Issues>,
+	Messages extends XisMessages<Issues> = XisMessages<Issues>,
 	Ctx extends XisCtxBase = null,
-> = XisSync<In, Issues, Out, Props, Ctx> | XisAsync<In, Issues, Out, Props, Ctx>
+> = XisSync<In, Issues, Out, Messages, Ctx> | XisAsync<In, Issues, Out, Messages, Ctx>
 
-export type XisBase = Xis<any, XisIssueBase, unknown, any, any>
+export type XisBase = Xis<any, XisIssueBase, unknown, XisMessages<XisIssueBase>, any>
 
 export type ExIn<T extends XisBase> = T["types"]["i"]
 

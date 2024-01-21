@@ -37,6 +37,7 @@ const typeCheck =
 			name: "INVALID_TYPE",
 			expected: trueTypeName,
 			received: receivedType,
+			message: "::TODO::", // ::TODO::
 			path: ctx.path,
 		} satisfies BaseTypeIssue<N>
 
@@ -74,6 +75,7 @@ export const isTupleOf = <Length extends number>(
 					{
 						name: "TUPLE_LENGTH",
 						path: args.path,
+						message: "::TODO::", // ::TODO::
 						expected,
 						actual: arr.length,
 					},

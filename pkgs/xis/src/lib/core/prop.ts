@@ -1,15 +1,17 @@
 import type { ExIssueName, XisIssueBase } from "./error.js"
 
-export type MessageBuilder = (...args: Array<any>) => string
+export type XisMessageBuilder = (...args: Array<any>) => string
 
-export type Messages<IssueNames extends string> = {
-	[N in IssueNames]?: string | MessageBuilder
-}
+export type XisMessages<Issues extends XisIssueBase> =
+	| {
+			[N in ExIssueName<Issues>]?: string | XisMessageBuilder
+	  }
+	| null
 
 // export type BaseMessages = Messages<string>
 
-export interface XisProps<Issues extends XisIssueBase> {
-	messages: Messages<ExIssueName<Issues>> | null
-}
+// export interface XisProps<Issues extends XisIssueBase> {
+// 	messages: XisMessages<Issues>
+// }
 
 // export type XisPropsBase = XisProps<XisIssueBase>
