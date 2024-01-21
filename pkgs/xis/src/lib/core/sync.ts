@@ -11,8 +11,9 @@ export type XisSyncFn<
 	in In,
 	out Issues extends XisIssueBase = never,
 	out Out = In,
+	Messages extends XisMessages<Issues> = XisMessages<Issues>,
 	Ctx extends XisCtxBase = null,
-> = (args: XisArg<In, Ctx>) => ExecResultSync<Issues, Out>
+> = (args: XisArg<In, Messages, Ctx>) => ExecResultSync<Issues, Out>
 
 const SYNC = "SYNC"
 
@@ -26,9 +27,8 @@ export abstract class XisSync<
 	get mode(): typeof SYNC {
 		return SYNC
 	}
-	abstract get messages(): Messages
-	abstract exec(args: XisArg<In, Ctx>): ExecResultSync<Issues, Out>
-	get types(): XisBookKeeping<In, Issues, Out, Ctx> {
+	abstract exec(args: XisArg<In, Messages, Ctx>): ExecResultSync<Issues, Out>
+	get types(): XisBookKeeping<In, Issues, Out, Messages, Ctx> {
 		throw new BookkeepingError()
 	}
 }

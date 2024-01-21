@@ -15,8 +15,9 @@ export type XisAsyncFn<
 	in In,
 	out Issues extends XisIssueBase = never,
 	out Out = In,
+	Messages extends XisMessages<Issues> = XisMessages<Issues>,
 	Ctx extends XisCtxBase = null,
-> = (args: XisArg<In, Ctx>) => ExecResultAsync<Issues, Out>
+> = (args: XisArg<In, Messages, Ctx>) => ExecResultAsync<Issues, Out>
 
 const ASYNC = "ASYNC"
 
@@ -30,9 +31,8 @@ export abstract class XisAsync<
 	get mode(): typeof ASYNC {
 		return ASYNC
 	}
-	abstract get messages(): Messages
-	abstract exec(args: XisArg<In, Ctx>): ExecResultAsync<Issues, Out>
-	get types(): XisBookKeeping<In, Issues, Out, Ctx> {
+	abstract exec(args: XisArg<In, Messages, Ctx>): ExecResultAsync<Issues, Out>
+	get types(): XisBookKeeping<In, Issues, Out, Messages, Ctx> {
 		throw new BookkeepingError()
 	}
 }

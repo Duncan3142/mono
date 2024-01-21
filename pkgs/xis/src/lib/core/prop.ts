@@ -8,7 +8,7 @@ export type XisMessages<Issues extends XisIssueBase> =
 	  }
 	| null
 
-// export type BaseMessages = Messages<string>
+export type XisMessagesBase = XisMessages<XisIssueBase>
 
 // export interface XisProps<Issues extends XisIssueBase> {
 // 	messages: XisMessages<Issues>

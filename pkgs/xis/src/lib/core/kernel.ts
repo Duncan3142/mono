@@ -22,8 +22,9 @@ export type XisFn<
 	In,
 	Issues extends XisIssueBase = never,
 	Out = In,
+	Messages extends XisMessages<Issues> = XisMessages<Issues>,
 	Ctx extends XisCtxBase = null,
-> = XisSyncFn<In, Issues, Out, Ctx> | XisAsyncFn<In, Issues, Out, Ctx>
+> = XisSyncFn<In, Issues, Out, Messages, Ctx> | XisAsyncFn<In, Issues, Out, Messages, Ctx>
 
 export type Xis<
 	In,
@@ -41,9 +42,11 @@ export type ExIssues<T extends XisBase> = T["types"]["is"]
 
 export type ExOut<T extends XisBase> = T["types"]["o"]
 
+export type ExMessages<T extends XisBase> = T["types"]["m"]
+
 export type ExCtx<T extends XisBase> = T["types"]["c"]
 
-export type ExArg<T extends XisBase> = XisArg<ExIn<T>, ExCtx<T>>
+export type ExArg<T extends XisBase> = XisArg<ExIn<T>, ExMessages<T>, ExCtx<T>>
 
 export const mergeIssues = <R extends ExecResultSyncBase>(
 	acc: R,

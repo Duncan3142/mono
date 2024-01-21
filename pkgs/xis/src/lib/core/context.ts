@@ -1,4 +1,5 @@
 import type { TruePropertyKey } from "#util/base-type.js"
+import type { XisMessagesBase } from "./prop.js"
 
 export const CheckSide = {
 	Key: "KEY",
@@ -46,18 +47,19 @@ export type XisBuildCtx<Current extends XisCtxBase, Next extends XisCtxBase> = [
 		? Current
 		: Current & Next
 
-export interface XisArg<In, Ctx extends XisCtxBase> {
+export interface XisArg<In, Messages extends XisMessagesBase, Ctx extends XisCtxBase> {
 	value: In
 	path: XisPath
 	ctx: Ctx
+	messages: Messages
 }
 
-export type XisArgBase = XisArg<any, XisCtxBase>
+export type XisArgBase = XisArg<unknown, XisMessagesBase, XisCtxBase>
 
-export const addElement = <In, Ctx extends XisCtxBase>(
-	args: XisArg<In, Ctx>,
+export const addElement = <In, Messages extends XisMessagesBase, Ctx extends XisCtxBase>(
+	args: XisArg<In, Messages, Ctx>,
 	elem: PathElement
-): XisArg<In, Ctx> => {
+): XisArg<In, Messages, Ctx> => {
 	const { segment, side } = elem
 	return {
 		...args,

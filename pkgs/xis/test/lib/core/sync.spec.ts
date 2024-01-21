@@ -23,7 +23,7 @@ export class TestClass<Messages extends TestMessages> extends XisSync<
 	number,
 	TestIssue,
 	number,
-	Messages,
+	TestMessages,
 	TestCtxObj
 > {
 	#props: TestProps<Messages>
@@ -32,17 +32,17 @@ export class TestClass<Messages extends TestMessages> extends XisSync<
 		super()
 		this.#props = props
 	}
-	override get messages(): Messages {
+	get messages(): Messages {
 		return this.#props.messages
 	}
-	exec(args: XisArg<number, TestCtxObj>): ExecResultSync<TestIssue, number> {
-		const { value, ctx, path } = args
+	exec(args: XisArg<number, TestMessages, TestCtxObj>): ExecResultSync<TestIssue, number> {
+		const { value, ctx, path, messages } = args
 		const { limit } = this.#props
 		const floor = ctx.getFloor()
 		if (value < limit && value > floor) {
 			return Right(value)
 		} else if (value < floor) {
-			const builder = this.messages?.TOO_LOW
+			const builder = this.messages?.TOO_LOW ?? messages?.TOO_LOW
 			const message =
 				builder === undefined
 					? "Too low"
@@ -52,7 +52,7 @@ export class TestClass<Messages extends TestMessages> extends XisSync<
 
 			return Left([{ name: "TOO_LOW", message, path }])
 		} else {
-			const builder = this.messages?.TOO_HIGH
+			const builder = this.messages?.TOO_HIGH ?? messages?.TOO_HIGH
 			const message = builder === undefined ? `${value} is too high` : builder(limit)
 			return Left([{ name: "TOO_HIGH", message, path }])
 		}
@@ -70,6 +70,7 @@ const test = new TestClass({
 test.exec({
 	value: 11,
 	path: [],
+	messages: null,
 	ctx: {
 		getFloor: () => 0,
 	},
