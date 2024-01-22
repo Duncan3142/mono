@@ -22,7 +22,7 @@ export type XisFn<
 	In,
 	Issues extends XisIssueBase = never,
 	Out = In,
-	Messages extends XisMessages<Issues> = XisMessages<Issues>,
+	Messages extends XisMessages<Issues> = null,
 	Ctx extends XisCtxBase = null,
 > = XisSyncFn<In, Issues, Out, Messages, Ctx> | XisAsyncFn<In, Issues, Out, Messages, Ctx>
 
@@ -30,11 +30,11 @@ export type Xis<
 	In,
 	Issues extends XisIssueBase = never,
 	Out = In,
-	Messages extends XisMessages<Issues> = XisMessages<Issues>,
+	Messages extends XisMessages<Issues> = null,
 	Ctx extends XisCtxBase = null,
 > = XisSync<In, Issues, Out, Messages, Ctx> | XisAsync<In, Issues, Out, Messages, Ctx>
 
-export type XisBase = Xis<any, XisIssueBase, unknown, XisMessages<XisIssueBase>, any>
+export type XisBase = Xis<any, XisIssueBase, unknown, any, any>
 
 export type ExIn<T extends XisBase> = T["types"]["i"]
 

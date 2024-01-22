@@ -11,7 +11,7 @@ export type XisSyncFn<
 	in In,
 	out Issues extends XisIssueBase = never,
 	out Out = In,
-	Messages extends XisMessages<Issues> = XisMessages<Issues>,
+	Messages extends XisMessages<Issues> = null,
 	Ctx extends XisCtxBase = null,
 > = (args: XisArg<In, Messages, Ctx>) => ExecResultSync<Issues, Out>
 
@@ -21,7 +21,7 @@ export abstract class XisSync<
 	In,
 	Issues extends XisIssueBase = never,
 	Out = In,
-	Messages extends XisMessages<Issues> = XisMessages<Issues>,
+	Messages extends XisMessages<Issues> = null,
 	Ctx extends XisCtxBase = null,
 > {
 	get mode(): typeof SYNC {
@@ -33,4 +33,4 @@ export abstract class XisSync<
 	}
 }
 
-export type XisSyncBase = XisSync<any, XisIssueBase, unknown, XisMessages<XisIssueBase>, any>
+export type XisSyncBase = XisSync<any, XisIssueBase, unknown, any, any>

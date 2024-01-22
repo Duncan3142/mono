@@ -1,68 +1,62 @@
-import type { XisBuildArgs, XisCtx, XisCtxBase, XisOptArgs } from "#core/context.js"
+import type { XisArg, XisBuildCtx, XisCtxBase } from "#core/context.js"
 import {
-	invoke,
-	type ExInvoke,
-	type InvokeMode,
 	type ExIn,
 	type ExCtx,
-	type ExGuardIssues,
-	type ExExecIssues,
+	type ExIssues,
+	type ExMessages,
 	type ExOut,
-	type ExArgs,
 } from "#core/kernel.js"
 import type { XisIssueBase } from "#core/error.js"
-import {
-	XisSync,
-	type ExecResultSync,
-	type ParseResultSync,
-	type XisSyncBase,
-	type XisSyncFn,
-} from "#core/sync.js"
+import { XisSync, type ExecResultSync, type XisSyncBase, type XisSyncFn } from "#core/sync.js"
+import type { XisBuildMessages, XisMessages } from "#core/prop.js"
+
+export interface XisFnSyncProps<
+	From extends XisSyncBase,
+	FnIssues extends XisIssueBase = never,
+	FnOut = ExOut<From>,
+	FnMessages extends XisMessages<FnIssues> = null,
+	FnCtx extends XisCtxBase = null,
+> {
+	from: From
+	fn: XisSyncFn<ExOut<From>, FnIssues, FnOut, FnMessages, FnCtx>
+}
 
 export class XisFnSync<
 	From extends XisSyncBase,
 	FnIssues extends XisIssueBase = never,
 	FnOut = ExOut<From>,
-	FnArgs extends XisOptArgs = undefined,
+	FnMessages extends XisMessages<FnIssues> = null,
+	FnCtx extends XisCtxBase = null,
 > extends XisSync<
 	ExIn<From>,
-	ExGuardIssues<From>,
-	ExExecIssues<From> | FnIssues,
+	ExIssues<From>,
 	FnOut,
-	XisBuildArgs<ExArgs<From>, FnArgs>
+	XisBuildMessages<ExMessages<From>, FnMessages>,
+	XisBuildCtx<ExCtx<From>, FnCtx>
 > {
-	readonly #from: From
-	readonly #fn: XisSyncFn<ExOut<From>, FnIssues, FnOut, FnArgs>
+	readonly #props
 
-	constructor(from: From, fn: XisSyncFn<ExOut<From>, FnIssues, FnOut, FnArgs>) {
+	constructor(props: XisFnSyncProps<From, FnIssues, FnOut, FnMessages, FnCtx>) {
 		super()
-		this.#from = from
-		this.#fn = fn
-	}
-
-	parse(
-		value: unknown,
-		ctx: XisCtx<XisBuildArgs<ExArgs<From>, FnArgs>>
-	): ParseResultSync<ExGuardIssues<From>, ExExecIssues<From> | FnIssues, FnOut> {
-		return this.#invoke("parse", value, ctx)
+		this.#props = props
 	}
 
 	exec(
-		value: ExIn<From>,
-		ctx: XisCtx<XisBuildArgs<ExArgs<From>, FnArgs>>
-	): ExecResultSync<ExExecIssues<From> | FnIssues, FnOut> {
-		return this.#invoke("exec", value, ctx)
-	}
-
-	#invoke<Mode extends InvokeMode>(
-		mode: Mode,
-		value: unknown,
-		ctx: XisCtxBase
-	): ExInvoke<this, Mode> {
-		type Res = ExInvoke<this, InvokeMode>
-		return invoke(mode, this.#from, value as ExIn<From>, ctx as ExCtx<From>).chain((fromRes) =>
-			this.#fn(fromRes as ExOut<From>, ctx as ExCtx<this>)
-		) as Res
+		args: XisArg<
+			ExIn<From>,
+			XisBuildMessages<ExMessages<From>, FnMessages>,
+			XisBuildCtx<ExCtx<From>, FnCtx>
+		>
+	): ExecResultSync<ExIssues<From> | FnIssues, FnOut> {
+		const { path, messages, ctx } = args
+		return this.#props.from.exec(args).chain((fromRes) =>
+			this.#props.fn({
+				value: fromRes,
+				path,
+				messages,
+				ctx,
+			})
+		)
 	}
 }
 
@@ -70,9 +64,10 @@ export const xis = <
 	From extends XisSyncBase,
 	FnIssues extends XisIssueBase = never,
 	FnOut = ExOut<From>,
-	FnArgs extends XisOptArgs = undefined,
+	FnMessages extends XisMessages<FnIssues> = null,
+	FnCtx extends XisCtxBase = null,
 >(
 	from: From,
-	fn: XisSyncFn<ExOut<From>, FnIssues, FnOut, FnArgs>
-): XisFnSync<From, FnIssues, FnOut, FnArgs> =>
-	new XisFnSync<From, FnIssues, FnOut, FnArgs>(from, fn)
+	fn: XisSyncFn<ExOut<From>, FnIssues, FnOut, FnMessages, FnCtx>
+): XisFnSync<From, FnIssues, FnOut, FnMessages, FnCtx> =>
+	new XisFnSync<From, FnIssues, FnOut, FnMessages, FnCtx>({ from, fn })

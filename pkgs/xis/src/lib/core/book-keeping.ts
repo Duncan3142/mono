@@ -6,7 +6,7 @@ export interface XisBookKeeping<
 	In,
 	Issues extends XisIssueBase = never,
 	Out = In,
-	Messages extends XisMessages<Issues> = XisMessages<Issues>,
+	Messages extends XisMessages<Issues> = null,
 	Ctx extends XisCtxBase = null,
 > {
 	i: In
