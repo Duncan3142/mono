@@ -1,40 +1,30 @@
-import type { XisCtx } from "#core/context.js"
+import type { XisArg } from "#core/context.js"
 
-import type { ExIn, ExGuardIssues, ExExecIssues, ExOut, ExArgs } from "#core/kernel.js"
-import {
-	XisSync,
-	type ExecResultSync,
-	type ParseResultSync,
-	type XisSyncBase,
-} from "#core/sync.js"
+import type { ExIn, ExIssues, ExOut, ExMessages, ExCtx } from "#core/kernel.js"
+import { XisSync, type ExecResultSync, type XisSyncBase } from "#core/sync.js"
+
+interface XisLazySyncProps<X extends XisSyncBase> {
+	lazy: () => X
+}
 
 export class XisLazySync<X extends XisSyncBase> extends XisSync<
 	ExIn<X>,
-	ExGuardIssues<X>,
-	ExExecIssues<X>,
+	ExIssues<X>,
 	ExOut<X>,
-	ExArgs<X>
+	ExMessages<X>,
+	ExCtx<X>
 > {
-	#lazy: () => X
+	#props: XisLazySyncProps<X>
 
-	constructor(lazy: () => X) {
+	constructor(props: XisLazySyncProps<X>) {
 		super()
-		this.#lazy = lazy
+		this.#props = props
 	}
 
-	parse(
-		value: unknown,
-		ctx: XisCtx<ExArgs<X>>
-	): ParseResultSync<ExGuardIssues<X>, ExExecIssues<X>, ExOut<X>> {
-		type Res = ParseResultSync<ExGuardIssues<X>, ExExecIssues<X>, ExOut<X>>
-		return this.#lazy().parse(value, ctx) as Res
-	}
-
-	exec(value: ExIn<X>, ctx: XisCtx<ExArgs<X>>): ExecResultSync<ExExecIssues<X>, ExOut<X>> {
-		type Res = ExecResultSync<ExExecIssues<X>, ExOut<X>>
-		return this.#lazy().exec(value, ctx) as Res
+	exec(args: XisArg<ExIn<X>, ExMessages<X>, ExCtx<X>>): ExecResultSync<ExIssues<X>, ExOut<X>> {
+		return this.#props.lazy().exec(args)
 	}
 }
 
 export const lazy = <X extends XisSyncBase>(lazy: () => X): XisLazySync<X> =>
-	new XisLazySync(lazy)
+	new XisLazySync({ lazy })
