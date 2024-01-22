@@ -1,29 +1,16 @@
-import { EitherAsync } from "purify-ts/EitherAsync"
-import {
-	XisAsync,
-	type ExecEitherAsync,
-	type ExecResultAsync,
-	type ParseResultAsync,
-} from "#core/async.js"
-import type { XisCtx, XisCtxBase } from "#core/context.js"
-import {
-	invoke,
-	type ExIn,
-	type ExInvoke,
-	type ExOut,
-	type InvokeMode,
-	type XisBase,
-	type ExCtx,
-} from "#core/kernel.js"
+import { type ExIn, type ExOut, type XisBase } from "#core/kernel.js"
+import type { XisIssueBase } from "#core/error.js"
 
+import { XisAsync, type ExecResultAsync, type ExecEitherAsync } from "#core/async.js"
 import type {
-	XisChainArgs,
-	XisChainExecIssues,
-	XisChainGuardIssues,
+	XisChainCtx,
+	XisChainMessages,
+	XisChainIssues,
 	XisChainIn,
 	XisChainOut,
 } from "./core.js"
-import type { XisIssueBase } from "#core/error.js"
+import type { XisArg } from "#core/context.js"
+import { EitherAsync } from "purify-ts"
 
 type XisChainSchemaAsync<
 	Chain extends [XisBase, ...Array<XisBase>],
@@ -38,64 +25,54 @@ type XisChainSchemaAsync<
 		: never
 	: Chain
 
+export interface XisChainAsyncProps<Chain extends [XisBase, XisBase, ...Array<XisBase>]> {
+	schema: [...XisChainSchemaAsync<Chain>]
+}
+
 export class XisChainAsync<
 	Chain extends [XisBase, XisBase, ...Array<XisBase>],
 > extends XisAsync<
 	XisChainIn<Chain>,
-	XisChainGuardIssues<Chain>,
-	XisChainExecIssues<Chain>,
+	XisChainIssues<Chain>,
 	XisChainOut<Chain>,
-	XisChainArgs<Chain>
+	XisChainMessages<Chain>,
+	XisChainCtx<Chain>
 > {
-	readonly #schema: [...XisChainSchemaAsync<Chain>]
+	#props: XisChainAsyncProps<Chain>
 
-	constructor(schema: [...XisChainSchemaAsync<Chain>]) {
+	constructor(props: XisChainAsyncProps<Chain>) {
 		super()
-		this.#schema = schema
-	}
-
-	parse(
-		value: unknown,
-		ctx: XisCtx<XisChainArgs<Chain>>
-	): ParseResultAsync<
-		XisChainGuardIssues<Chain>,
-		XisChainExecIssues<Chain>,
-		XisChainOut<Chain>
-	> {
-		return this.#invoke("parse", value, ctx)
+		this.#props = props
 	}
 
 	exec(
-		value: XisChainIn<Chain>,
-		ctx: XisCtx<XisChainArgs<Chain>>
-	): ExecResultAsync<XisChainExecIssues<Chain>, XisChainOut<Chain>> {
-		return this.#invoke("exec", value, ctx)
-	}
-
-	#invoke<Mode extends InvokeMode>(
-		mode: Mode,
-		value: unknown,
-		ctx: XisCtxBase
-	): ExInvoke<this, Mode> {
-		type Res = ExInvoke<this, Mode>
-		const [first, ...rest] = this.#schema
+		args: XisArg<XisChainIn<Chain>, XisChainMessages<Chain>, XisChainCtx<Chain>>
+	): ExecResultAsync<XisChainIssues<Chain>, XisChainOut<Chain>> {
+		const { path, messages, ctx } = args
+		const [first, ...rest] = this.#props.schema
 		const acc: ExecEitherAsync<XisIssueBase, unknown> = EitherAsync.fromPromise(() =>
-			Promise.resolve(
-				invoke(
-					mode,
-					first,
-					value as ExIn<[...XisChainSchemaAsync<Chain>][0]>,
-					ctx as ExCtx<[...XisChainSchemaAsync<Chain>][0]>
-				)
-			)
+			Promise.resolve(first.exec(args))
 		)
 
 		return rest
-			.reduce((acc, xis) => acc.chain((input) => Promise.resolve(xis.exec(input, ctx))), acc)
-			.run() as Res
+			.reduce(
+				(acc, xis) =>
+					acc.chain((value) =>
+						Promise.resolve(
+							xis.exec({
+								value,
+								path,
+								messages,
+								ctx,
+							})
+						)
+					),
+				acc
+			)
+			.run() as ExecResultAsync<XisChainIssues<Chain>, XisChainOut<Chain>>
 	}
 }
 
 export const chain = <Chain extends [XisBase, XisBase, ...Array<XisBase>]>(
 	schema: [...XisChainSchemaAsync<Chain>]
-): XisChainAsync<Chain> => new XisChainAsync(schema)
+): XisChainAsync<Chain> => new XisChainAsync({ schema })

@@ -1,6 +1,7 @@
-import type { XisBuildArgs, XisOptArgs } from "#core/context.js"
-import type { ExArgs, ExExecIssues, ExGuardIssues, ExIn, ExOut, XisBase } from "#core/kernel.js"
+import type { XisBuildCtx, XisCtxBase } from "#core/context.js"
+import type { ExCtx, ExIssues, ExIn, ExOut, XisBase, ExMessages } from "#core/kernel.js"
 import type { XisIssueBase } from "#core/error.js"
+import type { XisBuildMessages, XisMessagesBase } from "#core/prop.js"
 
 export type XisChainIn<Chain extends [...Array<XisBase>]> = Chain extends [
 	infer First extends XisBase,
@@ -9,18 +10,11 @@ export type XisChainIn<Chain extends [...Array<XisBase>]> = Chain extends [
 	? ExIn<First>
 	: never
 
-export type XisChainGuardIssues<Chain extends [...Array<XisBase>]> = Chain extends [
-	infer First extends XisBase,
-	...Array<XisBase>,
-]
-	? ExGuardIssues<First>
-	: never
-
-export type XisChainExecIssues<
+export type XisChainIssues<
 	Chain extends [...Array<XisBase>],
 	Acc extends XisIssueBase = never,
 > = Chain extends [infer Next extends XisBase, ...infer Rest extends Array<XisBase>]
-	? XisChainExecIssues<Rest, Acc | ExExecIssues<Next>>
+	? XisChainIssues<Rest, Acc | ExIssues<Next>>
 	: Acc
 
 export type XisChainOut<Chain extends [...Array<XisBase>], Acc = never> = Chain extends [
@@ -30,9 +24,16 @@ export type XisChainOut<Chain extends [...Array<XisBase>], Acc = never> = Chain 
 	? XisChainOut<Rest, ExOut<Next>>
 	: Acc
 
-export type XisChainArgs<
+export type XisChainMessages<
 	Chain extends [...Array<XisBase>],
-	Acc extends XisOptArgs = undefined,
+	Acc extends XisMessagesBase = null,
 > = Chain extends [infer Next extends XisBase, ...infer Rest extends Array<XisBase>]
-	? XisChainArgs<Rest, XisBuildArgs<Acc, ExArgs<Next>>>
+	? XisChainMessages<Rest, XisBuildMessages<Acc, ExMessages<Next>>>
+	: Acc
+
+export type XisChainCtx<
+	Chain extends [...Array<XisBase>],
+	Acc extends XisCtxBase = null,
+> = Chain extends [infer Next extends XisBase, ...infer Rest extends Array<XisBase>]
+	? XisChainCtx<Rest, XisBuildCtx<Acc, ExCtx<Next>>>
 	: Acc
