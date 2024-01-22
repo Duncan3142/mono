@@ -9,7 +9,7 @@ import type {
 	XisChainIn,
 	XisChainOut,
 } from "./core.js"
-import type { XisArg } from "#core/context.js"
+import type { XisArgs } from "#core/context.js"
 import { EitherAsync } from "purify-ts"
 
 type XisChainSchemaAsync<
@@ -46,7 +46,7 @@ export class XisChainAsync<
 	}
 
 	exec(
-		args: XisArg<XisChainIn<Chain>, XisChainMessages<Chain>, XisChainCtx<Chain>>
+		args: XisArgs<XisChainIn<Chain>, XisChainMessages<Chain>, XisChainCtx<Chain>>
 	): ExecResultAsync<XisChainIssues<Chain>, XisChainOut<Chain>> {
 		const { path, messages, ctx } = args
 		const [first, ...rest] = this.#props.schema

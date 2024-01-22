@@ -1,4 +1,4 @@
-import type { XisArg } from "#core/context.js"
+import type { XisArgs } from "#core/context.js"
 import type { XisIssue } from "#core/error.js"
 import { lift } from "#core/lift.js"
 import { XisSync, type ExecResultSync } from "#core/sync.js"
@@ -33,7 +33,7 @@ export class XT<Messages extends TestMessages> extends XisSync<
 		return this.#props.messages
 	}
 	override exec(
-		args: XisArg<number, TestMessages, TestCtxObj>
+		args: XisArgs<number, TestMessages, TestCtxObj>
 	): ExecResultSync<TestIssues, string> {
 		return Right(`Hello ${args.ctx.now.toISOString()}`)
 	}

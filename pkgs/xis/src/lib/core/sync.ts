@@ -1,4 +1,4 @@
-import type { XisArg, XisCtxBase } from "#core/context.js"
+import type { XisArgs, XisCtxBase } from "#core/context.js"
 import type { Either } from "purify-ts/Either"
 import type { XisIssueBase } from "#core/error.js"
 import { BookkeepingError, type XisBookKeeping } from "./book-keeping.js"
@@ -13,7 +13,7 @@ export type XisSyncFn<
 	out Out = In,
 	Messages extends XisMessages<Issues> = null,
 	Ctx extends XisCtxBase = null,
-> = (args: XisArg<In, Messages, Ctx>) => ExecResultSync<Issues, Out>
+> = (args: XisArgs<In, Messages, Ctx>) => ExecResultSync<Issues, Out>
 
 const SYNC = "SYNC"
 
@@ -27,7 +27,7 @@ export abstract class XisSync<
 	get mode(): typeof SYNC {
 		return SYNC
 	}
-	abstract exec(args: XisArg<In, Messages, Ctx>): ExecResultSync<Issues, Out>
+	abstract exec(args: XisArgs<In, Messages, Ctx>): ExecResultSync<Issues, Out>
 	get types(): XisBookKeeping<In, Issues, Out, Messages, Ctx> {
 		throw new BookkeepingError()
 	}

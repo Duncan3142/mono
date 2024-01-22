@@ -1,4 +1,4 @@
-import type { XisArg, XisCtxBase } from "#core/context.js"
+import type { XisArgs, XisCtxBase } from "#core/context.js"
 import type { XisIssueBase } from "#core/error.js"
 import type { EitherAsync } from "purify-ts/EitherAsync"
 import type { ExecResultSync } from "./sync.js"
@@ -17,7 +17,7 @@ export type XisAsyncFn<
 	out Out = In,
 	Messages extends XisMessages<Issues> = null,
 	Ctx extends XisCtxBase = null,
-> = (args: XisArg<In, Messages, Ctx>) => ExecResultAsync<Issues, Out>
+> = (args: XisArgs<In, Messages, Ctx>) => ExecResultAsync<Issues, Out>
 
 const ASYNC = "ASYNC"
 
@@ -31,7 +31,7 @@ export abstract class XisAsync<
 	get mode(): typeof ASYNC {
 		return ASYNC
 	}
-	abstract exec(args: XisArg<In, Messages, Ctx>): ExecResultAsync<Issues, Out>
+	abstract exec(args: XisArgs<In, Messages, Ctx>): ExecResultAsync<Issues, Out>
 	get types(): XisBookKeeping<In, Issues, Out, Messages, Ctx> {
 		throw new BookkeepingError()
 	}

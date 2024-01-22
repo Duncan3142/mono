@@ -1,4 +1,4 @@
-import type { XisArg, XisBuildCtx, XisCtxBase } from "#core/context.js"
+import type { XisArgs, XisBuildCtx, XisCtxBase } from "#core/context.js"
 import {
 	type ExIn,
 	type ExCtx,
@@ -44,7 +44,7 @@ export class XisFnAsync<
 	}
 
 	exec(
-		args: XisArg<
+		args: XisArgs<
 			ExIn<From>,
 			XisBuildMessages<ExMessages<From>, FnMessages>,
 			XisBuildCtx<ExCtx<From>, FnCtx>

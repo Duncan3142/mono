@@ -1,4 +1,4 @@
-import type { XisCtxBase, XisArg } from "#core/context.js"
+import type { XisCtxBase, XisArgs } from "#core/context.js"
 
 import type { XisIssueBase } from "#core/error.js"
 
@@ -46,7 +46,7 @@ export type ExMessages<T extends XisBase> = T["types"]["m"]
 
 export type ExCtx<T extends XisBase> = T["types"]["c"]
 
-export type ExArg<T extends XisBase> = XisArg<ExIn<T>, ExMessages<T>, ExCtx<T>>
+export type ExArg<T extends XisBase> = XisArgs<ExIn<T>, ExMessages<T>, ExCtx<T>>
 
 export const mergeIssues = <R extends ExecResultSyncBase>(
 	acc: R,

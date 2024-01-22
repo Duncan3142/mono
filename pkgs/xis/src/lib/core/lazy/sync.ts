@@ -1,4 +1,4 @@
-import type { XisArg } from "#core/context.js"
+import type { XisArgs } from "#core/context.js"
 
 import type { ExIn, ExIssues, ExOut, ExMessages, ExCtx } from "#core/kernel.js"
 import { XisSync, type ExecResultSync, type XisSyncBase } from "#core/sync.js"
@@ -21,7 +21,7 @@ export class XisLazySync<X extends XisSyncBase> extends XisSync<
 		this.#props = props
 	}
 
-	exec(args: XisArg<ExIn<X>, ExMessages<X>, ExCtx<X>>): ExecResultSync<ExIssues<X>, ExOut<X>> {
+	exec(args: XisArgs<ExIn<X>, ExMessages<X>, ExCtx<X>>): ExecResultSync<ExIssues<X>, ExOut<X>> {
 		return this.#props.lazy().exec(args)
 	}
 }

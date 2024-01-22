@@ -1,4 +1,4 @@
-import type { XisArg, XisCtxObj } from "#core/context.js"
+import type { XisArgs, XisCtxObj } from "#core/context.js"
 import type { XisIssue } from "#core/error.js"
 import { XisSync, type ExecResultSync } from "#core/sync.js"
 import { Left, Right } from "purify-ts/Either"
@@ -35,7 +35,7 @@ export class TestClass<Messages extends TestMessages> extends XisSync<
 	get messages(): Messages {
 		return this.#props.messages
 	}
-	exec(args: XisArg<number, TestMessages, TestCtxObj>): ExecResultSync<TestIssue, number> {
+	exec(args: XisArgs<number, TestMessages, TestCtxObj>): ExecResultSync<TestIssue, number> {
 		const { value, ctx, path, messages } = args
 		const { limit } = this.#props
 		const floor = ctx.getFloor()

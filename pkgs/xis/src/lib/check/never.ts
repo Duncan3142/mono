@@ -1,28 +1,28 @@
 import type { XisIssue } from "#core/error.js"
 
-import { XisSync, type ExecResultSync, type ParseResultSync } from "#core/sync.js"
-import type { XisCtxBase } from "#core/context.js"
+import { XisSync, type ExecResultSync } from "#core/sync.js"
+import type { XisArgs } from "#core/context.js"
 import { Left } from "purify-ts/Either"
 
 export interface NeverIssue extends XisIssue<"NEVER"> {
 	value: unknown
 }
 
-const neverIssue = (value: unknown, ctx: XisCtxBase): ExecResultSync<NeverIssue, never> => {
-	const err = {
-		name: "NEVER",
-		path: ctx.path,
-		value,
-	} satisfies NeverIssue
-	return Left([err])
+export type NeverMessages = {
+	NEVER?: string
 }
 
-export class XisNever extends XisSync<never, NeverIssue, NeverIssue> {
-	parse(value: unknown, ctx: XisCtxBase): ParseResultSync<NeverIssue, NeverIssue, never> {
-		return neverIssue(value, ctx)
-	}
-	exec(value: never, ctx: XisCtxBase): ExecResultSync<NeverIssue, never> {
-		return neverIssue(value, ctx)
+export class XisNever extends XisSync<unknown, NeverIssue, never, NeverMessages> {
+	exec(args: XisArgs<unknown, NeverMessages, null>): ExecResultSync<NeverIssue, never> {
+		const { value, messages, path } = args
+		const message = messages?.NEVER ?? "Value is never"
+		const err = {
+			name: "NEVER" as const,
+			path,
+			message,
+			value,
+		}
+		return Left([err])
 	}
 }
 

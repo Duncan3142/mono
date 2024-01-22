@@ -1,6 +1,6 @@
 import type { XisIssue } from "#core/error.js"
 
-import type { XisArgBase } from "#core/context.js"
+import type { XisArgsBase } from "#core/context.js"
 import {
 	trueTypeOf,
 	type TrueBaseTypeName,
@@ -22,11 +22,11 @@ const typeCheck =
 		trueTypeName: N
 	): ((
 		value: unknown,
-		args: XisArgBase
+		args: XisArgsBase
 	) => ExecResultSync<BaseTypeIssue<N>, TrueBaseTypeNameMap[N]>) =>
 	(
 		value: unknown,
-		ctx: XisArgBase
+		ctx: XisArgsBase
 	): ExecResultSync<BaseTypeIssue<N>, TrueBaseTypeNameMap[N]> => {
 		const receivedType = trueTypeOf(value)
 		if (isBaseType(trueTypeName, value)) {
@@ -66,7 +66,7 @@ export interface TupleLengthIssue extends XisIssue<"TUPLE_LENGTH"> {
 export const isTupleOf = <Length extends number>(
 	value: unknown,
 	expected: Length,
-	args: XisArgBase
+	args: XisArgsBase
 ): ExecResultSync<TupleLengthIssue | BaseTypeIssue<"array">, TupleOf<Length>> =>
 	isBaseArray(value, args).chain((arr) =>
 		arr.length === expected

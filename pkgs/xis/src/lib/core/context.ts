@@ -47,19 +47,19 @@ export type XisBuildCtx<Current extends XisCtxBase, Next extends XisCtxBase> = [
 		? Current
 		: Current & Next
 
-export interface XisArg<In, Messages extends XisMessagesBase, Ctx extends XisCtxBase> {
+export interface XisArgs<In, Messages extends XisMessagesBase, Ctx extends XisCtxBase> {
 	value: In
 	path: XisPath
 	ctx: Ctx
 	messages: Messages
 }
 
-export type XisArgBase = XisArg<unknown, XisMessagesBase, XisCtxBase>
+export type XisArgsBase = XisArgs<unknown, XisMessagesBase, XisCtxBase>
 
 export const addElement = <In, Messages extends XisMessagesBase, Ctx extends XisCtxBase>(
-	args: XisArg<In, Messages, Ctx>,
+	args: XisArgs<In, Messages, Ctx>,
 	elem: PathElement
-): XisArg<In, Messages, Ctx> => {
+): XisArgs<In, Messages, Ctx> => {
 	const { segment, side } = elem
 	return {
 		...args,
