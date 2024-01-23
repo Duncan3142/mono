@@ -4,26 +4,26 @@ import type { XisPath } from "./path.js"
 
 export type XisMsgArgs<
 	In = unknown,
-	Ctx extends ObjArgBase = null,
 	Props extends ObjArgBase = null,
+	Ctx extends ObjArgBase = null,
 > = {
 	value: In
 	path: XisPath
-	ctx: Ctx
 	props: Props
+	ctx: Ctx
 }
 
 export type XisMsgBuilder<
 	In = unknown,
-	Ctx extends ObjArgBase = null,
 	Props extends ObjArgBase = null,
-> = (args: XisMsgArgs<In, Ctx, Props>) => string
+	Ctx extends ObjArgBase = null,
+> = (args: XisMsgArgs<In, Props, Ctx>) => string
 
 export type XisMsgBuilderAsync<
 	In = unknown,
-	Ctx extends ObjArgBase = null,
 	Props extends ObjArgBase = null,
-> = (args: XisMsgArgs<In, Ctx, Props>) => Promise<string>
+	Ctx extends ObjArgBase = null,
+> = (args: XisMsgArgs<In, Props, Ctx>) => Promise<string>
 
 export type XisMsgBuilderBase = XisMsgBuilder<any, any, any> | XisMsgBuilderAsync<any, any, any>
 

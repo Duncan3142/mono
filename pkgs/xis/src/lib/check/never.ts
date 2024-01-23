@@ -13,15 +13,15 @@ export interface NeverMessages extends XisMessages<NeverIssue> {
 	XIS_NEVER: XisMsgBuilder
 }
 
-export type NeverProps = {
+export type NeverArgs = {
 	messages: NeverMessages | null
 }
 
 export class XisNever extends XisSync<unknown, NeverIssue, never> {
 	#messages: NeverMessages
-	constructor(props: NeverProps) {
+	constructor(args: NeverArgs) {
 		super()
-		this.#messages = props.messages ?? {
+		this.#messages = args.messages ?? {
 			XIS_NEVER: (args: XisMsgArgs) => {
 				const { value, path } = args
 				const valueStr = typeof value === "string" ? `"${value}"` : String(value)
@@ -48,4 +48,4 @@ export class XisNever extends XisSync<unknown, NeverIssue, never> {
 	}
 }
 
-export const never = (props: NeverProps) => new XisNever(props)
+export const never = (props: NeverArgs) => new XisNever(props)

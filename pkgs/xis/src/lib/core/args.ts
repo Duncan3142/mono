@@ -1,13 +1,11 @@
 import type { ObjArgBase } from "#util/arg.js"
 import type { PathElement, XisPath } from "./path.js"
 
-export interface XisExecArgs<In, Ctx extends ObjArgBase> {
+export interface XisExecArgs<In = unknown, Ctx extends ObjArgBase = null> {
 	value: In
 	path: XisPath
 	ctx: Ctx
 }
-
-export type XisExecArgsBase = XisExecArgs<unknown, ObjArgBase>
 
 export const addElement = <In, Ctx extends ObjArgBase>(
 	args: XisExecArgs<In, Ctx>,

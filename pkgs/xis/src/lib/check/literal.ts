@@ -1,61 +1,65 @@
 import type { XisIssue } from "#core/error.js"
-
+import type { BasicArg } from "#util/arg.js"
 import { XisSync, type ExecResultSync } from "#core/sync.js"
 
-import type { XisArgs } from "#core/context.js"
+import type { XisExecArgs } from "#core/args.js"
 import { Left, Right } from "purify-ts/Either"
+import type { XisMessages, XisMsgArgs, XisMsgBuilder } from "#core/messages.js"
 
 export interface LiteralIssue<L> extends XisIssue<"XIS_LITERAL"> {
 	expected: L
 	value: unknown
 }
 
-export type LiteralMessages<L> = {
-	XIS_LITERAL?: (args: { value: unknown; expected: L }) => string
-} | null
-
-export interface LiteralProps<L> {
+export type LiteralProps<L extends BasicArg> = {
 	literal: L
-	messages?: LiteralMessages<L>
 }
 
-export class XisLiteral<const Literal> extends XisSync<
+export interface LiteralMessages<L extends BasicArg> extends XisMessages<LiteralIssue<L>> {
+	XIS_LITERAL: XisMsgBuilder<unknown, LiteralProps<L>>
+}
+
+export interface LiteralArgs<L extends BasicArg> {
+	props: LiteralProps<L>
+	messages: LiteralMessages<L> | null
+}
+
+export class XisLiteral<const Literal extends BasicArg> extends XisSync<
 	unknown,
 	LiteralIssue<Literal>,
-	Literal,
-	LiteralMessages<Literal>
+	Literal
 > {
-	readonly #props: LiteralProps<Literal>
+	#props: LiteralProps<Literal>
+	#messages: LiteralMessages<Literal>
 
-	constructor(props: LiteralProps<Literal>) {
+	constructor(args: LiteralArgs<Literal>) {
 		super()
-		this.#props = props
+		this.#props = args.props
+		this.#messages = args.messages ?? {
+			XIS_LITERAL: (args: XisMsgArgs<unknown, LiteralProps<Literal>>) =>
+				`Value "${String(args.value)}" is not literal ${String(args.props.literal)}`,
+		}
 	}
 
-	exec(
-		args: XisArgs<unknown, LiteralMessages<Literal>, null>
-	): ExecResultSync<LiteralIssue<Literal>, Literal> {
-		const { value, path, messages } = args
+	exec(args: XisExecArgs<unknown, null>): ExecResultSync<LiteralIssue<Literal>, Literal> {
+		const { value, path } = args
 		if (value === this.#props.literal) {
 			return Right(value as Literal)
 		}
 
-		const builder =
-			this.#props?.messages?.XIS_LITERAL ??
-			messages?.XIS_LITERAL ??
-			((args: { value: unknown; expected: Literal }) =>
-				`Value "${String(args.value)}" is not literal ${String(args.expected)}`)
+		const message = this.#messages.XIS_LITERAL({ value, path, props: this.#props, ctx: null })
 
 		const err = {
 			name: "XIS_LITERAL" as const,
 			path,
 			expected: this.#props.literal,
-			message: builder({ value, expected: this.#props.literal }),
+			message,
 			value,
 		}
 		return Left([err])
 	}
 }
 
-export const literal = <const Literal>(props: LiteralProps<Literal>): XisLiteral<Literal> =>
-	new XisLiteral(props)
+export const literal = <const Literal extends BasicArg>(
+	args: LiteralArgs<Literal>
+): XisLiteral<Literal> => new XisLiteral(args)

@@ -7,6 +7,10 @@ interface XisLazyAsyncProps<X extends XisAsyncBase> {
 	lazy: () => X
 }
 
+interface XisLazyAsyncArgs<X extends XisAsyncBase> {
+	props: XisLazyAsyncProps<X>
+}
+
 export class XisLazyAsync<X extends XisAsyncBase> extends XisAsync<
 	ExIn<X>,
 	ExIssues<X>,
@@ -15,9 +19,9 @@ export class XisLazyAsync<X extends XisAsyncBase> extends XisAsync<
 > {
 	#props: XisLazyAsyncProps<X>
 
-	constructor(props: XisLazyAsyncProps<X>) {
+	constructor(args: XisLazyAsyncArgs<X>) {
 		super()
-		this.#props = props
+		this.#props = args.props
 	}
 
 	exec(args: XisExecArgs<ExIn<X>, ExCtx<X>>): ExecResultAsync<ExIssues<X>, ExOut<X>> {
@@ -26,4 +30,4 @@ export class XisLazyAsync<X extends XisAsyncBase> extends XisAsync<
 }
 
 export const lazy = <X extends XisAsyncBase>(lazy: () => X): XisLazyAsync<X> =>
-	new XisLazyAsync({ lazy })
+	new XisLazyAsync({ props: { lazy } })

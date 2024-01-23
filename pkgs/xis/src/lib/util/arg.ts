@@ -1,17 +1,23 @@
 import type { TruePropertyKey } from "./base-type.js"
 
-type BasicArg = string | number | boolean | undefined | symbol | object | null | Array<BasicArg>
+export type BasicArg = string | number | boolean | undefined | symbol | object | null | bigint
 
 export interface ObjArg {
 	[prop: TruePropertyKey]:
 		| BasicArg
+		| Array<BasicArg>
 		| ObjArg
 		| Array<ObjArg>
-		| Promise<BasicArg>
+		| Promise<BasicArg | Array<BasicArg>>
 		| Promise<ObjArg | Array<ObjArg>>
 		| ((
 				...args: Array<any>
-		  ) => BasicArg | ObjArg | Array<ObjArg> | Promise<BasicArg | ObjArg | Array<ObjArg>>)
+		  ) =>
+				| BasicArg
+				| Array<BasicArg>
+				| ObjArg
+				| Array<ObjArg>
+				| Promise<BasicArg | Array<BasicArg> | ObjArg | Array<ObjArg>>)
 }
 
 export type ObjArgBase = ObjArg | null

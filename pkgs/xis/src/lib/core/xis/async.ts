@@ -15,6 +15,15 @@ export interface XisFnAsyncProps<
 	fn: XisFn<ExOut<From>, FnIssues, FnOut, FnCtx>
 }
 
+export interface XisFnAsyncArgs<
+	From extends XisAsyncBase,
+	FnIssues extends XisIssueBase = never,
+	FnOut = ExOut<From>,
+	FnCtx extends ObjArgBase = null,
+> {
+	props: XisFnAsyncProps<From, FnIssues, FnOut, FnCtx>
+}
+
 export class XisFnAsync<
 	From extends XisAsyncBase,
 	FnIssues extends XisIssueBase = never,
@@ -23,9 +32,9 @@ export class XisFnAsync<
 > extends XisAsync<ExIn<From>, ExIssues<From>, FnOut, BuildObjArg<ExCtx<From>, FnCtx>> {
 	readonly #props
 
-	constructor(props: XisFnAsyncProps<From, FnIssues, FnOut, FnCtx>) {
+	constructor(args: XisFnAsyncArgs<From, FnIssues, FnOut, FnCtx>) {
 		super()
-		this.#props = props
+		this.#props = args.props
 	}
 
 	exec(
@@ -55,4 +64,4 @@ export const xis = <
 	from: From,
 	fn: XisFn<ExOut<From>, FnIssues, FnOut, FnCtx>
 ): XisFnAsync<From, FnIssues, FnOut, FnCtx> =>
-	new XisFnAsync<From, FnIssues, FnOut, FnCtx>({ from, fn })
+	new XisFnAsync<From, FnIssues, FnOut, FnCtx>({ props: { from, fn } })

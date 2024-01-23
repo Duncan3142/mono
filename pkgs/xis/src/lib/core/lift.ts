@@ -6,7 +6,9 @@ export interface XisLiftProps<X extends XisSyncBase> {
 	inner: X
 }
 
-export type XisLiftPropsBase = XisLiftProps<XisSyncBase>
+export interface XisLiftArgs<X extends XisSyncBase> {
+	props: XisLiftProps<X>
+}
 
 export class XisLift<X extends XisSyncBase> extends XisAsync<
 	ExIn<X>,
@@ -18,13 +20,14 @@ export class XisLift<X extends XisSyncBase> extends XisAsync<
 	get inner(): X {
 		return this.#props.inner
 	}
-	constructor(props: XisLiftProps<X>) {
+	constructor(args: XisLiftArgs<X>) {
 		super()
-		this.#props = props
+		this.#props = args.props
 	}
 	exec(args: ExArg<X>): ExecResultAsync<ExIssues<X>, ExOut<X>> {
 		return Promise.resolve(this.inner.exec(args))
 	}
 }
 
-export const lift = <X extends XisSyncBase>(inner: X): XisLift<X> => new XisLift({ inner })
+export const lift = <X extends XisSyncBase>(inner: X): XisLift<X> =>
+	new XisLift({ props: { inner } })

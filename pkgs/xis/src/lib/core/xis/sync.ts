@@ -14,6 +14,15 @@ export interface XisFnSyncProps<
 	fn: XisSyncFn<ExOut<From>, FnIssues, FnOut, FnCtx>
 }
 
+export interface XisFnSyncArgs<
+	From extends XisSyncBase,
+	FnIssues extends XisIssueBase = never,
+	FnOut = ExOut<From>,
+	FnCtx extends ObjArgBase = null,
+> {
+	props: XisFnSyncProps<From, FnIssues, FnOut, FnCtx>
+}
+
 export class XisFnSync<
 	From extends XisSyncBase,
 	FnIssues extends XisIssueBase = never,
@@ -22,9 +31,9 @@ export class XisFnSync<
 > extends XisSync<ExIn<From>, ExIssues<From>, FnOut, BuildObjArg<ExCtx<From>, FnCtx>> {
 	readonly #props
 
-	constructor(props: XisFnSyncProps<From, FnIssues, FnOut, FnCtx>) {
+	constructor(args: XisFnSyncArgs<From, FnIssues, FnOut, FnCtx>) {
 		super()
-		this.#props = props
+		this.#props = args.props
 	}
 
 	exec(
@@ -50,4 +59,4 @@ export const xis = <
 	from: From,
 	fn: XisSyncFn<ExOut<From>, FnIssues, FnOut, FnCtx>
 ): XisFnSync<From, FnIssues, FnOut, FnCtx> =>
-	new XisFnSync<From, FnIssues, FnOut, FnCtx>({ from, fn })
+	new XisFnSync<From, FnIssues, FnOut, FnCtx>({ props: { from, fn } })

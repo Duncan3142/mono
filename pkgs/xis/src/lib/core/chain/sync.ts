@@ -24,6 +24,12 @@ export interface XisChainSyncProps<
 	schema: [...XisChainSchemaSync<Chain>]
 }
 
+export interface XisChainSyncArgs<
+	Chain extends [XisSyncBase, XisSyncBase, ...Array<XisSyncBase>],
+> {
+	props: XisChainSyncProps<Chain>
+}
+
 export class XisChainSync<
 	Chain extends [XisSyncBase, XisSyncBase, ...Array<XisSyncBase>],
 > extends XisSync<
@@ -34,9 +40,9 @@ export class XisChainSync<
 > {
 	#props: XisChainSyncProps<Chain>
 
-	constructor(props: XisChainSyncProps<Chain>) {
+	constructor(args: XisChainSyncArgs<Chain>) {
 		super()
-		this.#props = props
+		this.#props = args.props
 	}
 
 	exec(
@@ -62,4 +68,4 @@ export class XisChainSync<
 
 export const chain = <Chain extends [XisSyncBase, XisSyncBase, ...Array<XisSyncBase>]>(
 	schema: [...XisChainSchemaSync<Chain>]
-): XisChainSync<Chain> => new XisChainSync({ schema })
+): XisChainSync<Chain> => new XisChainSync({ props: { schema } })

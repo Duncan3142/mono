@@ -7,6 +7,10 @@ interface XisLazySyncProps<X extends XisSyncBase> {
 	lazy: () => X
 }
 
+interface XisLazySyncArgs<X extends XisSyncBase> {
+	props: XisLazySyncProps<X>
+}
+
 export class XisLazySync<X extends XisSyncBase> extends XisSync<
 	ExIn<X>,
 	ExIssues<X>,
@@ -15,9 +19,9 @@ export class XisLazySync<X extends XisSyncBase> extends XisSync<
 > {
 	#props: XisLazySyncProps<X>
 
-	constructor(props: XisLazySyncProps<X>) {
+	constructor(args: XisLazySyncArgs<X>) {
 		super()
-		this.#props = props
+		this.#props = args.props
 	}
 
 	exec(args: XisExecArgs<ExIn<X>, ExCtx<X>>): ExecResultSync<ExIssues<X>, ExOut<X>> {
@@ -26,4 +30,4 @@ export class XisLazySync<X extends XisSyncBase> extends XisSync<
 }
 
 export const lazy = <X extends XisSyncBase>(lazy: () => X): XisLazySync<X> =>
-	new XisLazySync({ lazy })
+	new XisLazySync({ props: { lazy } })

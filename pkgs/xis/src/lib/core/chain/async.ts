@@ -23,6 +23,10 @@ export interface XisChainAsyncProps<Chain extends [XisBase, XisBase, ...Array<Xi
 	schema: [...XisChainSchemaAsync<Chain>]
 }
 
+export interface XisChainAsyncArgs<Chain extends [XisBase, XisBase, ...Array<XisBase>]> {
+	props: XisChainAsyncProps<Chain>
+}
+
 export class XisChainAsync<
 	Chain extends [XisBase, XisBase, ...Array<XisBase>],
 > extends XisAsync<
@@ -33,9 +37,9 @@ export class XisChainAsync<
 > {
 	#props: XisChainAsyncProps<Chain>
 
-	constructor(props: XisChainAsyncProps<Chain>) {
+	constructor(args: XisChainAsyncArgs<Chain>) {
 		super()
-		this.#props = props
+		this.#props = args.props
 	}
 
 	exec(
@@ -67,4 +71,4 @@ export class XisChainAsync<
 
 export const chain = <Chain extends [XisBase, XisBase, ...Array<XisBase>]>(
 	schema: [...XisChainSchemaAsync<Chain>]
-): XisChainAsync<Chain> => new XisChainAsync({ schema })
+): XisChainAsync<Chain> => new XisChainAsync({ props: { schema } })
