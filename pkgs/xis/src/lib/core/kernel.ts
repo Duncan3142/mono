@@ -41,7 +41,7 @@ export type ExOut<T extends XisBase> = T["types"]["o"]
 
 export type ExCtx<T extends XisBase> = T["types"]["c"]
 
-export type ExArg<T extends XisBase> = XisExecArgs<ExIn<T>, ExCtx<T>>
+export type ExArgs<T extends XisBase> = XisExecArgs<ExIn<T>, ExCtx<T>>
 
 export const mergeIssues = <R extends ExecResultSyncBase>(
 	acc: R,

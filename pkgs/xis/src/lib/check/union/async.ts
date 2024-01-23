@@ -1,56 +1,41 @@
-import type { XisCtx } from "#core/context.js"
-import {
-	type UnionArgs,
-	type UnionIssues,
-	type UnionIn,
-	type UnionOut,
-	reduce,
-} from "./core.js"
+import type { XisExecArgs } from "#core/args.js"
+import { XisAsync, type ExecResultAsync } from "#core/async.js"
 import type { XisBase } from "#core/kernel.js"
 import { EitherAsync } from "purify-ts/EitherAsync"
-import { XisAsync, type ExecResultAsync, type ParseResultAsync } from "#core/async.js"
+import { type UnionCtx, type UnionIssues, type UnionIn, type UnionOut, reduce } from "./core.js"
+import type { ExecResultSync } from "#core/sync.js"
+
+export interface XisUnionAsyncProps<Schema extends [XisBase, XisBase, ...Array<XisBase>]> {
+	checks: [...Schema]
+}
+
+export interface XisUnionAsyncArgs<Schema extends [XisBase, XisBase, ...Array<XisBase>]> {
+	props: XisUnionAsyncProps<Schema>
+}
 
 export class XisUnionAsync<
 	Schema extends [XisBase, XisBase, ...Array<XisBase>],
-> extends XisAsync<
-	UnionIn<Schema>,
-	UnionIssues<Schema>,
-	UnionIssues<Schema>,
-	UnionOut<Schema>,
-	UnionArgs<Schema>
-> {
-	readonly #checks: [...Schema]
+> extends XisAsync<UnionIn<Schema>, UnionIssues<Schema>, UnionOut<Schema>, UnionCtx<Schema>> {
+	#props: XisUnionAsyncProps<Schema>
 
-	constructor(chks: [...Schema]) {
+	constructor(args: XisUnionAsyncArgs<Schema>) {
 		super()
-		this.#checks = chks
+		this.#props = args.props
 	}
 
-	async parse(
-		value: unknown,
-		ctx: XisCtx<UnionArgs<Schema>>
-	): ParseResultAsync<UnionIssues<Schema>, UnionIssues<Schema>, UnionOut<Schema>> {
-		type Res = Awaited<
-			ParseResultAsync<UnionIssues<Schema>, UnionIssues<Schema>, UnionOut<Schema>>
-		>
-
+	async exec(
+		args: XisExecArgs<UnionIn<Schema>, UnionCtx<Schema>>
+	): ExecResultAsync<UnionIssues<Schema>, UnionOut<Schema>> {
 		const mapped = await Promise.all(
-			this.#checks.map((chk) =>
-				EitherAsync.fromPromise(() => Promise.resolve(chk.parse(value, ctx))).run()
+			this.#props.checks.map((chk) =>
+				EitherAsync.fromPromise(() => Promise.resolve(chk.exec(args))).run()
 			)
 		)
 
-		return reduce(mapped) as Res
-	}
-
-	exec(
-		value: UnionIn<Schema>,
-		ctx: XisCtx<UnionArgs<Schema>>
-	): ExecResultAsync<UnionIssues<Schema>, UnionOut<Schema>> {
-		return this.parse(value, ctx)
+		return reduce(mapped) as ExecResultSync<UnionIssues<Schema>, UnionOut<Schema>>
 	}
 }
 
 export const union = <Schema extends [XisBase, XisBase, ...Array<XisBase>]>(
 	checks: [...Schema]
-): XisUnionAsync<Schema> => new XisUnionAsync(checks)
+): XisUnionAsync<Schema> => new XisUnionAsync({ props: { checks } })

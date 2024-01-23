@@ -1,4 +1,4 @@
-import type { ExIn, ExIssues, ExOut, ExArg, ExCtx } from "#core/kernel.js"
+import type { ExIn, ExIssues, ExOut, ExArgs, ExCtx } from "#core/kernel.js"
 import { XisAsync, type ExecResultAsync } from "#core/async.js"
 import type { XisSyncBase } from "./sync.js"
 
@@ -24,7 +24,7 @@ export class XisLift<X extends XisSyncBase> extends XisAsync<
 		super()
 		this.#props = args.props
 	}
-	exec(args: ExArg<X>): ExecResultAsync<ExIssues<X>, ExOut<X>> {
+	exec(args: ExArgs<X>): ExecResultAsync<ExIssues<X>, ExOut<X>> {
 		return Promise.resolve(this.inner.exec(args))
 	}
 }
