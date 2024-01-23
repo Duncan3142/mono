@@ -1,10 +1,10 @@
-import type { XisCtxBase } from "#core/context.js"
+import type { XisArgObjBase } from "#core/context.js"
 import { isNumber as isBaseNumber, type BaseTypeIssue } from "#core/base-type.js"
 import { Right } from "purify-ts/Either"
 import { XisSync } from "#core/sync.js"
 
 export class XisNumber extends XisSync<number, BaseTypeIssue<"number">> {
-	parse(value: unknown, ctx: XisCtxBase) {
+	parse(value: unknown, ctx: XisArgObjBase) {
 		return isBaseNumber(value, ctx)
 	}
 

@@ -1,4 +1,4 @@
-import type { XisCtxBase } from "#core/context.js"
+import type { XisArgObjBase } from "#core/context.js"
 import { type ExecResultSync, type ParseResultSync, XisSync } from "#core/sync.js"
 import { trueTypeOf } from "#util/base-type.js"
 import { Right } from "purify-ts/Either"
@@ -14,7 +14,7 @@ export class XisCoerceDate extends XisSync<
 > {
 	parse(
 		value: unknown,
-		ctx: XisCtxBase
+		ctx: XisArgObjBase
 	): ParseResultSync<CoerceIssue<"date">, CoerceIssue<"date">, Date> {
 		const valueType = trueTypeOf(value)
 		if (valueType === "number" || valueType === "string" || valueType === "date") {
@@ -23,7 +23,7 @@ export class XisCoerceDate extends XisSync<
 		return coerceErr("date", value, valueType, ctx)
 	}
 
-	exec(value: DateInput, ctx: XisCtxBase): ExecResultSync<CoerceIssue<"date">, Date> {
+	exec(value: DateInput, ctx: XisArgObjBase): ExecResultSync<CoerceIssue<"date">, Date> {
 		const res = new Date(value)
 		if (Number.isNaN(res.valueOf())) {
 			const valueType = trueTypeOf(value)

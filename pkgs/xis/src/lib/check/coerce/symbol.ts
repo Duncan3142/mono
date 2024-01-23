@@ -1,4 +1,4 @@
-import type { XisCtxBase } from "#core/context.js"
+import type { XisArgObjBase } from "#core/context.js"
 
 import { type ExecResultSync, type ParseResultSync, XisSync } from "#core/sync.js"
 
@@ -17,7 +17,7 @@ export class XisCoerceSymbol extends XisSync<
 > {
 	parse(
 		value: unknown,
-		ctx: XisCtxBase
+		ctx: XisArgObjBase
 	): ParseResultSync<CoerceIssue<"symbol">, never, symbol> {
 		const valueType = trueTypeOf(value)
 		if (

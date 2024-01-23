@@ -1,5 +1,5 @@
 import { isString, type BaseTypeIssue } from "#core/base-type.js"
-import type { XisCtxBase } from "#core/context.js"
+import type { XisArgObjBase } from "#core/context.js"
 import type { XisIssue } from "#core/error.js"
 import { XisSync, type ExecResultSync, type ParseResultSync } from "#core/sync.js"
 import { Right, Left } from "purify-ts/Either"
@@ -29,7 +29,7 @@ export type Version = (typeof Version)[keyof typeof Version]
 export const isUUID = <V extends Version = "all">(
 	str: string,
 	version: V,
-	ctx: XisCtxBase
+	ctx: XisArgObjBase
 ): ExecResultSync<UUIDIssue<V>, UUID> => {
 	const pattern = uuidPatterns[version]
 	switch (pattern.test(str)) {
@@ -67,11 +67,11 @@ export class XisUUID<V extends Version> extends XisSync<
 
 	parse(
 		value: unknown,
-		ctx: XisCtxBase
+		ctx: XisArgObjBase
 	): ParseResultSync<BaseTypeIssue<"string">, UUIDIssue<V>, UUID> {
 		return isString(value, ctx).chain((v) => this.exec(v, ctx))
 	}
-	exec(value: string, ctx: XisCtxBase): ExecResultSync<UUIDIssue<V>, UUID> {
+	exec(value: string, ctx: XisArgObjBase): ExecResultSync<UUIDIssue<V>, UUID> {
 		return isUUID(value, this.#version, ctx)
 	}
 }

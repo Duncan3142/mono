@@ -1,4 +1,4 @@
-import type { XisArgs, XisCtxObj } from "#core/context.js"
+import type { XisArgs, XisArgObj } from "#core/context.js"
 import type { XisIssue } from "#core/error.js"
 import { XisSync, type ExecResultSync } from "#core/sync.js"
 import { Left, Right } from "purify-ts/Either"
@@ -15,7 +15,7 @@ interface TestProps<Messages extends TestMessages> {
 	messages: Messages
 }
 
-interface TestCtxObj extends XisCtxObj {
+interface TestCtxObj extends XisArgObj {
 	getFloor: () => number
 }
 

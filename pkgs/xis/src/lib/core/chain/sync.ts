@@ -2,14 +2,8 @@ import { type ExIn, type ExOut } from "#core/kernel.js"
 import type { XisIssueBase } from "#core/error.js"
 
 import { XisSync, type ExecResultSync, type XisSyncBase } from "#core/sync.js"
-import type {
-	XisChainCtx,
-	XisChainMessages,
-	XisChainIssues,
-	XisChainIn,
-	XisChainOut,
-} from "./core.js"
-import type { XisArgs } from "#core/context.js"
+import type { XisChainCtx, XisChainIssues, XisChainIn, XisChainOut } from "./core.js"
+import type { XisExecArgs } from "#core/args.js"
 
 type XisChainSchemaSync<
 	Chain extends [XisSyncBase, ...Array<XisSyncBase>],
@@ -36,7 +30,6 @@ export class XisChainSync<
 	XisChainIn<Chain>,
 	XisChainIssues<Chain>,
 	XisChainOut<Chain>,
-	XisChainMessages<Chain>,
 	XisChainCtx<Chain>
 > {
 	#props: XisChainSyncProps<Chain>
@@ -47,9 +40,9 @@ export class XisChainSync<
 	}
 
 	exec(
-		args: XisArgs<XisChainIn<Chain>, XisChainMessages<Chain>, XisChainCtx<Chain>>
+		args: XisExecArgs<XisChainIn<Chain>, XisChainCtx<Chain>>
 	): ExecResultSync<XisChainIssues<Chain>, XisChainOut<Chain>> {
-		const { path, messages, ctx } = args
+		const { path, ctx } = args
 		const [first, ...rest] = this.#props.schema
 		const acc: ExecResultSync<XisIssueBase, unknown> = first.exec(args)
 
@@ -59,7 +52,6 @@ export class XisChainSync<
 					xis.exec({
 						value,
 						path,
-						messages,
 						ctx,
 					})
 				),

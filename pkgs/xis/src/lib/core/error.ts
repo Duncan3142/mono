@@ -1,4 +1,4 @@
-import type { XisPath } from "./context.js"
+import type { XisPath } from "./path.js"
 
 export interface XisIssue<Name extends string> {
 	name: Name

@@ -1,6 +1,6 @@
-import type { XisArgs } from "#core/context.js"
+import type { XisExecArgs } from "#core/args.js"
 
-import type { ExIn, ExIssues, ExOut, ExMessages, ExCtx } from "#core/kernel.js"
+import type { ExIn, ExIssues, ExOut, ExCtx } from "#core/kernel.js"
 import { XisAsync, type ExecResultAsync, type XisAsyncBase } from "#core/async.js"
 
 interface XisLazyAsyncProps<X extends XisAsyncBase> {
@@ -11,7 +11,6 @@ export class XisLazyAsync<X extends XisAsyncBase> extends XisAsync<
 	ExIn<X>,
 	ExIssues<X>,
 	ExOut<X>,
-	ExMessages<X>,
 	ExCtx<X>
 > {
 	#props: XisLazyAsyncProps<X>
@@ -21,9 +20,7 @@ export class XisLazyAsync<X extends XisAsyncBase> extends XisAsync<
 		this.#props = props
 	}
 
-	exec(
-		args: XisArgs<ExIn<X>, ExMessages<X>, ExCtx<X>>
-	): ExecResultAsync<ExIssues<X>, ExOut<X>> {
+	exec(args: XisExecArgs<ExIn<X>, ExCtx<X>>): ExecResultAsync<ExIssues<X>, ExOut<X>> {
 		return this.#props.lazy().exec(args)
 	}
 }

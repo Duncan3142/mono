@@ -1,19 +1,16 @@
-import type { XisCtxBase } from "./context.js"
+import type { ObjArgBase } from "#util/arg.js"
 import type { XisIssueBase } from "./error.js"
-import type { XisMessages } from "./prop.js"
 
 export interface XisBookKeeping<
 	In,
 	Issues extends XisIssueBase = never,
 	Out = In,
-	Messages extends XisMessages<Issues> = null,
-	Ctx extends XisCtxBase = null,
+	Ctx extends ObjArgBase = null,
 > {
 	i: In
 	is: Issues
 	o: Out
 	c: Ctx
-	m: Messages
 }
 
 export class BookkeepingError extends Error {

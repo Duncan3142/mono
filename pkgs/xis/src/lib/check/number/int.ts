@@ -1,4 +1,4 @@
-import type { XisCtxBase } from "#core/context.js"
+import type { XisArgObjBase } from "#core/context.js"
 
 import type { XisIssue } from "#core/error.js"
 import { Left, Right } from "purify-ts/Either"
@@ -11,12 +11,12 @@ export type IntegerIssue = XisIssue<"INTEGER">
 export class XisInteger extends XisSync<number, BaseTypeIssue<"number">, IntegerIssue> {
 	parse(
 		value: unknown,
-		ctx: XisCtxBase
+		ctx: XisArgObjBase
 	): ParseResultSync<BaseTypeIssue<"number">, IntegerIssue, number> {
 		return isNumber(value, ctx).chain((value) => this.exec(value, ctx))
 	}
 
-	exec(value: number, ctx: XisCtxBase): ExecResultSync<IntegerIssue, number> {
+	exec(value: number, ctx: XisArgObjBase): ExecResultSync<IntegerIssue, number> {
 		if (Number.isInteger(value)) {
 			return Right(value)
 		}

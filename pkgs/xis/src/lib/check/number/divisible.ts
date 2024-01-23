@@ -1,4 +1,4 @@
-import type { XisCtxBase } from "#core/context.js"
+import type { XisArgObjBase } from "#core/context.js"
 import type { XisIssue } from "#core/error.js"
 import { Left, Right } from "purify-ts/Either"
 import { XisSync, type ExecResultSync, type ParseResultSync } from "#core/sync.js"
@@ -29,12 +29,12 @@ export class XisDivisible<const Opts extends NumberDivisibleOptions> extends Xis
 
 	parse(
 		value: unknown,
-		ctx: XisCtxBase
+		ctx: XisArgObjBase
 	): ParseResultSync<BaseTypeIssue<"number">, NumberDivisibleIssue<Opts>, number> {
 		return isNumber(value, ctx).chain((value) => this.exec(value, ctx))
 	}
 
-	exec(value: number, ctx: XisCtxBase): ExecResultSync<NumberDivisibleIssue<Opts>, number> {
+	exec(value: number, ctx: XisArgObjBase): ExecResultSync<NumberDivisibleIssue<Opts>, number> {
 		const { divisor } = this.#opts
 
 		const remainder = value % divisor

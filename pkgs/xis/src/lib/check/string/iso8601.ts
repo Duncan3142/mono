@@ -1,5 +1,5 @@
 import { isString, type BaseTypeIssue } from "#core/base-type.js"
-import type { XisCtxBase } from "#core/context.js"
+import type { XisArgObjBase } from "#core/context.js"
 import type { XisIssue } from "#core/error.js"
 import { XisSync, type ExecResultSync, type ParseResultSync } from "#core/sync.js"
 import { Left, Right } from "purify-ts"
@@ -103,7 +103,7 @@ export interface ISO8601Issue extends XisIssue<"ISO8601"> {
 
 const isISO8601Either = (
 	str: string,
-	ctx: XisCtxBase
+	ctx: XisArgObjBase
 ): ExecResultSync<ISO8601Issue, string> => {
 	switch (isISO8601(str)) {
 		case true:
@@ -122,11 +122,11 @@ const isISO8601Either = (
 export class XisISO8601 extends XisSync<string, BaseTypeIssue<"string">, ISO8601Issue> {
 	parse(
 		value: unknown,
-		ctx: XisCtxBase
+		ctx: XisArgObjBase
 	): ParseResultSync<BaseTypeIssue<"string">, ISO8601Issue, string> {
 		return isString(value, ctx).chain((v) => this.exec(v, ctx))
 	}
-	exec(value: string, ctx: XisCtxBase): ExecResultSync<ISO8601Issue, string> {
+	exec(value: string, ctx: XisArgObjBase): ExecResultSync<ISO8601Issue, string> {
 		return isISO8601Either(value, ctx)
 	}
 }

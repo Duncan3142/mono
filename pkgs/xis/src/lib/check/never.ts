@@ -4,20 +4,30 @@ import { XisSync, type ExecResultSync } from "#core/sync.js"
 import type { XisArgs } from "#core/context.js"
 import { Left } from "purify-ts/Either"
 
-export interface NeverIssue extends XisIssue<"NEVER"> {
+export interface NeverIssue extends XisIssue<"XIS_NEVER"> {
 	value: unknown
 }
 
 export type NeverMessages = {
-	NEVER?: string
+	XIS_NEVER?: string
+} | null
+
+export type NeverProps = {
+	messages: NeverMessages
 }
 
 export class XisNever extends XisSync<unknown, NeverIssue, never, NeverMessages> {
+	#props: NeverProps
+	constructor(props: NeverProps) {
+		super()
+		this.#props = props
+	}
 	exec(args: XisArgs<unknown, NeverMessages, null>): ExecResultSync<NeverIssue, never> {
 		const { value, messages, path } = args
-		const message = messages?.NEVER ?? "Value is never"
+		const message =
+			this.#props?.messages?.XIS_NEVER ?? messages?.XIS_NEVER ?? "never value encountered"
 		const err = {
-			name: "NEVER" as const,
+			name: "XIS_NEVER" as const,
 			path,
 			message,
 			value,
@@ -26,4 +36,4 @@ export class XisNever extends XisSync<unknown, NeverIssue, never, NeverMessages>
 	}
 }
 
-export const never: XisNever = new XisNever()
+export const never = (props: NeverProps) => new XisNever(props)

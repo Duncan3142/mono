@@ -2,7 +2,7 @@ import { objectEntries, type BaseObject, type TruePropertyKey } from "#util/base
 import { isBaseObject, type BaseTypeIssue } from "#core/base-type.js"
 import type { XisIssue, XisIssueBase } from "#core/error.js"
 
-import { CheckSide, type XisCtxBase, type XisOptArgs, type XisPath } from "#core/context.js"
+import { CheckSide, type XisArgObjBase, type XisOptArgs, type XisPath } from "#core/context.js"
 
 import {
 	type ExArgs,
@@ -312,7 +312,7 @@ export const guard = <S extends [...Array<BaseProp>], CM extends ShapeCheckMode>
 	value: unknown,
 	shape: S,
 	checkMode: CM,
-	ctx: XisCtxBase
+	ctx: XisArgObjBase
 ): ExecResultSync<
 	BaseTypeIssue<"object"> | MissingPropertyIssue | ExtraPropertyIssue,
 	[Array<Triad<S>>, Array<[TruePropertyKey, unknown]>]

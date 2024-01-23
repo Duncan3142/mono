@@ -1,4 +1,4 @@
-import type { XisCtxBase } from "#core/context.js"
+import type { XisArgObjBase } from "#core/context.js"
 
 import type { XisIssue } from "#core/error.js"
 import { inRange, type RangeOpts } from "#util/rangeOpts.js"
@@ -11,7 +11,7 @@ export type StringLengthOpts = RangeOpts<number>
 export class XisToLength extends XisSync<string, BaseTypeIssue<"string">, never, number> {
 	parse(
 		value: unknown,
-		ctx: XisCtxBase
+		ctx: XisArgObjBase
 	): ParseResultSync<BaseTypeIssue<"string">, never, number> {
 		return isString(value, ctx).chain((v) => this.exec(v))
 	}
@@ -41,12 +41,12 @@ export class XisIsLength<Opts extends StringLengthOpts> extends XisSync<
 
 	parse(
 		value: unknown,
-		ctx: XisCtxBase
+		ctx: XisArgObjBase
 	): ParseResultSync<BaseTypeIssue<"string">, StringLengthIssue, string> {
 		return isString(value, ctx).chain((v) => this.exec(v, ctx))
 	}
 
-	exec(value: string, ctx: XisCtxBase): ExecResultSync<StringLengthIssue, string> {
+	exec(value: string, ctx: XisArgObjBase): ExecResultSync<StringLengthIssue, string> {
 		const opts = this.#opts
 
 		if (inRange(value.length, opts)) {

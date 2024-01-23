@@ -1,0 +1,17 @@
+export const CheckSide = {
+	Key: "KEY",
+	Value: "VALUE",
+} as const
+
+export type CheckSide = (typeof CheckSide)[keyof typeof CheckSide]
+
+export type PathSegment = string | symbol | number
+
+export interface PathElement {
+	segment: PathSegment
+	side: CheckSide
+}
+
+export type XisPath = ReadonlyArray<PathElement>
+
+export type XisPathSegments = ReadonlyArray<PathSegment>

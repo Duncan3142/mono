@@ -4,7 +4,7 @@ import { XisSync, type ExecResultSync, type ParseResultSync } from "#core/sync.j
 
 import { trueTypeOf } from "#util/base-type.js"
 
-import type { XisCtxBase } from "#core/context.js"
+import type { XisArgObjBase } from "#core/context.js"
 import { Left, Right } from "purify-ts/Either"
 
 export interface InstanceOfIssue extends XisIssue<"INSTANCE_OF"> {
@@ -20,7 +20,7 @@ export class XisInstanceOf<T> extends XisSync<T, InstanceOfIssue> {
 		super()
 		this.#ctor = ctor
 	}
-	parse(value: unknown, ctx: XisCtxBase): ParseResultSync<InstanceOfIssue, never, T> {
+	parse(value: unknown, ctx: XisArgObjBase): ParseResultSync<InstanceOfIssue, never, T> {
 		if (value instanceof this.#ctor) {
 			return Right(value)
 		}

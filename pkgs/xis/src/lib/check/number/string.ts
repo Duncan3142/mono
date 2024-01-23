@@ -1,5 +1,5 @@
 import { isNumber, type BaseTypeIssue } from "#core/base-type.js"
-import type { XisCtxBase } from "#core/context.js"
+import type { XisArgObjBase } from "#core/context.js"
 import { XisSync, type ExecResultSync, type ParseResultSync } from "#core/sync.js"
 import { Right } from "purify-ts/Either"
 
@@ -22,7 +22,7 @@ export class XisToString<Opts extends ToStringOptions> extends XisSync<
 
 	parse(
 		value: unknown,
-		ctx: XisCtxBase
+		ctx: XisArgObjBase
 	): ParseResultSync<BaseTypeIssue<"number">, never, string> {
 		return isNumber(value, ctx).chain((value) => this.exec(value))
 	}

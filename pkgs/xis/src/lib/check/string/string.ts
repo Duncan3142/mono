@@ -1,5 +1,5 @@
 import { isString, type BaseTypeIssue } from "#core/base-type.js"
-import type { XisCtxBase } from "#core/context.js"
+import type { XisArgObjBase } from "#core/context.js"
 
 import { XisSync, type ExecResultSync, type ParseResultSync } from "#core/sync.js"
 import { Right } from "purify-ts/Either"
@@ -7,7 +7,7 @@ import { Right } from "purify-ts/Either"
 export class XisString extends XisSync<string, BaseTypeIssue<"string">> {
 	parse(
 		value: unknown,
-		ctx: XisCtxBase
+		ctx: XisArgObjBase
 	): ParseResultSync<BaseTypeIssue<"string">, never, string> {
 		return isString(value, ctx)
 	}

@@ -2,14 +2,8 @@ import { type ExIn, type ExOut, type XisBase } from "#core/kernel.js"
 import type { XisIssueBase } from "#core/error.js"
 
 import { XisAsync, type ExecResultAsync, type ExecEitherAsync } from "#core/async.js"
-import type {
-	XisChainCtx,
-	XisChainMessages,
-	XisChainIssues,
-	XisChainIn,
-	XisChainOut,
-} from "./core.js"
-import type { XisArgs } from "#core/context.js"
+import type { XisChainCtx, XisChainIssues, XisChainIn, XisChainOut } from "./core.js"
+import type { XisExecArgs } from "#core/args.js"
 import { EitherAsync } from "purify-ts"
 
 type XisChainSchemaAsync<
@@ -35,7 +29,6 @@ export class XisChainAsync<
 	XisChainIn<Chain>,
 	XisChainIssues<Chain>,
 	XisChainOut<Chain>,
-	XisChainMessages<Chain>,
 	XisChainCtx<Chain>
 > {
 	#props: XisChainAsyncProps<Chain>
@@ -46,9 +39,9 @@ export class XisChainAsync<
 	}
 
 	exec(
-		args: XisArgs<XisChainIn<Chain>, XisChainMessages<Chain>, XisChainCtx<Chain>>
+		args: XisExecArgs<XisChainIn<Chain>, XisChainCtx<Chain>>
 	): ExecResultAsync<XisChainIssues<Chain>, XisChainOut<Chain>> {
-		const { path, messages, ctx } = args
+		const { path, ctx } = args
 		const [first, ...rest] = this.#props.schema
 		const acc: ExecEitherAsync<XisIssueBase, unknown> = EitherAsync.fromPromise(() =>
 			Promise.resolve(first.exec(args))
@@ -62,7 +55,6 @@ export class XisChainAsync<
 							xis.exec({
 								value,
 								path,
-								messages,
 								ctx,
 							})
 						)

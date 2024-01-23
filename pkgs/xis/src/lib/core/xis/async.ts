@@ -1,63 +1,43 @@
-import type { XisArgs, XisBuildCtx, XisCtxBase } from "#core/context.js"
-import {
-	type ExIn,
-	type ExCtx,
-	type ExIssues,
-	type ExMessages,
-	type ExOut,
-	type XisFn,
-} from "#core/kernel.js"
+import type { BuildObjArg, ObjArgBase } from "#util/arg.js"
+import type { XisExecArgs } from "#core/args.js"
+import { type ExIn, type ExCtx, type ExIssues, type ExOut, type XisFn } from "#core/kernel.js"
 import type { XisIssueBase } from "#core/error.js"
 import { XisAsync, type ExecResultAsync, type XisAsyncBase } from "#core/async.js"
-import type { XisBuildMessages, XisMessages } from "#core/prop.js"
 import { EitherAsync } from "purify-ts"
 
 export interface XisFnAsyncProps<
 	From extends XisAsyncBase,
 	FnIssues extends XisIssueBase = never,
 	FnOut = ExOut<From>,
-	FnMessages extends XisMessages<FnIssues> = null,
-	FnCtx extends XisCtxBase = null,
+	FnCtx extends ObjArgBase = null,
 > {
 	from: From
-	fn: XisFn<ExOut<From>, FnIssues, FnOut, FnMessages, FnCtx>
+	fn: XisFn<ExOut<From>, FnIssues, FnOut, FnCtx>
 }
 
 export class XisFnAsync<
 	From extends XisAsyncBase,
 	FnIssues extends XisIssueBase = never,
 	FnOut = ExOut<From>,
-	FnMessages extends XisMessages<FnIssues> = null,
-	FnCtx extends XisCtxBase = null,
-> extends XisAsync<
-	ExIn<From>,
-	ExIssues<From>,
-	FnOut,
-	XisBuildMessages<ExMessages<From>, FnMessages>,
-	XisBuildCtx<ExCtx<From>, FnCtx>
-> {
+	FnCtx extends ObjArgBase = null,
+> extends XisAsync<ExIn<From>, ExIssues<From>, FnOut, BuildObjArg<ExCtx<From>, FnCtx>> {
 	readonly #props
 
-	constructor(props: XisFnAsyncProps<From, FnIssues, FnOut, FnMessages, FnCtx>) {
+	constructor(props: XisFnAsyncProps<From, FnIssues, FnOut, FnCtx>) {
 		super()
 		this.#props = props
 	}
 
 	exec(
-		args: XisArgs<
-			ExIn<From>,
-			XisBuildMessages<ExMessages<From>, FnMessages>,
-			XisBuildCtx<ExCtx<From>, FnCtx>
-		>
+		args: XisExecArgs<ExIn<From>, BuildObjArg<ExCtx<From>, FnCtx>>
 	): ExecResultAsync<ExIssues<From> | FnIssues, FnOut> {
-		const { path, messages, ctx } = args
+		const { path, ctx } = args
 		return EitherAsync.fromPromise(() => this.#props.from.exec(args))
 			.chain((fromRes) =>
 				Promise.resolve(
 					this.#props.fn({
 						value: fromRes,
 						path,
-						messages,
 						ctx,
 					})
 				)
@@ -70,10 +50,9 @@ export const xis = <
 	From extends XisAsyncBase,
 	FnIssues extends XisIssueBase = never,
 	FnOut = ExOut<From>,
-	FnMessages extends XisMessages<FnIssues> = null,
-	FnCtx extends XisCtxBase = null,
+	FnCtx extends ObjArgBase = null,
 >(
 	from: From,
-	fn: XisFn<ExOut<From>, FnIssues, FnOut, FnMessages, FnCtx>
-): XisFnAsync<From, FnIssues, FnOut, FnMessages, FnCtx> =>
-	new XisFnAsync<From, FnIssues, FnOut, FnMessages, FnCtx>({ from, fn })
+	fn: XisFn<ExOut<From>, FnIssues, FnOut, FnCtx>
+): XisFnAsync<From, FnIssues, FnOut, FnCtx> =>
+	new XisFnAsync<From, FnIssues, FnOut, FnCtx>({ from, fn })

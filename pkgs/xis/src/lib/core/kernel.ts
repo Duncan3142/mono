@@ -1,11 +1,10 @@
-import type { XisCtxBase, XisArgs } from "#core/context.js"
-
 import type { XisIssueBase } from "#core/error.js"
 
 import type { ExecResultSync, ExecResultSyncBase, XisSync, XisSyncFn } from "./sync.js"
 import type { ExecResultAsync, XisAsync, XisAsyncFn } from "./async.js"
 import { Left } from "purify-ts/Either"
-import type { XisMessages } from "./prop.js"
+import type { ObjArgBase } from "#util/arg.js"
+import type { XisExecArgs } from "./args.js"
 
 export type ExecResult<Issues extends XisIssueBase, Out> =
 	| ExecResultSync<Issues, Out>
@@ -22,19 +21,17 @@ export type XisFn<
 	In,
 	Issues extends XisIssueBase = never,
 	Out = In,
-	Messages extends XisMessages<Issues> = null,
-	Ctx extends XisCtxBase = null,
-> = XisSyncFn<In, Issues, Out, Messages, Ctx> | XisAsyncFn<In, Issues, Out, Messages, Ctx>
+	Ctx extends ObjArgBase = null,
+> = XisSyncFn<In, Issues, Out, Ctx> | XisAsyncFn<In, Issues, Out, Ctx>
 
 export type Xis<
 	In,
 	Issues extends XisIssueBase = never,
 	Out = In,
-	Messages extends XisMessages<Issues> = null,
-	Ctx extends XisCtxBase = null,
-> = XisSync<In, Issues, Out, Messages, Ctx> | XisAsync<In, Issues, Out, Messages, Ctx>
+	Ctx extends ObjArgBase = null,
+> = XisSync<In, Issues, Out, Ctx> | XisAsync<In, Issues, Out, Ctx>
 
-export type XisBase = Xis<any, XisIssueBase, unknown, any, any>
+export type XisBase = Xis<any, XisIssueBase, unknown, any>
 
 export type ExIn<T extends XisBase> = T["types"]["i"]
 
@@ -42,11 +39,9 @@ export type ExIssues<T extends XisBase> = T["types"]["is"]
 
 export type ExOut<T extends XisBase> = T["types"]["o"]
 
-export type ExMessages<T extends XisBase> = T["types"]["m"]
-
 export type ExCtx<T extends XisBase> = T["types"]["c"]
 
-export type ExArg<T extends XisBase> = XisArgs<ExIn<T>, ExMessages<T>, ExCtx<T>>
+export type ExArg<T extends XisBase> = XisExecArgs<ExIn<T>, ExCtx<T>>
 
 export const mergeIssues = <R extends ExecResultSyncBase>(
 	acc: R,

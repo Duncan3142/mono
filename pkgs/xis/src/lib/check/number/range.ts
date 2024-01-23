@@ -1,4 +1,4 @@
-import type { XisCtxBase } from "#core/context.js"
+import type { XisArgObjBase } from "#core/context.js"
 import type { XisIssue } from "#core/error.js"
 import { inRange, type RangeOpts } from "#util/rangeOpts.js"
 import { Left, Right } from "purify-ts/Either"
@@ -26,12 +26,12 @@ export class XisRange<Opts extends NumberRangeOpts> extends XisSync<
 
 	parse(
 		value: unknown,
-		ctx: XisCtxBase
+		ctx: XisArgObjBase
 	): ParseResultSync<BaseTypeIssue<"number">, NumberRangeIssue, number> {
 		return isNumber(value, ctx).chain((value) => this.exec(value, ctx))
 	}
 
-	exec(value: number, ctx: XisCtxBase): ExecResultSync<NumberRangeIssue, number> {
+	exec(value: number, ctx: XisArgObjBase): ExecResultSync<NumberRangeIssue, number> {
 		const opts = this.#opts
 
 		if (inRange(value, opts)) {

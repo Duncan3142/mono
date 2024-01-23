@@ -1,5 +1,5 @@
 import type { TrueBaseTypeName } from "#util/base-type.js"
-import type { XisCtxBase } from "#core/context.js"
+import type { XisArgObjBase } from "#core/context.js"
 import type { XisIssue } from "#core/error.js"
 import type { ExecResultSync } from "#core/sync.js"
 import { Left } from "purify-ts/Either"
@@ -14,7 +14,7 @@ export const coerceErr = <D extends TrueBaseTypeName>(
 	desired: D,
 	value: unknown,
 	type: TrueBaseTypeName,
-	ctx: XisCtxBase
+	ctx: XisArgObjBase
 ): ExecResultSync<CoerceIssue<D>, never> => {
 	const err = [
 		{
