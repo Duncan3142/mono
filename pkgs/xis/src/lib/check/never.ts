@@ -1,31 +1,43 @@
 import type { XisIssue } from "#core/error.js"
 
 import { XisSync, type ExecResultSync } from "#core/sync.js"
-import type { XisArgs } from "#core/context.js"
+import type { XisExecArgs } from "#core/args.js"
 import { Left } from "purify-ts/Either"
+import type { XisMsgBuilder, XisMessages, XisMsgArgs } from "#core/messages.js"
 
 export interface NeverIssue extends XisIssue<"XIS_NEVER"> {
 	value: unknown
 }
 
-export type NeverMessages = {
-	XIS_NEVER?: string
-} | null
-
-export type NeverProps = {
-	messages: NeverMessages
+export interface NeverMessages extends XisMessages<NeverIssue> {
+	XIS_NEVER: XisMsgBuilder
 }
 
-export class XisNever extends XisSync<unknown, NeverIssue, never, NeverMessages> {
-	#props: NeverProps
+export type NeverProps = {
+	messages: NeverMessages | null
+}
+
+export class XisNever extends XisSync<unknown, NeverIssue, never> {
+	#messages: NeverMessages
 	constructor(props: NeverProps) {
 		super()
-		this.#props = props
+		this.#messages = props.messages ?? {
+			XIS_NEVER: (args: XisMsgArgs) => {
+				const { value, path } = args
+				const valueStr = typeof value === "string" ? `"${value}"` : String(value)
+				return `never value ${valueStr} encountered at ${JSON.stringify(path)}`
+			},
+		}
 	}
-	exec(args: XisArgs<unknown, NeverMessages, null>): ExecResultSync<NeverIssue, never> {
-		const { value, messages, path } = args
-		const message =
-			this.#props?.messages?.XIS_NEVER ?? messages?.XIS_NEVER ?? "never value encountered"
+
+	exec(args: XisExecArgs<unknown, null>): ExecResultSync<NeverIssue, never> {
+		const { value, path } = args
+		const message = this.#messages.XIS_NEVER({
+			value,
+			path,
+			ctx: null,
+			props: null,
+		})
 		const err = {
 			name: "XIS_NEVER" as const,
 			path,
