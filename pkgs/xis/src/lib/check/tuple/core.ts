@@ -72,3 +72,27 @@ export const reduce = (
 			}),
 		Right([])
 	)
+
+export interface TupleLengthIssue extends XisIssue<"TUPLE_LENGTH"> {
+	expected: number
+	actual: number
+}
+
+export const isTupleOf = <Length extends number>(
+	value: unknown,
+	expected: Length,
+	args: XisExecArgs
+): ExecResultSync<TupleLengthIssue | BaseTypeIssue<"array">, TupleOf<Length>> =>
+	isBaseArray(value, args).chain((arr) =>
+		arr.length === expected
+			? Right(arr as TupleOf<Length>)
+			: Left([
+					{
+						name: "TUPLE_LENGTH",
+						path: args.path,
+						message: "::TODO::", // ::TODO::
+						expected,
+						actual: arr.length,
+					},
+				])
+	)
