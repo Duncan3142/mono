@@ -1,7 +1,7 @@
-import { isString, type BaseTypeIssue } from "#core/base-type.js"
-import type { XisArgObjBase } from "#core/context.js"
+import type { XisExecArgs } from "#core/args.js"
 import type { XisIssue } from "#core/error.js"
-import { XisSync, type ExecResultSync, type ParseResultSync } from "#core/sync.js"
+import type { XisMessages, XisMsgArgs, XisMsgBuilder } from "#core/messages.js"
+import { XisSync, type ExecResultSync } from "#core/sync.js"
 import { Right, Left } from "purify-ts/Either"
 
 export type UUID = `${string}-${string}-${string}-${string}-${string}`
@@ -26,54 +26,68 @@ export const Version = {
 
 export type Version = (typeof Version)[keyof typeof Version]
 
-export const isUUID = <V extends Version = "all">(
-	str: string,
-	version: V,
-	ctx: XisArgObjBase
-): ExecResultSync<UUIDIssue<V>, UUID> => {
-	const pattern = uuidPatterns[version]
-	switch (pattern.test(str)) {
-		case true:
-			return Right(str as UUID)
-		case false:
-			return Left([
-				{
-					name: "UUID",
-					expected: version,
-					received: str,
-					path: ctx.path,
-				},
-			])
-	}
-}
-
-export interface UUIDIssue<V extends Version> extends XisIssue<"UUID"> {
+export interface UUIDIssue<V extends Version> extends XisIssue<"XIS_UUID"> {
 	expected: V
 	received: string
 }
 
-export class XisUUID<V extends Version> extends XisSync<
-	string,
-	BaseTypeIssue<"string">,
-	UUIDIssue<V>,
-	UUID
-> {
-	#version: V
+export type XisUUIDProps<V extends Version> = {
+	version: V
+}
 
-	constructor(version: V) {
+export interface XisUUIDMessages<V extends Version> extends XisMessages<UUIDIssue<V>> {
+	XIS_UUID: XisMsgBuilder<string, XisUUIDProps<V>>
+}
+
+export interface XisUUIDArgs<V extends Version> {
+	props: XisUUIDProps<V>
+	messages: XisUUIDMessages<V> | null
+}
+
+export class XisUUID<V extends Version> extends XisSync<string, UUIDIssue<V>, UUID> {
+	#props: XisUUIDProps<V>
+	#messages: XisUUIDMessages<V>
+
+	constructor(args: XisUUIDArgs<V>) {
 		super()
-		this.#version = version
+		const { messages, props } = args
+		this.#props = props
+		this.#messages = messages ?? {
+			XIS_UUID: (args: XisMsgArgs<string, XisUUIDProps<V>>) => {
+				const { value, path, props } = args
+				return `Expected UUID version ${props.version}, received ${value} at ${JSON.stringify(path)}`
+			},
+		}
 	}
 
-	parse(
-		value: unknown,
-		ctx: XisArgObjBase
-	): ParseResultSync<BaseTypeIssue<"string">, UUIDIssue<V>, UUID> {
-		return isString(value, ctx).chain((v) => this.exec(v, ctx))
-	}
-	exec(value: string, ctx: XisArgObjBase): ExecResultSync<UUIDIssue<V>, UUID> {
-		return isUUID(value, this.#version, ctx)
+	exec(args: XisExecArgs<string>): ExecResultSync<UUIDIssue<V>, UUID> {
+		const { value, path, locale } = args
+		const { version } = this.#props
+		const pattern = uuidPatterns[version]
+		switch (pattern.test(value)) {
+			case true:
+				return Right(value as UUID)
+			default: {
+				const message = this.#messages.XIS_UUID({
+					value,
+					path,
+					locale,
+					props: this.#props,
+					ctx: null,
+				})
+
+				return Left([
+					{
+						name: "XIS_UUID" as const,
+						expected: version,
+						received: value,
+						message,
+						path,
+					},
+				])
+			}
+		}
 	}
 }
 
-export const uuid = <V extends Version>(v: V): XisUUID<V> => new XisUUID(v)
+export const uuid = <V extends Version>(args: XisUUIDArgs<V>): XisUUID<V> => new XisUUID(args)

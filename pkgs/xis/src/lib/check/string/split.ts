@@ -1,27 +1,31 @@
-import { isString, type BaseTypeIssue } from "#core/base-type.js"
-import type { XisArgObjBase } from "#core/context.js"
-import { XisSync, type ExecResultSync, type ParseResultSync } from "#core/sync.js"
+import type { XisExecArgs } from "#core/args.js"
+import { XisSync, type ExecResultSync } from "#core/sync.js"
 import { Right } from "purify-ts/Either"
 
 export type Separator = string | RegExp
 
-export class XisSplit extends XisSync<string, BaseTypeIssue<"string">, never, Array<string>> {
-	#separator: Separator
+interface XisSplitProps {
+	separator: Separator
+}
 
-	constructor(separator: Separator = "") {
+interface XisSplitArgs {
+	props: XisSplitProps
+}
+
+export class XisSplit extends XisSync<string, never, Array<string>> {
+	#props: XisSplitProps
+
+	constructor(args: XisSplitArgs) {
 		super()
-		this.#separator = separator
+		this.#props = args.props
 	}
 
-	parse(
-		value: unknown,
-		ctx: XisArgObjBase
-	): ParseResultSync<BaseTypeIssue<"string">, never, Array<string>> {
-		return isString(value, ctx).chain((v) => this.exec(v))
-	}
-	exec(value: string): ExecResultSync<never, Array<string>> {
-		return Right(value.split(this.#separator))
+	exec(args: XisExecArgs<string>): ExecResultSync<never, Array<string>> {
+		const { value } = args
+		const { separator } = this.#props
+		return Right(value.split(separator))
 	}
 }
 
-export const split = (separator: Separator = ""): XisSplit => new XisSplit(separator)
+export const split = (separator: Separator = ""): XisSplit =>
+	new XisSplit({ props: { separator } })

@@ -1,17 +1,10 @@
-import { isString, type BaseTypeIssue } from "#core/base-type.js"
-import type { XisArgObjBase } from "#core/context.js"
-
-import { XisSync, type ExecResultSync, type ParseResultSync } from "#core/sync.js"
+import type { XisExecArgs } from "#core/args.js"
+import { XisSync, type ExecResultSync } from "#core/sync.js"
 import { Right } from "purify-ts/Either"
 
-export class XisTrimmed extends XisSync<string, BaseTypeIssue<"string">> {
-	parse(
-		value: unknown,
-		ctx: XisArgObjBase
-	): ParseResultSync<BaseTypeIssue<"string">, never, string> {
-		return isString(value, ctx).chain((v) => this.exec(v))
-	}
-	exec(value: string): ExecResultSync<never, string> {
+export class XisTrimmed extends XisSync<string> {
+	exec(args: XisExecArgs<string>): ExecResultSync<never, string> {
+		const { value } = args
 		return Right(value.trim())
 	}
 }

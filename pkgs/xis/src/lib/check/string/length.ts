@@ -3,6 +3,7 @@ import { inRange, type RangeOpts } from "#util/rangeOpts.js"
 import { Left, Right } from "purify-ts/Either"
 import { XisSync, type ExecResultSync } from "#core/sync.js"
 import type { XisExecArgs } from "#core/args.js"
+import type { XisMessages, XisMsgBuilder } from "#core/messages.js"
 
 export type StringLengthOpts = RangeOpts<number>
 
@@ -20,41 +21,62 @@ export interface StringLengthIssue extends XisIssue<"XIS_STRING_LENGTH"> {
 	opts: StringLengthOpts
 }
 
+export type StringLengthProps<Opts extends StringLengthOpts> = {
+	opts: Opts
+}
+
+export interface StringLengthMessages<Opts extends StringLengthOpts>
+	extends XisMessages<StringLengthIssue> {
+	XIS_STRING_LENGTH: XisMsgBuilder<string, StringLengthProps<Opts>>
+}
+
+export interface StringLengthArgs<Opts extends StringLengthOpts> {
+	props: StringLengthProps<Opts>
+	message: StringLengthMessages<Opts>
+}
+
 export class XisIsLength<Opts extends StringLengthOpts> extends XisSync<
 	string,
 	StringLengthIssue
 > {
-	#opts: Opts
+	#props: StringLengthProps<Opts>
+	#message: StringLengthMessages<Opts>
 
-	constructor(opts: Opts) {
+	constructor(args: StringLengthArgs<Opts>) {
 		super()
-		this.#opts = opts
+		const { props, message } = args
+		this.#props = props
+		this.#message = message
 	}
 
-	parse(
-		value: unknown,
-		ctx: XisArgObjBase
-	): ParseResultSync<BaseTypeIssue<"string">, StringLengthIssue, string> {
-		return isString(value, ctx).chain((v) => this.exec(v, ctx))
-	}
-
-	exec(value: string, ctx: XisArgObjBase): ExecResultSync<StringLengthIssue, string> {
-		const opts = this.#opts
+	exec(args: XisExecArgs<string>): ExecResultSync<StringLengthIssue, string> {
+		const { value, path, locale } = args
+		const { opts } = this.#props
 
 		if (inRange(value.length, opts)) {
 			return Right(value)
 		}
 
+		const message = this.#message.XIS_STRING_LENGTH({
+			value,
+			locale,
+			path,
+			props: this.#props,
+			ctx: null,
+		})
+
 		const err = {
-			name: "STRING_LENGTH",
-			path: ctx.path,
+			name: "XIS_STRING_LENGTH" as const,
+			path,
+			message,
 			length: value.length,
 			opts,
-		} satisfies StringLengthIssue
+		}
 
 		return Left([err])
 	}
 }
 
-export const isLength = <Opts extends StringLengthOpts>(options: Opts): XisIsLength<Opts> =>
-	new XisIsLength(options)
+export const isLength = <Opts extends StringLengthOpts>(
+	args: StringLengthArgs<Opts>
+): XisIsLength<Opts> => new XisIsLength(args)
