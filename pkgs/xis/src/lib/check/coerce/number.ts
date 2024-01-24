@@ -1,29 +1,45 @@
-import type { XisArgObjBase } from "#core/context.js"
-import { type ExecResultSync, type ParseResultSync, XisSync } from "#core/sync.js"
+import { type ExecResultSync, XisSync } from "#core/sync.js"
 import { trueTypeOf } from "#util/base-type.js"
 import { Right } from "purify-ts/Either"
 
-import { coerceErr, type CoerceIssue } from "./core.js"
+import {
+	coerceIssue,
+	XIS_COERCE,
+	type CoerceIssue,
+	type XisCoerceMessages,
+	type XisCoerceArgs,
+} from "./core.js"
+import type { XisExecArgs } from "#core/args.js"
 
-export class XisCoerceNumber extends XisSync<unknown, never, CoerceIssue<"number">, number> {
-	parse(
-		value: unknown,
-		ctx: XisArgObjBase
-	): ParseResultSync<never, CoerceIssue<"number">, number> {
-		return this.exec(value, ctx)
+export class XisCoerceNumber extends XisSync<unknown, CoerceIssue, number> {
+	#messages: XisCoerceMessages
+	constructor(args: XisCoerceArgs) {
+		super()
+		this.#messages = args.messages ?? {
+			XIS_COERCE,
+		}
 	}
-
-	exec(value: unknown, ctx: XisArgObjBase): ExecResultSync<CoerceIssue<"number">, number> {
+	exec(args: XisExecArgs): ExecResultSync<CoerceIssue, number> {
+		const { value, locale, path } = args
 		const valueType = trueTypeOf(value)
-		if (valueType === "symbol") {
-			return coerceErr("number", value, valueType, ctx)
+		const num = valueType === "symbol" ? NaN : Number(value)
+
+		if (Number.isFinite(num)) {
+			return Right(num)
 		}
-		const res = Number(value)
-		if (Number.isNaN(res)) {
-			return coerceErr("number", value, valueType, ctx)
-		}
-		return Right(res)
+
+		const message = this.#messages.XIS_COERCE({
+			value,
+			path,
+			locale,
+			ctx: null,
+			props: {
+				desired: "number",
+				type: valueType,
+			},
+		})
+		return coerceIssue({ desired: "number", received: value, type: valueType, path, message })
 	}
 }
 
-export const number: XisCoerceNumber = new XisCoerceNumber()
+export const number = (args: XisCoerceArgs) => new XisCoerceNumber(args)

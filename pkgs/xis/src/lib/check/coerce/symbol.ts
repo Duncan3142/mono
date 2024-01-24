@@ -1,18 +1,20 @@
 import { type ExecResultSync, XisSync } from "#core/sync.js"
 import { trueTypeOf } from "#util/base-type.js"
 import { Right } from "purify-ts/Either"
-import { coerceIssue, XIS_COERCE, type CoerceIssue, type XisCoerceMessages } from "./core.js"
+import {
+	coerceIssue,
+	XIS_COERCE,
+	type CoerceIssue,
+	type XisCoerceMessages,
+	type XisCoerceArgs,
+} from "./core.js"
 import type { XisExecArgs } from "#core/args.js"
 
 export type SymbolInput = number | string | undefined
 
-export interface XisCoerceSymbolArgs {
-	messages: XisCoerceMessages | null
-}
-
-export class XisCoerceSymbol extends XisSync<SymbolInput, CoerceIssue, symbol> {
+export class XisCoerceSymbol extends XisSync<unknown, CoerceIssue, symbol> {
 	#messages: XisCoerceMessages
-	constructor(args: XisCoerceSymbolArgs) {
+	constructor(args: XisCoerceArgs) {
 		super()
 		this.#messages = args.messages ?? {
 			XIS_COERCE,
@@ -49,4 +51,4 @@ export class XisCoerceSymbol extends XisSync<SymbolInput, CoerceIssue, symbol> {
 	}
 }
 
-export const symbol = (args: XisCoerceSymbolArgs) => new XisCoerceSymbol(args)
+export const symbol = (args: XisCoerceArgs) => new XisCoerceSymbol(args)

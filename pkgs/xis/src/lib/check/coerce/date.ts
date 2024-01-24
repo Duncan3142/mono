@@ -1,36 +1,57 @@
-import type { XisArgObjBase } from "#core/context.js"
-import { type ExecResultSync, type ParseResultSync, XisSync } from "#core/sync.js"
+import { type ExecResultSync, XisSync } from "#core/sync.js"
 import { trueTypeOf } from "#util/base-type.js"
 import { Right } from "purify-ts/Either"
-import { coerceErr, type CoerceIssue } from "./core.js"
+import {
+	coerceIssue,
+	XIS_COERCE,
+	type CoerceIssue,
+	type XisCoerceMessages,
+	type XisCoerceArgs,
+} from "./core.js"
+import type { XisExecArgs } from "#core/args.js"
 
 export type DateInput = Date | number | string
 
-export class XisCoerceDate extends XisSync<
-	DateInput,
-	CoerceIssue<"date">,
-	CoerceIssue<"date">,
-	Date
-> {
-	parse(
-		value: unknown,
-		ctx: XisArgObjBase
-	): ParseResultSync<CoerceIssue<"date">, CoerceIssue<"date">, Date> {
-		const valueType = trueTypeOf(value)
-		if (valueType === "number" || valueType === "string" || valueType === "date") {
-			return this.exec(value as DateInput, ctx)
-		}
-		return coerceErr("date", value, valueType, ctx)
-	}
-
-	exec(value: DateInput, ctx: XisArgObjBase): ExecResultSync<CoerceIssue<"date">, Date> {
-		const res = new Date(value)
-		if (Number.isNaN(res.valueOf())) {
-			const valueType = trueTypeOf(value)
-			return coerceErr("date", value, valueType, ctx)
-		}
-		return Right(res)
+function isDateInput(valueType: string, value: unknown): value is DateInput {
+	switch (valueType) {
+		case "number":
+		case "string":
+		case "date":
+			return true
+		default:
+			return false
 	}
 }
 
-export const date: XisCoerceDate = new XisCoerceDate()
+export class XisCoerceDate extends XisSync<unknown, CoerceIssue, Date> {
+	#messages: XisCoerceMessages
+	constructor(args: XisCoerceArgs) {
+		super()
+		this.#messages = args.messages ?? {
+			XIS_COERCE,
+		}
+	}
+	exec(args: XisExecArgs): ExecResultSync<CoerceIssue, Date> {
+		const { value, locale, path } = args
+		const valueType = trueTypeOf(value)
+		const date = isDateInput(valueType, value) ? new Date(value) : new Date(NaN)
+
+		if (Number.isFinite(date.valueOf())) {
+			return Right(date)
+		}
+
+		const message = this.#messages.XIS_COERCE({
+			value,
+			path,
+			locale,
+			ctx: null,
+			props: {
+				desired: "date",
+				type: valueType,
+			},
+		})
+		return coerceIssue({ desired: "date", message, received: value, type: valueType, path })
+	}
+}
+
+export const date = (args: XisCoerceArgs) => new XisCoerceDate(args)

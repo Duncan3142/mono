@@ -30,6 +30,10 @@ export interface XisCoerceMessages extends XisMessages<CoerceIssue> {
 	XIS_COERCE: XisMsgBuilder<unknown, CoerceIssueMsgProps>
 }
 
+export interface XisCoerceArgs {
+	messages: XisCoerceMessages | null
+}
+
 export const XIS_COERCE = (args: XisMsgArgs<unknown, CoerceIssueMsgProps>) => {
 	const {
 		value,
