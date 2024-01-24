@@ -51,5 +51,3 @@ export const mergeIssues = <R extends ExecResultSyncBase>(
 		Left: (accIssues) => Left([...accIssues, ...issues]),
 		Right: (_) => Left(issues),
 	}) as R
-
-export const xt = <T extends Array<XisBase>>(...args: T): T => args

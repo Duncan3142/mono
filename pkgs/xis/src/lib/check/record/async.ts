@@ -1,118 +1,88 @@
-import { CheckSide, addElement as addCtxElement, type XisCtx } from "#core/context.js"
-import { objectEntries, type TruePropertyKey } from "#util/base-type.js"
-
-import {
-	type ExIn,
-	type InvokeMode,
-	invoke,
-	type ExCtx,
-	type ExInvoke,
-	type XisBase,
-} from "#core/kernel.js"
+import { objectEntries, tup, type TruePropertyKey } from "#util/base-type.js"
+import { type ExIn, type XisBase } from "#core/kernel.js"
 import {
 	type RecordIn,
-	type RecordGuardIssues,
-	type RecordExecIssues,
+	type RecordIssues,
 	type RecordOut,
-	type RecordArgs,
+	type RecordCtx,
 	reduce,
 	type PropertyKeyBase,
 } from "./core.js"
+import { XisAsync, type ExecResultAsync } from "#core/async.js"
+import type { XisExecArgs } from "#core/args.js"
+import { addElement, CheckSide } from "#core/path.js"
+import type { ExecResultSync } from "#core/sync.js"
 
-import { isBaseObject } from "#core/base-type.js"
-import { XisAsync, type ExecResultAsync, type ParseResultAsync } from "#core/async.js"
-import { EitherAsync } from "purify-ts/EitherAsync"
+export interface XisRecordAsyncProps<
+	KeySchema extends PropertyKeyBase,
+	ValueSchema extends XisBase,
+> {
+	keyCheck: [ExIn<KeySchema>] extends [TruePropertyKey] ? KeySchema : never
+	valueCheck: ValueSchema
+}
+
+export interface XisRecordAsyncArgs<
+	KeySchema extends PropertyKeyBase,
+	ValueSchema extends XisBase,
+> {
+	props: XisRecordAsyncProps<KeySchema, ValueSchema>
+}
 
 export class XisRecordAsync<
 	KeySchema extends PropertyKeyBase,
 	ValueSchema extends XisBase,
 > extends XisAsync<
 	RecordIn<KeySchema, ValueSchema>,
-	RecordGuardIssues<KeySchema, ValueSchema>,
-	RecordExecIssues<KeySchema, ValueSchema>,
+	RecordIssues<KeySchema, ValueSchema>,
 	RecordOut<KeySchema, ValueSchema>,
-	RecordArgs<KeySchema, ValueSchema>
+	RecordCtx<KeySchema, ValueSchema>
 > {
-	readonly #keyCheck: KeySchema
+	#props: XisRecordAsyncProps<KeySchema, ValueSchema>
 
-	readonly #valCheck: ValueSchema
-
-	constructor(
-		kCheck: ExIn<KeySchema> extends TruePropertyKey ? KeySchema : never,
-		vCheck: ValueSchema
-	) {
+	constructor(args: XisRecordAsyncArgs<KeySchema, ValueSchema>) {
 		super()
-		this.#keyCheck = kCheck
-		this.#valCheck = vCheck
+		this.#props = args.props
 	}
 
-	parse(
-		value: unknown,
-		ctx: XisCtx<RecordArgs<KeySchema, ValueSchema>>
-	): ParseResultAsync<
-		RecordGuardIssues<KeySchema, ValueSchema>,
-		RecordExecIssues<KeySchema, ValueSchema>,
-		RecordOut<KeySchema, ValueSchema>
-	> {
-		return EitherAsync.liftEither(isBaseObject(value, ctx))
-			.chain((rec) => this.#invoke("parse", rec, ctx))
-			.run()
-	}
-
-	exec(
-		value: RecordIn<KeySchema, ValueSchema>,
-		ctx: XisCtx<RecordArgs<KeySchema, ValueSchema>>
-	): ExecResultAsync<
-		RecordExecIssues<KeySchema, ValueSchema>,
-		RecordOut<KeySchema, ValueSchema>
-	> {
-		return this.#invoke("exec", value, ctx)
-	}
-
-	#invoke<Mode extends InvokeMode>(
-		mode: Mode,
-		value: Record<TruePropertyKey, unknown>,
-		ctx: XisCtx<RecordArgs<KeySchema, ValueSchema>>
-	): ExInvoke<this, Mode> {
-		type Res = ExInvoke<this, Mode>
+	async exec(
+		args: XisExecArgs<RecordIn<KeySchema, ValueSchema>, RecordCtx<KeySchema, ValueSchema>>
+	): ExecResultAsync<RecordIssues<KeySchema, ValueSchema>, RecordOut<KeySchema, ValueSchema>> {
+		const { value, ctx, locale, path } = args
+		const { keyCheck, valueCheck } = this.#props
 		const sourceEntries = objectEntries(value)
 
-		return Promise.all(
+		const results = await Promise.all(
 			sourceEntries.map(async ([key, val]) => {
-				const keyRes = Promise.resolve(
-					invoke(
-						mode,
-						this.#keyCheck,
-						key as ExIn<KeySchema>,
-						addCtxElement(ctx, {
-							segment: key,
-							side: CheckSide.Key,
-						}) as ExCtx<KeySchema>
-					)
-				)
-				const valRes = Promise.resolve(
-					invoke(
-						mode,
-						this.#valCheck,
-						val as ExIn<ValueSchema>,
-						addCtxElement(ctx, {
-							segment: key,
-							side: CheckSide.Value,
-						}) as ExCtx<ValueSchema>
-					)
-				)
+				const keyRes = keyCheck.exec({
+					value: key,
+					locale,
+					path: addElement(path, {
+						segment: key,
+						side: CheckSide.Key,
+					}),
+					ctx,
+				})
+				const valRes = valueCheck.exec({
+					value: val,
+					locale,
+					path: addElement(path, {
+						segment: key,
+						side: CheckSide.Value,
+					}),
+					ctx,
+				})
 
-				const res = [await keyRes, await valRes] satisfies [
-					Awaited<ExInvoke<KeySchema, Mode>>,
-					Awaited<ExInvoke<ValueSchema, Mode>>,
-				]
-				return res
+				return tup(await keyRes, await valRes)
 			})
-		).then((results) => reduce(results)) as Res
+		)
+
+		return reduce(results) as ExecResultSync<
+			RecordIssues<KeySchema, ValueSchema>,
+			RecordOut<KeySchema, ValueSchema>
+		>
 	}
 }
 
 export const record = <KeySchema extends PropertyKeyBase, ValueSchema extends XisBase>(
-	keyCheck: ExIn<KeySchema> extends TruePropertyKey ? KeySchema : never,
-	valueCheck: ValueSchema
-): XisRecordAsync<KeySchema, ValueSchema> => new XisRecordAsync(keyCheck, valueCheck)
+	args: XisRecordAsyncArgs<KeySchema, ValueSchema>
+): XisRecordAsync<KeySchema, ValueSchema> => new XisRecordAsync(args)

@@ -84,3 +84,5 @@ export const objectEntries = <const Obj extends BaseObject>(
 	const keys = Reflect.ownKeys(obj)
 	return keys.map((key) => [key, obj[key]] satisfies EntryPair)
 }
+
+export const tup = <Args extends Array<any>>(...args: Args) => args
