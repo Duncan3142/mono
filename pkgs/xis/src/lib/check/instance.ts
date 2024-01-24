@@ -44,7 +44,7 @@ export class XisInstanceOf<T> extends XisSync<unknown, InstanceOfIssue, T> {
 		}
 	}
 	exec(args: XisExecArgs): ExecResultSync<InstanceOfIssue, T> {
-		const { value, path } = args
+		const { value, path, locale } = args
 		const { ctor } = this.#props
 		if (value instanceof this.#props.ctor) {
 			return Right(value)
@@ -58,6 +58,7 @@ export class XisInstanceOf<T> extends XisSync<unknown, InstanceOfIssue, T> {
 		const message = this.#messages.XIS_INSTANCE_OF({
 			value,
 			path,
+			locale,
 			props: { ...this.#props, received },
 			ctx: null,
 		})

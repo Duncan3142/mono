@@ -31,10 +31,11 @@ export class XisNever extends XisSync<unknown, NeverIssue, never> {
 	}
 
 	exec(args: XisExecArgs<unknown, null>): ExecResultSync<NeverIssue, never> {
-		const { value, path } = args
+		const { value, path, locale } = args
 		const message = this.#messages.XIS_NEVER({
 			value,
 			path,
+			locale,
 			ctx: null,
 			props: null,
 		})

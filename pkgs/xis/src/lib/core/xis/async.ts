@@ -40,12 +40,13 @@ export class XisFnAsync<
 	exec(
 		args: XisExecArgs<ExIn<From>, BuildObjArg<ExCtx<From>, FnCtx>>
 	): ExecResultAsync<ExIssues<From> | FnIssues, FnOut> {
-		const { path, ctx } = args
+		const { path, ctx, locale } = args
 		return EitherAsync.fromPromise(() => this.#props.from.exec(args))
 			.chain((fromRes) =>
 				Promise.resolve(
 					this.#props.fn({
 						value: fromRes,
+						locale,
 						path,
 						ctx,
 					})

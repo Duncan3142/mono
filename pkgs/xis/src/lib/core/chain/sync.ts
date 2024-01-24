@@ -48,7 +48,7 @@ export class XisChainSync<
 	exec(
 		args: XisExecArgs<XisChainIn<Chain>, XisChainCtx<Chain>>
 	): ExecResultSync<XisChainIssues<Chain>, XisChainOut<Chain>> {
-		const { path, ctx } = args
+		const { path, ctx, locale } = args
 		const [first, ...rest] = this.#props.schema
 		const acc: ExecResultSync<XisIssueBase, unknown> = first.exec(args)
 
@@ -57,6 +57,7 @@ export class XisChainSync<
 				acc.chain((value) =>
 					xis.exec({
 						value,
+						locale,
 						path,
 						ctx,
 					})

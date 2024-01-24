@@ -30,7 +30,7 @@ export class XisTupleAsync<Schema extends [...Array<XisBase>]> extends XisAsync<
 	async exec(
 		args: XisExecArgs<TupleIn<Schema>, TupleCtx<Schema>>
 	): ExecResultAsync<TupleIssues<Schema>, TupleOut<Schema>> {
-		const { value, path, ctx } = args
+		const { value, path, ctx, locale } = args
 		const { checks } = this.#props
 		const mapped = await Promise.all(
 			value.map<ExecResultAsync<XisIssueBase, unknown>>((elem, index) => {
@@ -38,6 +38,7 @@ export class XisTupleAsync<Schema extends [...Array<XisBase>]> extends XisAsync<
 				return Promise.resolve(
 					check.exec({
 						value: elem,
+						locale,
 						path: addElement(path, {
 							segment: index,
 							side: CheckSide.Value,

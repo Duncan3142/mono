@@ -42,12 +42,18 @@ export class XisLiteral<const Literal extends BasicArg> extends XisSync<
 	}
 
 	exec(args: XisExecArgs<unknown, null>): ExecResultSync<LiteralIssue<Literal>, Literal> {
-		const { value, path } = args
+		const { value, path, locale } = args
 		if (value === this.#props.literal) {
 			return Right(value as Literal)
 		}
 
-		const message = this.#messages.XIS_LITERAL({ value, path, props: this.#props, ctx: null })
+		const message = this.#messages.XIS_LITERAL({
+			value,
+			path,
+			locale,
+			props: this.#props,
+			ctx: null,
+		})
 
 		const err = {
 			name: "XIS_LITERAL" as const,

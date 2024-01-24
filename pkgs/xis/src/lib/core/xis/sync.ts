@@ -39,10 +39,11 @@ export class XisFnSync<
 	exec(
 		args: XisExecArgs<ExIn<From>, BuildObjArg<ExCtx<From>, FnCtx>>
 	): ExecResultSync<ExIssues<From> | FnIssues, FnOut> {
-		const { path, ctx } = args
+		const { path, ctx, locale } = args
 		return this.#props.from.exec(args).chain((fromRes) =>
 			this.#props.fn({
 				value: fromRes,
+				locale,
 				path,
 				ctx,
 			})

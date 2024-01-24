@@ -54,7 +54,7 @@ export class XisTypeCheck<N extends TrueBaseTypeName> extends XisSync<
 		}
 	}
 	exec(args: XisExecArgs): ExecResultSync<BaseTypeIssue<N>, TrueBaseTypeNameMap[N]> {
-		const { value, path } = args
+		const { value, path, locale } = args
 		const { expected } = this.#props
 		const received = trueTypeOf(value)
 		if (isBaseType(expected, value)) {
@@ -64,6 +64,7 @@ export class XisTypeCheck<N extends TrueBaseTypeName> extends XisSync<
 		const message = this.#messages.XIS_BASE_TYPE({
 			value,
 			path,
+			locale,
 			props: { ...this.#props, received },
 			ctx: null,
 		})

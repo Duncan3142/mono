@@ -45,7 +45,7 @@ export class XisChainAsync<
 	exec(
 		args: XisExecArgs<XisChainIn<Chain>, XisChainCtx<Chain>>
 	): ExecResultAsync<XisChainIssues<Chain>, XisChainOut<Chain>> {
-		const { path, ctx } = args
+		const { path, ctx, locale } = args
 		const [first, ...rest] = this.#props.schema
 		const acc: ExecEitherAsync<XisIssueBase, unknown> = EitherAsync.fromPromise(() =>
 			Promise.resolve(first.exec(args))
@@ -58,6 +58,7 @@ export class XisChainAsync<
 						Promise.resolve(
 							xis.exec({
 								value,
+								locale,
 								path,
 								ctx,
 							})

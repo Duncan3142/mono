@@ -116,7 +116,7 @@ export class XisISO8601 extends XisSync<string, ISO8601Issue> {
 		}
 	}
 	exec(args: XisExecArgs<string>): ExecResultSync<ISO8601Issue, string> {
-		const { value, path } = args
+		const { value, path, locale } = args
 		switch (isISO8601(value)) {
 			case true:
 				return Right(value)
@@ -124,6 +124,7 @@ export class XisISO8601 extends XisSync<string, ISO8601Issue> {
 				const message = this.#messages.XIS_ISO8601({
 					value,
 					path,
+					locale,
 					props: null,
 					ctx: null,
 				})

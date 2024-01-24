@@ -9,6 +9,7 @@ export type XisMsgArgs<
 > = {
 	value: In
 	path: XisPath
+	locale: string
 	props: Props
 	ctx: Ctx
 }

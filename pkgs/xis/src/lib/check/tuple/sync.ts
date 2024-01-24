@@ -28,12 +28,13 @@ export class XisTupleSync<Schema extends [...Array<XisSyncBase>]> extends XisSyn
 	exec(
 		args: XisExecArgs<TupleIn<Schema>, TupleCtx<Schema>>
 	): ExecResultSync<TupleIssues<Schema>, TupleOut<Schema>> {
-		const { value, path, ctx } = args
+		const { value, path, ctx, locale } = args
 		const { checks } = this.#props
 		const mapped = value.map<ExecResultSync<XisIssueBase, unknown>>((elem, index) => {
 			const check = checks[index]
 			return check.exec({
 				value: elem,
+				locale,
 				path: addElement(path, {
 					segment: index,
 					side: CheckSide.Value,
