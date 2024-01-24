@@ -10,9 +10,8 @@ import { Left, Right } from "purify-ts/Either"
 import { XisSync, type ExecResultSync } from "#core/sync.js"
 import type { XisMessages, XisMsgArgs, XisMsgBuilder } from "#core/messages.js"
 
-export interface BaseTypeIssue<Expected extends TrueBaseTypeName>
-	extends XisIssue<"XIS_BASE_TYPE"> {
-	expected: Expected
+export interface BaseTypeIssue extends XisIssue<"XIS_BASE_TYPE"> {
+	expected: TrueBaseTypeName
 	received: TrueBaseTypeName
 }
 
@@ -20,40 +19,40 @@ export type BaseTypeProps<N extends TrueBaseTypeName> = {
 	expected: N
 }
 
-export type BaseTypeMessageProps<N extends TrueBaseTypeName> = BaseTypeProps<N> & {
-	received: string
+export type BaseTypeMessageProps = {
+	expected: TrueBaseTypeName
+	received: TrueBaseTypeName
 }
 
-export interface BaseTypeMessages<N extends TrueBaseTypeName>
-	extends XisMessages<BaseTypeIssue<N>> {
-	XIS_BASE_TYPE: XisMsgBuilder<unknown, BaseTypeMessageProps<N>>
+export interface BaseTypeMessages extends XisMessages<BaseTypeIssue> {
+	XIS_BASE_TYPE: XisMsgBuilder<unknown, BaseTypeMessageProps>
 }
 
 export interface BaseTypeArgs<N extends TrueBaseTypeName> {
 	props: BaseTypeProps<N>
-	messages: BaseTypeMessages<N> | null
+	messages: BaseTypeMessages | null
 }
 
 export class XisTypeCheck<N extends TrueBaseTypeName> extends XisSync<
 	unknown,
-	BaseTypeIssue<N>,
+	BaseTypeIssue,
 	TrueBaseTypeNameMap[N]
 > {
 	#props: BaseTypeProps<N>
-	#messages: BaseTypeMessages<N>
+	#messages: BaseTypeMessages
 	constructor(args: BaseTypeArgs<N>) {
 		super()
 		const { props, messages } = args
 		this.#props = props
 		this.#messages = messages ?? {
-			XIS_BASE_TYPE: (args: XisMsgArgs<unknown, BaseTypeMessageProps<N>>) => {
+			XIS_BASE_TYPE: (args: XisMsgArgs<unknown, BaseTypeMessageProps>) => {
 				const { props, path } = args
 				const { expected, received } = props
 				return `Value "${received}" at ${JSON.stringify(path)} is not an instance of ${expected}`
 			},
 		}
 	}
-	exec(args: XisExecArgs): ExecResultSync<BaseTypeIssue<N>, TrueBaseTypeNameMap[N]> {
+	exec(args: XisExecArgs): ExecResultSync<BaseTypeIssue, TrueBaseTypeNameMap[N]> {
 		const { value, path, locale } = args
 		const { expected } = this.#props
 		const received = trueTypeOf(value)
@@ -81,13 +80,15 @@ export class XisTypeCheck<N extends TrueBaseTypeName> extends XisSync<
 	}
 }
 
-const typeCheck =
+export const typeCheckLocale =
+	(msgs: BaseTypeMessages | null) =>
 	<N extends TrueBaseTypeName>(name: N) =>
-	(msgs: BaseTypeMessages<N> | null) =>
 		new XisTypeCheck<N>({
 			props: { expected: name },
 			messages: msgs,
 		})
+
+export const typeCheck = <N extends TrueBaseTypeName>(name: N) => typeCheckLocale(null)(name)
 
 export const isNull = typeCheck("null")
 export const isUndefined = typeCheck("undefined")
