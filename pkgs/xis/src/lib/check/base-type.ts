@@ -80,19 +80,24 @@ export class XisTypeCheck<N extends TrueBaseTypeName> extends XisSync<
 	}
 }
 
-const typeCheck = <N extends TrueBaseTypeName>(args: BaseTypeArgs<N>) =>
-	new XisTypeCheck<N>(args)
+const typeCheck =
+	<N extends TrueBaseTypeName>(name: N) =>
+	(msgs: BaseTypeMessages<N> | null) =>
+		new XisTypeCheck<N>({
+			props: { expected: name },
+			messages: msgs,
+		})
 
-export const isNull = typeCheck({ messages: null, props: { expected: "null" } })
-export const isUndefined = typeCheck({ messages: null, props: { expected: "undefined" } })
-export const isString = typeCheck({ messages: null, props: { expected: "string" } })
-export const isNumber = typeCheck({ messages: null, props: { expected: "number" } })
-export const isBoolean = typeCheck({ messages: null, props: { expected: "boolean" } })
-export const isBigInt = typeCheck({ messages: null, props: { expected: "bigint" } })
-export const isSymbol = typeCheck({ messages: null, props: { expected: "symbol" } })
-export const isBaseArray = typeCheck({ messages: null, props: { expected: "array" } })
-export const isBaseObject = typeCheck({ messages: null, props: { expected: "object" } })
-export const isBaseFunction = typeCheck({ messages: null, props: { expected: "function" } })
-export const isDate = typeCheck({ messages: null, props: { expected: "date" } })
-export const isBaseMap = typeCheck({ messages: null, props: { expected: "map" } })
-export const isBaseSet = typeCheck({ messages: null, props: { expected: "set" } })
+export const isNull = typeCheck("null")
+export const isUndefined = typeCheck("undefined")
+export const isString = typeCheck("string")
+export const isNumber = typeCheck("number")
+export const isBoolean = typeCheck("boolean")
+export const isBigInt = typeCheck("bigint")
+export const isSymbol = typeCheck("symbol")
+export const isBaseArray = typeCheck("array")
+export const isBaseObject = typeCheck("object")
+export const isBaseFunction = typeCheck("function")
+export const isDate = typeCheck("date")
+export const isBaseMap = typeCheck("map")
+export const isBaseSet = typeCheck("set")
