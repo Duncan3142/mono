@@ -1,10 +1,16 @@
-import { isString, type BaseTypeIssue } from "#core/base-type.js"
-import type { XisArgObjBase } from "#core/context.js"
+import type { XisExecArgs } from "#core/args.js"
 import type { XisIssue } from "#core/error.js"
-import { XisSync, type ExecResultSync, type ParseResultSync } from "#core/sync.js"
-import { Left, Right } from "purify-ts"
+import type { XisMessages, XisMsgBuilder } from "#core/messages.js"
+import { XisSync, type ExecResultSync } from "#core/sync.js"
+import type { NTuple } from "#util/base-type.js"
+import { Left, Right } from "purify-ts/Either"
 
-const regex = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})\.(\d{3})Z$/
+const regex = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})\.(\d{1,16})Z$/
+// type DIGIT = "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9"
+// type DIGIT_PAIR = `${DIGIT}${DIGIT}`
+// type DIGIT_QUAD = `${DIGIT_PAIR}${DIGIT_PAIR}`
+// type ISO8601 =
+// 	`${DIGIT_QUAD}-${DIGIT_PAIR}-${DIGIT_PAIR}T${DIGIT_PAIR}:${DIGIT_PAIR}:${DIGIT_PAIR}.${number}Z`
 
 export const Month = {
 	Jan: 1,
@@ -30,17 +36,9 @@ export function isISO8601(str: string): boolean {
 		return false
 	}
 
-	const [year, month, day, hour, min, sec, millisecond] = check
+	const [year, month, day, hour, min, sec, _millisecond] = check
 		.slice(1)
-		.map((elem) => Number.parseInt(elem, 10)) as [
-		number,
-		number,
-		number,
-		number,
-		number,
-		number,
-		number,
-	]
+		.map((elem) => Number.parseInt(elem, 10)) as NTuple<7, number>
 
 	if (year < 1900 || year > 3000) {
 		return false
@@ -90,45 +88,56 @@ export function isISO8601(str: string): boolean {
 		return false
 	}
 
-	if (millisecond > 999) {
-		return false
-	}
-
 	return true
 }
 
-export interface ISO8601Issue extends XisIssue<"ISO8601"> {
+export interface ISO8601Issue extends XisIssue<"XIS_ISO8601"> {
 	received: string
 }
 
-const isISO8601Either = (
-	str: string,
-	ctx: XisArgObjBase
-): ExecResultSync<ISO8601Issue, string> => {
-	switch (isISO8601(str)) {
-		case true:
-			return Right(str)
-		case false:
-			return Left([
-				{
-					name: "ISO8601",
-					received: str,
-					path: ctx.path,
-				},
-			])
+export interface XisISO8601Messages extends XisMessages<ISO8601Issue> {
+	XIS_ISO8601: XisMsgBuilder<string>
+}
+
+export interface XisISO8601Args {
+	messages: XisISO8601Messages | null
+}
+
+export class XisISO8601 extends XisSync<string, ISO8601Issue> {
+	#messages: XisISO8601Messages
+	constructor(args: XisISO8601Args) {
+		const { messages } = args
+		super()
+		this.#messages = messages ?? {
+			XIS_ISO8601: (args) => {
+				const { value, path } = args
+				return `Expected ISO8601 string, received ${value} at ${JSON.stringify(path)}`
+			},
+		}
+	}
+	exec(args: XisExecArgs<string>): ExecResultSync<ISO8601Issue, string> {
+		const { value, path } = args
+		switch (isISO8601(value)) {
+			case true:
+				return Right(value)
+			case false: {
+				const message = this.#messages.XIS_ISO8601({
+					value,
+					path,
+					props: null,
+					ctx: null,
+				})
+				return Left([
+					{
+						name: "XIS_ISO8601",
+						message,
+						received: value,
+						path,
+					},
+				])
+			}
+		}
 	}
 }
 
-export class XisISO8601 extends XisSync<string, BaseTypeIssue<"string">, ISO8601Issue> {
-	parse(
-		value: unknown,
-		ctx: XisArgObjBase
-	): ParseResultSync<BaseTypeIssue<"string">, ISO8601Issue, string> {
-		return isString(value, ctx).chain((v) => this.exec(v, ctx))
-	}
-	exec(value: string, ctx: XisArgObjBase): ExecResultSync<ISO8601Issue, string> {
-		return isISO8601Either(value, ctx)
-	}
-}
-
-export const iso8601: XisISO8601 = new XisISO8601()
+export const iso8601 = (args: XisISO8601Args) => new XisISO8601(args)
