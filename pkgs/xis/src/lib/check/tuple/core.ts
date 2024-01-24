@@ -1,20 +1,19 @@
-import { type XisBuildArgs, type XisOptArgs } from "#core/context.js"
-
-import type { XisIssueBase } from "#core/error.js"
-
+import type { XisIssue, XisIssueBase } from "#core/error.js"
 import {
 	type XisBase,
-	type ExArgs,
-	type ExGuardIssues,
-	type ExExecIssues,
+	type ExIssues,
 	type ExIn,
 	type ExOut,
 	mergeIssues,
+	type ExCtx,
 } from "#core/kernel.js"
 
-import type { BaseTypeIssue, TupleLengthIssue } from "#core/base-type.js"
-import type { ExecResultSync } from "#core/sync.js"
-import { Right } from "purify-ts/Either"
+import { XisSync, type ExecResultSync } from "#core/sync.js"
+import { Left, Right } from "purify-ts/Either"
+import type { BaseArray, NTuple } from "#util/base-type.js"
+import type { XisMessages, XisMsgArgs, XisMsgBuilder } from "#core/messages.js"
+import type { XisExecArgs } from "#core/args.js"
+import type { BuildObjArg, ObjArgBase } from "#util/arg.js"
 
 export type TupleIn<
 	Schema extends [...Array<XisBase>],
@@ -23,29 +22,12 @@ export type TupleIn<
 	? TupleIn<Rest, [...Acc, ExIn<Next>]>
 	: Acc
 
-export type TupleElementGuardIssues<
+export type TupleIssues<
 	Schema extends [...Array<XisBase>],
-	Acc extends XisIssueBase,
+	Acc extends XisIssueBase = never,
 > = Schema extends [infer Next extends XisBase, ...infer Rest extends Array<XisBase>]
-	? TupleElementGuardIssues<Rest, Acc | ExGuardIssues<Next>>
+	? TupleIssues<Rest, Acc | ExIssues<Next>>
 	: Acc
-
-export type TupleGuardIssues<Schema extends [...Array<XisBase>]> =
-	| TupleElementGuardIssues<Schema, never>
-	| TupleLengthIssue
-	| BaseTypeIssue<"array">
-
-export type TupleElementExecIssues<
-	Schema extends [...Array<XisBase>],
-	Acc extends XisIssueBase,
-> = Schema extends [infer Next extends XisBase, ...infer Rest extends Array<XisBase>]
-	? TupleElementExecIssues<Rest, Acc | ExExecIssues<Next>>
-	: Acc
-
-export type TupleExecIssues<Schema extends Array<XisBase>> = TupleElementExecIssues<
-	Schema,
-	never
->
 
 export type TupleOut<
 	Schema extends [...Array<XisBase>],
@@ -54,11 +36,11 @@ export type TupleOut<
 	? TupleOut<Rest, [...Acc, ExOut<Next>]>
 	: Acc
 
-export type TupleArgs<
+export type TupleCtx<
 	Schema extends [...Array<XisBase>],
-	Acc extends XisOptArgs = undefined,
+	Acc extends ObjArgBase = null,
 > = Schema extends [infer Next extends XisBase, ...infer Rest extends Array<XisBase>]
-	? TupleArgs<Rest, XisBuildArgs<Acc, ExArgs<Next>>>
+	? TupleCtx<Rest, BuildObjArg<Acc, ExCtx<Next>>>
 	: Acc
 
 export const reduce = (
@@ -73,26 +55,62 @@ export const reduce = (
 		Right([])
 	)
 
-export interface TupleLengthIssue extends XisIssue<"TUPLE_LENGTH"> {
-	expected: number
+export interface NTupleIssue<N extends number> extends XisIssue<"XIS_TUPLE_LENGTH"> {
+	expected: N
 	actual: number
 }
 
-export const isTupleOf = <Length extends number>(
-	value: unknown,
-	expected: Length,
-	args: XisExecArgs
-): ExecResultSync<TupleLengthIssue | BaseTypeIssue<"array">, TupleOf<Length>> =>
-	isBaseArray(value, args).chain((arr) =>
-		arr.length === expected
-			? Right(arr as TupleOf<Length>)
+export type NTupleIssues<N extends number> = NTupleIssue<N>
+
+export type NTupleProps<N extends number> = {
+	length: N
+}
+
+export interface NTupleMessages<N extends number> extends XisMessages<NTupleIssues<N>> {
+	XIS_TUPLE_LENGTH: XisMsgBuilder<BaseArray, NTupleProps<N>>
+}
+
+export interface IsNTupleArgs<N extends number> {
+	props: NTupleProps<N>
+	messages: NTupleMessages<N> | null
+}
+
+export class IsNTuple<L extends number> extends XisSync<BaseArray, NTupleIssues<L>, NTuple<L>> {
+	#props: NTupleProps<L>
+	#messages: NTupleMessages<L>
+	constructor(args: IsNTupleArgs<L>) {
+		super()
+		const { props, messages } = args
+		this.#props = props
+		this.#messages = messages ?? {
+			XIS_TUPLE_LENGTH: (args: XisMsgArgs<BaseArray, NTupleProps<L>>): string => {
+				const { value, props, path } = args
+				const { length } = props
+				return `Actual length "${value.length}", expected ${length}, at ${JSON.stringify(path)} `
+			},
+		}
+	}
+	exec(args: XisExecArgs<BaseArray>): ExecResultSync<NTupleIssues<L>, NTuple<L>> {
+		const { value, path } = args
+		const { length } = this.#props
+
+		const message = this.#messages.XIS_TUPLE_LENGTH({
+			value,
+			path,
+			props: this.#props,
+			ctx: null,
+		})
+
+		return value.length === length
+			? Right(value as NTuple<L>)
 			: Left([
 					{
-						name: "TUPLE_LENGTH",
-						path: args.path,
-						message: "::TODO::", // ::TODO::
-						expected,
-						actual: arr.length,
+						name: "XIS_TUPLE_LENGTH",
+						path,
+						message,
+						expected: length,
+						actual: value.length,
 					},
 				])
-	)
+	}
+}

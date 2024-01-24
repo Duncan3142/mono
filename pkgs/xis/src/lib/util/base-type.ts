@@ -12,10 +12,10 @@ export type BaseSet = Set<unknown>
 
 export type BaseFunction = (...args: Array<any>) => unknown
 
-export type TupleOf<N extends number, T = unknown, R extends Array<T> = []> = N extends number
+export type NTuple<N extends number, T = unknown, R extends Array<T> = []> = N extends number
 	? [R["length"]] extends [N]
 		? R
-		: TupleOf<N, T, [T, ...R]>
+		: NTuple<N, T, [T, ...R]>
 	: never
 
 export interface TruePrimitiveTypeNameMap {

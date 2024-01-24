@@ -14,4 +14,13 @@ export interface PathElement {
 
 export type XisPath = ReadonlyArray<PathElement>
 
-export type XisPathSegments = ReadonlyArray<PathSegment>
+export const addElement = (path: XisPath, elem: PathElement): XisPath => {
+	const { segment, side } = elem
+	return [
+		...path,
+		{
+			segment,
+			side,
+		},
+	]
+}

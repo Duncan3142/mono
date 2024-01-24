@@ -1,82 +1,56 @@
-import {
-	type TupleArgs,
-	type TupleExecIssues,
-	type TupleGuardIssues,
-	type TupleIn,
-	type TupleOut,
-	reduce,
-} from "./core.js"
-import { CheckSide, addElement as addCtxElement, type XisCtx } from "#core/context.js"
-
+import { type TupleIn, type TupleOut, reduce, type TupleIssues, type TupleCtx } from "./core.js"
+import { CheckSide, addElement } from "#core/path.js"
+import type { XisExecArgs } from "#core/args.js"
+import { XisAsync, type ExecResultAsync } from "#core/async.js"
 import type { XisIssueBase } from "#core/error.js"
-import { isTupleOf } from "#core/base-type.js"
-import {
-	invoke,
-	type ExInvoke,
-	type InvokeMode,
-	type XisBase,
-	type ExIn,
-	type ExArgs,
-} from "#core/kernel.js"
-import { XisAsync, type ExecResultAsync, type ParseResultAsync } from "#core/async.js"
-import { EitherAsync } from "purify-ts/EitherAsync"
+import type { XisBase } from "#core/kernel.js"
+import type { ExecResultSync } from "#core/sync.js"
+
+export interface XisTupleAsyncProps<Schema extends [...Array<XisBase>]> {
+	checks: [...Schema]
+}
+
+export interface XisTupleAsyncArgs<Schema extends [...Array<XisBase>]> {
+	props: XisTupleAsyncProps<Schema>
+}
 
 export class XisTupleAsync<Schema extends [...Array<XisBase>]> extends XisAsync<
 	TupleIn<Schema>,
-	TupleGuardIssues<Schema>,
-	TupleExecIssues<Schema>,
+	TupleIssues<Schema>,
 	TupleOut<Schema>,
-	TupleArgs<Schema>
+	TupleCtx<Schema>
 > {
-	readonly #checks: [...Schema]
+	#props: XisTupleAsyncProps<Schema>
 
-	constructor(chks: [...Schema]) {
+	constructor(args: XisTupleAsyncArgs<Schema>) {
 		super()
-		this.#checks = chks
+		this.#props = args.props
 	}
 
-	parse(
-		value: unknown,
-		ctx: XisCtx<TupleArgs<Schema>>
-	): ParseResultAsync<TupleGuardIssues<Schema>, TupleExecIssues<Schema>, TupleOut<Schema>> {
-		return EitherAsync.liftEither(isTupleOf(value, this.#checks.length, ctx))
-			.chain((arr) => this.#invoke("parse", arr, ctx))
-			.run()
-	}
-
-	exec(
-		value: TupleIn<Schema>,
-		ctx: XisCtx<TupleArgs<Schema>>
-	): ExecResultAsync<TupleExecIssues<Schema>, TupleOut<Schema>> {
-		return this.#invoke("exec", value, ctx)
-	}
-
-	#invoke<Mode extends InvokeMode>(
-		mode: Mode,
-		value: Array<unknown>,
-		ctx: XisCtx<TupleArgs<Schema>>
-	): ExInvoke<this, Mode> {
-		type Res = ExInvoke<this, InvokeMode>
-
-		return Promise.all(
+	async exec(
+		args: XisExecArgs<TupleIn<Schema>, TupleCtx<Schema>>
+	): ExecResultAsync<TupleIssues<Schema>, TupleOut<Schema>> {
+		const { value, path, ctx } = args
+		const { checks } = this.#props
+		const mapped = await Promise.all(
 			value.map<ExecResultAsync<XisIssueBase, unknown>>((elem, index) => {
-				const check = this.#checks[index]
+				const check = checks[index]
 				return Promise.resolve(
-					invoke(
-						mode,
-						check,
-						elem as ExIn<[...Schema][number]>,
-						addCtxElement(ctx, {
+					check.exec({
+						value: elem,
+						path: addElement(path, {
 							segment: index,
 							side: CheckSide.Value,
-						}) as ExArgs<[...Schema][number]>
-					)
+						}),
+						ctx,
+					})
 				)
 			})
-		).then((mapped) => reduce(mapped)) as Res
+		)
+		return reduce(mapped) as ExecResultSync<TupleIssues<Schema>, TupleOut<Schema>>
 	}
 }
 
 export const tuple = <Schema extends [...Array<XisBase>]>(
 	checks: [...Schema]
-): XisTupleAsync<Schema> => new XisTupleAsync(checks)
+): XisTupleAsync<Schema> => new XisTupleAsync({ props: { checks } })
