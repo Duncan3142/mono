@@ -1,13 +1,10 @@
-import { XisSync, type ExecResultSync, type ParseResultSync } from "#core/sync.js"
+import type { XisExecArgs } from "#core/args.js"
+import { XisSync, type ExecResultSync } from "#core/sync.js"
 import { Right } from "purify-ts/Either"
 
-export class XisCoerceString extends XisSync<unknown, never, never, string> {
-	parse(value: unknown): ParseResultSync<never, never, string> {
-		return this.exec(value)
-	}
-
-	exec(value: unknown): ExecResultSync<never, string> {
-		return Right(String(value))
+export class XisCoerceString extends XisSync<unknown, never, string> {
+	exec(args: XisExecArgs): ExecResultSync<never, string> {
+		return Right(String(args.value))
 	}
 }
 
