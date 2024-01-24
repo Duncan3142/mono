@@ -1,31 +1,52 @@
-import type { XisArgObjBase } from "#core/context.js"
+import type { XisExecArgs } from "#core/args.js"
 import type { XisIssue } from "#core/error.js"
+import type { XisMessages, XisMsgArgs, XisMsgBuilder } from "#core/messages.js"
+import { XisSync, type ExecResultSync } from "#core/sync.js"
 import { Left, Right } from "purify-ts/Either"
-import { isNumber, type BaseTypeIssue } from "#core/base-type.js"
-import { XisSync, type ExecResultSync, type ParseResultSync } from "#core/sync.js"
 
-export type FiniteIssue = XisIssue<"FINITE">
+export type FiniteIssue = XisIssue<"XIS_FINITE">
 
-export class XisFinite extends XisSync<number, BaseTypeIssue<"number">, FiniteIssue> {
-	parse(
-		value: unknown,
-		ctx: XisArgObjBase
-	): ParseResultSync<BaseTypeIssue<"number">, FiniteIssue, number> {
-		return isNumber(value, ctx).chain((value) => this.exec(value, ctx))
+export interface XisFiniteMessages extends XisMessages<FiniteIssue> {
+	XIS_FINITE: XisMsgBuilder<number>
+}
+
+export interface XisFiniteArgs {
+	messages: XisFiniteMessages | null
+}
+
+export class XisFinite extends XisSync<number, FiniteIssue> {
+	#messages: XisFiniteMessages
+	constructor(args: XisFiniteArgs) {
+		super()
+		const { messages } = args
+		this.#messages = messages ?? {
+			XIS_FINITE: (args: XisMsgArgs<number>) => {
+				const { value, path } = args
+				return `${value} at ${JSON.stringify(path)} is not a finite`
+			},
+		}
 	}
-
-	exec(value: number, ctx: XisArgObjBase): ExecResultSync<FiniteIssue, number> {
+	exec(args: XisExecArgs<number>): ExecResultSync<FiniteIssue, number> {
+		const { value, ctx, locale, path } = args
 		if (Number.isFinite(value)) {
 			return Right(value)
 		}
 
-		const err = {
-			name: "FINITE",
-			path: ctx.path,
-		} satisfies FiniteIssue
+		const message = this.#messages.XIS_FINITE({
+			value,
+			path,
+			locale,
+			props: null,
+			ctx,
+		})
 
+		const err = {
+			name: "XIS_FINITE" as const,
+			message,
+			path,
+		}
 		return Left([err])
 	}
 }
 
-export const finite: XisFinite = new XisFinite()
+export const isFinite = (args: XisFiniteArgs) => new XisFinite(args)

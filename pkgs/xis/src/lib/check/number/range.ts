@@ -1,52 +1,75 @@
-import type { XisArgObjBase } from "#core/context.js"
 import type { XisIssue } from "#core/error.js"
 import { inRange, type RangeOpts } from "#util/rangeOpts.js"
 import { Left, Right } from "purify-ts/Either"
-import { XisSync, type ExecResultSync, type ParseResultSync } from "#core/sync.js"
-import { isNumber, type BaseTypeIssue } from "#core/base-type.js"
+import { XisSync, type ExecResultSync } from "#core/sync.js"
+import type { XisMessages, XisMsgArgs, XisMsgBuilder } from "#core/messages.js"
+import type { XisExecArgs } from "#core/args.js"
 
 export type NumberRangeOpts = RangeOpts<number>
 
-export interface NumberRangeIssue extends XisIssue<"NUMBER_RANGE"> {
+export type NumberRangeProps = {
+	opts: NumberRangeOpts
+}
+
+export interface NumberRangeIssue extends XisIssue<"XIS_NUMBER_RANGE"> {
 	received: number
 	opts: NumberRangeOpts
 }
 
-export class XisRange<Opts extends NumberRangeOpts> extends XisSync<
-	number,
-	BaseTypeIssue<"number">,
-	NumberRangeIssue
-> {
-	#opts: Opts
+export interface NumberRangeMessages extends XisMessages<NumberRangeIssue> {
+	XIS_NUMBER_RANGE: XisMsgBuilder<number, NumberRangeProps>
+}
 
-	constructor(opts: Opts) {
+export interface NumberRangeArgs {
+	messages: NumberRangeMessages | null
+	props: NumberRangeProps
+}
+
+export class XisRange extends XisSync<number, NumberRangeIssue> {
+	#props: NumberRangeProps
+	#messages: NumberRangeMessages
+
+	constructor(args: NumberRangeArgs) {
 		super()
-		this.#opts = opts
+		const { messages, props } = args
+		this.#messages = messages ?? {
+			XIS_NUMBER_RANGE: (args: XisMsgArgs<number, NumberRangeProps>) => {
+				const {
+					value,
+					path,
+					props: { opts },
+				} = args
+				return `${value} at ${JSON.stringify(path)} is not in range ${JSON.stringify(opts)}`
+			},
+		}
+		this.#props = props
 	}
 
-	parse(
-		value: unknown,
-		ctx: XisArgObjBase
-	): ParseResultSync<BaseTypeIssue<"number">, NumberRangeIssue, number> {
-		return isNumber(value, ctx).chain((value) => this.exec(value, ctx))
-	}
-
-	exec(value: number, ctx: XisArgObjBase): ExecResultSync<NumberRangeIssue, number> {
-		const opts = this.#opts
+	exec(args: XisExecArgs<number>): ExecResultSync<NumberRangeIssue, number> {
+		const { opts } = this.#props
+		const { locale, value, ctx, path } = args
 
 		if (inRange(value, opts)) {
 			return Right(value)
 		}
 
+		const message = this.#messages.XIS_NUMBER_RANGE({
+			value,
+			path,
+			locale,
+			props: { opts },
+			ctx,
+		})
+
 		const err = {
-			name: "NUMBER_RANGE",
-			path: ctx.path,
+			name: "XIS_NUMBER_RANGE" as const,
+			path,
 			received: value,
+			message,
 			opts,
-		} satisfies NumberRangeIssue
+		}
 		return Left([err])
 	}
 }
 
-export const range = <Opts extends NumberRangeOpts>(options: Opts): XisRange<Opts> =>
-	new XisRange(options)
+export const range = (args: NumberRangeArgs): XisRange => new XisRange(args)

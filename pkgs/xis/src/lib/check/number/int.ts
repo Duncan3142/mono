@@ -1,33 +1,52 @@
-import type { XisArgObjBase } from "#core/context.js"
-
+import type { XisExecArgs } from "#core/args.js"
 import type { XisIssue } from "#core/error.js"
+import type { XisMessages, XisMsgArgs, XisMsgBuilder } from "#core/messages.js"
+import { XisSync, type ExecResultSync } from "#core/sync.js"
 import { Left, Right } from "purify-ts/Either"
 
-import { XisSync, type ExecResultSync, type ParseResultSync } from "#core/sync.js"
-import { isNumber, type BaseTypeIssue } from "#core/base-type.js"
+export type IntegerIssue = XisIssue<"XIS_INTEGER">
 
-export type IntegerIssue = XisIssue<"INTEGER">
+export interface XisIntegerMessages extends XisMessages<IntegerIssue> {
+	XIS_INTEGER: XisMsgBuilder<number>
+}
 
-export class XisInteger extends XisSync<number, BaseTypeIssue<"number">, IntegerIssue> {
-	parse(
-		value: unknown,
-		ctx: XisArgObjBase
-	): ParseResultSync<BaseTypeIssue<"number">, IntegerIssue, number> {
-		return isNumber(value, ctx).chain((value) => this.exec(value, ctx))
+export interface XisIntegerArgs {
+	messages: XisIntegerMessages | null
+}
+
+export class XisInteger extends XisSync<number, IntegerIssue> {
+	#messages: XisIntegerMessages
+	constructor(args: XisIntegerArgs) {
+		super()
+		const { messages } = args
+		this.#messages = messages ?? {
+			XIS_INTEGER: (args: XisMsgArgs<number>) => {
+				const { value, path } = args
+				return `${value} at ${JSON.stringify(path)} is not an integer`
+			},
+		}
 	}
-
-	exec(value: number, ctx: XisArgObjBase): ExecResultSync<IntegerIssue, number> {
+	exec(args: XisExecArgs<number>): ExecResultSync<IntegerIssue, number> {
+		const { value, ctx, locale, path } = args
 		if (Number.isInteger(value)) {
 			return Right(value)
 		}
 
-		const err = {
-			name: "INTEGER",
-			path: ctx.path,
-		} satisfies IntegerIssue
+		const message = this.#messages.XIS_INTEGER({
+			value,
+			path,
+			locale,
+			props: null,
+			ctx,
+		})
 
+		const err = {
+			name: "XIS_INTEGER" as const,
+			message,
+			path,
+		}
 		return Left([err])
 	}
 }
 
-export const integer: XisInteger = new XisInteger()
+export const isInteger = (args: XisIntegerArgs) => new XisInteger(args)
