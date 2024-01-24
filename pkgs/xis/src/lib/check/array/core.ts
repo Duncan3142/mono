@@ -1,14 +1,9 @@
 import { Right } from "purify-ts/Either"
-
 import type { XisIssueBase } from "#core/error.js"
-
-import type { BaseTypeIssue } from "#core/base-type.js"
-
 import {
 	mergeIssues,
-	type ExArgs,
-	type ExExecIssues,
-	type ExGuardIssues,
+	type ExCtx,
+	type ExIssues,
 	type ExIn,
 	type ExOut,
 	type XisBase,
@@ -16,12 +11,9 @@ import {
 import type { ExecResultSync } from "#core/sync.js"
 
 export type ArrayIn<Schema extends XisBase> = Array<ExIn<Schema>>
-export type ArrayGuardIssues<Schema extends XisBase> =
-	| BaseTypeIssue<"array">
-	| ExGuardIssues<Schema>
-export type ArrayExecIssues<Schema extends XisBase> = ExExecIssues<Schema>
+export type ArrayIssues<Schema extends XisBase> = ExIssues<Schema>
 export type ArrayOut<Schema extends XisBase> = Array<ExOut<Schema>>
-export type ArrayArgs<Schema extends XisBase> = ExArgs<Schema>
+export type ArrayCtx<Schema extends XisBase> = ExCtx<Schema>
 
 export const reduce = (
 	mapped: Array<ExecResultSync<XisIssueBase, unknown>>
