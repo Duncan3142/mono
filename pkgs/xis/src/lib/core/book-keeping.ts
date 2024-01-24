@@ -19,3 +19,10 @@ export class BookkeepingError extends Error {
 		super("Do not access this property, it is bookkeeping for the type-system")
 	}
 }
+
+export const Effect = {
+	Transform: "Transform",
+	Validate: "Validate",
+} as const
+
+export type Effect = (typeof Effect)[keyof typeof Effect]

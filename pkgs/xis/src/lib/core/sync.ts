@@ -1,7 +1,7 @@
 import type { XisExecArgs } from "#core/args.js"
 import type { Either } from "purify-ts/Either"
 import type { XisIssueBase } from "#core/error.js"
-import { BookkeepingError, type XisBookKeeping } from "./book-keeping.js"
+import { BookkeepingError, Effect, type XisBookKeeping } from "./book-keeping.js"
 import type { ObjArgBase } from "#util/arg.js"
 
 export type ExecResultSync<Issues extends XisIssueBase, Out> = Either<Array<Issues>, Out>
@@ -22,9 +22,10 @@ export abstract class XisSync<
 	Out = In,
 	Ctx extends ObjArgBase = null,
 > {
-	get mode(): typeof SYNC {
+	get concurrency(): typeof SYNC {
 		return SYNC
 	}
+	abstract get effect(): Effect
 	abstract exec(args: XisExecArgs<In, Ctx>): ExecResultSync<Issues, Out>
 	get types(): XisBookKeeping<In, Issues, Out, Ctx> {
 		throw new BookkeepingError()

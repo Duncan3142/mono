@@ -1,13 +1,11 @@
 import { objectEntries, type BaseObject, type TruePropertyKey } from "#util/base-type.js"
-import { isBaseObject, type BaseTypeIssue } from "#core/base-type.js"
 import type { XisIssue, XisIssueBase } from "#core/error.js"
 
 import { CheckSide, type XisArgObjBase, type XisOptArgs, type XisPath } from "#core/context.js"
 
 import {
 	type ExArgs,
-	type ExGuardIssues,
-	type ExExecIssues,
+	type ExIssues,
 	type ExOut,
 	type ExIn,
 	type XisBase,
@@ -184,14 +182,14 @@ export type ShapePropGuardIssues<
 	S extends [...Array<BaseProp>],
 	Acc extends XisIssueBase = never,
 > = S extends [[BaseKey, infer C extends XisBase], ...infer Rest extends [...Array<BaseProp>]]
-	? ShapePropGuardIssues<Rest, Acc | ExGuardIssues<C>>
+	? ShapePropGuardIssues<Rest, Acc | ExIssues<C>>
 	: Acc
 
 export type ShapePropExecIssues<
 	S extends [...Array<BaseProp>],
 	Acc extends XisIssueBase = never,
 > = S extends [[BaseKey, infer C extends XisBase], ...infer Rest extends [...Array<BaseProp>]]
-	? ShapePropExecIssues<Rest, Acc | ExExecIssues<C>>
+	? ShapePropExecIssues<Rest, Acc | ExIssues<C>>
 	: Acc
 
 export type StripShapeIn<S extends [...Array<BaseProp>]> =
