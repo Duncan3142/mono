@@ -10,7 +10,7 @@ import {
 	type XisShapeProps,
 	buildMissingIssues,
 } from "./core.js"
-import type { BaseObject } from "#util/base-type.js"
+import { objectEntries, type BaseObject } from "#util/base-type.js"
 import { Left, Right } from "purify-ts/Either"
 
 export interface XisPassthroughMessages extends XisMessages<MissingPropertyIssue> {
@@ -45,18 +45,15 @@ export class XisPassthrough<Schema extends [...Array<ShapeKeyBase>]> extends Xis
 	exec(args: XisExecArgs<BaseObject>): ExecResultSync<MissingPropertyIssue, Shape<Schema>> {
 		const { value, path, locale } = args
 		const { keys: desired } = this.#props
-		const remainingKeys = new Set(Reflect.ownKeys(value))
-		const missingIssues = buildMissingIssues({
+
+		const { missing } = buildMissingIssues({
 			desired,
-			remainingKeys,
+			entries: objectEntries(value),
 			locale,
 			path,
 			msgBuilder: this.#messages.XIS_MISSING_PROPERTY,
 		})
-		return missingIssues.caseOf({
-			Just: (issues) => Left(issues),
-			Nothing: () => Right(value as Shape<Schema>),
-		})
+		return missing.length > 0 ? Left(missing) : Right(value as Shape<Schema>)
 	}
 }
 

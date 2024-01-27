@@ -10,8 +10,12 @@ import {
 	type XisShapeProps,
 	buildMissingIssues,
 } from "./core.js"
-import type { BaseObject, BaseProp, TruePropertyKey } from "#util/base-type.js"
-import { Nothing, Just } from "purify-ts/Maybe"
+import {
+	objectEntries,
+	type BaseObject,
+	type BaseProp,
+	type TruePropertyKey,
+} from "#util/base-type.js"
 import { Left, Right } from "purify-ts/Either"
 import type { XisIssue } from "#core/error.js"
 import type { XisPath } from "#core/path.js"
@@ -89,29 +93,24 @@ export class XisStrict<Schema extends [...Array<ShapeKeyBase>]> extends XisSync<
 	exec(args: XisExecArgs<BaseObject>): ExecResultSync<XisStrictIssues, Shape<Schema>> {
 		const { value, path, locale } = args
 		const { keys: desired } = this.#props
-		const remainingKeys = new Set(Reflect.ownKeys(value))
-		const missingIssues = buildMissingIssues({
+
+		const { missing, remaining } = buildMissingIssues({
 			desired,
-			remainingKeys,
+			entries: objectEntries(value),
 			locale,
 			path,
 			msgBuilder: this.#messages.XIS_MISSING_PROPERTY,
 		})
-		const extraIssues = [...remainingKeys.values()].map((key) =>
+		const extras = Array.from(remaining.entries()).map(([key, prop]) =>
 			extraIssue({
-				extraEntry: [key, Reflect.get(value, key)],
+				extraEntry: [key, prop],
 				locale,
 				path,
 				msgBuilder: this.#messages.XIS_EXTRA_PROPERTY,
 			})
 		)
-		const allIssues = missingIssues
-			.map((issues) => [...issues, ...extraIssues])
-			.alt(extraIssues.length > 0 ? Just(extraIssues) : Nothing)
-		return allIssues.caseOf({
-			Just: (issues) => Left(issues),
-			Nothing: () => Right(value as Shape<Schema>),
-		})
+		const allIssues = [...missing, ...extras]
+		return allIssues.length > 0 ? Left(allIssues) : Right(value as Shape<Schema>)
 	}
 }
 

@@ -78,13 +78,11 @@ export type Entry<O> = {
 
 export type Entries<O> = Array<Entry<O>>
 
-export type EntryPair = [TruePropertyKey, unknown]
-
 export const objectEntries = <const Obj extends BaseObject>(
 	obj: Obj
 ): Array<[TruePropertyKey, unknown]> => {
 	const keys = Reflect.ownKeys(obj)
-	return keys.map((key) => [key, obj[key]] satisfies EntryPair)
+	return keys.map((key) => [key, obj[key]] satisfies BaseProp)
 }
 
 export const tup = <Args extends Array<any>>(...args: Args) => args

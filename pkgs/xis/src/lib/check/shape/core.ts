@@ -1,8 +1,7 @@
-import type { TruePropertyKey } from "#util/base-type.js"
+import type { BaseProp, TruePropertyKey } from "#util/base-type.js"
 import type { XisIssue } from "#core/error.js"
 import type { XisPath } from "#core/path.js"
 import type { XisMsgArgs, XisMsgBuilder } from "#core/messages.js"
-import { Just, Maybe, Nothing } from "purify-ts"
 
 export type WritableRequiredKey<K extends TruePropertyKey> = [K, "!"]
 export type WritableRequiredKeyBase = WritableRequiredKey<TruePropertyKey>
@@ -105,29 +104,43 @@ export const missingIssue = (args: MissingIssueArgs): MissingPropertyIssue => {
 
 export interface MissingIssuesArgs {
 	desired: Array<ShapeKeyBase>
-	remainingKeys: Set<TruePropertyKey>
+	entries: Array<BaseProp>
 	locale: string
 	path: XisPath
 	msgBuilder: XIS_MISSING_PROPERTY
 }
 
 export const buildMissingIssues = (args: MissingIssuesArgs) => {
-	const { desired, remainingKeys, locale, path, msgBuilder } = args
-	return desired.reduce<Maybe<Array<MissingPropertyIssue>>>((acc, key) => {
-		const keyName = exKeyName(key)
-		if (remainingKeys.has(keyName) || isOptionalKey(key)) {
-			remainingKeys.delete(keyName)
-			return acc
-		}
-		const issue = missingIssue({
-			key: keyName,
-			locale,
-			path,
-			msgBuilder,
-		})
-		return acc.caseOf({
-			Just: (issues) => Just([...issues, issue]),
-			Nothing: () => Just([issue]),
-		})
-	}, Nothing)
+	const { desired, entries, locale, path, msgBuilder } = args
+	return desired.reduce<{
+		remaining: Map<TruePropertyKey, unknown>
+		missing: Array<MissingPropertyIssue>
+		found: Map<TruePropertyKey, unknown>
+	}>(
+		({ remaining, missing, found }, key) => {
+			const keyName = exKeyName(key)
+			if (remaining.has(keyName)) {
+				const prop = remaining.get(keyName)
+				remaining.delete(keyName)
+				found.set(keyName, prop)
+				return { remaining, missing, found }
+			}
+			if (isOptionalKey(key)) {
+				return { remaining, missing, found }
+			}
+			const issue = missingIssue({
+				key: keyName,
+				locale,
+				path,
+				msgBuilder,
+			})
+			missing.push(issue)
+			return {
+				remaining,
+				missing,
+				found,
+			}
+		},
+		{ remaining: new Map(entries), missing: [], found: new Map() }
+	)
 }
