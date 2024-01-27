@@ -7,24 +7,18 @@ import {
 	type MissingPropertyIssue,
 	type Shape,
 	type ShapeKeyBase,
-	exKeyName,
-	isOptionalKey,
-	missingIssue,
+	type XisShapeProps,
+	buildMissingIssues,
 } from "./core.js"
 import type { BaseObject } from "#util/base-type.js"
-import { type Maybe, Nothing, Just } from "purify-ts/Maybe"
 import { Left, Right } from "purify-ts/Either"
 
 export interface XisPassthroughMessages extends XisMessages<MissingPropertyIssue> {
 	XIS_MISSING_PROPERTY: XIS_MISSING_PROPERTY
 }
 
-export interface XisPassthroughProps<Schema extends [...Array<ShapeKeyBase>]> {
-	keys: Schema
-}
-
 export interface XisPassthroughArgs<Schema extends [...Array<ShapeKeyBase>]> {
-	props: XisPassthroughProps<Schema>
+	props: XisShapeProps<Schema>
 	messages: XisPassthroughMessages | null
 }
 
@@ -33,7 +27,7 @@ export class XisPassthrough<Schema extends [...Array<ShapeKeyBase>]> extends Xis
 	MissingPropertyIssue,
 	Shape<Schema>
 > {
-	#props: XisPassthroughProps<Schema>
+	#props: XisShapeProps<Schema>
 	#messages: XisPassthroughMessages
 
 	constructor(args: XisPassthroughArgs<Schema>) {
@@ -51,22 +45,15 @@ export class XisPassthrough<Schema extends [...Array<ShapeKeyBase>]> extends Xis
 	exec(args: XisExecArgs<BaseObject>): ExecResultSync<MissingPropertyIssue, Shape<Schema>> {
 		const { value, path, locale } = args
 		const { keys: desired } = this.#props
-		const keys = Reflect.ownKeys(value)
-		const reduced = desired.reduce<Maybe<Array<MissingPropertyIssue>>>((acc, key) => {
-			const keyName = exKeyName(key)
-			if (keys.includes(keyName) || isOptionalKey(key)) return acc
-			const issue = missingIssue({
-				key: keyName,
-				locale,
-				path,
-				msgBuilder: this.#messages.XIS_MISSING_PROPERTY,
-			})
-			return acc.caseOf({
-				Just: (issues) => Just([...issues, issue]),
-				Nothing: () => Just([issue]),
-			})
-		}, Nothing)
-		return reduced.caseOf({
+		const remainingKeys = new Set(Reflect.ownKeys(value))
+		const missingIssues = buildMissingIssues({
+			desired,
+			remainingKeys,
+			locale,
+			path,
+			msgBuilder: this.#messages.XIS_MISSING_PROPERTY,
+		})
+		return missingIssues.caseOf({
 			Just: (issues) => Left(issues),
 			Nothing: () => Right(value as Shape<Schema>),
 		})
