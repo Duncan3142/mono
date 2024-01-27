@@ -1,6 +1,7 @@
 import type { TruePropertyKey } from "#util/base-type.js"
 import type { XisIssue } from "#core/error.js"
-import { CheckSide, type XisPath } from "#core/path.js"
+import type { XisPath } from "#core/path.js"
+import type { XisMsgArgs, XisMsgBuilder } from "#core/messages.js"
 
 export type WritableRequiredKey<K extends TruePropertyKey> = [K, "!"]
 export type WritableRequiredKeyBase = WritableRequiredKey<TruePropertyKey>
@@ -36,6 +37,13 @@ export type ShapeKey<K extends TruePropertyKey> =
 
 export type ShapeKeyBase = ShapeKey<TruePropertyKey>
 
+export function isOptionalKey(key: ShapeKeyBase): key is OptionalKeyBase {
+	return (key.length === 3 && key[2] === "?") || (key.length === 2 && key[1] === "?")
+}
+
+export const exKeyName = <Key extends ShapeKeyBase>(key: Key): ExKeyName<Key> =>
+	(key.length === 3 ? key[1] : key[0]) as ExKeyName<Key>
+
 export type ExKeyName<Key extends ShapeKeyBase> =
 	Key extends ShapeKey<infer KeyName> ? KeyName : never
 
@@ -44,12 +52,6 @@ export type UnionToIntersection<T> = [T] extends [never]
 	: (T extends any ? (x: T) => void : never) extends (x: infer R) => void
 		? R
 		: never
-
-export interface MissingPropertyIssue extends XisIssue<"XIS_MISSING_PROPERTY"> {}
-
-export interface ExtraPropertyIssue extends XisIssue<"XIS_EXTRA_PROPERTY"> {
-	value: unknown
-}
 
 export type RecordIntersection<A, B> = A & B extends infer U ? { [P in keyof U]: U[P] } : never
 
@@ -68,41 +70,30 @@ export type Shape<
 					: never
 	: Acc
 
-export const missingIssues = (
-	missingEntries: Array<TruePropertyKey>,
-	path: XisPath
-): Array<MissingPropertyIssue> =>
-	missingEntries.map(
-		(key) =>
-			({
-				name: "XIS_MISSING_PROPERTY",
-				message: `Missing property "${String(key)}"`,
-				path: [
-					...path,
-					{
-						segment: key,
-						side: CheckSide.Value,
-					},
-				],
-			}) satisfies MissingPropertyIssue
-	)
+export interface MissingPropertyIssue extends XisIssue<"XIS_MISSING_PROPERTY"> {
+	key: TruePropertyKey
+}
 
-export const extraIssues = (
-	extraEntries: Map<TruePropertyKey, unknown>,
+export type XIS_MISSING_PROPERTY = XisMsgBuilder<TruePropertyKey>
+
+export const XIS_MISSING_PROPERTY = (args: XisMsgArgs<TruePropertyKey>) => {
+	const { value, path } = args
+	return `object missing property "${String(value)}" at path "${JSON.stringify(path)}"`
+}
+
+export interface MissingIssuesArgs {
+	key: TruePropertyKey
+	locale: string
+	msgBuilder: XIS_MISSING_PROPERTY
 	path: XisPath
-): Array<ExtraPropertyIssue> =>
-	[...extraEntries.entries()].map(
-		([key, value]) =>
-			({
-				name: "XIS_EXTRA_PROPERTY",
-				value,
-				message: `Extra property "${String(key)}"`,
-				path: [
-					...path,
-					{
-						segment: key,
-						side: CheckSide.Value,
-					},
-				],
-			}) satisfies ExtraPropertyIssue
-	)
+}
+
+export const missingIssue = (args: MissingIssuesArgs): MissingPropertyIssue => {
+	const { key, locale, msgBuilder, path } = args
+	return {
+		name: "XIS_MISSING_PROPERTY" as const,
+		key,
+		message: msgBuilder({ value: key, path, locale, props: null, ctx: null }),
+		path,
+	}
+}
