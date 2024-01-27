@@ -54,7 +54,7 @@ export class XisPassthrough<Schema extends [...Array<ShapeKeyBase>]> extends Xis
 		const keys = Reflect.ownKeys(value)
 		const reduced = desired.reduce<Maybe<Array<MissingPropertyIssue>>>((acc, key) => {
 			const keyName = exKeyName(key)
-			if (keys.includes(keyName) || isOptionalKey(key)) return Nothing
+			if (keys.includes(keyName) || isOptionalKey(key)) return acc
 			const issue = missingIssue({
 				key: keyName,
 				locale,
