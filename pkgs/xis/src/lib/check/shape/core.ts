@@ -47,13 +47,7 @@ export const exKeyName = <Key extends ShapeKeyBase>(key: Key): ExKeyName<Key> =>
 export type ExKeyName<Key extends ShapeKeyBase> =
 	Key extends ShapeKey<infer KeyName> ? KeyName : never
 
-export type UnionToIntersection<T> = [T] extends [never]
-	? undefined
-	: (T extends any ? (x: T) => void : never) extends (x: infer R) => void
-		? R
-		: never
-
-export type RecordIntersection<A, B> = A & B extends infer U ? { [P in keyof U]: U[P] } : never
+// export type RecordIntersection<A, B> = A & B extends infer U ? { [P in keyof U]: U[P] } : never
 
 export type Shape<
 	Keys extends [...Array<ShapeKeyBase>],
