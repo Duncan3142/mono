@@ -4,6 +4,8 @@ export type BaseArray = Array<unknown>
 
 export type TruePropertyKey = string | symbol
 
+export type BaseProp = [TruePropertyKey, unknown]
+
 export type BaseObject = Record<TruePropertyKey, unknown>
 
 export type BaseMap = Map<unknown, unknown>

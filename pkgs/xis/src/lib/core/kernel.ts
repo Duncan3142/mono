@@ -1,7 +1,7 @@
 import type { XisIssueBase } from "#core/error.js"
 
-import type { ExecResultSync, ExecResultSyncBase, XisSync, XisSyncFn } from "./sync.js"
-import type { ExecResultAsync, XisAsync, XisAsyncFn } from "./async.js"
+import type { ExecResultSync, ExecResultSyncBase, XisSync } from "./sync.js"
+import type { ExecResultAsync, XisAsync } from "./async.js"
 import { Left } from "purify-ts/Either"
 import type { ObjArgBase } from "#util/arg.js"
 import type { XisExecArgs } from "./args.js"
@@ -16,13 +16,6 @@ export type ExExecResultIssues<R extends ExecResultBase> =
 
 export type ExExecResultOut<R extends ExecResultBase> =
 	R extends ExecResult<any, infer Out> ? Out : never
-
-export type XisFn<
-	In,
-	Issues extends XisIssueBase = never,
-	Out = In,
-	Ctx extends ObjArgBase = null,
-> = XisSyncFn<In, Issues, Out, Ctx> | XisAsyncFn<In, Issues, Out, Ctx>
 
 export type Xis<
 	In,

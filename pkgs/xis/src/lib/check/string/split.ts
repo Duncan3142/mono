@@ -1,4 +1,5 @@
 import type { XisExecArgs } from "#core/args.js"
+import { Effect } from "#core/book-keeping.js"
 import { XisSync, type ExecResultSync } from "#core/sync.js"
 import { Right } from "purify-ts/Either"
 
@@ -18,6 +19,9 @@ export class XisSplit extends XisSync<string, never, Array<string>> {
 	constructor(args: XisSplitArgs) {
 		super()
 		this.#props = args.props
+	}
+	override get effect(): Effect {
+		return Effect.Transform
 	}
 
 	exec(args: XisExecArgs<string>): ExecResultSync<never, Array<string>> {

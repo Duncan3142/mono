@@ -2,6 +2,7 @@ import type { XisExecArgs } from "#core/args.js"
 
 import type { ExIn, ExIssues, ExOut, ExCtx } from "#core/kernel.js"
 import { XisAsync, type ExecResultAsync, type XisAsyncBase } from "#core/async.js"
+import type { Effect } from "#core/book-keeping.js"
 
 interface XisLazyAsyncProps<X extends XisAsyncBase> {
 	lazy: () => X
@@ -22,6 +23,10 @@ export class XisLazyAsync<X extends XisAsyncBase> extends XisAsync<
 	constructor(args: XisLazyAsyncArgs<X>) {
 		super()
 		this.#props = args.props
+	}
+
+	override get effect(): Effect {
+		return this.#props.lazy().effect
 	}
 
 	exec(args: XisExecArgs<ExIn<X>, ExCtx<X>>): ExecResultAsync<ExIssues<X>, ExOut<X>> {

@@ -4,6 +4,7 @@ import type { XisBase } from "#core/kernel.js"
 import { EitherAsync } from "purify-ts/EitherAsync"
 import { type UnionCtx, type UnionIssues, type UnionIn, type UnionOut, reduce } from "./core.js"
 import type { ExecResultSync } from "#core/sync.js"
+import { Effect } from "#core/book-keeping.js"
 
 export interface XisUnionAsyncProps<Schema extends [XisBase, XisBase, ...Array<XisBase>]> {
 	checks: [...Schema]
@@ -21,6 +22,13 @@ export class XisUnionAsync<
 	constructor(args: XisUnionAsyncArgs<Schema>) {
 		super()
 		this.#props = args.props
+	}
+
+	override get effect(): Effect {
+		return this.#props.checks.reduce<Effect>(
+			(acc, x) => (acc === Effect.Transform ? acc : x.effect),
+			Effect.Validate
+		)
 	}
 
 	async exec(

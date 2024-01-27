@@ -4,6 +4,7 @@ import { XisSync, type ExecResultSync } from "#core/sync.js"
 import type { XisExecArgs } from "#core/args.js"
 import { Left } from "purify-ts/Either"
 import type { XisMsgBuilder, XisMessages, XisMsgArgs } from "#core/messages.js"
+import { Effect } from "#core/book-keeping.js"
 
 export interface NeverIssue extends XisIssue<"XIS_NEVER"> {
 	value: unknown
@@ -29,7 +30,9 @@ export class XisNever extends XisSync<unknown, NeverIssue, never> {
 			},
 		}
 	}
-
+	override get effect(): Effect {
+		return Effect.Validate
+	}
 	exec(args: XisExecArgs<unknown, null>): ExecResultSync<NeverIssue, never> {
 		const { value, path, locale } = args
 		const message = this.#messages.XIS_NEVER({

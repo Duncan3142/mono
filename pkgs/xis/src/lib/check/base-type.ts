@@ -9,6 +9,7 @@ import {
 import { Left, Right } from "purify-ts/Either"
 import { XisSync, type ExecResultSync } from "#core/sync.js"
 import type { XisMessages, XisMsgArgs, XisMsgBuilder } from "#core/messages.js"
+import { Effect } from "#core/book-keeping.js"
 
 export interface BaseTypeIssue extends XisIssue<"XIS_BASE_TYPE"> {
 	expected: TrueBaseTypeName
@@ -51,6 +52,9 @@ export class XisTypeCheck<N extends TrueBaseTypeName> extends XisSync<
 				return `Value "${received}" at ${JSON.stringify(path)} is not an instance of ${expected}`
 			},
 		}
+	}
+	override get effect(): Effect {
+		return Effect.Validate
 	}
 	exec(args: XisExecArgs): ExecResultSync<BaseTypeIssue, TrueBaseTypeNameMap[N]> {
 		const { value, path, locale } = args

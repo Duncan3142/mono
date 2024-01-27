@@ -5,6 +5,7 @@ import { XisAsync, type ExecResultAsync } from "#core/async.js"
 import type { XisIssueBase } from "#core/error.js"
 import type { XisBase } from "#core/kernel.js"
 import type { ExecResultSync } from "#core/sync.js"
+import { Effect } from "#core/book-keeping.js"
 
 export interface XisTupleAsyncProps<Schema extends [...Array<XisBase>]> {
 	checks: [...Schema]
@@ -25,6 +26,10 @@ export class XisTupleAsync<Schema extends [...Array<XisBase>]> extends XisAsync<
 	constructor(args: XisTupleAsyncArgs<Schema>) {
 		super()
 		this.#props = args.props
+	}
+
+	override get effect(): Effect {
+		return Effect.Transform
 	}
 
 	async exec(

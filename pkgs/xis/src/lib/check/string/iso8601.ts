@@ -1,4 +1,5 @@
 import type { XisExecArgs } from "#core/args.js"
+import { Effect } from "#core/book-keeping.js"
 import type { XisIssue } from "#core/error.js"
 import type { XisMessages, XisMsgBuilder } from "#core/messages.js"
 import { XisSync, type ExecResultSync } from "#core/sync.js"
@@ -114,6 +115,9 @@ export class XisISO8601 extends XisSync<string, ISO8601Issue> {
 				return `Expected ISO8601 string, received ${value} at ${JSON.stringify(path)}`
 			},
 		}
+	}
+	override get effect(): Effect {
+		return Effect.Validate
 	}
 	exec(args: XisExecArgs<string>): ExecResultSync<ISO8601Issue, string> {
 		const { value, path, locale } = args

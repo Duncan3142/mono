@@ -3,6 +3,7 @@ import { XisSync, type ExecResultSync, type XisSyncBase } from "#core/sync.js"
 import { type ArrayIn, type ArrayIssues, type ArrayOut, type ArrayCtx, reduce } from "./core.js"
 import type { XisIssueBase } from "#core/error.js"
 import type { XisExecArgs } from "#core/args.js"
+import { Effect } from "#core/book-keeping.js"
 
 export interface XisArraySyncProps<Schema extends XisSyncBase> {
 	check: Schema
@@ -23,6 +24,9 @@ export class XisArraySync<Schema extends XisSyncBase> extends XisSync<
 	constructor(args: ArraySyncArgs<Schema>) {
 		super()
 		this.#props = args.props
+	}
+	override get effect(): Effect {
+		return Effect.Transform
 	}
 
 	exec(

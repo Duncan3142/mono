@@ -11,6 +11,7 @@ import { XisSync, type ExecResultSync, type XisSyncBase } from "#core/sync.js"
 import type { XisIssueBase } from "#core/error.js"
 import type { XisExecArgs } from "#core/args.js"
 import { addElement, CheckSide } from "#core/path.js"
+import { Effect } from "#core/book-keeping.js"
 
 type SyncPropertyKeyBase = XisSync<any, XisIssueBase, TruePropertyKey, any>
 
@@ -43,6 +44,10 @@ export class XisRecordSync<
 	constructor(args: XisRecordSyncArgs<KeySchema, ValueSchema>) {
 		super()
 		this.#props = args.props
+	}
+
+	override get effect(): Effect {
+		return Effect.Transform
 	}
 
 	exec(

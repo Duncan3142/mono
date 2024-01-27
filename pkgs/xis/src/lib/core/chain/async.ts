@@ -5,6 +5,7 @@ import { XisAsync, type ExecResultAsync, type ExecEitherAsync } from "#core/asyn
 import type { XisChainCtx, XisChainIssues, XisChainIn, XisChainOut } from "./core.js"
 import type { XisExecArgs } from "#core/args.js"
 import { EitherAsync } from "purify-ts"
+import { Effect } from "#core/book-keeping.js"
 
 type XisChainSchemaAsync<
 	Chain extends [XisBase, ...Array<XisBase>],
@@ -40,6 +41,13 @@ export class XisChainAsync<
 	constructor(args: XisChainAsyncArgs<Chain>) {
 		super()
 		this.#props = args.props
+	}
+
+	override get effect(): Effect {
+		return this.#props.schema.reduce<Effect>(
+			(acc, x) => (acc === Effect.Transform ? acc : x.effect),
+			Effect.Validate
+		)
 	}
 
 	exec(

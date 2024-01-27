@@ -4,10 +4,14 @@ import { Left, Right } from "purify-ts/Either"
 import { XisSync, type ExecResultSync } from "#core/sync.js"
 import type { XisExecArgs } from "#core/args.js"
 import type { XisMessages, XisMsgBuilder } from "#core/messages.js"
+import { Effect } from "#core/book-keeping.js"
 
 export type StringLengthOpts = RangeOpts<number>
 
 export class XisToLength extends XisSync<string, never, number> {
+	override get effect(): Effect {
+		return Effect.Transform
+	}
 	exec(args: XisExecArgs<string>): ExecResultSync<never, number> {
 		const { value } = args
 		return Right(value.length)
@@ -49,6 +53,9 @@ export class XisIsLength<Opts extends StringLengthOpts> extends XisSync<
 		this.#message = message
 	}
 
+	override get effect(): Effect {
+		return Effect.Validate
+	}
 	exec(args: XisExecArgs<string>): ExecResultSync<StringLengthIssue, string> {
 		const { value, path, locale } = args
 		const { opts } = this.#props

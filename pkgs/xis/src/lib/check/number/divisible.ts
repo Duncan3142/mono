@@ -1,4 +1,5 @@
 import type { XisExecArgs } from "#core/args.js"
+import { Effect } from "#core/book-keeping.js"
 import type { XisIssue } from "#core/error.js"
 import type { XisMessages, XisMsgArgs, XisMsgBuilder } from "#core/messages.js"
 import { XisSync, type ExecResultSync } from "#core/sync.js"
@@ -38,6 +39,9 @@ export class XisDivisible extends XisSync<number, NumberDivisibleIssue> {
 				return `${value} at ${JSON.stringify(path)} is not a finite`
 			},
 		}
+	}
+	override get effect(): Effect {
+		return Effect.Validate
 	}
 	exec(args: XisExecArgs<number>): ExecResultSync<NumberDivisibleIssue, number> {
 		const { value, ctx, locale, path } = args

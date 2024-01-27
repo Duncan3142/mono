@@ -9,6 +9,7 @@ import {
 	type XisCoerceArgs,
 } from "./core.js"
 import type { XisExecArgs } from "#core/args.js"
+import { Effect } from "#core/book-keeping.js"
 
 export type DateInput = Date | number | string
 
@@ -30,6 +31,9 @@ export class XisCoerceDate extends XisSync<unknown, CoerceIssue, Date> {
 		this.#messages = args.messages ?? {
 			XIS_COERCE,
 		}
+	}
+	override get effect(): Effect {
+		return Effect.Transform
 	}
 	exec(args: XisExecArgs): ExecResultSync<CoerceIssue, Date> {
 		const { value, locale, path } = args

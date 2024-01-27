@@ -4,6 +4,7 @@ import { type ArrayIn, type ArrayIssues, type ArrayOut, type ArrayCtx, reduce } 
 import type { XisIssueBase } from "#core/error.js"
 import type { XisExecArgs } from "#core/args.js"
 import type { XisBase } from "#core/kernel.js"
+import { Effect } from "#core/book-keeping.js"
 
 export interface XisArrayAsyncProps<Schema extends XisBase> {
 	check: Schema
@@ -26,6 +27,9 @@ export class XisArrayAsync<Schema extends XisBase> extends XisAsync<
 		this.#props = args.props
 	}
 
+	override get effect(): Effect {
+		return Effect.Transform
+	}
 	async exec(
 		args: XisExecArgs<ArrayIn<Schema>, ArrayCtx<Schema>>
 	): ExecResultAsync<ArrayIssues<Schema>, ArrayOut<Schema>> {

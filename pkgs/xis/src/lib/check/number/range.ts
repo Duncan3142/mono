@@ -4,6 +4,7 @@ import { Left, Right } from "purify-ts/Either"
 import { XisSync, type ExecResultSync } from "#core/sync.js"
 import type { XisMessages, XisMsgArgs, XisMsgBuilder } from "#core/messages.js"
 import type { XisExecArgs } from "#core/args.js"
+import { Effect } from "#core/book-keeping.js"
 
 export type NumberRangeOpts = RangeOpts<number>
 
@@ -43,6 +44,10 @@ export class XisRange extends XisSync<number, NumberRangeIssue> {
 			},
 		}
 		this.#props = props
+	}
+
+	override get effect(): Effect {
+		return Effect.Validate
 	}
 
 	exec(args: XisExecArgs<number>): ExecResultSync<NumberRangeIssue, number> {

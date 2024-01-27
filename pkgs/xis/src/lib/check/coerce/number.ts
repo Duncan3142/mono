@@ -10,6 +10,7 @@ import {
 	type XisCoerceArgs,
 } from "./core.js"
 import type { XisExecArgs } from "#core/args.js"
+import { Effect } from "#core/book-keeping.js"
 
 export class XisCoerceNumber extends XisSync<unknown, CoerceIssue, number> {
 	#messages: XisCoerceMessages
@@ -18,6 +19,9 @@ export class XisCoerceNumber extends XisSync<unknown, CoerceIssue, number> {
 		this.#messages = args.messages ?? {
 			XIS_COERCE,
 		}
+	}
+	override get effect(): Effect {
+		return Effect.Transform
 	}
 	exec(args: XisExecArgs): ExecResultSync<CoerceIssue, number> {
 		const { value, locale, path } = args

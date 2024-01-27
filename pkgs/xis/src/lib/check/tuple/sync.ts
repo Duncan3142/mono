@@ -3,6 +3,7 @@ import { CheckSide, addElement } from "#core/path.js"
 import type { XisExecArgs } from "#core/args.js"
 import { XisSync, type ExecResultSync, type XisSyncBase } from "#core/sync.js"
 import type { XisIssueBase } from "#core/error.js"
+import { Effect } from "#core/book-keeping.js"
 
 export interface XisTupleSyncProps<Schema extends [...Array<XisSyncBase>]> {
 	checks: [...Schema]
@@ -23,6 +24,10 @@ export class XisTupleSync<Schema extends [...Array<XisSyncBase>]> extends XisSyn
 	constructor(args: XisTupleSyncArgs<Schema>) {
 		super()
 		this.#props = args.props
+	}
+
+	override get effect(): Effect {
+		return Effect.Transform
 	}
 
 	exec(

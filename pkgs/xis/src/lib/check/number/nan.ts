@@ -1,4 +1,5 @@
 import type { XisExecArgs } from "#core/args.js"
+import { Effect } from "#core/book-keeping.js"
 import type { XisIssue } from "#core/error.js"
 import type { XisMessages, XisMsgArgs, XisMsgBuilder } from "#core/messages.js"
 import { XisSync, type ExecResultSync } from "#core/sync.js"
@@ -25,6 +26,9 @@ export class XisNan extends XisSync<number, NaNIssue> {
 				return `${value} at ${JSON.stringify(path)} is not a NaN`
 			},
 		}
+	}
+	override get effect(): Effect {
+		return Effect.Validate
 	}
 	exec(args: XisExecArgs<number>): ExecResultSync<NaNIssue, number> {
 		const { value, ctx, locale, path } = args

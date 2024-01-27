@@ -9,6 +9,7 @@ import {
 	type XisCoerceMessages,
 } from "./core.js"
 import type { XisExecArgs } from "#core/args.js"
+import { Effect } from "#core/book-keeping.js"
 
 export type BigIntInput = bigint | number | string | boolean
 
@@ -30,6 +31,9 @@ export class XisCoerceBigInt extends XisSync<unknown, CoerceIssue, bigint> {
 		this.#messages = args.messages ?? {
 			XIS_COERCE,
 		}
+	}
+	override get effect(): Effect {
+		return Effect.Transform
 	}
 	exec(args: XisExecArgs): ExecResultSync<CoerceIssue, bigint> {
 		const { value, locale, path } = args

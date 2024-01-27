@@ -4,6 +4,7 @@ import type { XisIssueBase } from "#core/error.js"
 import { XisSync, type ExecResultSync, type XisSyncBase } from "#core/sync.js"
 import type { XisChainCtx, XisChainIssues, XisChainIn, XisChainOut } from "./core.js"
 import type { XisExecArgs } from "#core/args.js"
+import { Effect } from "#core/book-keeping.js"
 
 type XisChainSchemaSync<
 	Chain extends [XisSyncBase, ...Array<XisSyncBase>],
@@ -43,6 +44,13 @@ export class XisChainSync<
 	constructor(args: XisChainSyncArgs<Chain>) {
 		super()
 		this.#props = args.props
+	}
+
+	override get effect(): Effect {
+		return this.#props.schema.reduce<Effect>(
+			(acc, x) => (acc === Effect.Transform ? acc : x.effect),
+			Effect.Validate
+		)
 	}
 
 	exec(

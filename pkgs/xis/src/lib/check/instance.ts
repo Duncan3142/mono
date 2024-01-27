@@ -1,4 +1,5 @@
 import type { XisExecArgs } from "#core/args.js"
+import { Effect } from "#core/book-keeping.js"
 import type { XisIssue } from "#core/error.js"
 import type { XisMessages, XisMsgArgs, XisMsgBuilder } from "#core/messages.js"
 import { XisSync, type ExecResultSync } from "#core/sync.js"
@@ -43,12 +44,16 @@ export class XisInstanceOf<T> extends XisSync<unknown, InstanceOfIssue, T> {
 			},
 		}
 	}
+	override get effect(): Effect {
+		return Effect.Validate
+	}
 	exec(args: XisExecArgs): ExecResultSync<InstanceOfIssue, T> {
 		const { value, path, locale } = args
 		const { ctor } = this.#props
 		if (value instanceof this.#props.ctor) {
 			return Right(value)
 		}
+
 		const typeName = trueTypeOf(value)
 		const received =
 			typeName === "null" || typeName === "undefined"

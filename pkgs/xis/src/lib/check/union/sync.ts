@@ -1,4 +1,5 @@
 import type { XisExecArgs } from "#core/args.js"
+import { Effect } from "#core/book-keeping.js"
 import { XisSync, type ExecResultSync, type XisSyncBase } from "#core/sync.js"
 import { type UnionCtx, type UnionIssues, type UnionIn, type UnionOut, reduce } from "./core.js"
 
@@ -22,6 +23,13 @@ export class XisUnionSync<
 	constructor(args: XisUnionSyncArgs<Schema>) {
 		super()
 		this.#props = args.props
+	}
+
+	override get effect(): Effect {
+		return this.#props.checks.reduce<Effect>(
+			(acc, x) => (acc === Effect.Transform ? acc : x.effect),
+			Effect.Validate
+		)
 	}
 
 	exec(

@@ -11,13 +11,6 @@ export type ExecResultAsync<Issues extends XisIssueBase, Out> = Promise<
 >
 export type ExecResultAsyncBase = ExecResultAsync<XisIssueBase, unknown>
 
-export type XisAsyncFn<
-	in In,
-	out Issues extends XisIssueBase = never,
-	out Out = In,
-	Ctx extends ObjArgBase = null,
-> = (args: XisExecArgs<In, Ctx>) => ExecResultAsync<Issues, Out>
-
 const ASYNC = "ASYNC"
 
 export abstract class XisAsync<

@@ -1,29 +1,31 @@
 import { type ExIn, type ExCtx, type ExIssues, type ExOut } from "#core/kernel.js"
 import type { XisIssueBase } from "#core/error.js"
-import { XisSync, type ExecResultSync, type XisSyncBase, type XisSyncFn } from "#core/sync.js"
+import { XisSync, type ExecResultSync, type XisSyncBase } from "#core/sync.js"
 import type { BuildObjArg, ObjArgBase } from "#util/arg.js"
 import type { XisExecArgs } from "#core/args.js"
+import { Effect } from "#core/book-keeping.js"
+import type { XisTransformSyncFn } from "./core.js"
 
-export interface XisFnSyncProps<
+export interface XisTransformSyncProps<
 	From extends XisSyncBase,
 	FnIssues extends XisIssueBase = never,
 	FnOut = ExOut<From>,
 	FnCtx extends ObjArgBase = null,
 > {
 	from: From
-	fn: XisSyncFn<ExOut<From>, FnIssues, FnOut, FnCtx>
+	fn: XisTransformSyncFn<ExOut<From>, FnIssues, FnOut, FnCtx>
 }
 
-export interface XisFnSyncArgs<
+export interface XisTransformSyncArgs<
 	From extends XisSyncBase,
 	FnIssues extends XisIssueBase = never,
 	FnOut = ExOut<From>,
 	FnCtx extends ObjArgBase = null,
 > {
-	props: XisFnSyncProps<From, FnIssues, FnOut, FnCtx>
+	props: XisTransformSyncProps<From, FnIssues, FnOut, FnCtx>
 }
 
-export class XisFnSync<
+export class XisTransformSync<
 	From extends XisSyncBase,
 	FnIssues extends XisIssueBase = never,
 	FnOut = ExOut<From>,
@@ -31,9 +33,13 @@ export class XisFnSync<
 > extends XisSync<ExIn<From>, ExIssues<From>, FnOut, BuildObjArg<ExCtx<From>, FnCtx>> {
 	readonly #props
 
-	constructor(args: XisFnSyncArgs<From, FnIssues, FnOut, FnCtx>) {
+	constructor(args: XisTransformSyncArgs<From, FnIssues, FnOut, FnCtx>) {
 		super()
 		this.#props = args.props
+	}
+
+	override get effect(): Effect {
+		return Effect.Transform
 	}
 
 	exec(
@@ -51,13 +57,13 @@ export class XisFnSync<
 	}
 }
 
-export const xis = <
+export const transform = <
 	From extends XisSyncBase,
 	FnIssues extends XisIssueBase = never,
 	FnOut = ExOut<From>,
 	FnCtx extends ObjArgBase = null,
 >(
 	from: From,
-	fn: XisSyncFn<ExOut<From>, FnIssues, FnOut, FnCtx>
-): XisFnSync<From, FnIssues, FnOut, FnCtx> =>
-	new XisFnSync<From, FnIssues, FnOut, FnCtx>({ props: { from, fn } })
+	fn: XisTransformSyncFn<ExOut<From>, FnIssues, FnOut, FnCtx>
+): XisTransformSync<From, FnIssues, FnOut, FnCtx> =>
+	new XisTransformSync<From, FnIssues, FnOut, FnCtx>({ props: { from, fn } })

@@ -7,13 +7,6 @@ import type { ObjArgBase } from "#util/arg.js"
 export type ExecResultSync<Issues extends XisIssueBase, Out> = Either<Array<Issues>, Out>
 export type ExecResultSyncBase = ExecResultSync<XisIssueBase, unknown>
 
-export type XisSyncFn<
-	in In,
-	out Issues extends XisIssueBase = never,
-	out Out = In,
-	Ctx extends ObjArgBase = null,
-> = (args: XisExecArgs<In, Ctx>) => ExecResultSync<Issues, Out>
-
 const SYNC = "SYNC"
 
 export abstract class XisSync<

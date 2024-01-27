@@ -12,6 +12,7 @@ import { XisAsync, type ExecResultAsync } from "#core/async.js"
 import type { XisExecArgs } from "#core/args.js"
 import { addElement, CheckSide } from "#core/path.js"
 import type { ExecResultSync } from "#core/sync.js"
+import { Effect } from "#core/book-keeping.js"
 
 export interface XisRecordAsyncProps<
 	KeySchema extends PropertyKeyBase,
@@ -42,6 +43,10 @@ export class XisRecordAsync<
 	constructor(args: XisRecordAsyncArgs<KeySchema, ValueSchema>) {
 		super()
 		this.#props = args.props
+	}
+
+	override get effect(): Effect {
+		return Effect.Transform
 	}
 
 	async exec(

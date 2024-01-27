@@ -5,6 +5,7 @@ import { XisSync, type ExecResultSync } from "#core/sync.js"
 import type { XisExecArgs } from "#core/args.js"
 import { Left, Right } from "purify-ts/Either"
 import type { XisMessages, XisMsgArgs, XisMsgBuilder } from "#core/messages.js"
+import { Effect } from "#core/book-keeping.js"
 
 export interface LiteralIssue<L> extends XisIssue<"XIS_LITERAL"> {
 	expected: L
@@ -39,6 +40,9 @@ export class XisLiteral<const Literal extends BasicArg> extends XisSync<
 			XIS_LITERAL: (args: XisMsgArgs<unknown, LiteralProps<Literal>>) =>
 				`Value "${String(args.value)}" is not literal ${String(args.props.literal)}`,
 		}
+	}
+	override get effect(): Effect {
+		return Effect.Validate
 	}
 
 	exec(args: XisExecArgs<unknown, null>): ExecResultSync<LiteralIssue<Literal>, Literal> {
