@@ -5,7 +5,7 @@ export interface XisBookKeeping<
 	In,
 	Issues extends XisIssueBase = never,
 	Out = In,
-	Ctx extends ObjArgBase = null,
+	Ctx extends ObjArgBase = ObjArgBase,
 > {
 	i: In
 	is: Issues

@@ -28,6 +28,7 @@ export class XisObjectAsync<Schema extends [...Array<XisPropBase>]> extends XisA
 	XisObjectIn<Schema>,
 	XisObjectIssues<Schema>,
 	XisObjectOut<Schema>,
+	typeof Effect.Transform,
 	XisObjectCtx<Schema>
 > {
 	readonly #props: XisObjectAsyncProps<Schema>
@@ -37,7 +38,7 @@ export class XisObjectAsync<Schema extends [...Array<XisPropBase>]> extends XisA
 		this.#props = args.props
 	}
 
-	override get effect(): Effect {
+	override get effect(): typeof Effect.Transform {
 		return Effect.Transform
 	}
 

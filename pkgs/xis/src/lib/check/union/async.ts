@@ -1,10 +1,15 @@
 import type { XisExecArgs } from "#core/args.js"
 import { XisAsync, type ExecResultAsync } from "#core/async.js"
-import type { XisBase } from "#core/kernel.js"
+import {
+	xisListEffect,
+	type XisBase,
+	type XisListCtx,
+	type XisListEffect,
+	type XisListIssues,
+} from "#core/kernel.js"
 import { EitherAsync } from "purify-ts/EitherAsync"
-import { type UnionCtx, type UnionIssues, type UnionIn, type UnionOut, reduce } from "./core.js"
+import { type UnionIn, type UnionOut, reduce } from "./core.js"
 import type { ExecResultSync } from "#core/sync.js"
-import { Effect } from "#core/book-keeping.js"
 
 export interface XisUnionAsyncProps<Schema extends [XisBase, XisBase, ...Array<XisBase>]> {
 	checks: [...Schema]
@@ -16,7 +21,13 @@ export interface XisUnionAsyncArgs<Schema extends [XisBase, XisBase, ...Array<Xi
 
 export class XisUnionAsync<
 	Schema extends [XisBase, XisBase, ...Array<XisBase>],
-> extends XisAsync<UnionIn<Schema>, UnionIssues<Schema>, UnionOut<Schema>, UnionCtx<Schema>> {
+> extends XisAsync<
+	UnionIn<Schema>,
+	XisListIssues<Schema>,
+	UnionOut<Schema>,
+	XisListEffect<Schema>,
+	XisListCtx<Schema>
+> {
 	#props: XisUnionAsyncProps<Schema>
 
 	constructor(args: XisUnionAsyncArgs<Schema>) {
@@ -24,23 +35,20 @@ export class XisUnionAsync<
 		this.#props = args.props
 	}
 
-	override get effect(): Effect {
-		return this.#props.checks.reduce<Effect>(
-			(acc, x) => (acc === Effect.Transform ? acc : x.effect),
-			Effect.Validate
-		)
+	override get effect(): XisListEffect<Schema> {
+		return xisListEffect(this.#props.checks)
 	}
 
 	async exec(
-		args: XisExecArgs<UnionIn<Schema>, UnionCtx<Schema>>
-	): ExecResultAsync<UnionIssues<Schema>, UnionOut<Schema>> {
+		args: XisExecArgs<UnionIn<Schema>, XisListCtx<Schema>>
+	): ExecResultAsync<XisListIssues<Schema>, UnionOut<Schema>> {
 		const mapped = await Promise.all(
 			this.#props.checks.map((chk) =>
 				EitherAsync.fromPromise(() => Promise.resolve(chk.exec(args))).run()
 			)
 		)
 
-		return reduce(mapped) as ExecResultSync<UnionIssues<Schema>, UnionOut<Schema>>
+		return reduce(mapped) as ExecResultSync<XisListIssues<Schema>, UnionOut<Schema>>
 	}
 }
 

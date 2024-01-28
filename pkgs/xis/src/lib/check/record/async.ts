@@ -36,6 +36,7 @@ export class XisRecordAsync<
 	RecordIn<KeySchema, ValueSchema>,
 	RecordIssues<KeySchema, ValueSchema>,
 	RecordOut<KeySchema, ValueSchema>,
+	typeof Effect.Transform,
 	RecordCtx<KeySchema, ValueSchema>
 > {
 	#props: XisRecordAsyncProps<KeySchema, ValueSchema>
@@ -45,7 +46,7 @@ export class XisRecordAsync<
 		this.#props = args.props
 	}
 
-	override get effect(): Effect {
+	override get effect(): typeof Effect.Transform {
 		return Effect.Transform
 	}
 

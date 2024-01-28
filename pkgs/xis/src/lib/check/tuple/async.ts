@@ -1,9 +1,9 @@
-import { type TupleIn, type TupleOut, reduce, type TupleIssues, type TupleCtx } from "./core.js"
+import { type TupleIn, type TupleOut, reduce } from "./core.js"
 import { CheckSide, addElement } from "#core/path.js"
 import type { XisExecArgs } from "#core/args.js"
 import { XisAsync, type ExecResultAsync } from "#core/async.js"
 import type { XisIssueBase } from "#core/error.js"
-import type { XisBase } from "#core/kernel.js"
+import type { XisBase, XisListCtx, XisListIssues } from "#core/kernel.js"
 import type { ExecResultSync } from "#core/sync.js"
 import { Effect } from "#core/book-keeping.js"
 
@@ -17,9 +17,10 @@ export interface XisTupleAsyncArgs<Schema extends [...Array<XisBase>]> {
 
 export class XisTupleAsync<Schema extends [...Array<XisBase>]> extends XisAsync<
 	TupleIn<Schema>,
-	TupleIssues<Schema>,
+	XisListIssues<Schema>,
 	TupleOut<Schema>,
-	TupleCtx<Schema>
+	typeof Effect.Transform,
+	XisListCtx<Schema>
 > {
 	#props: XisTupleAsyncProps<Schema>
 
@@ -28,13 +29,13 @@ export class XisTupleAsync<Schema extends [...Array<XisBase>]> extends XisAsync<
 		this.#props = args.props
 	}
 
-	override get effect(): Effect {
+	override get effect(): typeof Effect.Transform {
 		return Effect.Transform
 	}
 
 	async exec(
-		args: XisExecArgs<TupleIn<Schema>, TupleCtx<Schema>>
-	): ExecResultAsync<TupleIssues<Schema>, TupleOut<Schema>> {
+		args: XisExecArgs<TupleIn<Schema>, XisListCtx<Schema>>
+	): ExecResultAsync<XisListIssues<Schema>, TupleOut<Schema>> {
 		const { value, path, ctx, locale } = args
 		const { checks } = this.#props
 		const mapped = await Promise.all(
@@ -53,7 +54,7 @@ export class XisTupleAsync<Schema extends [...Array<XisBase>]> extends XisAsync<
 				)
 			})
 		)
-		return reduce(mapped) as ExecResultSync<TupleIssues<Schema>, TupleOut<Schema>>
+		return reduce(mapped) as ExecResultSync<XisListIssues<Schema>, TupleOut<Schema>>
 	}
 }
 

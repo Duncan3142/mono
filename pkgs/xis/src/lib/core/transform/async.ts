@@ -11,7 +11,7 @@ export interface XisTransformAsyncProps<
 	From extends XisBase,
 	FnIssues extends XisIssueBase = never,
 	FnOut = ExOut<From>,
-	FnCtx extends ObjArgBase = null,
+	FnCtx extends ObjArgBase = ObjArgBase,
 > {
 	from: From
 	fn: XisTransformFn<ExOut<From>, FnIssues, FnOut, FnCtx>
@@ -21,7 +21,7 @@ export interface XisTransformAsyncArgs<
 	From extends XisBase,
 	FnIssues extends XisIssueBase = never,
 	FnOut = ExOut<From>,
-	FnCtx extends ObjArgBase = null,
+	FnCtx extends ObjArgBase = ObjArgBase,
 > {
 	props: XisTransformAsyncProps<From, FnIssues, FnOut, FnCtx>
 }
@@ -30,7 +30,7 @@ export class XisTransformAsync<
 	From extends XisBase,
 	FnIssues extends XisIssueBase = never,
 	FnOut = ExOut<From>,
-	FnCtx extends ObjArgBase = null,
+	FnCtx extends ObjArgBase = ObjArgBase,
 > extends XisAsync<
 	ExIn<From>,
 	ExIssues<From>,
@@ -72,7 +72,7 @@ export const transform = <
 	From extends XisBase,
 	FnIssues extends XisIssueBase = never,
 	FnOut = ExOut<From>,
-	FnCtx extends ObjArgBase = null,
+	FnCtx extends ObjArgBase = ObjArgBase,
 >(
 	from: From,
 	fn: XisTransformFn<ExOut<From>, FnIssues, FnOut, FnCtx>

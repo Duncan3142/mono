@@ -18,7 +18,7 @@ export abstract class XisAsync<
 	Issues extends XisIssueBase = never,
 	Out = In,
 	Eff extends Effect = typeof Effect.Validate,
-	Ctx extends ObjArgBase = null,
+	Ctx extends ObjArgBase = ObjArgBase,
 > {
 	get concurrency(): typeof ASYNC {
 		return ASYNC
