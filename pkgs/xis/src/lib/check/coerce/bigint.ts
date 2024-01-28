@@ -13,7 +13,8 @@ import { Effect } from "#core/book-keeping.js"
 
 export type BigIntInput = bigint | number | string | boolean
 
-function isBigIntInput(valueType: string, value: unknown): value is BigIntInput {
+function isBigIntInput(value: unknown): value is BigIntInput {
+	const valueType = trueTypeOf(value)
 	switch (valueType) {
 		case "number":
 		case "string":
@@ -41,7 +42,7 @@ export class XisCoerceBigInt extends XisSync<unknown, CoerceIssue, bigint> {
 		if (valueType === "bigint") {
 			return Right(value as bigint)
 		}
-		const res = isBigIntInput(valueType, value) ? Either.encase(() => BigInt(value)) : Left(NaN)
+		const res = isBigIntInput(value) ? Either.encase(() => BigInt(value)) : Left(NaN)
 		return res.chainLeft((_) => {
 			const message = this.#messages.XIS_COERCE({
 				value,

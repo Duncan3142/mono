@@ -13,7 +13,8 @@ import { Effect } from "#core/book-keeping.js"
 
 export type DateInput = Date | number | string
 
-function isDateInput(valueType: string, value: unknown): value is DateInput {
+function isDateInput(value: unknown): value is DateInput {
+	const valueType = trueTypeOf(value)
 	switch (valueType) {
 		case "number":
 		case "string":
@@ -38,7 +39,7 @@ export class XisCoerceDate extends XisSync<unknown, CoerceIssue, Date> {
 	exec(args: XisExecArgs): ExecResultSync<CoerceIssue, Date> {
 		const { value, locale, path } = args
 		const valueType = trueTypeOf(value)
-		const date = isDateInput(valueType, value) ? new Date(value) : new Date(NaN)
+		const date = isDateInput(value) ? new Date(value) : new Date(NaN)
 
 		if (Number.isFinite(date.valueOf())) {
 			return Right(date)

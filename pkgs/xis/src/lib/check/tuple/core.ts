@@ -14,6 +14,7 @@ import type { BaseArray, NTuple } from "#util/base-type.js"
 import type { XisMessages, XisMsgArgs, XisMsgBuilder } from "#core/messages.js"
 import type { XisExecArgs } from "#core/args.js"
 import type { BuildObjArg, ObjArgBase } from "#util/arg.js"
+import { Effect } from "#core/book-keeping.js"
 
 export type TupleIn<
 	Schema extends [...Array<XisBase>],
@@ -90,14 +91,18 @@ export class IsNTuple<L extends number> extends XisSync<BaseArray, NTupleIssues<
 			},
 		}
 	}
+	override get effect(): Effect {
+		return Effect.Validate
+	}
 	exec(args: XisExecArgs<BaseArray>): ExecResultSync<NTupleIssues<L>, NTuple<L>> {
-		const { value, path } = args
+		const { value, path, locale } = args
 		const { length } = this.#props
 
 		const message = this.#messages.XIS_TUPLE_LENGTH({
 			value,
 			path,
 			props: this.#props,
+			locale,
 			ctx: null,
 		})
 

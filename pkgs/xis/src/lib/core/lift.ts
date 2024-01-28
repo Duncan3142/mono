@@ -1,6 +1,7 @@
 import type { ExIn, ExIssues, ExOut, ExArgs, ExCtx } from "#core/kernel.js"
 import { XisAsync, type ExecResultAsync } from "#core/async.js"
 import type { XisSyncBase } from "./sync.js"
+import type { Effect } from "./book-keeping.js"
 
 export interface XisLiftProps<X extends XisSyncBase> {
 	inner: X
@@ -19,6 +20,9 @@ export class XisLift<X extends XisSyncBase> extends XisAsync<
 	#props: XisLiftProps<X>
 	get inner(): X {
 		return this.#props.inner
+	}
+	get effect(): Effect {
+		return this.inner.effect
 	}
 	constructor(args: XisLiftArgs<X>) {
 		super()
