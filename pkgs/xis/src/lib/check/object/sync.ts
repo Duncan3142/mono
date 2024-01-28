@@ -1,4 +1,4 @@
-import type { XisIssue, XisIssueBase } from "#core/error.js"
+import type { XisIssue } from "#core/error.js"
 import { XisSync, type ExecResultSync, type XisSyncBase } from "#core/sync.js"
 import type { XisObjectIssues, XisObjectOut, XisObjectCtx, XisObjectIn } from "./core.js"
 import type { XisExecArgs } from "#core/args.js"
