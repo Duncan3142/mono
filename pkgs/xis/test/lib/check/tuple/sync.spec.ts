@@ -1,5 +1,5 @@
 import { it } from "node:test"
-import { deepEqual } from "node:assert/strict"
+import { expect } from "expect"
 import { assertLeft, assertRight, type ExtractValue } from "#util/either.js"
 import { tuple } from "#check/tuple/sync.js"
 
@@ -23,7 +23,7 @@ const check = tuple([
 ])
 
 void it("should pass a matching tuple", () => {
-	const res = check.parse(["oneTwoCatDog", [], 0, null], {
+	const res = check.exec(["oneTwoCatDog", [], 0, null], {
 		args: undefined,
 		path: [],
 	})
@@ -36,7 +36,7 @@ void it("should pass a matching tuple", () => {
 })
 
 void it("should fail an invalid elements tuple", () => {
-	const res = check.parse(["meow", [], false, undefined], {
+	const res = check.exec(["meow", [], false, undefined], {
 		args: undefined,
 		path: [],
 	})

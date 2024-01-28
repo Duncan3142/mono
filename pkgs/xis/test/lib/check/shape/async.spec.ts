@@ -1,5 +1,5 @@
 import { describe, it } from "node:test"
-import { deepEqual } from "node:assert/strict"
+import { expect } from "expect"
 
 import { shape } from "#check/shape/async.js"
 import { assertLeft, assertRight, type ExtractValue } from "#util/either.js"
@@ -37,7 +37,7 @@ void describe("strip", () => {
 			},
 		}
 
-		const res = await check.parse(obj, {
+		const res = await check.exec(obj, {
 			args: undefined,
 			path: [],
 		})
@@ -64,7 +64,7 @@ void describe("strip", () => {
 				e: true,
 			},
 		}
-		const res = await check.parse(obj, {
+		const res = await check.exec(obj, {
 			args: undefined,
 			path: [],
 		})
@@ -118,7 +118,7 @@ void describe("strict", () => {
 	]).strict()
 
 	void it("should pass a matching object", async () => {
-		const res = await check.parse(
+		const res = await check.exec(
 			{
 				a: "a",
 				b: ["b"],
@@ -156,7 +156,7 @@ void describe("strict", () => {
 				y: false,
 			},
 		}
-		const res = await check.parse(obj, {
+		const res = await check.exec(obj, {
 			args: undefined,
 			path: [],
 		})
@@ -209,7 +209,7 @@ void describe("passThrough", () => {
 	]).passThrough()
 
 	void it("should pass a matching object", async () => {
-		const res = await check.parse(
+		const res = await check.exec(
 			{
 				a: "a",
 				b: ["b"],
@@ -243,7 +243,7 @@ void describe("passThrough", () => {
 	})
 
 	void it("should fail an invalid object", async () => {
-		const res = await check.parse(
+		const res = await check.exec(
 			{
 				a: [],
 				c: {

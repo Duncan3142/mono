@@ -1,11 +1,11 @@
 import { it } from "node:test"
-import { deepEqual, equal } from "node:assert/strict"
+import { expect } from "expect"
 import { assertLeft, assertRight, type ExtractValue } from "#util/either.js"
 import { instance } from "#check/instance.js"
 
 const testUrl = new URL("https://example.com")
 void it("should pass a matching instance", () => {
-	const res = instance(URL).parse(testUrl, {
+	const res = instance(URL).exec(testUrl, {
 		args: undefined,
 		path: [],
 	})
@@ -15,7 +15,7 @@ void it("should pass a matching instance", () => {
 })
 
 void it("should fail an invalid value", () => {
-	const res = instance(Map).parse(null, {
+	const res = instance(Map).exec(null, {
 		args: undefined,
 		path: [],
 	})
@@ -33,7 +33,7 @@ void it("should fail an invalid value", () => {
 })
 
 void it("should fail instance", () => {
-	const res = instance(Map).parse(new URL("https://test.com"), {
+	const res = instance(Map).exec(new URL("https://test.com"), {
 		args: undefined,
 		path: [],
 	})
@@ -51,7 +51,7 @@ void it("should fail instance", () => {
 })
 
 void it("should fail instance", () => {
-	const res = instance(Map).parse("test", {
+	const res = instance(Map).exec("test", {
 		args: undefined,
 		path: [],
 	})
@@ -68,7 +68,7 @@ void it("should fail instance", () => {
 	deepEqual(res.extract(), expected)
 })
 void it("should fail instance", () => {
-	const res = instance(Map).parse(null, {
+	const res = instance(Map).exec(null, {
 		args: undefined,
 		path: [],
 	})
@@ -85,7 +85,7 @@ void it("should fail instance", () => {
 	deepEqual(res.extract(), expected)
 })
 void it("should fail instance", () => {
-	const res = instance(Map).parse(undefined, {
+	const res = instance(Map).exec(undefined, {
 		args: undefined,
 		path: [],
 	})

@@ -1,5 +1,5 @@
 import { it } from "node:test"
-import { deepEqual, equal } from "node:assert/strict"
+import { expect } from "expect"
 import { assertLeft, assertRight, type ExtractValue } from "#util/either.js"
 import { bigint } from "#check/coerce/bigint.js"
 import { boolean } from "#check/coerce/boolean.js"
@@ -9,12 +9,12 @@ import { string } from "#check/coerce/string.js"
 import { symbol } from "#check/coerce/symbol.js"
 
 void it("should coerce a string", () => {
-	const res = string.parse("false")
+	const res = string.exec("false")
 	assertRight(res)
 	equal(res.extract(), "false")
 })
 void it("should coerce date", () => {
-	const res = date.parse("2000-01-01", {
+	const res = date.exec("2000-01-01", {
 		args: undefined,
 		path: [],
 	})
@@ -22,7 +22,7 @@ void it("should coerce date", () => {
 	deepEqual(res.extract(), new Date("2000-01-01"))
 })
 void it("should fail to coerce date", () => {
-	const res = date.parse("meow", {
+	const res = date.exec("meow", {
 		args: undefined,
 		path: [],
 	})
@@ -40,7 +40,7 @@ void it("should fail to coerce date", () => {
 	deepEqual(res.extract(), expected)
 })
 void it("should fail to coerce a bigint", () => {
-	const res = bigint.parse([], {
+	const res = bigint.exec([], {
 		args: undefined,
 		path: [],
 	})
@@ -58,7 +58,7 @@ void it("should fail to coerce a bigint", () => {
 	deepEqual(res.extract(), expected)
 })
 void it("should coerce a bigint", () => {
-	const res = bigint.parse(true, {
+	const res = bigint.exec(true, {
 		args: undefined,
 		path: [],
 	})
@@ -66,12 +66,12 @@ void it("should coerce a bigint", () => {
 	equal(res.extract(), 1n)
 })
 void it("should coerce a boolean", () => {
-	const res = boolean.parse("")
+	const res = boolean.exec("")
 	assertRight(res)
 	equal(res.extract(), false)
 })
 void it("should coerce a number", () => {
-	const res = number.parse("0", {
+	const res = number.exec("0", {
 		args: undefined,
 		path: [],
 	})
@@ -79,7 +79,7 @@ void it("should coerce a number", () => {
 	equal(res.extract(), 0)
 })
 void it("should coerce a symbol", () => {
-	const res = symbol.parse("test", {
+	const res = symbol.exec("test", {
 		args: undefined,
 		path: [],
 	})
@@ -88,7 +88,7 @@ void it("should coerce a symbol", () => {
 	equal(rex.description, "test")
 })
 void it("should fail to coerce a symbol", () => {
-	const res = symbol.parse(true, {
+	const res = symbol.exec(true, {
 		args: undefined,
 		path: [],
 	})

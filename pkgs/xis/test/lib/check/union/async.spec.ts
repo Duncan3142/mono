@@ -1,5 +1,5 @@
 import { it } from "node:test"
-import { deepEqual } from "node:assert/strict"
+import { expect } from "expect"
 import { assertLeft, assertRight, type ExtractValue } from "#util/either.js"
 import { union } from "#check/union/async.js"
 import { string } from "#check/string/string.js"
@@ -21,7 +21,7 @@ const check = union([
 ])
 
 void it("should pass a matching string", async () => {
-	const res = await check.parse("oneTwoCatDog", {
+	const res = await check.exec("oneTwoCatDog", {
 		args: undefined,
 		path: [],
 	})
@@ -34,7 +34,7 @@ void it("should pass a matching string", async () => {
 })
 
 void it("should fail an invalid value", async () => {
-	const res = await check.parse(true, {
+	const res = await check.exec(true, {
 		args: undefined,
 		path: [],
 	})

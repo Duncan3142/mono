@@ -1,5 +1,5 @@
 import { it } from "node:test"
-import { deepEqual } from "node:assert/strict"
+import { expect } from "expect"
 import { assertLeft, assertRight, type ExtractValue } from "#util/either.js"
 import { union } from "#check/union/sync.js"
 
@@ -20,7 +20,7 @@ const unionCheck = union([
 const check = array(unionCheck)
 
 void it("should pass a matching array", () => {
-	const res = check.parse(["a", 0, "b", 1], {
+	const res = check.exec(["a", 0, "b", 1], {
 		args: undefined,
 		path: [],
 	})
@@ -30,7 +30,7 @@ void it("should pass a matching array", () => {
 })
 
 void it("should fail an invalid value", () => {
-	const res = check.parse(["a", 0, true, "b", 1, false], {
+	const res = check.exec(["a", 0, true, "b", 1, false], {
 		args: undefined,
 		path: [],
 	})

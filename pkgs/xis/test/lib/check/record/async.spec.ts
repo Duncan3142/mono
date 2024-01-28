@@ -1,5 +1,5 @@
 import { it } from "node:test"
-import { deepEqual } from "node:assert/strict"
+import { expect } from "expect"
 import { assertLeft, assertRight, type ExtractValue } from "#util/either.js"
 import { union } from "#check/union/async.js"
 
@@ -19,7 +19,7 @@ const valueCheck = union([string, literal(null), divisible({ divisor: 2 })])
 const check = record(keyCheck, valueCheck)
 
 void it("should pass a record", async () => {
-	const res = await check.parse(
+	const res = await check.exec(
 		{ meow: "string", [sym]: null, 8: 4 },
 		{
 			args: undefined,
@@ -33,7 +33,7 @@ void it("should pass a record", async () => {
 })
 void it("should fail bad keys", async () => {
 	const anotherSym = Symbol("another")
-	const res = await check.parse(
+	const res = await check.exec(
 		{ badKey: "string", [anotherSym]: null, 16: "number" },
 		{
 			args: undefined,
@@ -148,7 +148,7 @@ void it("should fail bad keys", async () => {
 	deepEqual(res.extract(), expected)
 })
 void it("should fail bad values", async () => {
-	const res = await check.parse(
+	const res = await check.exec(
 		{ meow: undefined, [sym]: 3, 8: false },
 		{
 			args: undefined,
@@ -265,7 +265,7 @@ void it("should fail bad values", async () => {
 })
 void it("should fail bad keys and values", async () => {
 	const anotherSym = Symbol("bad")
-	const res = await check.parse(
+	const res = await check.exec(
 		{ badKey: undefined, [anotherSym]: 3, 16: false },
 		{
 			args: undefined,

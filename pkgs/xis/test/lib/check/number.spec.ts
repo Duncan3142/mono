@@ -1,100 +1,116 @@
 import { describe, it } from "node:test"
-import { equal, deepEqual } from "node:assert/strict"
-
-import { divisible } from "#check/number/divisible.js"
-import { finite } from "#check/number/finite.js"
+import { expect } from "expect"
+import { isDivisible } from "#check/number/divisible.js"
+import { isFinite } from "#check/number/finite.js"
 import { isNaN } from "#check/number/nan.js"
-import { integer } from "#check/number/int.js"
+import { isInteger } from "#check/number/int.js"
 import { toString } from "#check/number/string.js"
 import { range } from "#check/number/range.js"
 import { assertLeft, assertRight, type ExtractValue } from "#util/either.js"
-
 import type { NumberRangeOpts } from "#check/number/range.js"
 
 void describe("number", () => {
 	void it("should pass an integer", () => {
-		const res = integer.parse(0, {
-			args: undefined,
+		const res = isInteger().exec({
+			value: 0,
+			ctx: {},
+			locale: "en",
 			path: [],
 		})
 		assertRight(res)
-		equal(res.extract(), 0)
+		expect(res.extract()).toBe(0)
 	})
 	void it("should fail a float", () => {
-		const res = integer.parse(0.1, {
-			args: undefined,
+		const res = isInteger().exec({
+			value: 0.5,
+			ctx: {},
+			locale: "en",
 			path: [],
 		})
 		assertLeft(res)
 		const expected: ExtractValue<typeof res> = [
 			{
-				name: "INTEGER",
+				name: "XIS_INTEGER",
+				message: "Expected an integer",
 				path: [],
 			},
 		]
-		deepEqual(res.extract(), expected)
+		expect(res.extract()).toEqual(expected)
 	})
 	void it("should fail infinity", () => {
-		const res = finite.parse(Infinity, {
-			args: undefined,
+		const res = isFinite().exec({
+			value: Infinity,
+			ctx: {},
+			locale: "en",
 			path: [],
 		})
 		assertLeft(res)
 		const expected: ExtractValue<typeof res> = [
 			{
-				name: "FINITE",
+				name: "XIS_FINITE",
+				message: "Expected a finite number",
 				path: [],
 			},
 		]
-		deepEqual(res.extract(), expected)
+		expect(res.extract()).toEqual(expected)
 	})
 	void it("should pass NaN", () => {
-		const res = isNaN.parse(NaN, {
-			args: undefined,
+		const res = isNaN().exec({
+			value: NaN,
+			ctx: {},
+			locale: "en",
 			path: [],
 		})
 		assertRight(res)
-		equal(res.extract(), NaN)
+		expect(res.extract()).toBeNaN()
 	})
 	void it("should fail a non divisible number", () => {
-		const res = divisible({ divisor: 3 }).parse(5, {
-			args: undefined,
+		const res = isDivisible(3).exec({
+			value: 5,
+			ctx: {},
 			path: [],
+			locale: "en",
 		})
 		assertLeft(res)
 
 		const expected: ExtractValue<typeof res> = [
 			{
-				name: "DIVISIBLE",
+				name: "XIS_DIVISIBLE",
 				divisor: 3,
 				path: [],
+				message: "Expected a number divisible by 3",
 				remainder: 2,
 				value: 5,
 			},
 		]
-		deepEqual(res.extract(), expected)
+		expect(res.extract()).toEqual(expected)
 	})
 	void it("should pass a divisible number", () => {
-		const res = divisible({ divisor: 3 }).parse(6, {
-			args: undefined,
+		const res = isDivisible(3).exec({
+			value: 6,
+			ctx: {},
+			locale: "en",
 			path: [],
 		})
 		assertRight(res)
-		equal(res.extract(), 6)
+		expect(res.extract()).toBe(6)
 	})
 	void it("should fail not NaN", () => {
-		const res = isNaN.parse(0, {
-			args: undefined,
+		const res = isNaN().exec({
+			value: 0,
+			ctx: {},
+			locale: "en",
 			path: [],
 		})
 		assertLeft(res)
 		const expected: ExtractValue<typeof res> = [
 			{
-				name: "NAN",
+				name: "XIS_NAN",
+				message: "Expected NaN",
 				path: [],
 			},
 		]
-		deepEqual(res.extract(), expected)
+		expect(res.extract()).toEqual(expected)
 	})
 
 	void it("range", async (t) => {
@@ -180,7 +196,7 @@ void describe("number", () => {
 		await Promise.all(
 			cases.map(async ([opts, input], idx) =>
 				t.test(`passes: ${idx}`, () => {
-					const res = range(opts).parse(input, {
+					const res = range(opts).exec(input, {
 						args: undefined,
 						path: [],
 					})
@@ -193,7 +209,7 @@ void describe("number", () => {
 	})
 
 	void it("should fail a range", () => {
-		const res = range([{ op: "gt", bound: 8 }]).parse(0, {
+		const res = range([{ op: "gt", bound: 8 }]).exec(0, {
 			args: undefined,
 			path: [],
 		})
@@ -209,7 +225,7 @@ void describe("number", () => {
 		deepEqual(res.extract(), expected)
 	})
 	void it("should stringify a number", () => {
-		const res = toString({ radix: 10 }).parse(42, {
+		const res = toString({ radix: 10 }).exec(42, {
 			args: undefined,
 			path: [],
 		})

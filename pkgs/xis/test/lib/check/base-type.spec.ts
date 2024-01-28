@@ -1,5 +1,5 @@
 import { it } from "node:test"
-import { equal, deepEqual } from "node:assert/strict"
+import { expect } from "expect"
 import { assertLeft, assertRight, type ExtractValue } from "#util/either.js"
 import {
 	isNull,
