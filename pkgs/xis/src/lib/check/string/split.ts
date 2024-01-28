@@ -13,14 +13,14 @@ interface XisSplitArgs {
 	props: XisSplitProps
 }
 
-export class XisSplit extends XisSync<string, never, Array<string>> {
+export class XisSplit extends XisSync<string, never, Array<string>, typeof Effect.Transform> {
 	#props: XisSplitProps
 
 	constructor(args: XisSplitArgs) {
 		super()
 		this.#props = args.props
 	}
-	override get effect(): Effect {
+	override get effect(): typeof Effect.Transform {
 		return Effect.Transform
 	}
 

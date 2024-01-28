@@ -1,7 +1,6 @@
 import type { XisIssueBase } from "#core/error.js"
-import type { XisBase, ExOut, ExIn, ExIssues, ExCtx } from "#core/kernel.js"
+import type { XisBase, ExOut, ExIn } from "#core/kernel.js"
 import type { ExecResultSync } from "#core/sync.js"
-import type { BuildObjArg, ObjArgBase } from "#util/arg.js"
 import type { Same } from "#util/base-type.js"
 import { Left } from "purify-ts/Either"
 
@@ -21,25 +20,11 @@ export type UnionIn<
 		>
 	: Acc
 
-export type UnionIssues<
-	Schema extends [...Array<XisBase>],
-	Acc extends XisIssueBase = never,
-> = Schema extends [infer Next extends XisBase, ...infer Rest extends Array<XisBase>]
-	? UnionIssues<Rest, Acc | ExIssues<Next>>
-	: Acc
-
 export type UnionOut<Schema extends [...Array<XisBase>], Acc = never> = Schema extends [
 	infer Next extends XisBase,
 	...infer Rest extends Array<XisBase>,
 ]
 	? UnionOut<Rest, Acc | ExOut<Next>>
-	: Acc
-
-export type UnionCtx<
-	Schema extends [...Array<XisBase>],
-	Acc extends ObjArgBase = null,
-> = Schema extends [infer Next extends XisBase, ...infer Rest extends Array<XisBase>]
-	? UnionCtx<Rest, BuildObjArg<Acc, ExCtx<Next>>>
 	: Acc
 
 export const reduce = (

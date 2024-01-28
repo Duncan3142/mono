@@ -17,16 +17,17 @@ export abstract class XisAsync<
 	In,
 	Issues extends XisIssueBase = never,
 	Out = In,
+	Eff extends Effect = typeof Effect.Validate,
 	Ctx extends ObjArgBase = null,
 > {
 	get concurrency(): typeof ASYNC {
 		return ASYNC
 	}
-	abstract get effect(): Effect
+	abstract get effect(): Eff
 	abstract exec(args: XisExecArgs<In, Ctx>): ExecResultAsync<Issues, Out>
 	get types(): XisBookKeeping<In, Issues, Out, Ctx> {
 		throw new BookkeepingError()
 	}
 }
 
-export type XisAsyncBase = XisAsync<any, XisIssueBase, unknown, any>
+export type XisAsyncBase = XisAsync<any, XisIssueBase, unknown, Effect, any>

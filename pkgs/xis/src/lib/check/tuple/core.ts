@@ -1,19 +1,10 @@
 import type { XisIssue, XisIssueBase } from "#core/error.js"
-import {
-	type XisBase,
-	type ExIssues,
-	type ExIn,
-	type ExOut,
-	mergeIssues,
-	type ExCtx,
-} from "#core/kernel.js"
-
+import { type XisBase, type ExIn, type ExOut, mergeIssues } from "#core/kernel.js"
 import { XisSync, type ExecResultSync } from "#core/sync.js"
 import { Left, Right } from "purify-ts/Either"
 import type { BaseArray, NTuple } from "#util/base-type.js"
 import type { XisMessages, XisMsgArgs, XisMsgBuilder } from "#core/messages.js"
 import type { XisExecArgs } from "#core/args.js"
-import type { BuildObjArg, ObjArgBase } from "#util/arg.js"
 import { Effect } from "#core/book-keeping.js"
 
 export type TupleIn<
@@ -23,25 +14,11 @@ export type TupleIn<
 	? TupleIn<Rest, [...Acc, ExIn<Next>]>
 	: Acc
 
-export type TupleIssues<
-	Schema extends [...Array<XisBase>],
-	Acc extends XisIssueBase = never,
-> = Schema extends [infer Next extends XisBase, ...infer Rest extends Array<XisBase>]
-	? TupleIssues<Rest, Acc | ExIssues<Next>>
-	: Acc
-
 export type TupleOut<
 	Schema extends [...Array<XisBase>],
 	Acc extends Array<unknown> = [],
 > = Schema extends [infer Next extends XisBase, ...infer Rest extends Array<XisBase>]
 	? TupleOut<Rest, [...Acc, ExOut<Next>]>
-	: Acc
-
-export type TupleCtx<
-	Schema extends [...Array<XisBase>],
-	Acc extends ObjArgBase = null,
-> = Schema extends [infer Next extends XisBase, ...infer Rest extends Array<XisBase>]
-	? TupleCtx<Rest, BuildObjArg<Acc, ExCtx<Next>>>
 	: Acc
 
 export const reduce = (
@@ -99,18 +76,18 @@ export class IsNTuple<L extends number> extends XisSync<BaseArray, NTupleIssues<
 			},
 		}
 	}
-	override get effect(): Effect {
+	override get effect(): typeof Effect.Validate {
 		return Effect.Validate
 	}
 	exec(args: XisExecArgs<BaseArray>): ExecResultSync<NTupleIssues<L>, NTuple<L>> {
-		const { value, path, locale } = args
+		const { value, path, locale, ctx } = args
 		const { length } = this.#props
 
 		const message = this.#messages.XIS_TUPLE_LENGTH({
 			input: { value, length },
 			path,
 			locale,
-			ctx: null,
+			ctx,
 		})
 
 		return value.length === length

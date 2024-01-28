@@ -1,14 +1,10 @@
 import { it } from "node:test"
-import { deepEqual } from "node:assert/strict"
+import { expect } from "expect"
 import { assertLeft, assertRight, type ExtractValue } from "#util/either.js"
-import { XisString, string } from "#check/string/string.js"
-import { XisNumber, number } from "#check/number/number.js"
-import { shape } from "#check/shape/async.js"
+import { isString, isNumber, type XisTypeCheck } from "#check/base-type.js"
+import { strict } from "#check/shape/strict.js"
 import { lazy } from "#core/lazy/async.js"
 import {
-	k,
-	ko,
-	type ShapeDefaultMode,
 	type Prop,
 	type ShapeIn,
 	type ShapeOut,

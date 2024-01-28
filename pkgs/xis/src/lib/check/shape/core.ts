@@ -2,6 +2,7 @@ import type { BaseProp, TruePropertyKey } from "#util/base-type.js"
 import type { XisIssue } from "#core/error.js"
 import type { XisPath } from "#core/path.js"
 import type { XisMsgArgs, XisMsgBuilder } from "#core/messages.js"
+import type { ObjArgBase } from "#util/arg.js"
 
 export type WritableRequiredKey<K extends TruePropertyKey> = [K, "!"]
 export type WritableRequiredKeyBase = WritableRequiredKey<TruePropertyKey>
@@ -84,14 +85,15 @@ export interface MissingIssueArgs {
 	locale: string
 	msgBuilder: XIS_MISSING_PROPERTY
 	path: XisPath
+	ctx: ObjArgBase
 }
 
 export const missingIssue = (args: MissingIssueArgs): MissingPropertyIssue => {
-	const { key, locale, msgBuilder, path } = args
+	const { key, locale, msgBuilder, path, ctx } = args
 	return {
 		name: "XIS_MISSING_PROPERTY" as const,
 		key,
-		message: msgBuilder({ input: key, path, locale, ctx: null }),
+		message: msgBuilder({ input: key, path, locale, ctx }),
 		path,
 	}
 }
@@ -101,11 +103,12 @@ export interface MissingIssuesArgs {
 	entries: Array<BaseProp>
 	locale: string
 	path: XisPath
+	ctx: ObjArgBase
 	msgBuilder: XIS_MISSING_PROPERTY
 }
 
 export const buildMissingIssues = (args: MissingIssuesArgs) => {
-	const { desired, entries, locale, path, msgBuilder } = args
+	const { desired, entries, locale, path, ctx, msgBuilder } = args
 	return desired.reduce<{
 		remaining: Map<TruePropertyKey, unknown>
 		missing: Array<MissingPropertyIssue>
@@ -126,6 +129,7 @@ export const buildMissingIssues = (args: MissingIssuesArgs) => {
 				key: keyName,
 				locale,
 				path,
+				ctx,
 				msgBuilder,
 			})
 			missing.push(issue)

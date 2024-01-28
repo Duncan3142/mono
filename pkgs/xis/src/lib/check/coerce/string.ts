@@ -3,8 +3,8 @@ import { Effect } from "#core/book-keeping.js"
 import { XisSync, type ExecResultSync } from "#core/sync.js"
 import { Right } from "purify-ts/Either"
 
-export class XisCoerceString extends XisSync<unknown, never, string> {
-	override get effect(): Effect {
+export class XisCoerceString extends XisSync<unknown, never, string, typeof Effect.Transform> {
+	override get effect(): typeof Effect.Transform {
 		return Effect.Transform
 	}
 	exec(args: XisExecArgs): ExecResultSync<never, string> {

@@ -50,7 +50,7 @@ export class XisRange extends XisSync<number, NumberRangeIssue> {
 		this.#props = props
 	}
 
-	override get effect(): Effect {
+	override get effect(): typeof Effect.Validate {
 		return Effect.Validate
 	}
 

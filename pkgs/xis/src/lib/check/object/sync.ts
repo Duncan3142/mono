@@ -22,6 +22,7 @@ export class XisObjectSync<Schema extends [...Array<XisSyncPropBase>]> extends X
 	XisObjectIn<Schema>,
 	XisObjectIssues<Schema>,
 	XisObjectOut<Schema>,
+	typeof Effect.Transform,
 	XisObjectCtx<Schema>
 > {
 	readonly #props: XisObjectSyncProps<Schema>
@@ -31,7 +32,7 @@ export class XisObjectSync<Schema extends [...Array<XisSyncPropBase>]> extends X
 		this.#props = args.props
 	}
 
-	override get effect(): Effect {
+	override get effect(): typeof Effect.Transform {
 		return Effect.Transform
 	}
 

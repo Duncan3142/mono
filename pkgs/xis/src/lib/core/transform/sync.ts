@@ -10,7 +10,7 @@ export interface XisTransformSyncProps<
 	From extends XisSyncBase,
 	FnIssues extends XisIssueBase = never,
 	FnOut = ExOut<From>,
-	FnCtx extends ObjArgBase = null,
+	FnCtx extends ObjArgBase = ObjArgBase,
 > {
 	from: From
 	fn: XisTransformSyncFn<ExOut<From>, FnIssues, FnOut, FnCtx>
@@ -20,7 +20,7 @@ export interface XisTransformSyncArgs<
 	From extends XisSyncBase,
 	FnIssues extends XisIssueBase = never,
 	FnOut = ExOut<From>,
-	FnCtx extends ObjArgBase = null,
+	FnCtx extends ObjArgBase = ObjArgBase,
 > {
 	props: XisTransformSyncProps<From, FnIssues, FnOut, FnCtx>
 }
@@ -29,8 +29,14 @@ export class XisTransformSync<
 	From extends XisSyncBase,
 	FnIssues extends XisIssueBase = never,
 	FnOut = ExOut<From>,
-	FnCtx extends ObjArgBase = null,
-> extends XisSync<ExIn<From>, ExIssues<From>, FnOut, BuildObjArg<ExCtx<From>, FnCtx>> {
+	FnCtx extends ObjArgBase = ObjArgBase,
+> extends XisSync<
+	ExIn<From>,
+	ExIssues<From>,
+	FnOut,
+	typeof Effect.Transform,
+	BuildObjArg<ExCtx<From>, FnCtx>
+> {
 	readonly #props
 
 	constructor(args: XisTransformSyncArgs<From, FnIssues, FnOut, FnCtx>) {
@@ -38,7 +44,7 @@ export class XisTransformSync<
 		this.#props = args.props
 	}
 
-	override get effect(): Effect {
+	override get effect(): typeof Effect.Transform {
 		return Effect.Transform
 	}
 
@@ -61,7 +67,7 @@ export const transform = <
 	From extends XisSyncBase,
 	FnIssues extends XisIssueBase = never,
 	FnOut = ExOut<From>,
-	FnCtx extends ObjArgBase = null,
+	FnCtx extends ObjArgBase = ObjArgBase,
 >(
 	from: From,
 	fn: XisTransformSyncFn<ExOut<From>, FnIssues, FnOut, FnCtx>

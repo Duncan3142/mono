@@ -19,6 +19,7 @@ import {
 import { Left, Right } from "purify-ts/Either"
 import type { XisIssue } from "#core/error.js"
 import type { XisPath } from "#core/path.js"
+import type { ObjArgBase } from "#util/arg.js"
 
 export interface ExtraPropertyIssue extends XisIssue<"XIS_EXTRA_PROPERTY"> {
 	key: TruePropertyKey
@@ -38,6 +39,7 @@ export interface ExtraIssuesArgs {
 	locale: string
 	msgBuilder: XIS_EXTRA_PROPERTY
 	path: XisPath
+	ctx: ObjArgBase
 }
 
 export const extraIssue = (args: ExtraIssuesArgs): ExtraPropertyIssue => {
@@ -46,12 +48,13 @@ export const extraIssue = (args: ExtraIssuesArgs): ExtraPropertyIssue => {
 		locale,
 		msgBuilder,
 		path,
+		ctx,
 	} = args
 
 	return {
 		name: "XIS_EXTRA_PROPERTY" as const,
 		value,
-		message: msgBuilder({ input: [key, value], path, locale, ctx: null }),
+		message: msgBuilder({ input: [key, value], path, locale, ctx }),
 		path,
 		key,
 	}
@@ -86,12 +89,12 @@ export class XisStrict<Schema extends [...Array<ShapeKeyBase>]> extends XisSync<
 		}
 	}
 
-	override get effect(): Effect {
+	override get effect(): typeof Effect.Validate {
 		return Effect.Validate
 	}
 
 	exec(args: XisExecArgs<BaseObject>): ExecResultSync<XisStrictIssues, Shape<Schema>> {
-		const { value, path, locale } = args
+		const { value, path, locale, ctx } = args
 		const { keys: desired } = this.#props
 
 		const { missing, remaining } = buildMissingIssues({
@@ -99,6 +102,7 @@ export class XisStrict<Schema extends [...Array<ShapeKeyBase>]> extends XisSync<
 			entries: objectEntries(value),
 			locale,
 			path,
+			ctx,
 			msgBuilder: this.#messages.XIS_MISSING_PROPERTY,
 		})
 		const extras = Array.from(remaining.entries()).map(([key, prop]) =>
@@ -107,6 +111,7 @@ export class XisStrict<Schema extends [...Array<ShapeKeyBase>]> extends XisSync<
 				locale,
 				path,
 				msgBuilder: this.#messages.XIS_EXTRA_PROPERTY,
+				ctx,
 			})
 		)
 		const allIssues = [...missing, ...extras]

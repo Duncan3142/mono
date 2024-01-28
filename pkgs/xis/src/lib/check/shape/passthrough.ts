@@ -38,12 +38,12 @@ export class XisPassthrough<Schema extends [...Array<ShapeKeyBase>]> extends Xis
 		}
 	}
 
-	override get effect(): Effect {
+	override get effect(): typeof Effect.Validate {
 		return Effect.Validate
 	}
 
 	exec(args: XisExecArgs<BaseObject>): ExecResultSync<MissingPropertyIssue, Shape<Schema>> {
-		const { value, path, locale } = args
+		const { value, path, locale, ctx } = args
 		const { keys: desired } = this.#props
 
 		const { missing } = buildMissingIssues({
@@ -51,6 +51,7 @@ export class XisPassthrough<Schema extends [...Array<ShapeKeyBase>]> extends Xis
 			entries: objectEntries(value),
 			locale,
 			path,
+			ctx,
 			msgBuilder: this.#messages.XIS_MISSING_PROPERTY,
 		})
 		return missing.length > 0 ? Left(missing) : Right(value as Shape<Schema>)

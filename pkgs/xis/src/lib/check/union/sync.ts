@@ -1,7 +1,12 @@
 import type { XisExecArgs } from "#core/args.js"
-import { Effect } from "#core/book-keeping.js"
+import {
+	xisListEffect,
+	type XisListCtx,
+	type XisListEffect,
+	type XisListIssues,
+} from "#core/kernel.js"
 import { XisSync, type ExecResultSync, type XisSyncBase } from "#core/sync.js"
-import { type UnionCtx, type UnionIssues, type UnionIn, type UnionOut, reduce } from "./core.js"
+import { type UnionIn, type UnionOut, reduce } from "./core.js"
 
 export interface XisUnionSyncProps<
 	Schema extends [XisSyncBase, XisSyncBase, ...Array<XisSyncBase>],
@@ -17,7 +22,13 @@ export interface XisUnionSyncArgs<
 
 export class XisUnionSync<
 	Schema extends [XisSyncBase, XisSyncBase, ...Array<XisSyncBase>],
-> extends XisSync<UnionIn<Schema>, UnionIssues<Schema>, UnionOut<Schema>, UnionCtx<Schema>> {
+> extends XisSync<
+	UnionIn<Schema>,
+	XisListIssues<Schema>,
+	UnionOut<Schema>,
+	XisListEffect<Schema>,
+	XisListCtx<Schema>
+> {
 	#props: XisUnionSyncProps<Schema>
 
 	constructor(args: XisUnionSyncArgs<Schema>) {
@@ -25,19 +36,16 @@ export class XisUnionSync<
 		this.#props = args.props
 	}
 
-	override get effect(): Effect {
-		return this.#props.checks.reduce<Effect>(
-			(acc, x) => (acc === Effect.Transform ? acc : x.effect),
-			Effect.Validate
-		)
+	override get effect(): XisListEffect<Schema> {
+		return xisListEffect(this.#props.checks)
 	}
 
 	exec(
-		args: XisExecArgs<UnionIn<Schema>, UnionCtx<Schema>>
-	): ExecResultSync<UnionIssues<Schema>, UnionOut<Schema>> {
+		args: XisExecArgs<UnionIn<Schema>, XisListCtx<Schema>>
+	): ExecResultSync<XisListIssues<Schema>, UnionOut<Schema>> {
 		const mapped = this.#props.checks.map((chk) => chk.exec(args))
 
-		return reduce(mapped) as ExecResultSync<UnionIssues<Schema>, UnionOut<Schema>>
+		return reduce(mapped) as ExecResultSync<XisListIssues<Schema>, UnionOut<Schema>>
 	}
 }
 

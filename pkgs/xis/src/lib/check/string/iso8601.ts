@@ -116,11 +116,11 @@ export class XisISO8601 extends XisSync<string, ISO8601Issue> {
 			},
 		}
 	}
-	override get effect(): Effect {
+	override get effect(): typeof Effect.Validate {
 		return Effect.Validate
 	}
 	exec(args: XisExecArgs<string>): ExecResultSync<ISO8601Issue, string> {
-		const { value, path, locale } = args
+		const { value, path, locale, ctx } = args
 		switch (isISO8601(value)) {
 			case true:
 				return Right(value)
@@ -129,7 +129,7 @@ export class XisISO8601 extends XisSync<string, ISO8601Issue> {
 					input: value,
 					path,
 					locale,
-					ctx: null,
+					ctx,
 				})
 				return Left([
 					{

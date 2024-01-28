@@ -1,10 +1,16 @@
-import { type ExIn, type ExOut } from "#core/kernel.js"
+import {
+	xisListEffect,
+	type ExIn,
+	type ExOut,
+	type XisListCtx,
+	type XisListEffect,
+	type XisListIssues,
+} from "#core/kernel.js"
 import type { XisIssueBase } from "#core/error.js"
 
 import { XisSync, type ExecResultSync, type XisSyncBase } from "#core/sync.js"
-import type { XisChainCtx, XisChainIssues, XisChainIn, XisChainOut } from "./core.js"
+import type { XisChainIn, XisChainOut } from "./core.js"
 import type { XisExecArgs } from "#core/args.js"
-import { Effect } from "#core/book-keeping.js"
 
 type XisChainSchemaSync<
 	Chain extends [XisSyncBase, ...Array<XisSyncBase>],
@@ -35,9 +41,10 @@ export class XisChainSync<
 	Chain extends [XisSyncBase, XisSyncBase, ...Array<XisSyncBase>],
 > extends XisSync<
 	XisChainIn<Chain>,
-	XisChainIssues<Chain>,
+	XisListIssues<Chain>,
 	XisChainOut<Chain>,
-	XisChainCtx<Chain>
+	XisListEffect<Chain>,
+	XisListCtx<Chain>
 > {
 	#props: XisChainSyncProps<Chain>
 
@@ -46,16 +53,13 @@ export class XisChainSync<
 		this.#props = args.props
 	}
 
-	override get effect(): Effect {
-		return this.#props.schema.reduce<Effect>(
-			(acc, x) => (acc === Effect.Transform ? acc : x.effect),
-			Effect.Validate
-		)
+	override get effect(): XisListEffect<Chain> {
+		return xisListEffect(this.#props.schema)
 	}
 
 	exec(
-		args: XisExecArgs<XisChainIn<Chain>, XisChainCtx<Chain>>
-	): ExecResultSync<XisChainIssues<Chain>, XisChainOut<Chain>> {
+		args: XisExecArgs<XisChainIn<Chain>, XisListCtx<Chain>>
+	): ExecResultSync<XisListIssues<Chain>, XisChainOut<Chain>> {
 		const { path, ctx, locale } = args
 		const [first, ...rest] = this.#props.schema
 		const acc: ExecResultSync<XisIssueBase, unknown> = first.exec(args)
@@ -71,7 +75,7 @@ export class XisChainSync<
 					})
 				),
 			acc
-		) as ExecResultSync<XisChainIssues<Chain>, XisChainOut<Chain>>
+		) as ExecResultSync<XisListIssues<Chain>, XisChainOut<Chain>>
 	}
 }
 

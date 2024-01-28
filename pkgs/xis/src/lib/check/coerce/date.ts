@@ -25,7 +25,12 @@ function isDateInput(value: unknown): value is DateInput {
 	}
 }
 
-export class XisCoerceDate extends XisSync<unknown, CoerceIssue, Date> {
+export class XisCoerceDate extends XisSync<
+	unknown,
+	CoerceIssue,
+	Date,
+	typeof Effect.Transform
+> {
 	#messages: XisCoerceMessages
 	constructor(args: XisCoerceArgs) {
 		super()
@@ -33,11 +38,11 @@ export class XisCoerceDate extends XisSync<unknown, CoerceIssue, Date> {
 			XIS_COERCE,
 		}
 	}
-	override get effect(): Effect {
+	override get effect(): typeof Effect.Transform {
 		return Effect.Transform
 	}
 	exec(args: XisExecArgs): ExecResultSync<CoerceIssue, Date> {
-		const { value, locale, path } = args
+		const { value, locale, path, ctx } = args
 		const valueType = trueTypeOf(value)
 		const date = isDateInput(value) ? new Date(value) : new Date(NaN)
 
@@ -48,7 +53,7 @@ export class XisCoerceDate extends XisSync<unknown, CoerceIssue, Date> {
 		const message = this.#messages.XIS_COERCE({
 			path,
 			locale,
-			ctx: null,
+			ctx,
 			input: {
 				value,
 				desired: "date",

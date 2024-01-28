@@ -1,9 +1,10 @@
-import { type TupleIn, type TupleOut, reduce, type TupleIssues, type TupleCtx } from "./core.js"
+import { type TupleIn, type TupleOut, reduce } from "./core.js"
 import { CheckSide, addElement } from "#core/path.js"
 import type { XisExecArgs } from "#core/args.js"
 import { XisSync, type ExecResultSync, type XisSyncBase } from "#core/sync.js"
 import type { XisIssueBase } from "#core/error.js"
 import { Effect } from "#core/book-keeping.js"
+import type { XisListCtx, XisListIssues } from "#core/kernel.js"
 
 export interface XisTupleSyncProps<Schema extends [...Array<XisSyncBase>]> {
 	checks: [...Schema]
@@ -15,9 +16,10 @@ export interface XisTupleSyncArgs<Schema extends [...Array<XisSyncBase>]> {
 
 export class XisTupleSync<Schema extends [...Array<XisSyncBase>]> extends XisSync<
 	TupleIn<Schema>,
-	TupleIssues<Schema>,
+	XisListIssues<Schema>,
 	TupleOut<Schema>,
-	TupleCtx<Schema>
+	typeof Effect.Transform,
+	XisListCtx<Schema>
 > {
 	#props: XisTupleSyncProps<Schema>
 
@@ -26,13 +28,13 @@ export class XisTupleSync<Schema extends [...Array<XisSyncBase>]> extends XisSyn
 		this.#props = args.props
 	}
 
-	override get effect(): Effect {
+	override get effect(): typeof Effect.Transform {
 		return Effect.Transform
 	}
 
 	exec(
-		args: XisExecArgs<TupleIn<Schema>, TupleCtx<Schema>>
-	): ExecResultSync<TupleIssues<Schema>, TupleOut<Schema>> {
+		args: XisExecArgs<TupleIn<Schema>, XisListCtx<Schema>>
+	): ExecResultSync<XisListIssues<Schema>, TupleOut<Schema>> {
 		const { value, path, ctx, locale } = args
 		const { checks } = this.#props
 		const mapped = value.map<ExecResultSync<XisIssueBase, unknown>>((elem, index) => {
@@ -47,7 +49,7 @@ export class XisTupleSync<Schema extends [...Array<XisSyncBase>]> extends XisSyn
 				ctx,
 			})
 		})
-		return reduce(mapped) as ExecResultSync<TupleIssues<Schema>, TupleOut<Schema>>
+		return reduce(mapped) as ExecResultSync<XisListIssues<Schema>, TupleOut<Schema>>
 	}
 }
 

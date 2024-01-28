@@ -12,7 +12,12 @@ import {
 import type { XisExecArgs } from "#core/args.js"
 import { Effect } from "#core/book-keeping.js"
 
-export class XisCoerceNumber extends XisSync<unknown, CoerceIssue, number> {
+export class XisCoerceNumber extends XisSync<
+	unknown,
+	CoerceIssue,
+	number,
+	typeof Effect.Transform
+> {
 	#messages: XisCoerceMessages
 	constructor(args: XisCoerceArgs) {
 		super()
@@ -20,11 +25,11 @@ export class XisCoerceNumber extends XisSync<unknown, CoerceIssue, number> {
 			XIS_COERCE,
 		}
 	}
-	override get effect(): Effect {
+	override get effect(): typeof Effect.Transform {
 		return Effect.Transform
 	}
 	exec(args: XisExecArgs): ExecResultSync<CoerceIssue, number> {
-		const { value, locale, path } = args
+		const { value, locale, path, ctx } = args
 		const valueType = trueTypeOf(value)
 		const num = valueType === "symbol" ? NaN : Number(value)
 
@@ -35,7 +40,7 @@ export class XisCoerceNumber extends XisSync<unknown, CoerceIssue, number> {
 		const message = this.#messages.XIS_COERCE({
 			path,
 			locale,
-			ctx: null,
+			ctx,
 			input: {
 				value,
 				desired: "number",

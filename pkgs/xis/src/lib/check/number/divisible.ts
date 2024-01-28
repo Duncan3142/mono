@@ -43,7 +43,7 @@ export class XisDivisible extends XisSync<number, NumberDivisibleIssue> {
 			},
 		}
 	}
-	override get effect(): Effect {
+	override get effect(): typeof Effect.Validate {
 		return Effect.Validate
 	}
 	exec(args: XisExecArgs<number>): ExecResultSync<NumberDivisibleIssue, number> {

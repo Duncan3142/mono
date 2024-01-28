@@ -13,7 +13,12 @@ import { Effect } from "#core/book-keeping.js"
 
 export type SymbolInput = number | string | undefined
 
-export class XisCoerceSymbol extends XisSync<unknown, CoerceIssue, symbol> {
+export class XisCoerceSymbol extends XisSync<
+	unknown,
+	CoerceIssue,
+	symbol,
+	typeof Effect.Transform
+> {
 	#messages: XisCoerceMessages
 	constructor(args: XisCoerceArgs) {
 		super()
@@ -21,11 +26,11 @@ export class XisCoerceSymbol extends XisSync<unknown, CoerceIssue, symbol> {
 			XIS_COERCE,
 		}
 	}
-	override get effect(): Effect {
+	override get effect(): typeof Effect.Transform {
 		return Effect.Transform
 	}
 	exec(args: XisExecArgs): ExecResultSync<CoerceIssue, symbol> {
-		const { value, locale, path } = args
+		const { value, locale, path, ctx } = args
 		const valueType = trueTypeOf(value)
 		switch (typeof value) {
 			case "number":
@@ -36,7 +41,7 @@ export class XisCoerceSymbol extends XisSync<unknown, CoerceIssue, symbol> {
 				const message = this.#messages.XIS_COERCE({
 					path,
 					locale,
-					ctx: null,
+					ctx,
 					input: {
 						value,
 						desired: "symbol",

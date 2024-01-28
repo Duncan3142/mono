@@ -30,16 +30,16 @@ export class XisNever extends XisSync<unknown, NeverIssue, never> {
 			},
 		}
 	}
-	override get effect(): Effect {
+	override get effect(): typeof Effect.Validate {
 		return Effect.Validate
 	}
-	exec(args: XisExecArgs<unknown, null>): ExecResultSync<NeverIssue, never> {
-		const { value, path, locale } = args
+	exec(args: XisExecArgs): ExecResultSync<NeverIssue, never> {
+		const { value, path, locale, ctx } = args
 		const message = this.#messages.XIS_NEVER({
 			input: value,
 			path,
 			locale,
-			ctx: null,
+			ctx,
 		})
 		const err = {
 			name: "XIS_NEVER" as const,

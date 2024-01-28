@@ -4,10 +4,10 @@ import { XisSync, type ExecResultSync } from "#core/sync.js"
 import { Right } from "purify-ts/Either"
 
 export class XisUnknown extends XisSync<unknown> {
-	override get effect(): Effect {
+	override get effect(): typeof Effect.Validate {
 		return Effect.Validate
 	}
-	exec(args: XisExecArgs<unknown, null>): ExecResultSync<never, unknown> {
+	exec(args: XisExecArgs): ExecResultSync<never, unknown> {
 		return Right(args.value)
 	}
 }

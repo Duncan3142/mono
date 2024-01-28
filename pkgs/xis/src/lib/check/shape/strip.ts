@@ -25,7 +25,8 @@ export interface XisStripArgs<Schema extends [...Array<ShapeKeyBase>]> {
 export class XisStrip<Schema extends [...Array<ShapeKeyBase>]> extends XisSync<
 	BaseObject,
 	MissingPropertyIssue,
-	Shape<Schema>
+	Shape<Schema>,
+	typeof Effect.Transform
 > {
 	#props: XisShapeProps<Schema>
 	#messages: XisStripMessages
@@ -38,18 +39,19 @@ export class XisStrip<Schema extends [...Array<ShapeKeyBase>]> extends XisSync<
 		}
 	}
 
-	override get effect(): Effect {
+	override get effect(): typeof Effect.Transform {
 		return Effect.Transform
 	}
 
 	exec(args: XisExecArgs<BaseObject>): ExecResultSync<MissingPropertyIssue, Shape<Schema>> {
-		const { value, path, locale } = args
+		const { value, path, locale, ctx } = args
 		const { keys: desired } = this.#props
 		const { found, missing } = buildMissingIssues({
 			desired,
 			entries: objectEntries(value),
 			locale,
 			path,
+			ctx,
 			msgBuilder: this.#messages.XIS_MISSING_PROPERTY,
 		})
 		return missing.length > 0

@@ -12,8 +12,9 @@ import {
 } from "#core/kernel.js"
 import type { ExecResultSync } from "#core/sync.js"
 import type { BuildObjArg } from "#util/arg.js"
+import type { Effect } from "#core/book-keeping.js"
 
-export type PropertyKeyBase = Xis<any, XisIssueBase, TruePropertyKey, any>
+export type PropertyKeyBase = Xis<any, XisIssueBase, TruePropertyKey, Effect, any>
 
 export type RecordIn<KeySchema extends PropertyKeyBase, ValueSchema extends XisBase> = Record<
 	ExIn<KeySchema>,

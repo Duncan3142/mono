@@ -46,11 +46,11 @@ export class XisInstanceOf<T> extends XisSync<unknown, InstanceOfIssue, T> {
 			},
 		}
 	}
-	override get effect(): Effect {
+	override get effect(): typeof Effect.Validate {
 		return Effect.Validate
 	}
 	exec(args: XisExecArgs): ExecResultSync<InstanceOfIssue, T> {
-		const { value, path, locale } = args
+		const { value, path, locale, ctx } = args
 		const { ctor } = this.#props
 		if (value instanceof this.#props.ctor) {
 			return Right(value)
@@ -66,7 +66,7 @@ export class XisInstanceOf<T> extends XisSync<unknown, InstanceOfIssue, T> {
 			input: { ctor, received },
 			path,
 			locale,
-			ctx: null,
+			ctx,
 		})
 		const err = {
 			name: "XIS_INSTANCE_OF" as const,

@@ -11,14 +11,14 @@ export interface XisToStringArgs {
 	props: XisToStringProps
 }
 
-export class XisToString extends XisSync<number, never, string> {
+export class XisToString extends XisSync<number, never, string, typeof Effect.Transform> {
 	#props
 
 	constructor(args: XisToStringArgs) {
 		super()
 		this.#props = args.props
 	}
-	override get effect(): Effect {
+	override get effect(): typeof Effect.Transform {
 		return Effect.Transform
 	}
 

@@ -27,7 +27,7 @@ export class XisNan extends XisSync<number, NaNIssue> {
 			},
 		}
 	}
-	override get effect(): Effect {
+	override get effect(): typeof Effect.Validate {
 		return Effect.Validate
 	}
 	exec(args: XisExecArgs<number>): ExecResultSync<NaNIssue, number> {

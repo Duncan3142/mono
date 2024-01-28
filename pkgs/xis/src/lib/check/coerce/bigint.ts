@@ -25,7 +25,12 @@ function isBigIntInput(value: unknown): value is BigIntInput {
 	}
 }
 
-export class XisCoerceBigInt extends XisSync<unknown, CoerceIssue, bigint> {
+export class XisCoerceBigInt extends XisSync<
+	unknown,
+	CoerceIssue,
+	bigint,
+	typeof Effect.Transform
+> {
 	#messages: XisCoerceMessages
 	constructor(args: XisCoerceArgs) {
 		super()
@@ -33,11 +38,11 @@ export class XisCoerceBigInt extends XisSync<unknown, CoerceIssue, bigint> {
 			XIS_COERCE,
 		}
 	}
-	override get effect(): Effect {
+	override get effect(): typeof Effect.Transform {
 		return Effect.Transform
 	}
 	exec(args: XisExecArgs): ExecResultSync<CoerceIssue, bigint> {
-		const { value, locale, path } = args
+		const { value, locale, path, ctx } = args
 		const valueType = trueTypeOf(value)
 		if (valueType === "bigint") {
 			return Right(value as bigint)
@@ -47,7 +52,7 @@ export class XisCoerceBigInt extends XisSync<unknown, CoerceIssue, bigint> {
 			const message = this.#messages.XIS_COERCE({
 				path,
 				locale,
-				ctx: null,
+				ctx,
 				input: {
 					value,
 					desired: "bigint",

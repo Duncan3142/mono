@@ -56,11 +56,11 @@ export class XisTypeCheck<N extends TrueBaseTypeName> extends XisSync<
 			},
 		}
 	}
-	override get effect(): Effect {
+	override get effect(): typeof Effect.Validate {
 		return Effect.Validate
 	}
 	exec(args: XisExecArgs): ExecResultSync<BaseTypeIssue, TrueBaseTypeNameMap[N]> {
-		const { value, path, locale } = args
+		const { value, path, locale, ctx } = args
 		const { expected } = this.#props
 		const received = trueTypeOf(value)
 		if (isBaseType(expected, value)) {
@@ -71,7 +71,7 @@ export class XisTypeCheck<N extends TrueBaseTypeName> extends XisSync<
 			input: { expected, received },
 			path,
 			locale,
-			ctx: null,
+			ctx,
 		})
 
 		const err = {

@@ -50,12 +50,12 @@ export class XisLiteral<const Literal extends TruePrimitiveType> extends XisSync
 			},
 		}
 	}
-	override get effect(): Effect {
+	override get effect(): typeof Effect.Validate {
 		return Effect.Validate
 	}
 
-	exec(args: XisExecArgs<unknown, null>): ExecResultSync<LiteralIssue<Literal>, Literal> {
-		const { value, path, locale } = args
+	exec(args: XisExecArgs): ExecResultSync<LiteralIssue<Literal>, Literal> {
+		const { value, path, locale, ctx } = args
 		const { literal } = this.#props
 		if (value === this.#props.literal) {
 			return Right(value as Literal)
@@ -68,7 +68,7 @@ export class XisLiteral<const Literal extends TruePrimitiveType> extends XisSync
 			},
 			path,
 			locale,
-			ctx: null,
+			ctx,
 		})
 
 		const err = {

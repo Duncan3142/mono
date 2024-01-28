@@ -2,18 +2,18 @@ import type { ObjArgBase } from "#util/arg.js"
 import type { ExIssueName, XisIssueBase } from "./error.js"
 import type { XisPath } from "./path.js"
 
-export type XisMsgArgs<Input = unknown, Ctx extends ObjArgBase = null> = {
+export type XisMsgArgs<Input = unknown, Ctx extends ObjArgBase = ObjArgBase> = {
 	locale: string
 	input: Input
 	path: XisPath
 	ctx: Ctx
 }
 
-export type XisMsgBuilder<Input = unknown, Ctx extends ObjArgBase = null> = (
+export type XisMsgBuilder<Input = unknown, Ctx extends ObjArgBase = ObjArgBase> = (
 	args: XisMsgArgs<Input, Ctx>
 ) => string
 
-export type XisMsgBuilderAsync<Input = unknown, Ctx extends ObjArgBase = null> = (
+export type XisMsgBuilderAsync<Input = unknown, Ctx extends ObjArgBase = ObjArgBase> = (
 	args: XisMsgArgs<Input, Ctx>
 ) => Promise<string>
 

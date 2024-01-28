@@ -8,8 +8,8 @@ import { Effect } from "#core/book-keeping.js"
 
 export type StringLengthOpts = RangeOpts<number>
 
-export class XisToLength extends XisSync<string, never, number> {
-	override get effect(): Effect {
+export class XisToLength extends XisSync<string, never, number, typeof Effect.Transform> {
+	override get effect(): typeof Effect.Transform {
 		return Effect.Transform
 	}
 	exec(args: XisExecArgs<string>): ExecResultSync<never, number> {
@@ -57,11 +57,11 @@ export class XisIsLength<Opts extends StringLengthOpts> extends XisSync<
 		this.#message = message
 	}
 
-	override get effect(): Effect {
+	override get effect(): typeof Effect.Validate {
 		return Effect.Validate
 	}
 	exec(args: XisExecArgs<string>): ExecResultSync<StringLengthIssue, string> {
-		const { value, path, locale } = args
+		const { value, path, locale, ctx } = args
 		const { opts } = this.#props
 
 		if (inRange(value.length, opts)) {
@@ -75,7 +75,7 @@ export class XisIsLength<Opts extends StringLengthOpts> extends XisSync<
 			},
 			locale,
 			path,
-			ctx: null,
+			ctx,
 		})
 
 		const err = {

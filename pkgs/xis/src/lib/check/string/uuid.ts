@@ -69,12 +69,12 @@ export class XisUUID<V extends Version> extends XisSync<string, UUIDIssue<V>, UU
 		}
 	}
 
-	override get effect(): Effect {
+	override get effect(): typeof Effect.Validate {
 		return Effect.Validate
 	}
 
 	exec(args: XisExecArgs<string>): ExecResultSync<UUIDIssue<V>, UUID> {
-		const { value, path, locale } = args
+		const { value, path, locale, ctx } = args
 		const { version } = this.#props
 		const pattern = uuidPatterns[version]
 		switch (pattern.test(value)) {
@@ -85,7 +85,7 @@ export class XisUUID<V extends Version> extends XisSync<string, UUIDIssue<V>, UU
 					input: { value, version },
 					path,
 					locale,
-					ctx: null,
+					ctx,
 				})
 
 				return Left([
