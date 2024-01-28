@@ -1,5 +1,5 @@
 import { describe, it } from "node:test"
-import { equal, deepEqual } from "node:assert/strict"
+import { expect } from "expect"
 import { assertLeft, assertRight, type ExtractValue } from "#util/either.js"
 import { chain } from "#core/chain/sync.js"
 import { split } from "#check/string/split.js"
@@ -9,57 +9,66 @@ import { trimmed } from "#check/string/trimmed.js"
 void describe("string", () => {
 	void describe("isLength", () => {
 		void it("should pass a string of length 3", () => {
-			const res = isLength([{ bound: 1, op: "gte" }]).parse("abc", {
-				args: undefined,
+			const res = isLength([{ bound: 1, op: "gte" }]).exec({
+				value: "abc",
+				ctx: {},
 				path: [],
+				locale: "en",
 			})
 			assertRight(res)
 
-			equal(res.extract(), "abc")
+			expect(res.extract()).toBe("abc")
 		})
 
 		void it("should fail a string of length 2", () => {
 			const x = isLength([{ bound: 3, op: "gte" }])
-			const res = x.parse("ab", {
-				args: undefined,
+			const res = x.exec({
+				value: "ab",
+				ctx: {},
 				path: [],
+				locale: "en",
 			})
 
 			assertLeft(res)
 
 			const expected: ExtractValue<typeof res> = [
 				{
-					name: "STRING_LENGTH",
+					name: "XIS_STRING_LENGTH",
 					path: [],
 					length: 2,
+					message: "Expected a string of length 3 or more",
 					opts: [{ bound: 3, op: "gte" }],
 				},
 			]
 
-			deepEqual(res.extract(), expected)
+			expect(res.extract()).toEqual(expected)
 		})
 	})
 
 	void describe("toChars", () => {
 		void it("should transform", () => {
-			const res = split("").parse("abc", {
-				args: undefined,
+			const res = split("").exec({
+				value: "abc",
+				ctx: {},
 				path: [],
+				locale: "en",
 			})
 
 			assertRight(res)
-			deepEqual(res.extract(), ["a", "b", "c"])
+			expect(res.extract()).toEqual(["a", "b", "c"])
 		})
 	})
 
 	void describe("trimmed > toLength", () => {
 		void it("should transform", () => {
-			const res = chain([trimmed, toLength]).parse("ABC ", {
-				args: undefined,
+			const res = chain([trimmed(), toLength()]).exec({
+				value: "ABC ",
+				ctx: {},
 				path: [],
+				locale: "en",
 			})
 			assertRight(res)
-			equal(res.extract(), 3)
+			expect(res.extract()).toBe(3)
 		})
 	})
 })

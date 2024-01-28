@@ -1,73 +1,75 @@
 import { it } from "node:test"
 import { expect } from "expect"
 import { assertLeft, assertRight, type ExtractValue } from "#util/either.js"
-import { isString, isNumber, type XisTypeCheck } from "#check/base-type.js"
-import { strict } from "#check/shape/strict.js"
+import { isString, isNumber } from "#check/base-type.js"
+import { isFinite } from "#check/number/finite.js"
+import { object, XisObjectAsync } from "#check/object/async.js"
 import { lazy } from "#core/lazy/async.js"
-import {
-	type Prop,
-	type ShapeIn,
-	type ShapeOut,
-	type ShapeGuardIssues,
-	type ShapeExecIssues,
-	type ShapeArgs,
-	type K,
-} from "#check/shape/core.js"
+import type { NTuple } from "#util/base-type.js"
+import type { ExIn, ExIssues, ExOut } from "#core/kernel.js"
+import type { Effect } from "#core/book-keeping.js"
+import { chain } from "#core/chain/sync.js"
+import type { XisPropBase } from "#check//object/core.js"
 import type { XisAsync } from "#core/async.js"
 
-type BaseSchema = [Prop<K<"name">, XisString>, Prop<K<"age">, XisNumber>]
+const baseProps = [
+	[["name", "!"], isString()],
+	[["age", "!"], chain([isNumber(), isFinite()])],
+] satisfies NTuple<2, XisPropBase>
 
-type BI = ShapeIn<BaseSchema, ShapeDefaultMode>
-interface I extends BI {
-	readonly spouse?: I
+type BaseSchema = XisObjectAsync<typeof baseProps>
+
+type BaseIn = ExIn<BaseSchema>
+interface LazyIn extends BaseIn {
+	readonly boss?: BaseIn
 }
-type BO = ShapeOut<BaseSchema, ShapeDefaultMode>
-interface O extends BO {
-	readonly spouse?: O
+type BaseIssues = ExIssues<BaseSchema>
+type BaseOut = ExOut<BaseSchema>
+interface LazyOut extends BaseOut {
+	readonly boss?: BaseOut
 }
-type GI = ShapeGuardIssues<BaseSchema, ShapeDefaultMode>
-type EI = ShapeExecIssues<BaseSchema, ShapeDefaultMode>
-type A = ShapeArgs<BaseSchema>
 
-type Check = XisAsync<I, GI, EI, O, A>
+type Check = XisAsync<LazyIn, BaseIssues, LazyOut, typeof Effect.Transform>
 
-const check: Check = shape([
-	// break
-	[k("name"), string],
-	// break
-	[k("age"), number],
-	// break
-	[ko("spouse"), lazy(() => check)],
-])
+const check: Check = object([...baseProps, [["boss", "?"], lazy(() => check)]] satisfies NTuple<
+	3,
+	XisPropBase
+>)
 
 void it("should pass a matching object", async () => {
-	const value = { name: "Foo", age: 2, spouse: { name: "Bar", age: 3 } }
+	const value = { name: "Foo", age: 2, boss: { name: "Bar", age: 3 } }
 
-	const res = await check.exec(value, {
-		args: undefined,
+	const res = await check.exec({
+		value,
+		locale: "en",
+		ctx: {},
 		path: [],
 	})
 
 	assertRight(res)
 
-	deepEqual(res.extract(), value)
+	expect(res.extract()).toEqual(value)
 })
 
 void it("should fail an invalid object", async () => {
-	const res = await check.parse(true, {
-		args: undefined,
+	const value = { name: "Foo", age: 2, boss: { name: "Bar", age: NaN } }
+
+	const res = await check.exec({
+		value,
+		locale: "en",
+		ctx: {},
 		path: [],
 	})
+
 	assertLeft(res)
 
 	const expected: ExtractValue<typeof res> = [
 		{
-			expected: "object",
-			name: "INVALID_TYPE",
+			name: "XIS_FINITE",
+			message: "NaN at [] is not a finite",
 			path: [],
-			received: "boolean",
 		},
 	]
 
-	deepEqual(res.extract(), expected)
+	expect(res.extract()).toEqual(expected)
 })

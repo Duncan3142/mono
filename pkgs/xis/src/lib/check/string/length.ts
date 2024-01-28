@@ -18,7 +18,7 @@ export class XisToLength extends XisSync<string, never, number, typeof Effect.Tr
 	}
 }
 
-export const toLength: XisToLength = new XisToLength()
+export const toLength = () => new XisToLength()
 
 export interface StringLengthIssue extends XisIssue<"XIS_STRING_LENGTH"> {
 	length: number
