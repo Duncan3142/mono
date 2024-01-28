@@ -30,4 +30,7 @@ export class XisToString extends XisSync<number, never, string, typeof Effect.Tr
 	}
 }
 
-export const toString = (args: XisToStringArgs): XisToString => new XisToString(args)
+export const toString = (radix: number): XisToString =>
+	new XisToString({
+		props: { radix },
+	})

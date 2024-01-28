@@ -51,4 +51,11 @@ export class XisCoerceNumber extends XisSync<
 	}
 }
 
-export const number = (args: XisCoerceArgs) => new XisCoerceNumber(args)
+export const numberi18n = (messages: XisCoerceMessages) =>
+	new XisCoerceNumber({
+		messages,
+	})
+export const number = () =>
+	new XisCoerceNumber({
+		messages: null,
+	})

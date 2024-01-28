@@ -52,4 +52,11 @@ export class XisNan extends XisSync<number, NaNIssue> {
 	}
 }
 
-export const isNaN = (args: XisNaNArgs) => new XisNan(args)
+export const isNaNi18n = (messages: XisNaNMessages) =>
+	new XisNan({
+		messages,
+	})
+export const isNaN = () =>
+	new XisNan({
+		messages: null,
+	})

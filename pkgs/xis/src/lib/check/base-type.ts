@@ -86,15 +86,17 @@ export class XisTypeCheck<N extends TrueBaseTypeName> extends XisSync<
 	}
 }
 
-export const typeChecki18n =
-	(msgs: BaseTypeMessages | null) =>
-	<N extends TrueBaseTypeName>(name: N) =>
-		new XisTypeCheck<N>({
-			props: { expected: name },
-			messages: msgs,
-		})
+export const typeChecki18n = <N extends TrueBaseTypeName>(name: N, msgs: BaseTypeMessages) =>
+	new XisTypeCheck<N>({
+		props: { expected: name },
+		messages: msgs,
+	})
 
-export const typeCheck = <N extends TrueBaseTypeName>(name: N) => typeChecki18n(null)(name)
+export const typeCheck = <N extends TrueBaseTypeName>(name: N) =>
+	new XisTypeCheck<N>({
+		props: { expected: name },
+		messages: null,
+	})
 
 export const isNull = () => typeCheck("null")
 export const isUndefined = () => typeCheck("undefined")

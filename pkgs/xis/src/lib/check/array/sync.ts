@@ -51,6 +51,9 @@ export class XisArraySync<Schema extends XisSyncBase> extends XisSync<
 	}
 }
 
-export const array = <Schema extends XisSyncBase>(
-	args: ArraySyncArgs<Schema>
-): XisArraySync<Schema> => new XisArraySync(args)
+export const array = <Schema extends XisSyncBase>(schema: Schema): XisArraySync<Schema> =>
+	new XisArraySync({
+		props: {
+			check: schema,
+		},
+	})

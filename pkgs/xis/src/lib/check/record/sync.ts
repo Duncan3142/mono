@@ -19,8 +19,8 @@ export interface XisRecordSyncProps<
 	KeySchema extends SyncPropertyKeyBase,
 	ValueSchema extends XisSyncBase,
 > {
-	keyCheck: [ExIn<KeySchema>] extends [TruePropertyKey] ? KeySchema : never
-	valueCheck: ValueSchema
+	key: [ExIn<KeySchema>] extends [TruePropertyKey] ? KeySchema : never
+	value: ValueSchema
 }
 
 export interface XisRecordSyncArgs<
@@ -55,7 +55,7 @@ export class XisRecordSync<
 		args: XisExecArgs<RecordIn<KeySchema, ValueSchema>, RecordCtx<KeySchema, ValueSchema>>
 	): ExecResultSync<RecordIssues<KeySchema, ValueSchema>, RecordOut<KeySchema, ValueSchema>> {
 		const { value, ctx, locale, path } = args
-		const { keyCheck, valueCheck } = this.#props
+		const { key: keyCheck, value: valueCheck } = this.#props
 		const sourceEntries = objectEntries(value)
 
 		const results = sourceEntries.map(([key, val]) => {
@@ -89,5 +89,5 @@ export class XisRecordSync<
 }
 
 export const record = <KeySchema extends SyncPropertyKeyBase, ValueSchema extends XisSyncBase>(
-	args: XisRecordSyncArgs<KeySchema, ValueSchema>
-): XisRecordSync<KeySchema, ValueSchema> => new XisRecordSync(args)
+	schema: XisRecordSyncProps<KeySchema, ValueSchema>
+): XisRecordSync<KeySchema, ValueSchema> => new XisRecordSync({ props: schema })

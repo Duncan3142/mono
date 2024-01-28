@@ -105,5 +105,5 @@ export class XisObjectAsync<Schema extends [...Array<XisPropBase>]> extends XisA
 }
 
 export const object = <Schema extends [...Array<XisPropBase>]>(
-	args: XisObjectAsyncArgs<Schema>
-): XisObjectAsync<Schema> => new XisObjectAsync(args)
+	schema: [...Schema]
+): XisObjectAsync<Schema> => new XisObjectAsync({ props: { schema } })

@@ -52,4 +52,11 @@ export class XisInteger extends XisSync<number, IntegerIssue> {
 	}
 }
 
-export const isInteger = (args: XisIntegerArgs) => new XisInteger(args)
+export const isIntegeri18n = (messages: XisIntegerMessages) =>
+	new XisInteger({
+		messages,
+	})
+export const isInteger = () =>
+	new XisInteger({
+		messages: null,
+	})

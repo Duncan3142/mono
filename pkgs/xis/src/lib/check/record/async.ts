@@ -18,8 +18,8 @@ export interface XisRecordAsyncProps<
 	KeySchema extends PropertyKeyBase,
 	ValueSchema extends XisBase,
 > {
-	keyCheck: [ExIn<KeySchema>] extends [TruePropertyKey] ? KeySchema : never
-	valueCheck: ValueSchema
+	key: [ExIn<KeySchema>] extends [TruePropertyKey] ? KeySchema : never
+	value: ValueSchema
 }
 
 export interface XisRecordAsyncArgs<
@@ -54,7 +54,7 @@ export class XisRecordAsync<
 		args: XisExecArgs<RecordIn<KeySchema, ValueSchema>, RecordCtx<KeySchema, ValueSchema>>
 	): ExecResultAsync<RecordIssues<KeySchema, ValueSchema>, RecordOut<KeySchema, ValueSchema>> {
 		const { value, ctx, locale, path } = args
-		const { keyCheck, valueCheck } = this.#props
+		const { key: keyCheck, value: valueCheck } = this.#props
 		const sourceEntries = objectEntries(value)
 
 		const results = await Promise.all(
@@ -90,5 +90,8 @@ export class XisRecordAsync<
 }
 
 export const record = <KeySchema extends PropertyKeyBase, ValueSchema extends XisBase>(
-	args: XisRecordAsyncArgs<KeySchema, ValueSchema>
-): XisRecordAsync<KeySchema, ValueSchema> => new XisRecordAsync(args)
+	schema: XisRecordAsyncProps<KeySchema, ValueSchema>
+): XisRecordAsync<KeySchema, ValueSchema> =>
+	new XisRecordAsync({
+		props: schema,
+	})

@@ -60,4 +60,11 @@ export class XisCoerceSymbol extends XisSync<
 	}
 }
 
-export const symbol = (args: XisCoerceArgs) => new XisCoerceSymbol(args)
+export const symboli18n = (messages: XisCoerceMessages) =>
+	new XisCoerceSymbol({
+		messages,
+	})
+export const symbol = () =>
+	new XisCoerceSymbol({
+		messages: null,
+	})

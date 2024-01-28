@@ -119,6 +119,22 @@ export class XisStrict<Schema extends [...Array<ShapeKeyBase>]> extends XisSync<
 	}
 }
 
+export const stricti18n = <Schema extends [...Array<ShapeKeyBase>]>(
+	keys: [...Schema],
+	messages: XisStrictMessages
+): XisStrict<Schema> =>
+	new XisStrict({
+		messages,
+		props: {
+			keys,
+		},
+	})
 export const strict = <Schema extends [...Array<ShapeKeyBase>]>(
-	args: XisStrictArgs<Schema>
-): XisStrict<Schema> => new XisStrict(args)
+	keys: [...Schema]
+): XisStrict<Schema> =>
+	new XisStrict({
+		messages: null,
+		props: {
+			keys,
+		},
+	})

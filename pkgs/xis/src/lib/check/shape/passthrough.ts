@@ -58,6 +58,18 @@ export class XisPassthrough<Schema extends [...Array<ShapeKeyBase>]> extends Xis
 	}
 }
 
+export const passthroughi18n = <Schema extends [...Array<ShapeKeyBase>]>(
+	keys: [...Schema],
+	messages: XisPassthroughMessages
+): XisPassthrough<Schema> =>
+	new XisPassthrough({
+		props: { keys },
+		messages,
+	})
 export const passthrough = <Schema extends [...Array<ShapeKeyBase>]>(
-	args: XisPassthroughArgs<Schema>
-): XisPassthrough<Schema> => new XisPassthrough(args)
+	keys: [...Schema]
+): XisPassthrough<Schema> =>
+	new XisPassthrough({
+		props: { keys },
+		messages: null,
+	})

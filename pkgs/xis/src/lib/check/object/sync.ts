@@ -92,5 +92,8 @@ export class XisObjectSync<Schema extends [...Array<XisSyncPropBase>]> extends X
 }
 
 export const object = <Schema extends [...Array<XisSyncPropBase>]>(
-	args: XisObjectSyncArgs<Schema>
-): XisObjectSync<Schema> => new XisObjectSync(args)
+	schema: [...Schema]
+): XisObjectSync<Schema> =>
+	new XisObjectSync({
+		props: { schema },
+	})

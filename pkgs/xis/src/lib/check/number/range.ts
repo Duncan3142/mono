@@ -80,4 +80,13 @@ export class XisRange extends XisSync<number, NumberRangeIssue> {
 	}
 }
 
-export const range = (args: NumberRangeArgs): XisRange => new XisRange(args)
+export const rangei18n = (opts: NumberRangeOpts, messages: NumberRangeMessages): XisRange =>
+	new XisRange({
+		props: { opts },
+		messages,
+	})
+export const range = (opts: NumberRangeOpts): XisRange =>
+	new XisRange({
+		props: { opts },
+		messages: null,
+	})

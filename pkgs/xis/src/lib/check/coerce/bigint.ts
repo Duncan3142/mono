@@ -70,4 +70,11 @@ export class XisCoerceBigInt extends XisSync<
 	}
 }
 
-export const bigint = (args: XisCoerceArgs) => new XisCoerceBigInt(args)
+export const biginti18n = (messages: XisCoerceMessages) =>
+	new XisCoerceBigInt({
+		messages,
+	})
+export const bigint = () =>
+	new XisCoerceBigInt({
+		messages: null,
+	})

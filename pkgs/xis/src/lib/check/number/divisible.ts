@@ -74,4 +74,13 @@ export class XisDivisible extends XisSync<number, NumberDivisibleIssue> {
 	}
 }
 
-export const isDivisible = (args: XisDivisibleArgs) => new XisDivisible(args)
+export const isDivisiblei18n = (divisor: number, messages: XisDivisibleMessages) =>
+	new XisDivisible({
+		props: { divisor },
+		messages,
+	})
+export const isDivisible = (divisor: number) =>
+	new XisDivisible({
+		messages: null,
+		props: { divisor },
+	})

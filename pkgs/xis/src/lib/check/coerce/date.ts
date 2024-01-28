@@ -64,4 +64,11 @@ export class XisCoerceDate extends XisSync<
 	}
 }
 
-export const date = (args: XisCoerceArgs) => new XisCoerceDate(args)
+export const datei18n = (messages: XisCoerceMessages) =>
+	new XisCoerceDate({
+		messages,
+	})
+export const date = () =>
+	new XisCoerceDate({
+		messages: null,
+	})
