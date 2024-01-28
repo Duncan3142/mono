@@ -14,14 +14,6 @@ import type {
 export type XisPropBase = [ShapeKeyBase, XisBase]
 export type XisPropsBase = Array<XisPropBase>
 
-export type CtxUnionIntersection<T extends ObjArgBase> = (
-	T extends any ? (x: T) => void : never
-) extends (x: infer R) => void
-	? R extends ObjArgBase
-		? R
-		: never
-	: never
-
 export type NativeShape<
 	Props extends [...Array<XisPropBase>],
 	Acc extends object = object,
@@ -68,6 +60,14 @@ export type XisObjectOut<Props extends XisPropsBase> =
 					: never
 			}
 		: never
+
+export type CtxUnionIntersection<T extends ObjArgBase> = (
+	T extends any ? (x: T) => void : never
+) extends (x: infer R) => void
+	? R extends ObjArgBase
+		? R
+		: never
+	: never
 
 export type XisObjectCtx<Props extends XisPropsBase> = CtxUnionIntersection<
 	Exclude<

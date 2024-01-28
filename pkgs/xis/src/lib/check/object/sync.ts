@@ -1,35 +1,33 @@
 import type { XisIssue, XisIssueBase } from "#core/error.js"
-import { XisSync, type ExecResultSync } from "#core/sync.js"
-import type { BaseObject } from "#util/base-type.js"
-import type { XisObjectIssues, XisObjectOut, XisObjectCtx } from "./core.js"
+import { XisSync, type ExecResultSync, type XisSyncBase } from "#core/sync.js"
+import type { XisObjectIssues, XisObjectOut, XisObjectCtx, XisObjectIn } from "./core.js"
 import type { XisExecArgs } from "#core/args.js"
 import { Effect } from "#core/book-keeping.js"
+import { exKeyName, type ShapeKeyBase } from "../shape/core.js"
+import { objectEntries, type TruePropertyKey } from "#util/base-type.js"
+import { Right } from "purify-ts/Either"
+import { CheckSide, addElement } from "#core/path.js"
+import { mergeIssues } from "#core/kernel.js"
 
-export type XisSyncPropsSchema<In extends BaseObject> = {
-	-readonly [K in keyof In]-?: XisSync<Exclude<In[K], undefined>, XisIssueBase, unknown, any>
+export type XisSyncPropBase = [ShapeKeyBase, XisSyncBase]
+
+export type XisObjectSyncProps<Schema extends [...Array<XisSyncPropBase>]> = {
+	schema: [...Schema]
 }
 
-export interface XisPropsSyncProps<
-	In extends BaseObject,
-	Schema extends XisSyncPropsSchema<In> = XisSyncPropsSchema<In>,
+export interface XisObjectSyncArgs<Schema extends [...Array<XisSyncPropBase>]> {
+	props: XisObjectSyncProps<Schema>
+}
+
+export class XisObjectSync<Schema extends [...Array<XisSyncPropBase>]> extends XisSync<
+	XisObjectIn<Schema>,
+	XisObjectIssues<Schema>,
+	XisObjectOut<Schema>,
+	XisObjectCtx<Schema>
 > {
-	schema: Schema
-}
+	readonly #props: XisObjectSyncProps<Schema>
 
-export interface XisPropsSyncArgs<
-	In extends BaseObject,
-	Schema extends XisSyncPropsSchema<In> = XisSyncPropsSchema<In>,
-> {
-	props: XisPropsSyncProps<In, Schema>
-}
-
-export class XisPropsSync<
-	In extends BaseObject,
-	Schema extends XisSyncPropsSchema<In> = XisSyncPropsSchema<In>,
-> extends XisSync<In, XisObjectIssues<Schema>, XisObjectOut<In, Schema>, XisObjectCtx<Schema>> {
-	readonly #props: XisPropsSyncProps<In, Schema>
-
-	constructor(args: XisPropsSyncArgs<In, Schema>) {
+	constructor(args: XisObjectSyncArgs<Schema>) {
 		super()
 		this.#props = args.props
 	}
@@ -38,76 +36,79 @@ export class XisPropsSync<
 		return Effect.Transform
 	}
 
-	exec(
-		args: XisExecArgs<In, XisObjectCtx<Schema>>
-	): ExecResultSync<XisObjectIssues<Schema>, XisObjectOut<In, Schema>> {
-		// const { value, ctx, path, locale } = args
+	#process(args: XisExecArgs<XisObjectIn<Schema>, XisObjectCtx<Schema>>): {
+		remaining: Map<TruePropertyKey, unknown>
+		result: ExecResultSync<XisObjectIssues<Schema>, Map<TruePropertyKey, unknown>>
+	} {
 		const { schema } = this.#props
-		return { args, schema } as any as ExecResultSync<
-			XisObjectIssues<Schema>,
-			XisObjectOut<In, Schema>
-		>
-		// const { value, ctx, locale, path } = args
-		// const { keyCheck, valueCheck } = this.#props
-		// const sourceEntries = objectEntries(value)
-		// const results = sourceEntries.map(([key, val]) => {
-		// 	const keyRes = keyCheck.exec({
-		// 		value: key,
-		// 		locale,
-		// 		path: addElement(path, {
-		// 			segment: key,
-		// 			side: CheckSide.Key,
-		// 		}),
-		// 		ctx,
-		// 	})
-		// 	const valRes = valueCheck.exec({
-		// 		value: val,
-		// 		locale,
-		// 		path: addElement(path, {
-		// 			segment: key,
-		// 			side: CheckSide.Value,
-		// 		}),
-		// 		ctx,
-		// 	})
-		// 	return tup(keyRes, valRes)
-		// })
-		// return reduce(results) as ExecResultSync<
-		// 	RecordIssues<KeySchema, ValueSchema>,
-		// 	RecordOut<KeySchema, ValueSchema>
-		// >
+		const { value, ctx, path, locale } = args
+		const entries = objectEntries(value)
+		return schema.reduce<{
+			remaining: Map<TruePropertyKey, unknown>
+			result: ExecResultSync<XisObjectIssues<Schema>, Map<TruePropertyKey, unknown>>
+		}>(
+			({ remaining, result: acc }, [key, check]) => {
+				const keyName = exKeyName(key)
+				if (remaining.has(keyName)) {
+					const prop = remaining.get(keyName)
+					remaining.delete(keyName)
+					const res = check.exec({
+						value: prop,
+						ctx,
+						path: addElement(path, {
+							segment: keyName,
+							side: CheckSide.Value,
+						}),
+						locale,
+					})
+					const result = res.caseOf({
+						Left: (issues) => mergeIssues(acc, issues as XisObjectIssues<Schema>),
+						Right: (prop) => acc.map((current) => current.set(keyName, prop)),
+					})
+
+					return { remaining, result }
+				}
+
+				return {
+					remaining,
+					result: acc,
+				}
+			},
+			{
+				remaining: new Map(entries),
+				result: Right(new Map<TruePropertyKey, unknown>()),
+			}
+		)
+	}
+
+	exec(
+		args: XisExecArgs<XisObjectIn<Schema>, XisObjectCtx<Schema>>
+	): ExecResultSync<XisObjectIssues<Schema>, XisObjectOut<Schema>> {
+		const { result, remaining } = this.#process(args)
+		return result.map((entries) => {
+			Object.fromEntries([...entries, ...remaining])
+		})
 	}
 }
 
-export const props = <
-	In extends BaseObject,
-	Schema extends XisSyncPropsSchema<In> = XisSyncPropsSchema<In>,
->(
-	args: XisPropsSyncArgs<In, Schema>
-): XisPropsSync<In, Schema> => new XisPropsSync(args)
+export const object = <Schema extends [...Array<XisSyncPropBase>]>(
+	args: XisObjectSyncArgs<Schema>
+): XisObjectSync<Schema> => new XisObjectSync(args)
 
 /* -------------------------------------------------------------------------- */
 /*                                    TEST                                    */
 /* -------------------------------------------------------------------------- */
 
-export type Shape = {
-	foo: number
-	bar?: string
-	readonly baz: Date
-	readonly goo?: boolean
-	// woof: bigint
-}
+export type Props = [
+	[["foo", "!"], XisSync<number, XisIssue<"foo">, string, { foo: number }>],
+	[["bar", "?"], XisSync<string, XisIssue<"bar">, number, { bar: string }>],
+	[["readonly", "baz", "!"], XisSync<Date, never, boolean, null>],
+	[["readonly", "goo", "?"], XisSync<boolean, XisIssue<"goo">, Date, { goo: boolean }>],
+]
 
-export type X = Exclude<undefined, undefined>
+export type In = XisObjectIn<Props>
 
-export type Props = {
-	foo: XisSync<number, XisIssue<"foo">, string, { foo: number }>
-	bar: XisSync<string, XisIssue<"bar">, number, { bar: string }>
-	baz: XisSync<Date, never, boolean, null>
-	goo: XisSync<boolean, XisIssue<"goo">, Date, { goo: boolean }>
-	woof: XisSync<string, XisIssue<"woof">, null>
-}
-
-export type Out = XisObjectOut<Shape, Props>
+export type Out = XisObjectOut<Props>
 
 export type Iss = XisObjectIssues<Props>
 
@@ -115,16 +116,8 @@ export type Ctx = XisObjectCtx<Props>
 
 let p: Props
 
-export const x = new XisPropsSync<Shape>({
+export const x = new XisObjectSync<Props>({
 	props: {
 		schema: p!,
 	},
 })
-
-export const t1: [0, 0, 0, 0] = [0, 0, 0, 0]
-t1[3] = 0
-t1.push(0)
-t1[4] = 0
-t1.pop()
-t1.pop()
-export const t2: [0, 0, 0, 0] = t1
