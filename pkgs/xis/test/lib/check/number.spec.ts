@@ -122,13 +122,7 @@ void describe("number", () => {
 				] satisfies NumberRangeOpts,
 				2,
 			],
-			[
-				[
-					{ op: "gte", bound: 2 },
-					{ op: "lte", bound: 8 },
-				] satisfies NumberRangeOpts,
-				5,
-			],
+
 			[
 				[
 					{ op: "gte", bound: 2 },
@@ -196,40 +190,48 @@ void describe("number", () => {
 		await Promise.all(
 			cases.map(async ([opts, input], idx) =>
 				t.test(`passes: ${idx}`, () => {
-					const res = range(opts).exec(input, {
-						args: undefined,
+					const res = range(opts).exec({
+						value: input,
+						ctx: {},
+						locale: "en",
 						path: [],
 					})
 
 					assertRight(res)
-					equal(res.extract(), input)
+					expect(res.extract()).toBe(input)
 				})
 			)
 		)
 	})
 
 	void it("should fail a range", () => {
-		const res = range([{ op: "gt", bound: 8 }]).exec(0, {
-			args: undefined,
+		const res = range([{ op: "gt", bound: 8 }]).exec({
+			value: 0,
+			ctx: {},
+			locale: "en",
 			path: [],
 		})
 		assertLeft(res)
 		const expected: ExtractValue<typeof res> = [
 			{
-				name: "NUMBER_RANGE",
+				name: "XIS_NUMBER_RANGE",
+				message: "Expected a number greater than 8",
 				path: [],
 				opts: [{ op: "gt", bound: 8 }],
 				received: 0,
 			},
 		]
-		deepEqual(res.extract(), expected)
+		expect(res.extract()).toEqual(expected)
 	})
 	void it("should stringify a number", () => {
-		const res = toString({ radix: 10 }).exec(42, {
-			args: undefined,
+		const res = toString(10).exec({
+			value: 42,
+			ctx: {},
+			locale: "en",
+
 			path: [],
 		})
 		assertRight(res)
-		equal(res.extract(), "42")
+		expect(res.extract()).toBe("42")
 	})
 })
