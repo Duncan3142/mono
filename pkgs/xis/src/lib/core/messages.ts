@@ -2,31 +2,22 @@ import type { ObjArgBase } from "#util/arg.js"
 import type { ExIssueName, XisIssueBase } from "./error.js"
 import type { XisPath } from "./path.js"
 
-export type XisMsgArgs<
-	In = unknown,
-	Props extends ObjArgBase = null,
-	Ctx extends ObjArgBase = null,
-> = {
-	value: In
-	path: XisPath
+export type XisMsgArgs<Input = unknown, Ctx extends ObjArgBase = null> = {
 	locale: string
-	props: Props
+	input: Input
+	path: XisPath
 	ctx: Ctx
 }
 
-export type XisMsgBuilder<
-	In = unknown,
-	Props extends ObjArgBase = null,
-	Ctx extends ObjArgBase = null,
-> = (args: XisMsgArgs<In, Props, Ctx>) => string
+export type XisMsgBuilder<Input = unknown, Ctx extends ObjArgBase = null> = (
+	args: XisMsgArgs<Input, Ctx>
+) => string
 
-export type XisMsgBuilderAsync<
-	In = unknown,
-	Props extends ObjArgBase = null,
-	Ctx extends ObjArgBase = null,
-> = (args: XisMsgArgs<In, Props, Ctx>) => Promise<string>
+export type XisMsgBuilderAsync<Input = unknown, Ctx extends ObjArgBase = null> = (
+	args: XisMsgArgs<Input, Ctx>
+) => Promise<string>
 
-export type XisMsgBuilderBase = XisMsgBuilder<any, any, any> | XisMsgBuilderAsync<any, any, any>
+export type XisMsgBuilderBase = XisMsgBuilder<any, any> | XisMsgBuilderAsync<any, any>
 
 export type XisMessages<Issues extends XisIssueBase> = {
 	[N in ExIssueName<Issues>]: XisMsgBuilderBase

@@ -29,14 +29,18 @@ export type StringLengthProps<Opts extends StringLengthOpts> = {
 	opts: Opts
 }
 
-export interface StringLengthMessages<Opts extends StringLengthOpts>
-	extends XisMessages<StringLengthIssue> {
-	XIS_STRING_LENGTH: XisMsgBuilder<string, StringLengthProps<Opts>>
+export interface StringLengthMessageProps {
+	value: string
+	opts: StringLengthOpts
+}
+
+export interface StringLengthMessages extends XisMessages<StringLengthIssue> {
+	XIS_STRING_LENGTH: XisMsgBuilder<StringLengthMessageProps>
 }
 
 export interface StringLengthArgs<Opts extends StringLengthOpts> {
 	props: StringLengthProps<Opts>
-	message: StringLengthMessages<Opts>
+	message: StringLengthMessages
 }
 
 export class XisIsLength<Opts extends StringLengthOpts> extends XisSync<
@@ -44,7 +48,7 @@ export class XisIsLength<Opts extends StringLengthOpts> extends XisSync<
 	StringLengthIssue
 > {
 	#props: StringLengthProps<Opts>
-	#message: StringLengthMessages<Opts>
+	#message: StringLengthMessages
 
 	constructor(args: StringLengthArgs<Opts>) {
 		super()
@@ -65,10 +69,12 @@ export class XisIsLength<Opts extends StringLengthOpts> extends XisSync<
 		}
 
 		const message = this.#message.XIS_STRING_LENGTH({
-			value,
+			input: {
+				value,
+				opts,
+			},
 			locale,
 			path,
-			props: this.#props,
 			ctx: null,
 		})
 

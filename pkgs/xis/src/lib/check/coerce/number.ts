@@ -33,11 +33,11 @@ export class XisCoerceNumber extends XisSync<unknown, CoerceIssue, number> {
 		}
 
 		const message = this.#messages.XIS_COERCE({
-			value,
 			path,
 			locale,
 			ctx: null,
-			props: {
+			input: {
+				value,
 				desired: "number",
 				type: valueType,
 			},

@@ -24,8 +24,8 @@ export class XisNever extends XisSync<unknown, NeverIssue, never> {
 		super()
 		this.#messages = args.messages ?? {
 			XIS_NEVER: (args: XisMsgArgs) => {
-				const { value, path } = args
-				const valueStr = typeof value === "string" ? `"${value}"` : String(value)
+				const { input, path } = args
+				const valueStr = typeof input === "string" ? `"${input}"` : String(input)
 				return `never value ${valueStr} encountered at ${JSON.stringify(path)}`
 			},
 		}
@@ -36,11 +36,10 @@ export class XisNever extends XisSync<unknown, NeverIssue, never> {
 	exec(args: XisExecArgs<unknown, null>): ExecResultSync<NeverIssue, never> {
 		const { value, path, locale } = args
 		const message = this.#messages.XIS_NEVER({
-			value,
+			input: value,
 			path,
 			locale,
 			ctx: null,
-			props: null,
 		})
 		const err = {
 			name: "XIS_NEVER" as const,

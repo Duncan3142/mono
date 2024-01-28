@@ -17,8 +17,13 @@ export interface NumberRangeIssue extends XisIssue<"XIS_NUMBER_RANGE"> {
 	opts: NumberRangeOpts
 }
 
+export interface NumberRangeMessageProps {
+	value: number
+	opts: NumberRangeOpts
+}
+
 export interface NumberRangeMessages extends XisMessages<NumberRangeIssue> {
-	XIS_NUMBER_RANGE: XisMsgBuilder<number, NumberRangeProps>
+	XIS_NUMBER_RANGE: XisMsgBuilder<NumberRangeMessageProps>
 }
 
 export interface NumberRangeArgs {
@@ -34,11 +39,10 @@ export class XisRange extends XisSync<number, NumberRangeIssue> {
 		super()
 		const { messages, props } = args
 		this.#messages = messages ?? {
-			XIS_NUMBER_RANGE: (args: XisMsgArgs<number, NumberRangeProps>) => {
+			XIS_NUMBER_RANGE: (args: XisMsgArgs<NumberRangeMessageProps>) => {
 				const {
-					value,
+					input: { value, opts },
 					path,
-					props: { opts },
 				} = args
 				return `${value} at ${JSON.stringify(path)} is not in range ${JSON.stringify(opts)}`
 			},
@@ -59,10 +63,9 @@ export class XisRange extends XisSync<number, NumberRangeIssue> {
 		}
 
 		const message = this.#messages.XIS_NUMBER_RANGE({
-			value,
+			input: { value, opts },
 			path,
 			locale,
-			props: { opts },
 			ctx,
 		})
 

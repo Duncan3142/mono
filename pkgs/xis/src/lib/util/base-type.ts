@@ -32,6 +32,8 @@ export interface TruePrimitiveTypeNameMap {
 
 export type TruePrimitiveTypeName = keyof TruePrimitiveTypeNameMap
 
+export type TruePrimitiveType = TruePrimitiveTypeNameMap[TruePrimitiveTypeName]
+
 export interface TrueObjectTypeNameMap {
 	array: BaseArray
 	date: Date

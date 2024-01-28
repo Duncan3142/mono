@@ -26,7 +26,7 @@ export type BaseTypeMessageProps = {
 }
 
 export interface BaseTypeMessages extends XisMessages<BaseTypeIssue> {
-	XIS_BASE_TYPE: XisMsgBuilder<unknown, BaseTypeMessageProps>
+	XIS_BASE_TYPE: XisMsgBuilder<BaseTypeMessageProps>
 }
 
 export interface BaseTypeArgs<N extends TrueBaseTypeName> {
@@ -46,9 +46,12 @@ export class XisTypeCheck<N extends TrueBaseTypeName> extends XisSync<
 		const { props, messages } = args
 		this.#props = props
 		this.#messages = messages ?? {
-			XIS_BASE_TYPE: (args: XisMsgArgs<unknown, BaseTypeMessageProps>) => {
-				const { props, path } = args
-				const { expected, received } = props
+			XIS_BASE_TYPE: (args: XisMsgArgs<BaseTypeMessageProps>) => {
+				const {
+					input: { expected, received },
+					path,
+				} = args
+
 				return `Value "${received}" at ${JSON.stringify(path)} is not an instance of ${expected}`
 			},
 		}
@@ -65,10 +68,9 @@ export class XisTypeCheck<N extends TrueBaseTypeName> extends XisSync<
 		}
 
 		const message = this.#messages.XIS_BASE_TYPE({
-			value,
+			input: { expected, received },
 			path,
 			locale,
-			props: { ...this.#props, received },
 			ctx: null,
 		})
 

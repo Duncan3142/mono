@@ -67,8 +67,13 @@ export type NTupleProps<N extends number> = {
 	length: N
 }
 
+export type NTupleMessageProps = {
+	value: BaseArray
+	length: number
+}
+
 export interface NTupleMessages<N extends number> extends XisMessages<NTupleIssues<N>> {
-	XIS_TUPLE_LENGTH: XisMsgBuilder<BaseArray, NTupleProps<N>>
+	XIS_TUPLE_LENGTH: XisMsgBuilder<NTupleMessageProps>
 }
 
 export interface IsNTupleArgs<N extends number> {
@@ -84,9 +89,12 @@ export class IsNTuple<L extends number> extends XisSync<BaseArray, NTupleIssues<
 		const { props, messages } = args
 		this.#props = props
 		this.#messages = messages ?? {
-			XIS_TUPLE_LENGTH: (args: XisMsgArgs<BaseArray, NTupleProps<L>>): string => {
-				const { value, props, path } = args
-				const { length } = props
+			XIS_TUPLE_LENGTH: (args: XisMsgArgs<NTupleMessageProps>): string => {
+				const {
+					input: { value, length },
+					path,
+				} = args
+
 				return `Actual length "${value.length}", expected ${length}, at ${JSON.stringify(path)} `
 			},
 		}
@@ -99,9 +107,8 @@ export class IsNTuple<L extends number> extends XisSync<BaseArray, NTupleIssues<
 		const { length } = this.#props
 
 		const message = this.#messages.XIS_TUPLE_LENGTH({
-			value,
+			input: { value, length },
 			path,
-			props: this.#props,
 			locale,
 			ctx: null,
 		})

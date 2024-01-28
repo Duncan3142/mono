@@ -36,8 +36,13 @@ export type XisUUIDProps<V extends Version> = {
 	version: V
 }
 
+export interface XisUUIDMessageProps {
+	value: string
+	version: Version
+}
+
 export interface XisUUIDMessages<V extends Version> extends XisMessages<UUIDIssue<V>> {
-	XIS_UUID: XisMsgBuilder<string, XisUUIDProps<V>>
+	XIS_UUID: XisMsgBuilder<XisUUIDMessageProps>
 }
 
 export interface XisUUIDArgs<V extends Version> {
@@ -54,9 +59,12 @@ export class XisUUID<V extends Version> extends XisSync<string, UUIDIssue<V>, UU
 		const { messages, props } = args
 		this.#props = props
 		this.#messages = messages ?? {
-			XIS_UUID: (args: XisMsgArgs<string, XisUUIDProps<V>>) => {
-				const { value, path, props } = args
-				return `Expected UUID version ${props.version}, received ${value} at ${JSON.stringify(path)}`
+			XIS_UUID: (args: XisMsgArgs<XisUUIDMessageProps>) => {
+				const {
+					input: { value, version },
+					path,
+				} = args
+				return `Expected UUID version ${version}, received ${value} at ${JSON.stringify(path)}`
 			},
 		}
 	}
@@ -74,10 +82,9 @@ export class XisUUID<V extends Version> extends XisSync<string, UUIDIssue<V>, UU
 				return Right(value as UUID)
 			default: {
 				const message = this.#messages.XIS_UUID({
-					value,
+					input: { value, version },
 					path,
 					locale,
-					props: this.#props,
 					ctx: null,
 				})
 

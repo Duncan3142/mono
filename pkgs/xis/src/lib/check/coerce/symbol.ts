@@ -34,11 +34,11 @@ export class XisCoerceSymbol extends XisSync<unknown, CoerceIssue, symbol> {
 				return Right(Symbol(value))
 			default: {
 				const message = this.#messages.XIS_COERCE({
-					value,
 					path,
 					locale,
 					ctx: null,
-					props: {
+					input: {
+						value,
 						desired: "symbol",
 						type: valueType,
 					},

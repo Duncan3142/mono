@@ -46,11 +46,11 @@ export class XisCoerceDate extends XisSync<unknown, CoerceIssue, Date> {
 		}
 
 		const message = this.#messages.XIS_COERCE({
-			value,
 			path,
 			locale,
 			ctx: null,
-			props: {
+			input: {
+				value,
 				desired: "date",
 				type: valueType,
 			},

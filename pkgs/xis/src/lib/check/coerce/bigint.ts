@@ -45,11 +45,11 @@ export class XisCoerceBigInt extends XisSync<unknown, CoerceIssue, bigint> {
 		const res = isBigIntInput(value) ? Either.encase(() => BigInt(value)) : Left(NaN)
 		return res.chainLeft((_) => {
 			const message = this.#messages.XIS_COERCE({
-				value,
 				path,
 				locale,
 				ctx: null,
-				props: {
+				input: {
+					value,
 					desired: "bigint",
 					type: valueType,
 				},

@@ -20,25 +20,25 @@ export interface CoerceIssueProps {
 }
 
 export type CoerceIssueMsgProps = {
+	value: unknown
 	desired: TrueBaseTypeName
 	type: TrueBaseTypeName
 }
 
-export type XIS_COERCE_MSG = XisMsgBuilder<unknown, CoerceIssueMsgProps>
+export type XIS_COERCE_MSG = XisMsgBuilder<CoerceIssueMsgProps>
 
 export interface XisCoerceMessages extends XisMessages<CoerceIssue> {
-	XIS_COERCE: XisMsgBuilder<unknown, CoerceIssueMsgProps>
+	XIS_COERCE: XisMsgBuilder<CoerceIssueMsgProps>
 }
 
 export interface XisCoerceArgs {
 	messages: XisCoerceMessages | null
 }
 
-export const XIS_COERCE = (args: XisMsgArgs<unknown, CoerceIssueMsgProps>) => {
+export const XIS_COERCE = (args: XisMsgArgs<CoerceIssueMsgProps>) => {
 	const {
-		value,
+		input: { value, desired, type },
 		path,
-		props: { desired, type },
 	} = args
 	return `Unable to coerce ${String(value)} at ${JSON.stringify(path)}, of type ${type}, to type ${desired}`
 }

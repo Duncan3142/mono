@@ -22,8 +22,8 @@ export class XisNan extends XisSync<number, NaNIssue> {
 		const { messages } = args
 		this.#messages = messages ?? {
 			XIS_NAN: (args: XisMsgArgs<number>) => {
-				const { value, path } = args
-				return `${value} at ${JSON.stringify(path)} is not a NaN`
+				const { input, path } = args
+				return `${input} at ${JSON.stringify(path)} is not a NaN`
 			},
 		}
 	}
@@ -37,10 +37,9 @@ export class XisNan extends XisSync<number, NaNIssue> {
 		}
 
 		const message = this.#messages.XIS_NAN({
-			value,
+			input: value,
 			path,
 			locale,
-			props: null,
 			ctx,
 		})
 

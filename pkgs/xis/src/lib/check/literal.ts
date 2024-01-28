@@ -1,31 +1,36 @@
 import type { XisIssue } from "#core/error.js"
-import type { BasicArg } from "#util/arg.js"
 import { XisSync, type ExecResultSync } from "#core/sync.js"
-
 import type { XisExecArgs } from "#core/args.js"
 import { Left, Right } from "purify-ts/Either"
 import type { XisMessages, XisMsgArgs, XisMsgBuilder } from "#core/messages.js"
 import { Effect } from "#core/book-keeping.js"
+import type { TruePrimitiveType } from "#util/base-type.js"
 
 export interface LiteralIssue<L> extends XisIssue<"XIS_LITERAL"> {
 	expected: L
 	value: unknown
 }
 
-export type LiteralProps<L extends BasicArg> = {
+export type LiteralProps<L extends TruePrimitiveType> = {
 	literal: L
 }
 
-export interface LiteralMessages<L extends BasicArg> extends XisMessages<LiteralIssue<L>> {
-	XIS_LITERAL: XisMsgBuilder<unknown, LiteralProps<L>>
+export type LiteralMessageProps<L extends TruePrimitiveType> = {
+	expected: L
+	found: unknown
 }
 
-export interface LiteralArgs<L extends BasicArg> {
+export interface LiteralMessages<L extends TruePrimitiveType>
+	extends XisMessages<LiteralIssue<L>> {
+	XIS_LITERAL: XisMsgBuilder<LiteralMessageProps<L>>
+}
+
+export interface LiteralArgs<L extends TruePrimitiveType> {
 	props: LiteralProps<L>
 	messages: LiteralMessages<L> | null
 }
 
-export class XisLiteral<const Literal extends BasicArg> extends XisSync<
+export class XisLiteral<const Literal extends TruePrimitiveType> extends XisSync<
 	unknown,
 	LiteralIssue<Literal>,
 	Literal
@@ -37,8 +42,12 @@ export class XisLiteral<const Literal extends BasicArg> extends XisSync<
 		super()
 		this.#props = args.props
 		this.#messages = args.messages ?? {
-			XIS_LITERAL: (args: XisMsgArgs<unknown, LiteralProps<Literal>>) =>
-				`Value "${String(args.value)}" is not literal ${String(args.props.literal)}`,
+			XIS_LITERAL: (args: XisMsgArgs<LiteralMessageProps<Literal>>) => {
+				const {
+					input: { expected, found },
+				} = args
+				return `Value "${String(found)}" is not literal ${String(expected)}`
+			},
 		}
 	}
 	override get effect(): Effect {
@@ -47,15 +56,18 @@ export class XisLiteral<const Literal extends BasicArg> extends XisSync<
 
 	exec(args: XisExecArgs<unknown, null>): ExecResultSync<LiteralIssue<Literal>, Literal> {
 		const { value, path, locale } = args
+		const { literal } = this.#props
 		if (value === this.#props.literal) {
 			return Right(value as Literal)
 		}
 
 		const message = this.#messages.XIS_LITERAL({
-			value,
+			input: {
+				expected: literal,
+				found: value,
+			},
 			path,
 			locale,
-			props: this.#props,
 			ctx: null,
 		})
 
@@ -70,6 +82,6 @@ export class XisLiteral<const Literal extends BasicArg> extends XisSync<
 	}
 }
 
-export const literal = <const Literal extends BasicArg>(
+export const literal = <const Literal extends TruePrimitiveType>(
 	args: LiteralArgs<Literal>
 ): XisLiteral<Literal> => new XisLiteral(args)

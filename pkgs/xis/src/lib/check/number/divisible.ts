@@ -15,10 +15,10 @@ export interface NumberDivisibleIssue extends XisIssue<"XIS_DIVISIBLE"> {
 	remainder: number
 }
 
-export type NumberDivisibleMsgProps = NumberDivisibleProps & { remainder: number }
+export type NumberDivisibleMsgProps = { value: number; divisor: number; remainder: number }
 
 export interface XisDivisibleMessages extends XisMessages<NumberDivisibleIssue> {
-	XIS_DIVISIBLE: XisMsgBuilder<number, NumberDivisibleMsgProps>
+	XIS_DIVISIBLE: XisMsgBuilder<NumberDivisibleMsgProps>
 }
 
 export interface XisDivisibleArgs {
@@ -34,9 +34,12 @@ export class XisDivisible extends XisSync<number, NumberDivisibleIssue> {
 		const { messages, props } = args
 		this.#props = props
 		this.#messages = messages ?? {
-			XIS_DIVISIBLE: (args: XisMsgArgs<number, NumberDivisibleMsgProps>) => {
-				const { value, path } = args
-				return `${value} at ${JSON.stringify(path)} is not a finite`
+			XIS_DIVISIBLE: (args: XisMsgArgs<NumberDivisibleMsgProps>) => {
+				const {
+					input: { value, divisor, remainder },
+					path,
+				} = args
+				return `${value} at ${JSON.stringify(path)} is not divisible by ${divisor}, having remainder ${remainder}`
 			},
 		}
 	}
@@ -53,10 +56,9 @@ export class XisDivisible extends XisSync<number, NumberDivisibleIssue> {
 		}
 
 		const message = this.#messages.XIS_DIVISIBLE({
-			value,
+			input: { value, remainder, divisor },
 			path,
 			locale,
-			props: { ...this.#props, remainder },
 			ctx,
 		})
 

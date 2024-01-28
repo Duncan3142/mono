@@ -111,8 +111,8 @@ export class XisISO8601 extends XisSync<string, ISO8601Issue> {
 		super()
 		this.#messages = messages ?? {
 			XIS_ISO8601: (args) => {
-				const { value, path } = args
-				return `Expected ISO8601 string, received ${value} at ${JSON.stringify(path)}`
+				const { input, path } = args
+				return `Expected ISO8601 string, received ${input} at ${JSON.stringify(path)}`
 			},
 		}
 	}
@@ -126,10 +126,9 @@ export class XisISO8601 extends XisSync<string, ISO8601Issue> {
 				return Right(value)
 			case false: {
 				const message = this.#messages.XIS_ISO8601({
-					value,
+					input: value,
 					path,
 					locale,
-					props: null,
 					ctx: null,
 				})
 				return Left([
