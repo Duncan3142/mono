@@ -5,99 +5,116 @@ import { instance } from "#check/instance.js"
 
 const testUrl = new URL("https://example.com")
 void it("should pass a matching instance", () => {
-	const res = instance(URL).exec(testUrl, {
-		args: undefined,
+	const res = instance(URL).exec({
+		value: testUrl,
+		ctx: {},
+		locale: "en",
 		path: [],
 	})
 
 	assertRight(res)
-	equal(res.extract(), testUrl)
+	expect(res.extract()).toBe(testUrl)
 })
 
 void it("should fail an invalid value", () => {
-	const res = instance(Map).exec(null, {
-		args: undefined,
+	const res = instance(Map).exec({
+		value: null,
+		ctx: {},
+		locale: "en",
 		path: [],
 	})
 	assertLeft(res)
 	const expected: ExtractValue<typeof res> = [
 		{
-			name: "INSTANCE_OF",
+			name: "XIS_INSTANCE_OF",
+			message: "Expected an instance of Map",
 			expected: "Map",
 			path: [],
 			received: "null",
 		},
 	]
 
-	deepEqual(res.extract(), expected)
+	expect(res.extract()).toEqual(expected)
 })
 
 void it("should fail instance", () => {
-	const res = instance(Map).exec(new URL("https://test.com"), {
-		args: undefined,
+	const res = instance(Map).exec({
+		value: new URL("https://test.com"),
+		ctx: {},
+		locale: "en",
 		path: [],
 	})
 	assertLeft(res)
 	const expected: ExtractValue<typeof res> = [
 		{
-			name: "INSTANCE_OF",
+			name: "XIS_INSTANCE_OF",
+			message: "Expected an instance of Map",
 			expected: "Map",
 			path: [],
 			received: "URL",
 		},
 	]
 
-	deepEqual(res.extract(), expected)
+	expect(res.extract()).toEqual(expected)
 })
 
 void it("should fail instance", () => {
-	const res = instance(Map).exec("test", {
-		args: undefined,
+	const res = instance(Map).exec({
+		value: "test",
+		ctx: {},
+		locale: "en",
 		path: [],
 	})
 	assertLeft(res)
 	const expected: ExtractValue<typeof res> = [
 		{
-			name: "INSTANCE_OF",
+			name: "XIS_INSTANCE_OF",
+			message: "Expected an instance of Map",
 			expected: "Map",
 			path: [],
 			received: "String",
 		},
 	]
 
-	deepEqual(res.extract(), expected)
+	expect(res.extract()).toEqual(expected)
 })
 void it("should fail instance", () => {
-	const res = instance(Map).exec(null, {
-		args: undefined,
+	const res = instance(Map).exec({
+		value: null,
+		ctx: {},
+		locale: "en",
 		path: [],
 	})
 	assertLeft(res)
 	const expected: ExtractValue<typeof res> = [
 		{
-			name: "INSTANCE_OF",
+			name: "XIS_INSTANCE_OF",
+			message: "Expected an instance of Map",
 			expected: "Map",
 			path: [],
 			received: "null",
 		},
 	]
 
-	deepEqual(res.extract(), expected)
+	expect(res.extract()).toEqual(expected)
 })
 void it("should fail instance", () => {
-	const res = instance(Map).exec(undefined, {
-		args: undefined,
+	const res = instance(Map).exec({
+		value: undefined,
+		ctx: {},
+		locale: "en",
 		path: [],
 	})
 	assertLeft(res)
 	const expected: ExtractValue<typeof res> = [
 		{
-			name: "INSTANCE_OF",
+			name: "XIS_INSTANCE_OF",
+			message: "Expected an instance of Map",
 			expected: "Map",
 			path: [],
 			received: "undefined",
 		},
 	]
 
-	deepEqual(res.extract(), expected)
+	expect(res.extract()).toEqual(expected)
 })
