@@ -64,7 +64,7 @@ export class XisObjectSync<Schema extends [...Array<XisSyncPropBase>]> extends X
 					const result = res.caseOf({
 						Left: (issues) => mergeIssues(acc, issues as XisObjectIssues<Schema>),
 						Right: (prop) => acc.map((current) => current.set(keyName, prop)),
-					})
+					}) as ExecResultSync<XisObjectIssues<Schema>, Map<TruePropertyKey, unknown>>
 
 					return { remaining, result }
 				}
@@ -85,9 +85,9 @@ export class XisObjectSync<Schema extends [...Array<XisSyncPropBase>]> extends X
 		args: XisExecArgs<XisObjectIn<Schema>, XisObjectCtx<Schema>>
 	): ExecResultSync<XisObjectIssues<Schema>, XisObjectOut<Schema>> {
 		const { result, remaining } = this.#process(args)
-		return result.map((entries) => {
-			Object.fromEntries([...entries, ...remaining])
-		})
+		return result.map(
+			(entries) => Object.fromEntries([...entries, ...remaining]) as XisObjectOut<Schema>
+		)
 	}
 }
 
