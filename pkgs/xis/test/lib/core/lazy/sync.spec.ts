@@ -1,77 +1,78 @@
 import { it } from "node:test"
-import { deepEqual } from "node:assert/strict"
+import { expect } from "expect"
 import { assertLeft, assertRight, type ExtractValue } from "#util/either.js"
-import { XisString, string } from "#check/string/string.js"
-import { XisNumber, number } from "#check/number/number.js"
-import { shape } from "#check/shape/sync.js"
+import { isString, isNumber } from "#check/base-type.js"
+import { isFinite } from "#check//number/finite.js"
+import { object, XisObjectSync, type XisSyncPropBase } from "#check/object/sync.js"
 import { lazy } from "#core/lazy/sync.js"
-import {
-	k,
-	ko,
-	type ShapeDefaultMode,
-	type Prop,
-	type ShapeIn,
-	type ShapeOut,
-	type ShapeGuardIssues,
-	type ShapeExecIssues,
-	type ShapeArgs,
-	type K,
-} from "#check/shape/core.js"
 import type { XisSync } from "#core/sync.js"
+import type { NTuple } from "#util/base-type.js"
+import type { ExIn, ExIssues, ExOut } from "#core/kernel.js"
+import type { Effect } from "#core/book-keeping.js"
+import { chain } from "#core/chain/sync.js"
 
-type BaseSchema = [Prop<K<"name">, XisString>, Prop<K<"age">, XisNumber>]
+const baseProps = [
+	[["name", "!"], isString],
+	[["age", "!"], chain([isNumber, isFinite()])],
+] satisfies NTuple<2, XisSyncPropBase>
 
-type BI = ShapeIn<BaseSchema, ShapeDefaultMode>
-interface I extends BI {
-	readonly spouse?: I
+type BaseSchema = XisObjectSync<typeof baseProps>
+
+type BaseIn = ExIn<BaseSchema>
+interface LazyIn extends BaseIn {
+	readonly boss?: BaseIn
 }
-type BO = ShapeOut<BaseSchema, ShapeDefaultMode>
-interface O extends BO {
-	readonly spouse?: O
+type BaseIssues = ExIssues<BaseSchema>
+type BaseOut = ExOut<BaseSchema>
+interface LazyOut extends BaseOut {
+	readonly boss?: BaseOut
 }
-type GI = ShapeGuardIssues<BaseSchema, ShapeDefaultMode>
-type EI = ShapeExecIssues<BaseSchema, ShapeDefaultMode>
-type A = ShapeArgs<BaseSchema>
 
-type Check = XisSync<I, GI, EI, O, A>
+type Check = XisSync<LazyIn, BaseIssues, LazyOut, typeof Effect.Transform>
 
-const check: Check = shape([
-	// break
-	[k("name"), string],
-	// break
-	[k("age"), number],
-	// break
-	[ko("spouse"), lazy(() => check)],
-])
+const check: Check = object({
+	props: {
+		schema: [...baseProps, [["boss", "?"], lazy(() => check)]] satisfies NTuple<
+			3,
+			XisSyncPropBase
+		>,
+	},
+})
 
 void it("should pass a matching object", () => {
-	const value = { name: "Foo", age: 2, spouse: { name: "Bar", age: 3 } }
+	const value = { name: "Foo", age: 2, boss: { name: "Bar", age: 3 } }
 
-	const res = check.exec(value, {
-		args: undefined,
+	const res = check.exec({
+		value,
+		locale: "en",
+		ctx: {},
 		path: [],
 	})
 
 	assertRight(res)
 
-	deepEqual(res.extract(), value)
+	expect(res.extract()).toEqual(value)
 })
 
 void it("should fail an invalid object", () => {
-	const res = check.parse(true, {
-		args: undefined,
+	const value = { name: "Foo", age: 2, boss: { name: "Bar", age: NaN } }
+
+	const res = check.exec({
+		value,
+		locale: "en",
+		ctx: {},
 		path: [],
 	})
+
 	assertLeft(res)
 
 	const expected: ExtractValue<typeof res> = [
 		{
-			expected: "object",
-			name: "INVALID_TYPE",
+			name: "XIS_FINITE",
+			message: "NaN at [] is not a finite",
 			path: [],
-			received: "boolean",
 		},
 	]
 
-	deepEqual(res.extract(), expected)
+	expect(res.extract()).toEqual(expected)
 })

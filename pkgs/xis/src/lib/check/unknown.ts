@@ -12,4 +12,4 @@ export class XisUnknown extends XisSync<unknown> {
 	}
 }
 
-export const unknown: XisUnknown = new XisUnknown()
+export const unknown = () => new XisUnknown()

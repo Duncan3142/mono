@@ -52,4 +52,8 @@ export class XisFinite extends XisSync<number, FiniteIssue> {
 	}
 }
 
-export const isFinite = (args: XisFiniteArgs) => new XisFinite(args)
+export const isFinite = () => new XisFinite({ messages: null })
+export const isFinitei18n = (messages: XisFiniteMessages) =>
+	new XisFinite({
+		messages,
+	})

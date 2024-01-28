@@ -13,4 +13,4 @@ export class XisTrimmed extends XisSync<string, never, string, typeof Effect.Tra
 	}
 }
 
-export const trimmed: XisTrimmed = new XisTrimmed()
+export const trimmed = () => new XisTrimmed()

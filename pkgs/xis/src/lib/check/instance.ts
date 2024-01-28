@@ -79,5 +79,20 @@ export class XisInstanceOf<T> extends XisSync<unknown, InstanceOfIssue, T> {
 	}
 }
 
-export const instance = <T>(args: InstanceOfArgs<T>): XisInstanceOf<T> =>
-	new XisInstanceOf(args)
+export const instancei18n = <T>(
+	ctor: Constructor<T>,
+	messages: InstanceOfMessages<T>
+): XisInstanceOf<T> =>
+	new XisInstanceOf({
+		messages,
+		props: {
+			ctor,
+		},
+	})
+export const instance = <T>(ctor: Constructor<T>): XisInstanceOf<T> =>
+	new XisInstanceOf({
+		messages: null,
+		props: {
+			ctor,
+		},
+	})

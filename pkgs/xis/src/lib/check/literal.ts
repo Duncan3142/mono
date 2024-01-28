@@ -82,6 +82,22 @@ export class XisLiteral<const Literal extends TruePrimitiveType> extends XisSync
 	}
 }
 
+export const literali18n = <const Literal extends TruePrimitiveType>(
+	literal: Literal,
+	messages: LiteralMessages<Literal>
+): XisLiteral<Literal> =>
+	new XisLiteral({
+		messages,
+		props: {
+			literal,
+		},
+	})
 export const literal = <const Literal extends TruePrimitiveType>(
-	args: LiteralArgs<Literal>
-): XisLiteral<Literal> => new XisLiteral(args)
+	literal: Literal
+): XisLiteral<Literal> =>
+	new XisLiteral({
+		messages: null,
+		props: {
+			literal,
+		},
+	})

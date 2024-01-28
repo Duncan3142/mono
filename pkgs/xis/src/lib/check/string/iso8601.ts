@@ -144,4 +144,8 @@ export class XisISO8601 extends XisSync<string, ISO8601Issue> {
 	}
 }
 
-export const iso8601 = (args: XisISO8601Args) => new XisISO8601(args)
+export const iso8601i18n = (messages: XisISO8601Messages) =>
+	new XisISO8601({
+		messages,
+	})
+export const iso8601 = () => new XisISO8601({ messages: null })

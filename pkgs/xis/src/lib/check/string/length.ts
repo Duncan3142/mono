@@ -3,7 +3,7 @@ import { inRange, type RangeOpts } from "#util/rangeOpts.js"
 import { Left, Right } from "purify-ts/Either"
 import { XisSync, type ExecResultSync } from "#core/sync.js"
 import type { XisExecArgs } from "#core/args.js"
-import type { XisMessages, XisMsgBuilder } from "#core/messages.js"
+import type { XisMessages, XisMsgArgs, XisMsgBuilder } from "#core/messages.js"
 import { Effect } from "#core/book-keeping.js"
 
 export type StringLengthOpts = RangeOpts<number>
@@ -40,7 +40,7 @@ export interface StringLengthMessages extends XisMessages<StringLengthIssue> {
 
 export interface StringLengthArgs<Opts extends StringLengthOpts> {
 	props: StringLengthProps<Opts>
-	message: StringLengthMessages
+	messages: StringLengthMessages | null
 }
 
 export class XisIsLength<Opts extends StringLengthOpts> extends XisSync<
@@ -48,13 +48,24 @@ export class XisIsLength<Opts extends StringLengthOpts> extends XisSync<
 	StringLengthIssue
 > {
 	#props: StringLengthProps<Opts>
-	#message: StringLengthMessages
+	#messages: StringLengthMessages
 
 	constructor(args: StringLengthArgs<Opts>) {
 		super()
-		const { props, message } = args
+		const { props, messages } = args
 		this.#props = props
-		this.#message = message
+		this.#messages = messages ?? {
+			XIS_STRING_LENGTH: (args: XisMsgArgs<StringLengthMessageProps>) => {
+				const {
+					input: { value, opts },
+					path,
+				} = args
+
+				return `Length of string "${value}", at ${JSON.stringify(
+					path
+				)}, is not in range ${JSON.stringify(opts)}`
+			},
+		}
 	}
 
 	override get effect(): typeof Effect.Validate {
@@ -68,7 +79,7 @@ export class XisIsLength<Opts extends StringLengthOpts> extends XisSync<
 			return Right(value)
 		}
 
-		const message = this.#message.XIS_STRING_LENGTH({
+		const message = this.#messages.XIS_STRING_LENGTH({
 			input: {
 				value,
 				opts,
@@ -90,6 +101,17 @@ export class XisIsLength<Opts extends StringLengthOpts> extends XisSync<
 	}
 }
 
-export const isLength = <Opts extends StringLengthOpts>(
-	args: StringLengthArgs<Opts>
-): XisIsLength<Opts> => new XisIsLength(args)
+export const isLengthi18n = <Opts extends StringLengthOpts>(
+	opts: Opts,
+	messages: StringLengthMessages
+): XisIsLength<Opts> =>
+	new XisIsLength({
+		messages,
+		props: { opts },
+	})
+
+export const isLength = <Opts extends StringLengthOpts>(opts: Opts): XisIsLength<Opts> =>
+	new XisIsLength({
+		messages: null,
+		props: { opts },
+	})

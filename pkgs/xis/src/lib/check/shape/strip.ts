@@ -60,6 +60,22 @@ export class XisStrip<Schema extends [...Array<ShapeKeyBase>]> extends XisSync<
 	}
 }
 
+export const stripi18n = <Schema extends [...Array<ShapeKeyBase>]>(
+	keys: [...Schema],
+	messages: XisStripMessages
+): XisStrip<Schema> =>
+	new XisStrip({
+		props: {
+			keys,
+		},
+		messages,
+	})
 export const strip = <Schema extends [...Array<ShapeKeyBase>]>(
-	args: XisStripArgs<Schema>
-): XisStrip<Schema> => new XisStrip(args)
+	keys: [...Schema]
+): XisStrip<Schema> =>
+	new XisStrip({
+		props: {
+			keys,
+		},
+		messages: null,
+	})

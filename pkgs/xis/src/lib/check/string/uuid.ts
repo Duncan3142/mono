@@ -102,4 +102,16 @@ export class XisUUID<V extends Version> extends XisSync<string, UUIDIssue<V>, UU
 	}
 }
 
-export const uuid = <V extends Version>(args: XisUUIDArgs<V>): XisUUID<V> => new XisUUID(args)
+export const uuidi18n = <V extends Version>(
+	version: V,
+	messages: XisUUIDMessages<V>
+): XisUUID<V> =>
+	new XisUUID({
+		props: { version },
+		messages,
+	})
+export const uuid = <V extends Version>(version: V): XisUUID<V> =>
+	new XisUUID({
+		props: { version },
+		messages: null,
+	})

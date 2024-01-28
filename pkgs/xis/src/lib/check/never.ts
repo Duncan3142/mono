@@ -51,4 +51,11 @@ export class XisNever extends XisSync<unknown, NeverIssue, never> {
 	}
 }
 
-export const never = (props: NeverArgs) => new XisNever(props)
+export const neveri18n = (messages: NeverMessages) =>
+	new XisNever({
+		messages,
+	})
+export const never = () =>
+	new XisNever({
+		messages: null,
+	})

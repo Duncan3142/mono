@@ -86,7 +86,7 @@ export class XisTypeCheck<N extends TrueBaseTypeName> extends XisSync<
 	}
 }
 
-export const typeCheckLocale =
+export const typeChecki18n =
 	(msgs: BaseTypeMessages | null) =>
 	<N extends TrueBaseTypeName>(name: N) =>
 		new XisTypeCheck<N>({
@@ -94,18 +94,18 @@ export const typeCheckLocale =
 			messages: msgs,
 		})
 
-export const typeCheck = <N extends TrueBaseTypeName>(name: N) => typeCheckLocale(null)(name)
+export const typeCheck = <N extends TrueBaseTypeName>(name: N) => typeChecki18n(null)(name)
 
-export const isNull = typeCheck("null")
-export const isUndefined = typeCheck("undefined")
-export const isString = typeCheck("string")
-export const isNumber = typeCheck("number")
-export const isBoolean = typeCheck("boolean")
-export const isBigInt = typeCheck("bigint")
-export const isSymbol = typeCheck("symbol")
-export const isBaseArray = typeCheck("array")
-export const isBaseObject = typeCheck("object")
-export const isBaseFunction = typeCheck("function")
-export const isDate = typeCheck("date")
-export const isBaseMap = typeCheck("map")
-export const isBaseSet = typeCheck("set")
+export const isNull = () => typeCheck("null")
+export const isUndefined = () => typeCheck("undefined")
+export const isString = () => typeCheck("string")
+export const isNumber = () => typeCheck("number")
+export const isBoolean = () => typeCheck("boolean")
+export const isBigInt = () => typeCheck("bigint")
+export const isSymbol = () => typeCheck("symbol")
+export const isBaseArray = () => typeCheck("array")
+export const isBaseObject = () => typeCheck("object")
+export const isBaseFunction = () => typeCheck("function")
+export const isDate = () => typeCheck("date")
+export const isBaseMap = () => typeCheck("map")
+export const isBaseSet = () => typeCheck("set")
