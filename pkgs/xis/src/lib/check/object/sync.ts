@@ -1,4 +1,3 @@
-import type { XisIssue } from "#core/error.js"
 import { XisSync, type ExecResultSync, type XisSyncBase } from "#core/sync.js"
 import type { XisObjectIssues, XisObjectOut, XisObjectCtx, XisObjectIn } from "./core.js"
 import type { XisExecArgs } from "#core/args.js"
@@ -64,7 +63,7 @@ export class XisObjectSync<Schema extends [...Array<XisSyncPropBase>]> extends X
 					const result = res.caseOf({
 						Left: (issues) => mergeIssues(acc, issues as XisObjectIssues<Schema>),
 						Right: (prop) => acc.map((current) => current.set(keyName, prop)),
-					}) as ExecResultSync<XisObjectIssues<Schema>, Map<TruePropertyKey, unknown>>
+					})
 
 					return { remaining, result }
 				}
@@ -94,30 +93,3 @@ export class XisObjectSync<Schema extends [...Array<XisSyncPropBase>]> extends X
 export const object = <Schema extends [...Array<XisSyncPropBase>]>(
 	args: XisObjectSyncArgs<Schema>
 ): XisObjectSync<Schema> => new XisObjectSync(args)
-
-/* -------------------------------------------------------------------------- */
-/*                                    TEST                                    */
-/* -------------------------------------------------------------------------- */
-
-export type Props = [
-	[["foo", "!"], XisSync<number, XisIssue<"foo">, string, { foo: number }>],
-	[["bar", "?"], XisSync<string, XisIssue<"bar">, number, { bar: string }>],
-	[["readonly", "baz", "!"], XisSync<Date, never, boolean, null>],
-	[["readonly", "goo", "?"], XisSync<boolean, XisIssue<"goo">, Date, { goo: boolean }>],
-]
-
-export type In = XisObjectIn<Props>
-
-export type Out = XisObjectOut<Props>
-
-export type Iss = XisObjectIssues<Props>
-
-export type Ctx = XisObjectCtx<Props>
-
-let p: Props
-
-export const x = new XisObjectSync<Props>({
-	props: {
-		schema: p!,
-	},
-})

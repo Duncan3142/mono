@@ -1,6 +1,4 @@
-import type { XisIssue } from "#core/error.js"
 import type { ExCtx, ExIn, ExIssues, ExOut, XisBase } from "#core/kernel.js"
-import type { XisSync } from "#core/sync.js"
 import type { ObjArgBase } from "#util/arg.js"
 import type {
 	ExKeyName,
@@ -84,24 +82,3 @@ export type XisObjectCtx<Props extends XisPropsBase> = CtxUnionIntersection<
 		null
 	>
 >
-
-/* -------------------------------------------------------------------------- */
-/*                                    TEST                                    */
-/* -------------------------------------------------------------------------- */
-
-export type Props = [
-	[["foo", "!"], XisSync<number, XisIssue<"foo">, string, { foo: number }>],
-	[["bar", "?"], XisSync<string, XisIssue<"bar">, number, { bar: string }>],
-	[["readonly", "baz", "!"], XisSync<Date, never, boolean, null>],
-	[["readonly", "goo", "?"], XisSync<boolean, XisIssue<"goo">, Date, { goo: boolean }>],
-]
-
-export type NS = NativeShape<Props>
-
-export type In = XisObjectIn<Props>
-
-export type Out = XisObjectOut<Props>
-
-export type Iss = XisObjectIssues<Props>
-
-export type Ctx = XisObjectCtx<Props>

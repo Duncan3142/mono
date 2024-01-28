@@ -1,21 +1,30 @@
 import { XisAsync, type ExecResultAsync } from "#core/async.js"
-import type { XisObjectIssues, XisObjectOut, XisObjectCtx, XisObjectIn } from "./core.js"
+import type {
+	XisObjectIssues,
+	XisObjectOut,
+	XisObjectCtx,
+	XisObjectIn,
+	XisPropBase,
+} from "./core.js"
 import type { XisExecArgs } from "#core/args.js"
 import { Effect } from "#core/book-keeping.js"
-import type { ShapeKeyBase } from "../shape/core.js"
-import type { XisBase } from "#core/kernel.js"
+import { exKeyName } from "../shape/core.js"
+import { objectEntries, type TruePropertyKey } from "#util/base-type.js"
+import { Right } from "purify-ts/Either"
+import { CheckSide, addElement } from "#core/path.js"
+import { mergeIssues } from "#core/kernel.js"
+import { EitherAsync } from "purify-ts/EitherAsync"
+import type { ExecResultSync } from "#core/sync.js"
 
-export type XisAsyncPropBase = [ShapeKeyBase, XisBase]
-
-export type XisObjectAsyncProps<Schema extends [...Array<XisAsyncPropBase>]> = {
+export type XisObjectAsyncProps<Schema extends [...Array<XisPropBase>]> = {
 	schema: [...Schema]
 }
 
-export interface XisObjectAsyncArgs<Schema extends [...Array<XisAsyncPropBase>]> {
+export interface XisObjectAsyncArgs<Schema extends [...Array<XisPropBase>]> {
 	props: XisObjectAsyncProps<Schema>
 }
 
-export class XisObjectAsync<Schema extends [...Array<XisAsyncPropBase>]> extends XisAsync<
+export class XisObjectAsync<Schema extends [...Array<XisPropBase>]> extends XisAsync<
 	XisObjectIn<Schema>,
 	XisObjectIssues<Schema>,
 	XisObjectOut<Schema>,
@@ -32,46 +41,68 @@ export class XisObjectAsync<Schema extends [...Array<XisAsyncPropBase>]> extends
 		return Effect.Transform
 	}
 
-	exec(
+	#process(args: XisExecArgs<XisObjectIn<Schema>, XisObjectCtx<Schema>>): Promise<{
+		remaining: Map<TruePropertyKey, unknown>
+		result: ExecResultSync<XisObjectIssues<Schema>, Map<TruePropertyKey, unknown>>
+	}> {
+		const { schema } = this.#props
+		const { value, ctx, path, locale } = args
+		const entries = objectEntries(value)
+		return schema.reduce<
+			Promise<{
+				remaining: Map<TruePropertyKey, unknown>
+				result: ExecResultSync<XisObjectIssues<Schema>, Map<TruePropertyKey, unknown>>
+			}>
+		>(
+			async (acc, [key, check]) => {
+				const { remaining, result: processed } = await acc
+				const keyName = exKeyName(key)
+				if (remaining.has(keyName)) {
+					const prop = remaining.get(keyName)
+					remaining.delete(keyName)
+					const res = await EitherAsync.fromPromise(() =>
+						Promise.resolve(
+							check.exec({
+								value: prop,
+								ctx,
+								path: addElement(path, {
+									segment: keyName,
+									side: CheckSide.Value,
+								}),
+								locale,
+							})
+						)
+					)
+					const result = res.caseOf({
+						Left: (issues) => mergeIssues(processed, issues as XisObjectIssues<Schema>),
+						Right: (prop) => processed.map((current) => current.set(keyName, prop)),
+					})
+
+					return { remaining, result }
+				}
+
+				return {
+					remaining,
+					result: processed,
+				}
+			},
+			Promise.resolve({
+				remaining: new Map(entries),
+				result: Right(new Map<TruePropertyKey, unknown>()),
+			})
+		)
+	}
+
+	async exec(
 		args: XisExecArgs<XisObjectIn<Schema>, XisObjectCtx<Schema>>
 	): ExecResultAsync<XisObjectIssues<Schema>, XisObjectOut<Schema>> {
-		// const { value, ctx, path, locale } = args
-		const { schema } = this.#props
-		return { args, schema } as any as ExecResultAsync<
-			XisObjectIssues<Schema>,
-			XisObjectOut<Schema>
-		>
-		// const { value, ctx, locale, path } = args
-		// const { keyCheck, valueCheck } = this.#props
-		// const sourceEntries = objectEntries(value)
-		// const results = sourceEntries.map(([key, val]) => {
-		// 	const keyRes = keyCheck.exec({
-		// 		value: key,
-		// 		locale,
-		// 		path: addElement(path, {
-		// 			segment: key,
-		// 			side: CheckSide.Key,
-		// 		}),
-		// 		ctx,
-		// 	})
-		// 	const valRes = valueCheck.exec({
-		// 		value: val,
-		// 		locale,
-		// 		path: addElement(path, {
-		// 			segment: key,
-		// 			side: CheckSide.Value,
-		// 		}),
-		// 		ctx,
-		// 	})
-		// 	return tup(keyRes, valRes)
-		// })
-		// return reduce(results) as ExecResultAsync<
-		// 	RecordIssues<KeySchema, ValueSchema>,
-		// 	RecordOut<KeySchema, ValueSchema>
-		// >
+		const { result, remaining } = await this.#process(args)
+		return result.map(
+			(entries) => Object.fromEntries([...entries, ...remaining]) as XisObjectOut<Schema>
+		)
 	}
 }
 
-export const object = <Schema extends [...Array<XisAsyncPropBase>]>(
+export const object = <Schema extends [...Array<XisPropBase>]>(
 	args: XisObjectAsyncArgs<Schema>
 ): XisObjectAsync<Schema> => new XisObjectAsync(args)
