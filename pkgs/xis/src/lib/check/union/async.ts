@@ -6,13 +6,28 @@ import {
 	type XisListCtx,
 	type XisListEffect,
 	type XisListIssues,
+	type ExIn,
 } from "#core/kernel.js"
 import { EitherAsync } from "purify-ts/EitherAsync"
 import { type UnionIn, type UnionOut, reduce } from "./core.js"
 import type { ExecResultSync } from "#core/sync.js"
+import type { Same } from "#util/base-type.js"
+
+type XisUnionSchemaAsync<
+	Union extends [XisBase, XisBase, ...Array<XisBase>],
+	Remaining extends [...Array<XisBase>] = Union,
+> = Remaining extends [
+	infer First extends XisBase,
+	infer Second extends XisBase,
+	...infer Rest extends Array<XisBase>,
+]
+	? [Same<ExIn<First>, ExIn<Second>>] extends [true]
+		? XisUnionSchemaAsync<Union, [Second, ...Rest]>
+		: never
+	: Union
 
 export interface XisUnionAsyncProps<Schema extends [XisBase, XisBase, ...Array<XisBase>]> {
-	checks: [...Schema]
+	checks: [...XisUnionSchemaAsync<Schema>]
 }
 
 export interface XisUnionAsyncArgs<Schema extends [XisBase, XisBase, ...Array<XisBase>]> {
@@ -22,7 +37,7 @@ export interface XisUnionAsyncArgs<Schema extends [XisBase, XisBase, ...Array<Xi
 export class XisUnionAsync<
 	Schema extends [XisBase, XisBase, ...Array<XisBase>],
 > extends XisAsync<
-	UnionIn<Schema>,
+	UnionIn<Schema, ExIn<Schema[0]>>,
 	XisListIssues<Schema>,
 	UnionOut<Schema>,
 	XisListEffect<Schema>,
@@ -40,7 +55,7 @@ export class XisUnionAsync<
 	}
 
 	async exec(
-		args: XisExecArgs<UnionIn<Schema>, XisListCtx<Schema>>
+		args: XisExecArgs<UnionIn<Schema, ExIn<Schema[0]>>, XisListCtx<Schema>>
 	): ExecResultAsync<XisListIssues<Schema>, UnionOut<Schema>> {
 		const mapped = await Promise.all(
 			this.#props.checks.map((chk) =>
@@ -53,5 +68,5 @@ export class XisUnionAsync<
 }
 
 export const union = <Schema extends [XisBase, XisBase, ...Array<XisBase>]>(
-	checks: [...Schema]
+	checks: [...XisUnionSchemaAsync<Schema>]
 ): XisUnionAsync<Schema> => new XisUnionAsync({ props: { checks } })

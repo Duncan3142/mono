@@ -4,20 +4,11 @@ import type { ExecResultSync } from "#core/sync.js"
 import type { Same } from "#util/base-type.js"
 import { Left } from "purify-ts/Either"
 
-export type UnionIn<
-	Schema extends [...Array<XisBase>],
-	Acc = never,
-	First = true,
-> = Schema extends [infer Next extends XisBase, ...infer Rest extends Array<XisBase>]
-	? UnionIn<
-			Rest,
-			[First] extends [true]
-				? ExIn<Next>
-				: [Same<Acc, ExIn<Next>>] extends [true]
-					? Acc
-					: never,
-			false
-		>
+export type UnionIn<Schema extends [...Array<XisBase>], Acc> = Schema extends [
+	infer Next extends XisBase,
+	...infer Rest extends Array<XisBase>,
+]
+	? UnionIn<Rest, [Same<Acc, ExIn<Next>>] extends [true] ? Acc : never>
 	: Acc
 
 export type UnionOut<Schema extends [...Array<XisBase>], Acc = never> = Schema extends [

@@ -12,8 +12,8 @@ import type { Effect } from "#core/book-keeping.js"
 import { chain } from "#core/chain/sync.js"
 
 const baseProps = [
-	[["name", "!"], isString],
-	[["age", "!"], chain([isNumber, isFinite()])],
+	[["name", "!"], isString()],
+	[["age", "!"], chain([isNumber(), isFinite()])],
 ] satisfies NTuple<2, XisSyncPropBase>
 
 type BaseSchema = XisObjectSync<typeof baseProps>
@@ -30,14 +30,10 @@ interface LazyOut extends BaseOut {
 
 type Check = XisSync<LazyIn, BaseIssues, LazyOut, typeof Effect.Transform>
 
-const check: Check = object({
-	props: {
-		schema: [...baseProps, [["boss", "?"], lazy(() => check)]] satisfies NTuple<
-			3,
-			XisSyncPropBase
-		>,
-	},
-})
+const check: Check = object([...baseProps, [["boss", "?"], lazy(() => check)]] satisfies NTuple<
+	3,
+	XisSyncPropBase
+>)
 
 void it("should pass a matching object", () => {
 	const value = { name: "Foo", age: 2, boss: { name: "Bar", age: 3 } }
