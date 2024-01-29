@@ -1,5 +1,5 @@
 import { objectEntries, tup, type TruePropertyKey } from "#util/base-type.js"
-import { type ExIn } from "#core/kernel.js"
+import { type ExOut } from "#core/kernel.js"
 import {
 	type RecordIn,
 	type RecordIssues,
@@ -19,7 +19,7 @@ export interface XisRecordSyncProps<
 	KeySchema extends SyncPropertyKeyBase,
 	ValueSchema extends XisSyncBase,
 > {
-	key: [ExIn<KeySchema>] extends [TruePropertyKey] ? KeySchema : never
+	key: [ExOut<KeySchema>] extends [TruePropertyKey] ? KeySchema : never
 	value: ValueSchema
 }
 

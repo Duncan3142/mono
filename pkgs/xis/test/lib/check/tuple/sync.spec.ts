@@ -2,41 +2,36 @@ import { it } from "node:test"
 import { expect } from "expect"
 import { assertLeft, assertRight, type ExtractValue } from "#util/either.js"
 import { tuple } from "#check/tuple/sync.js"
-
-import { string } from "#check/string/string.js"
-import { array } from "#check/array/sync.js"
-import { unknown } from "#check/unknown.js"
-import { number } from "#check/number/number.js"
-import { literal } from "#check/literal.js"
-
-import { CheckSide } from "#core/context.js"
+import { isString } from "#check/base-type.js"
+import { isInteger } from "#check/number/int.js"
+import { CheckSide } from "#core/path.js"
 
 const check = tuple([
 	// break
-	string,
+	isString(),
 	// break
-	array(unknown),
-	// break
-	number,
-	// break
-	literal(null),
+	isInteger(),
 ])
 
 void it("should pass a matching tuple", () => {
-	const res = check.exec(["oneTwoCatDog", [], 0, null], {
+	const res = check.exec({
+		value: ["oneTwoCatDog", 0],
+		locale: null,
 		ctx: {},
 		path: [],
 	})
 
 	assertRight(res)
 
-	const expected: ExtractValue<typeof res> = ["oneTwoCatDog", [], 0, null]
+	const expected: ExtractValue<typeof res> = ["oneTwoCatDog", 0]
 
 	expect(res.extract()).toEqual(expected)
 })
 
 void it("should fail an invalid elements tuple", () => {
-	const res = check.exec(["meow", [], false, undefined], {
+	const res = check.exec({
+		value: [false, 0.5],
+		locale: null,
 		ctx: {},
 		path: [],
 	})
@@ -45,26 +40,26 @@ void it("should fail an invalid elements tuple", () => {
 
 	const expected: ExtractValue<typeof res> = [
 		{
-			name: "INVALID_TYPE",
-			expected: "number",
+			name: "XIS_BASE_TYPE",
+			message: "Expected a string",
+			expected: "string",
 			path: [
 				{
-					segment: 2,
+					segment: 0,
 					side: CheckSide.Value,
 				},
 			],
 			received: "boolean",
 		},
 		{
-			name: "LITERAL",
-			expected: null,
+			name: "XIS_INTEGER",
+			message: "Expected an integer",
 			path: [
 				{
-					segment: 3,
+					segment: 1,
 					side: CheckSide.Value,
 				},
 			],
-			value: undefined,
 		},
 	]
 
