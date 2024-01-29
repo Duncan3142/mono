@@ -40,14 +40,14 @@ void it("should fail an invalid value", async () => {
 	const expected: ExtractValue<typeof res> = [
 		{
 			name: "XIS_BASE_TYPE",
-			message: "Value must be a number",
+			message: 'Value "string" at [] is not an instance of number',
 			received: "string",
 			path: [],
 			expected: "number",
 		},
 		{
 			name: "XIS_BASE_TYPE",
-			message: "Value must be a boolean",
+			message: 'Value "string" at [] is not an instance of boolean',
 			received: "string",
 			path: [],
 			expected: "boolean",
