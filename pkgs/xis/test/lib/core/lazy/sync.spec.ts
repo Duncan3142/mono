@@ -10,6 +10,7 @@ import type { NTuple } from "#util/base-type.js"
 import type { ExIn, ExIssues, ExOut } from "#core/kernel.js"
 import type { Effect } from "#core/book-keeping.js"
 import { chain } from "#core/chain/sync.js"
+import { CheckSide } from "#core/path.js"
 
 const baseProps = [
 	[["name", "!"], isString()],
@@ -65,8 +66,18 @@ void it("should fail an invalid object", () => {
 	const expected: ExtractValue<typeof res> = [
 		{
 			name: "XIS_FINITE",
-			message: "NaN at [] is not a finite",
-			path: [],
+			message:
+				'NaN at [{"segment":"boss","side":"VALUE"},{"segment":"age","side":"VALUE"}] is not a finite',
+			path: [
+				{
+					segment: "boss",
+					side: CheckSide.Value,
+				},
+				{
+					segment: "age",
+					side: CheckSide.Value,
+				},
+			],
 		},
 	]
 

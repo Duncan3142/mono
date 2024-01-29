@@ -1,36 +1,33 @@
 import { it } from "node:test"
 import { expect } from "expect"
 import { assertLeft, assertRight, type ExtractValue } from "#util/either.js"
-import { union } from "#check/union/sync.js"
-
 import { array } from "#check/array/sync.js"
+import { uuid, type UUID } from "#check/string/uuid.js"
 
-import { string } from "#check/string/string.js"
-import { number } from "#check/number/number.js"
+import { CheckSide } from "#core/path.js"
 
-import { CheckSide } from "#core/context.js"
-
-const unionCheck = union([
-	// break
-	string,
-	// break
-	number,
-])
-
-const check = array(unionCheck)
+const check = array(uuid(4))
 
 void it("should pass a matching array", () => {
-	const res = check.exec(["a", 0, "b", 1], {
+	const arr: Array<UUID> = [
+		"c8199460-77b1-4b9f-83ee-6abe4c341f07",
+		"3da0acd0-68a5-42ae-bd63-e3a06513e3bc",
+	]
+	const res = check.exec({
+		value: arr,
+		locale: null,
 		ctx: {},
 		path: [],
 	})
 	assertRight(res)
-	const expected: ExtractValue<typeof res> = ["a", 0, "b", 1]
+	const expected: ExtractValue<typeof res> = arr
 	expect(res.extract()).toEqual(expected)
 })
 
 void it("should fail an invalid value", () => {
-	const res = check.exec(["a", 0, true, "b", 1, false], {
+	const res = check.exec({
+		value: ["bad"],
+		locale: null,
 		ctx: {},
 		path: [],
 	})
@@ -39,48 +36,16 @@ void it("should fail an invalid value", () => {
 
 	const expected: ExtractValue<typeof res> = [
 		{
-			name: "INVALID_TYPE",
-			expected: "string",
+			name: "XIS_UUID",
+			expected: 4,
+			received: "bad",
+			message: "Expected UUID version 4, received bad at []",
 			path: [
 				{
-					segment: 2,
+					segment: 0,
 					side: CheckSide.Value,
 				},
 			],
-			received: "boolean",
-		},
-		{
-			name: "INVALID_TYPE",
-			expected: "number",
-			path: [
-				{
-					segment: 2,
-					side: CheckSide.Value,
-				},
-			],
-			received: "boolean",
-		},
-		{
-			name: "INVALID_TYPE",
-			expected: "string",
-			path: [
-				{
-					segment: 5,
-					side: CheckSide.Value,
-				},
-			],
-			received: "boolean",
-		},
-		{
-			name: "INVALID_TYPE",
-			expected: "number",
-			path: [
-				{
-					segment: 5,
-					side: CheckSide.Value,
-				},
-			],
-			received: "boolean",
 		},
 	]
 
