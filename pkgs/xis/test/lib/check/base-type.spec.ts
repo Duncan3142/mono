@@ -8,27 +8,32 @@ import {
 	isBaseFunction,
 	isSymbol,
 	isUndefined,
-} from "#core/base-type.js"
+} from "#check/base-type.js"
 
 void it("should pass null", () => {
-	const res = isNull(null, {
-		args: {},
+	const res = isNull().exec({
+		value: null,
+		locale: null,
+		ctx: {},
 		path: [],
 	})
 
 	assertRight(res)
-	expect(res.extract(), null)
+	expect(res.extract()).toBe(null)
 })
 
 void it("should fail not null", () => {
-	const res = isNull(true, {
-		args: {},
+	const res = isNull().exec({
+		value: true,
+		locale: null,
+		ctx: {},
 		path: [],
 	})
 	assertLeft(res)
 	const expected: ExtractValue<typeof res> = [
 		{
-			name: "INVALID_TYPE",
+			name: "XIS_BASE_TYPE",
+			message: "Invalid type",
 			expected: "null",
 			path: [],
 			received: "boolean",
@@ -38,49 +43,59 @@ void it("should fail not null", () => {
 	expect(res.extract()).toEqual(expected)
 })
 void it("should pass a bigint", () => {
-	const res = isBigInt(0n, {
-		args: {},
+	const res = isBigInt().exec({
+		value: 0n,
+		locale: null,
+		ctx: {},
 		path: [],
 	})
 
 	assertRight(res)
-	expect(res.extract(), 0n)
+	expect(res.extract()).toBe(0n)
 })
 void it("should pass a boolean", () => {
-	const res = isBoolean(true, {
-		args: {},
+	const res = isBoolean().exec({
+		value: true,
+		locale: null,
+		ctx: {},
 		path: [],
 	})
 
 	assertRight(res)
-	expect(res.extract(), true)
+	expect(res.extract()).toBe(true)
 })
 void it("should pass a function", () => {
 	const func = () => null
-	const res = isBaseFunction(func, {
-		args: {},
+	const res = isBaseFunction().exec({
+		value: func,
+		locale: null,
+		ctx: {},
 		path: [],
 	})
 
 	assertRight(res)
-	expect(res.extract(), func)
+	expect(res.extract()).toBe(func)
 })
 void it("should pass a symbol", () => {
 	const sym = Symbol("test")
-	const res = isSymbol(sym, {
-		args: {},
+	const res = isSymbol().exec({
+		value: sym,
+		locale: null,
+		ctx: {},
 		path: [],
 	})
 
 	assertRight(res)
-	expect(res.extract(), sym)
+	expect(res.extract()).toBe(sym)
 })
 void it("should pass undefined", () => {
-	const res = isUndefined(undefined, {
-		args: {},
+	const res = isUndefined().exec({
+		value: undefined,
+		locale: null,
+		ctx: {},
 		path: [],
 	})
 
 	assertRight(res)
-	expect(res.extract(), undefined)
+	expect(res.extract()).toBe(undefined)
 })
