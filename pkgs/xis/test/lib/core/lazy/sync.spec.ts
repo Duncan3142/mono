@@ -40,7 +40,7 @@ void it("should pass a matching object", () => {
 
 	const res = check.exec({
 		value,
-		locale: "en",
+		locale: null,
 		ctx: {},
 		path: [],
 	})
@@ -55,7 +55,7 @@ void it("should fail an invalid object", () => {
 
 	const res = check.exec({
 		value,
-		locale: "en",
+		locale: null,
 		ctx: {},
 		path: [],
 	})

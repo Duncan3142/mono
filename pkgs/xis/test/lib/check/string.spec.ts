@@ -13,7 +13,7 @@ void describe("string", () => {
 				value: "abc",
 				ctx: {},
 				path: [],
-				locale: "en",
+				locale: null,
 			})
 			assertRight(res)
 
@@ -26,7 +26,7 @@ void describe("string", () => {
 				value: "ab",
 				ctx: {},
 				path: [],
-				locale: "en",
+				locale: null,
 			})
 
 			assertLeft(res)
@@ -51,7 +51,7 @@ void describe("string", () => {
 				value: "abc",
 				ctx: {},
 				path: [],
-				locale: "en",
+				locale: null,
 			})
 
 			assertRight(res)
@@ -65,7 +65,7 @@ void describe("string", () => {
 				value: "ABC ",
 				ctx: {},
 				path: [],
-				locale: "en",
+				locale: null,
 			})
 			assertRight(res)
 			expect(res.extract()).toBe(3)

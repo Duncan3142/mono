@@ -41,7 +41,7 @@ void it("should pass a matching object", async () => {
 
 	const res = await check.exec({
 		value,
-		locale: "en",
+		locale: null,
 		ctx: {},
 		path: [],
 	})
@@ -56,7 +56,7 @@ void it("should fail an invalid object", async () => {
 
 	const res = await check.exec({
 		value,
-		locale: "en",
+		locale: null,
 		ctx: {},
 		path: [],
 	})

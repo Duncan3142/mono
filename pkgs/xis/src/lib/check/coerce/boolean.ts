@@ -17,4 +17,4 @@ export class XisCoerceBoolean extends XisSync<
 	}
 }
 
-export const boolean: XisCoerceBoolean = new XisCoerceBoolean()
+export const boolean = () => new XisCoerceBoolean()

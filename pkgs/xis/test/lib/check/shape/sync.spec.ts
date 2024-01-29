@@ -38,7 +38,7 @@ void describe("strip", () => {
 			},
 		}
 		const res = check.exec(obj, {
-			args: undefined,
+			ctx: {},
 			path: [],
 		})
 
@@ -53,7 +53,7 @@ void describe("strip", () => {
 			},
 		}
 
-		deepEqual(res.extract(), expected)
+		expect(res.extract()).toEqual(expected)
 	})
 
 	void it("should fail an invalid object", () => {
@@ -66,7 +66,7 @@ void describe("strip", () => {
 				},
 			},
 			{
-				args: undefined,
+				ctx: {},
 				path: [],
 			}
 		)
@@ -102,7 +102,7 @@ void describe("strip", () => {
 			},
 		]
 
-		deepEqual(res.extract(), expected)
+		expect(res.extract()).toEqual(expected)
 	})
 })
 
@@ -130,7 +130,7 @@ void describe("strict", () => {
 				},
 			},
 			{
-				args: undefined,
+				ctx: {},
 				path: [],
 			}
 		)
@@ -146,7 +146,7 @@ void describe("strict", () => {
 			},
 		}
 
-		deepEqual(res.extract(), expected)
+		expect(res.extract()).toEqual(expected)
 	})
 
 	void it("should fail an invalid object", () => {
@@ -159,7 +159,7 @@ void describe("strict", () => {
 			},
 		}
 		const res = check.exec(obj, {
-			args: undefined,
+			ctx: {},
 			path: [],
 		})
 
@@ -206,7 +206,7 @@ void describe("strict", () => {
 			},
 		]
 
-		deepEqual(res.extract(), expected)
+		expect(res.extract()).toEqual(expected)
 	})
 })
 
@@ -236,7 +236,7 @@ void describe("passThrough", () => {
 				},
 			},
 			{
-				args: undefined,
+				ctx: {},
 				path: [],
 			}
 		)
@@ -254,7 +254,7 @@ void describe("passThrough", () => {
 			},
 		}
 
-		deepEqual(res.extract(), expected)
+		expect(res.extract()).toEqual(expected)
 	})
 
 	void it("should fail an invalid object", () => {
@@ -267,7 +267,7 @@ void describe("passThrough", () => {
 				},
 			},
 			{
-				args: undefined,
+				ctx: {},
 				path: [],
 			}
 		)
@@ -303,6 +303,6 @@ void describe("passThrough", () => {
 			},
 		]
 
-		deepEqual(res.extract(), expected)
+		expect(res.extract()).toEqual(expected)
 	})
 })

@@ -21,17 +21,17 @@ const check = array(unionCheck)
 
 void it("should pass a matching array", async () => {
 	const res = await check.exec(["a", 0, "b", 1], {
-		args: undefined,
+		ctx: {},
 		path: [],
 	})
 	assertRight(res)
 	const expected: ExtractValue<typeof res> = ["a", 0, "b", 1]
-	deepEqual(res.extract(), expected)
+	expect(res.extract()).toEqual(expected)
 })
 
 void it("should fail an invalid value", async () => {
 	const res = await check.exec(["a", 0, true, "b", 1, false], {
-		args: undefined,
+		ctx: {},
 		path: [],
 	})
 
@@ -84,5 +84,5 @@ void it("should fail an invalid value", async () => {
 		},
 	]
 
-	deepEqual(res.extract(), expected)
+	expect(res.extract()).toEqual(expected)
 })

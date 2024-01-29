@@ -14,7 +14,7 @@ void describe("number", () => {
 		const res = isInteger().exec({
 			value: 0,
 			ctx: {},
-			locale: "en",
+			locale: null,
 			path: [],
 		})
 		assertRight(res)
@@ -24,7 +24,7 @@ void describe("number", () => {
 		const res = isInteger().exec({
 			value: 0.5,
 			ctx: {},
-			locale: "en",
+			locale: null,
 			path: [],
 		})
 		assertLeft(res)
@@ -41,7 +41,7 @@ void describe("number", () => {
 		const res = isFinite().exec({
 			value: Infinity,
 			ctx: {},
-			locale: "en",
+			locale: null,
 			path: [],
 		})
 		assertLeft(res)
@@ -58,7 +58,7 @@ void describe("number", () => {
 		const res = isNaN().exec({
 			value: NaN,
 			ctx: {},
-			locale: "en",
+			locale: null,
 			path: [],
 		})
 		assertRight(res)
@@ -69,7 +69,7 @@ void describe("number", () => {
 			value: 5,
 			ctx: {},
 			path: [],
-			locale: "en",
+			locale: null,
 		})
 		assertLeft(res)
 
@@ -89,7 +89,7 @@ void describe("number", () => {
 		const res = isDivisible(3).exec({
 			value: 6,
 			ctx: {},
-			locale: "en",
+			locale: null,
 			path: [],
 		})
 		assertRight(res)
@@ -99,7 +99,7 @@ void describe("number", () => {
 		const res = isNaN().exec({
 			value: 0,
 			ctx: {},
-			locale: "en",
+			locale: null,
 			path: [],
 		})
 		assertLeft(res)
@@ -193,7 +193,7 @@ void describe("number", () => {
 					const res = range(opts).exec({
 						value: input,
 						ctx: {},
-						locale: "en",
+						locale: null,
 						path: [],
 					})
 
@@ -208,7 +208,7 @@ void describe("number", () => {
 		const res = range([{ op: "gt", bound: 8 }]).exec({
 			value: 0,
 			ctx: {},
-			locale: "en",
+			locale: null,
 			path: [],
 		})
 		assertLeft(res)
@@ -227,7 +227,7 @@ void describe("number", () => {
 		const res = toString(10).exec({
 			value: 42,
 			ctx: {},
-			locale: "en",
+			locale: null,
 
 			path: [],
 		})

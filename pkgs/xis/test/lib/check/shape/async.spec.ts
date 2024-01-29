@@ -38,7 +38,7 @@ void describe("strip", () => {
 		}
 
 		const res = await check.exec(obj, {
-			args: undefined,
+			ctx: {},
 			path: [],
 		})
 
@@ -53,7 +53,7 @@ void describe("strip", () => {
 			},
 		}
 
-		deepEqual(res.extract(), expected)
+		expect(res.extract()).toEqual(expected)
 	})
 
 	void it("should fail an invalid object", async () => {
@@ -65,7 +65,7 @@ void describe("strip", () => {
 			},
 		}
 		const res = await check.exec(obj, {
-			args: undefined,
+			ctx: {},
 			path: [],
 		})
 
@@ -100,7 +100,7 @@ void describe("strip", () => {
 			},
 		]
 
-		deepEqual(res.extract(), expected)
+		expect(res.extract()).toEqual(expected)
 	})
 })
 
@@ -128,7 +128,7 @@ void describe("strict", () => {
 				},
 			},
 			{
-				args: undefined,
+				ctx: {},
 				path: [],
 			}
 		)
@@ -144,7 +144,7 @@ void describe("strict", () => {
 			},
 		}
 
-		deepEqual(res.extract(), expected)
+		expect(res.extract()).toEqual(expected)
 	})
 
 	void it("should fail an invalid object", async () => {
@@ -157,7 +157,7 @@ void describe("strict", () => {
 			},
 		}
 		const res = await check.exec(obj, {
-			args: undefined,
+			ctx: {},
 			path: [],
 		})
 
@@ -191,7 +191,7 @@ void describe("strict", () => {
 			},
 		]
 
-		deepEqual(res.extract(), expected)
+		expect(res.extract()).toEqual(expected)
 	})
 })
 
@@ -221,7 +221,7 @@ void describe("passThrough", () => {
 				},
 			},
 			{
-				args: undefined,
+				ctx: {},
 				path: [],
 			}
 		)
@@ -239,7 +239,7 @@ void describe("passThrough", () => {
 			},
 		}
 
-		deepEqual(res.extract(), expected)
+		expect(res.extract()).toEqual(expected)
 	})
 
 	void it("should fail an invalid object", async () => {
@@ -252,7 +252,7 @@ void describe("passThrough", () => {
 				},
 			},
 			{
-				args: undefined,
+				ctx: {},
 				path: [],
 			}
 		)
@@ -289,6 +289,6 @@ void describe("passThrough", () => {
 			},
 		]
 
-		deepEqual(res.extract(), expected)
+		expect(res.extract()).toEqual(expected)
 	})
 })

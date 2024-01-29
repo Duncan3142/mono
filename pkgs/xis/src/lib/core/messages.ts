@@ -1,9 +1,10 @@
 import type { ObjArgBase } from "#util/arg.js"
+import type { Locale } from "./args.js"
 import type { ExIssueName, XisIssueBase } from "./error.js"
 import type { XisPath } from "./path.js"
 
 export type XisMsgArgs<Input = unknown, Ctx extends ObjArgBase = ObjArgBase> = {
-	locale: string
+	locale: Locale
 	input: Input
 	path: XisPath
 	ctx: Ctx

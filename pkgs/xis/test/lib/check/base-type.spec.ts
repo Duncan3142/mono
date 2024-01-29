@@ -17,7 +17,7 @@ void it("should pass null", () => {
 	})
 
 	assertRight(res)
-	equal(res.extract(), null)
+	expect(res.extract(), null)
 })
 
 void it("should fail not null", () => {
@@ -35,7 +35,7 @@ void it("should fail not null", () => {
 		},
 	]
 
-	deepEqual(res.extract(), expected)
+	expect(res.extract()).toEqual(expected)
 })
 void it("should pass a bigint", () => {
 	const res = isBigInt(0n, {
@@ -44,7 +44,7 @@ void it("should pass a bigint", () => {
 	})
 
 	assertRight(res)
-	equal(res.extract(), 0n)
+	expect(res.extract(), 0n)
 })
 void it("should pass a boolean", () => {
 	const res = isBoolean(true, {
@@ -53,7 +53,7 @@ void it("should pass a boolean", () => {
 	})
 
 	assertRight(res)
-	equal(res.extract(), true)
+	expect(res.extract(), true)
 })
 void it("should pass a function", () => {
 	const func = () => null
@@ -63,7 +63,7 @@ void it("should pass a function", () => {
 	})
 
 	assertRight(res)
-	equal(res.extract(), func)
+	expect(res.extract(), func)
 })
 void it("should pass a symbol", () => {
 	const sym = Symbol("test")
@@ -73,7 +73,7 @@ void it("should pass a symbol", () => {
 	})
 
 	assertRight(res)
-	equal(res.extract(), sym)
+	expect(res.extract(), sym)
 })
 void it("should pass undefined", () => {
 	const res = isUndefined(undefined, {
@@ -82,5 +82,5 @@ void it("should pass undefined", () => {
 	})
 
 	assertRight(res)
-	equal(res.extract(), undefined)
+	expect(res.extract(), undefined)
 })

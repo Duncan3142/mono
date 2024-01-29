@@ -12,4 +12,4 @@ export class XisCoerceString extends XisSync<unknown, never, string, typeof Effe
 	}
 }
 
-export const string: XisCoerceString = new XisCoerceString()
+export const string = () => new XisCoerceString()

@@ -8,7 +8,7 @@ void it("should pass a matching instance", () => {
 	const res = instance(URL).exec({
 		value: testUrl,
 		ctx: {},
-		locale: "en",
+		locale: null,
 		path: [],
 	})
 
@@ -20,7 +20,7 @@ void it("should fail an invalid value", () => {
 	const res = instance(Map).exec({
 		value: null,
 		ctx: {},
-		locale: "en",
+		locale: null,
 		path: [],
 	})
 	assertLeft(res)
@@ -41,7 +41,7 @@ void it("should fail instance", () => {
 	const res = instance(Map).exec({
 		value: new URL("https://test.com"),
 		ctx: {},
-		locale: "en",
+		locale: null,
 		path: [],
 	})
 	assertLeft(res)
@@ -62,7 +62,7 @@ void it("should fail instance", () => {
 	const res = instance(Map).exec({
 		value: "test",
 		ctx: {},
-		locale: "en",
+		locale: null,
 		path: [],
 	})
 	assertLeft(res)
@@ -82,7 +82,7 @@ void it("should fail instance", () => {
 	const res = instance(Map).exec({
 		value: null,
 		ctx: {},
-		locale: "en",
+		locale: null,
 		path: [],
 	})
 	assertLeft(res)
@@ -102,7 +102,7 @@ void it("should fail instance", () => {
 	const res = instance(Map).exec({
 		value: undefined,
 		ctx: {},
-		locale: "en",
+		locale: null,
 		path: [],
 	})
 	assertLeft(res)

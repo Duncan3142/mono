@@ -25,7 +25,7 @@ const check = tuple([
 
 void it("should pass a matching tuple", async () => {
 	const res = await check.exec(["oneTwoCatDog", [], 0, null], {
-		args: undefined,
+		ctx: {},
 		path: [],
 	})
 
@@ -33,12 +33,12 @@ void it("should pass a matching tuple", async () => {
 
 	const expected: ExtractValue<typeof res> = ["oneTwoCatDog", [], 0, null]
 
-	deepEqual(res.extract(), expected)
+	expect(res.extract()).toEqual(expected)
 })
 
 void it("should fail an invalid elements tuple", async () => {
 	const res = await check.exec(["meow", [], false, undefined], {
-		args: undefined,
+		ctx: {},
 		path: [],
 	})
 
@@ -69,5 +69,5 @@ void it("should fail an invalid elements tuple", async () => {
 		},
 	]
 
-	deepEqual(res.extract(), expected)
+	expect(res.extract()).toEqual(expected)
 })

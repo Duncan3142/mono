@@ -1,4 +1,4 @@
-import type { XisExecArgs } from "#core/args.js"
+import type { Locale, XisExecArgs } from "#core/args.js"
 import { XisSync, type ExecResultSync } from "#core/sync.js"
 import { Effect } from "#core/book-keeping.js"
 import type { XisMessages, XisMsgArgs, XisMsgBuilder } from "#core/messages.js"
@@ -36,7 +36,7 @@ export const XIS_EXTRA_PROPERTY = (args: XisMsgArgs<BaseProp>) => {
 
 export interface ExtraIssuesArgs {
 	extraEntry: BaseProp
-	locale: string
+	locale: Locale
 	msgBuilder: XIS_EXTRA_PROPERTY
 	path: XisPath
 	ctx: ObjArgBase

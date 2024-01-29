@@ -22,21 +22,21 @@ void it("should pass a record", async () => {
 	const res = await check.exec(
 		{ meow: "string", [sym]: null, 8: 4 },
 		{
-			args: undefined,
+			ctx: {},
 			path: [],
 		}
 	)
 
 	assertRight(res)
 	const expected: ExtractValue<typeof res> = { meow: "string", [sym]: null, 8: 4 }
-	deepEqual(res.extract(), expected)
+	expect(res.extract()).toEqual(expected)
 })
 void it("should fail bad keys", async () => {
 	const anotherSym = Symbol("another")
 	const res = await check.exec(
 		{ badKey: "string", [anotherSym]: null, 16: "number" },
 		{
-			args: undefined,
+			ctx: {},
 			path: [],
 		}
 	)
@@ -145,13 +145,13 @@ void it("should fail bad keys", async () => {
 		},
 	]
 
-	deepEqual(res.extract(), expected)
+	expect(res.extract()).toEqual(expected)
 })
 void it("should fail bad values", async () => {
 	const res = await check.exec(
 		{ meow: undefined, [sym]: 3, 8: false },
 		{
-			args: undefined,
+			ctx: {},
 			path: [],
 		}
 	)
@@ -261,14 +261,14 @@ void it("should fail bad values", async () => {
 		},
 	]
 
-	deepEqual(res.extract(), expected)
+	expect(res.extract()).toEqual(expected)
 })
 void it("should fail bad keys and values", async () => {
 	const anotherSym = Symbol("bad")
 	const res = await check.exec(
 		{ badKey: undefined, [anotherSym]: 3, 16: false },
 		{
-			args: undefined,
+			ctx: {},
 			path: [],
 		}
 	)
@@ -477,5 +477,5 @@ void it("should fail bad keys and values", async () => {
 		},
 	]
 
-	deepEqual(res.extract(), expected)
+	expect(res.extract()).toEqual(expected)
 })

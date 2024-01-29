@@ -24,7 +24,7 @@ const check = union([
 
 void it("should pass a matching string", () => {
 	const res = check.exec("oneTwoCatDog", {
-		args: undefined,
+		ctx: {},
 		path: [],
 	})
 
@@ -32,12 +32,12 @@ void it("should pass a matching string", () => {
 
 	const expected: ExtractValue<typeof res> = "oneTwoCatDog"
 
-	deepEqual(res.extract(), expected)
+	expect(res.extract()).toEqual(expected)
 })
 
 void it("should fail an invalid value", () => {
 	const res = check.exec(true, {
-		args: undefined,
+		ctx: {},
 		path: [],
 	})
 
@@ -70,5 +70,5 @@ void it("should fail an invalid value", () => {
 		},
 	]
 
-	deepEqual(res.extract(), expected)
+	expect(res.extract()).toEqual(expected)
 })

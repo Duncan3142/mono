@@ -3,6 +3,7 @@ import type { XisIssue } from "#core/error.js"
 import type { XisPath } from "#core/path.js"
 import type { XisMsgArgs, XisMsgBuilder } from "#core/messages.js"
 import type { ObjArgBase } from "#util/arg.js"
+import type { Locale } from "#core/args.js"
 
 export type WritableRequiredKey<K extends TruePropertyKey> = [K, "!"]
 export type WritableRequiredKeyBase = WritableRequiredKey<TruePropertyKey>
@@ -82,7 +83,7 @@ export const XIS_MISSING_PROPERTY = (args: XisMsgArgs<TruePropertyKey>) => {
 
 export interface MissingIssueArgs {
 	key: TruePropertyKey
-	locale: string
+	locale: Locale
 	msgBuilder: XIS_MISSING_PROPERTY
 	path: XisPath
 	ctx: ObjArgBase
@@ -101,7 +102,7 @@ export const missingIssue = (args: MissingIssueArgs): MissingPropertyIssue => {
 export interface MissingIssuesArgs {
 	desired: Array<ShapeKeyBase>
 	entries: Array<BaseProp>
-	locale: string
+	locale: Locale
 	path: XisPath
 	ctx: ObjArgBase
 	msgBuilder: XIS_MISSING_PROPERTY
