@@ -2,39 +2,35 @@ import { it } from "node:test"
 import { expect } from "expect"
 import { assertLeft, assertRight, type ExtractValue } from "#util/either.js"
 import { union } from "#check/union/async.js"
-import { string } from "#check/string/string.js"
-import { number } from "#check/number/number.js"
-import { unknown } from "#check/unknown.js"
-
-import { array } from "#check/array/async.js"
-import { literal } from "#check/literal.js"
+import { isNumber, isBoolean } from "#check/base-type.js"
+import { lift } from "#core/lift.js"
 
 const check = union([
 	// break
-	string,
+	lift(isNumber()),
 	// break
-	array(unknown),
-	// break
-	number,
-	// break
-	literal(null),
+	isBoolean(),
 ])
 
 void it("should pass a matching string", async () => {
-	const res = await check.exec("oneTwoCatDog", {
+	const res = await check.exec({
+		value: 4,
+		locale: null,
 		ctx: {},
 		path: [],
 	})
 
 	assertRight(res)
 
-	const expected: ExtractValue<typeof res> = "oneTwoCatDog"
+	const expected: ExtractValue<typeof res> = 4
 
-	expect(res.extract()).toEqual(expected)
+	expect(res.extract()).toBe(expected)
 })
 
 void it("should fail an invalid value", async () => {
-	const res = await check.exec(true, {
+	const res = await check.exec({
+		value: "bad",
+		locale: null,
 		ctx: {},
 		path: [],
 	})
@@ -43,28 +39,18 @@ void it("should fail an invalid value", async () => {
 
 	const expected: ExtractValue<typeof res> = [
 		{
-			name: "INVALID_TYPE",
-			expected: "string",
+			name: "XIS_BASE_TYPE",
+			message: "Value must be a number",
+			received: "string",
 			path: [],
-			received: "boolean",
-		},
-		{
-			name: "INVALID_TYPE",
-			expected: "array",
-			path: [],
-			received: "boolean",
-		},
-		{
-			name: "INVALID_TYPE",
 			expected: "number",
-			path: [],
-			received: "boolean",
 		},
 		{
-			expected: null,
-			name: "LITERAL",
+			name: "XIS_BASE_TYPE",
+			message: "Value must be a boolean",
+			received: "string",
 			path: [],
-			value: true,
+			expected: "boolean",
 		},
 	]
 

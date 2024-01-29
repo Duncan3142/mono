@@ -2,41 +2,35 @@ import { it } from "node:test"
 import { expect } from "expect"
 import { assertLeft, assertRight, type ExtractValue } from "#util/either.js"
 import { union } from "#check/union/sync.js"
-
-import { string } from "#check/string/string.js"
-import { array } from "#check/array/sync.js"
-import { number } from "#check/number/number.js"
-import { literal } from "#check/literal.js"
-
-const arr = array(string)
-const lit = literal(null)
+import { isInteger } from "#check/number/int.js"
+import { range } from "#check/number/range.js"
 
 const check = union([
 	// break
-	string,
+	range([{ op: "gt", bound: 3 }]),
 	// break
-	arr,
-	// break
-	number,
-	// break
-	lit,
+	isInteger(),
 ])
 
 void it("should pass a matching string", () => {
-	const res = check.exec("oneTwoCatDog", {
+	const res = check.exec({
+		value: 4,
+		locale: null,
 		ctx: {},
 		path: [],
 	})
 
 	assertRight(res)
 
-	const expected: ExtractValue<typeof res> = "oneTwoCatDog"
+	const expected: ExtractValue<typeof res> = 4
 
-	expect(res.extract()).toEqual(expected)
+	expect(res.extract()).toBe(expected)
 })
 
 void it("should fail an invalid value", () => {
-	const res = check.exec(true, {
+	const res = check.exec({
+		value: 2,
+		locale: null,
 		ctx: {},
 		path: [],
 	})
@@ -45,28 +39,11 @@ void it("should fail an invalid value", () => {
 
 	const expected: ExtractValue<typeof res> = [
 		{
-			name: "INVALID_TYPE",
-			expected: "string",
+			name: "XIS_NUMBER_RANGE",
+			opts: [{ op: "gt", bound: 3 }],
+			message: "Value must be greater than 3",
+			received: 2,
 			path: [],
-			received: "boolean",
-		},
-		{
-			name: "INVALID_TYPE",
-			expected: "array",
-			path: [],
-			received: "boolean",
-		},
-		{
-			name: "INVALID_TYPE",
-			expected: "number",
-			path: [],
-			received: "boolean",
-		},
-		{
-			name: "LITERAL",
-			expected: null,
-			path: [],
-			value: true,
 		},
 	]
 
