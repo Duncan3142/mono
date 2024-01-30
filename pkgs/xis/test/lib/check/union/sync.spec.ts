@@ -29,7 +29,7 @@ void it("should pass a matching string", () => {
 
 void it("should fail an invalid value", () => {
 	const res = check.exec({
-		value: 2,
+		value: 2.1,
 		locale: null,
 		ctx: {},
 		path: [],
@@ -41,9 +41,15 @@ void it("should fail an invalid value", () => {
 		{
 			name: "XIS_NUMBER_RANGE",
 			opts: [{ op: "gt", bound: 3 }],
-			message: "Value must be greater than 3",
-			received: 2,
+			message: '2.1 not in range [{"op":"gt","bound":3}]',
+			received: 2.1,
 			path: [],
+		},
+		{
+			message: "Expected integer, received 2.1",
+			name: "XIS_INTEGER",
+			path: [],
+			value: 2.1,
 		},
 	]
 

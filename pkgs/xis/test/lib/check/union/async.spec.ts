@@ -41,7 +41,7 @@ void it("should fail an invalid value", async () => {
 		{
 			name: "XIS_BASE_TYPE",
 			value: "bad",
-			message: 'Value "string" at [] is not an instance of number',
+			message: "Expected number, received string",
 			received: "string",
 			path: [],
 			expected: "number",
@@ -49,7 +49,7 @@ void it("should fail an invalid value", async () => {
 		{
 			name: "XIS_BASE_TYPE",
 			value: "bad",
-			message: 'Value "string" at [] is not an instance of boolean',
+			message: "Expected boolean, received string",
 			received: "string",
 			path: [],
 			expected: "boolean",

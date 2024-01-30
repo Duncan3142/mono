@@ -5,6 +5,7 @@ import type { XisExecArgs } from "#core/args.js"
 import { Left } from "purify-ts/Either"
 import type { XisMsgBuilder, XisMessages, XisMsgArgs } from "#core/messages.js"
 import { Effect } from "#core/book-keeping.js"
+import { stringify } from "#util/base-type.js"
 
 export interface NeverIssue extends XisIssue<"XIS_NEVER"> {
 	value: unknown
@@ -25,7 +26,7 @@ export class XisNever extends XisSync<unknown, NeverIssue, never> {
 		this.#messages = args.messages ?? {
 			XIS_NEVER: (args: XisMsgArgs) => {
 				const { input } = args
-				return `never value ${JSON.stringify(input)} encountered`
+				return `never value ${stringify(input)} encountered`
 			},
 		}
 	}

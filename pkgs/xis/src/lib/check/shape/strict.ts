@@ -15,6 +15,7 @@ import {
 	type BaseObject,
 	type BaseProp,
 	type TruePropertyKey,
+	stringify,
 } from "#util/base-type.js"
 import { Left, Right } from "purify-ts/Either"
 import type { XisIssue } from "#core/error.js"
@@ -31,7 +32,7 @@ export type XIS_EXTRA_PROPERTY = XisMsgBuilder<BaseProp>
 export const XIS_EXTRA_PROPERTY = (args: XisMsgArgs<BaseProp>) => {
 	const { input } = args
 	const [key] = input
-	return `Extra property "${String(key)}"`
+	return `Extra property "${stringify(key)}"`
 }
 
 export interface ExtraIssuesArgs {

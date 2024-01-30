@@ -5,6 +5,7 @@ import { XisSync, type ExecResultSync } from "#core/sync.js"
 import type { XisMessages, XisMsgArgs, XisMsgBuilder } from "#core/messages.js"
 import type { XisExecArgs } from "#core/args.js"
 import { Effect } from "#core/book-keeping.js"
+import { stringify } from "#util/base-type.js"
 
 export type NumberRangeOpts = RangeOpts<number>
 
@@ -43,7 +44,7 @@ export class XisRange extends XisSync<number, NumberRangeIssue> {
 				const {
 					input: { value, opts },
 				} = args
-				return `${JSON.stringify(value)} not in range ${JSON.stringify(opts)}`
+				return `${stringify(value)} not in range ${stringify(opts)}`
 			},
 		}
 		this.#props = props

@@ -1,4 +1,4 @@
-import type { BaseProp, TruePropertyKey } from "#util/base-type.js"
+import { stringify, type BaseProp, type TruePropertyKey } from "#util/base-type.js"
 import type { XisIssue } from "#core/error.js"
 import type { XisPath } from "#core/path.js"
 import type { XisMsgArgs, XisMsgBuilder } from "#core/messages.js"
@@ -78,7 +78,7 @@ export type XIS_MISSING_PROPERTY = XisMsgBuilder<TruePropertyKey>
 
 export const XIS_MISSING_PROPERTY = (args: XisMsgArgs<TruePropertyKey>) => {
 	const { input } = args
-	return `Missing property "${String(input)}"`
+	return `Missing property "${stringify(input)}"`
 }
 
 export interface MissingIssueArgs {

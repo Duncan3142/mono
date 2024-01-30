@@ -4,7 +4,7 @@ import type { XisExecArgs } from "#core/args.js"
 import { Left, Right } from "purify-ts/Either"
 import type { XisMessages, XisMsgArgs, XisMsgBuilder } from "#core/messages.js"
 import { Effect } from "#core/book-keeping.js"
-import type { TruePrimitiveType } from "#util/base-type.js"
+import { stringify, type TruePrimitiveType } from "#util/base-type.js"
 
 export interface LiteralIssue<L> extends XisIssue<"XIS_LITERAL"> {
 	expected: L
@@ -46,7 +46,7 @@ export class XisLiteral<const Literal extends TruePrimitiveType> extends XisSync
 				const {
 					input: { expected, found },
 				} = args
-				return `Expected ${JSON.stringify(expected)}, received ${JSON.stringify(found)}`
+				return `Expected ${stringify(expected)}, received ${stringify(found)}`
 			},
 		}
 	}

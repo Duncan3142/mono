@@ -37,7 +37,7 @@ void describe("string", () => {
 					path: [],
 					value: "ab",
 					length: 2,
-					message: '"ab" length is not in range [{"bound":3,"op":"gte"}]',
+					message: '"ab" length not in range [{"bound":3,"op":"gte"}]',
 					opts: [{ bound: 3, op: "gte" }],
 				},
 			]

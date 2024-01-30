@@ -58,6 +58,11 @@ export const trueTypeOf = (x: unknown): TrueBaseTypeName => {
 	return typeof x
 }
 
+export const stringify = (x: unknown): string =>
+	JSON.stringify(x, (_: unknown, value: unknown) =>
+		typeof value === "symbol" ? String(value) : value
+	)
+
 export const isBaseType = <N extends TrueBaseTypeName>(
 	typeName: N,
 	value: unknown

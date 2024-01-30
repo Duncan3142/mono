@@ -41,7 +41,7 @@ void it("should fail an invalid elements tuple", () => {
 	const expected: ExtractValue<typeof res> = [
 		{
 			name: "XIS_BASE_TYPE",
-			message: 'Value "boolean" at [{"segment":0,"side":"VALUE"}] is not an instance of string',
+			message: "Expected string, received boolean",
 			expected: "string",
 			value: false,
 			path: [
@@ -54,7 +54,7 @@ void it("should fail an invalid elements tuple", () => {
 		},
 		{
 			name: "XIS_INTEGER",
-			message: "0.5 is not an integer",
+			message: "Expected integer, received 0.5",
 			value: 0.5,
 			path: [
 				{

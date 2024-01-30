@@ -5,6 +5,7 @@ import { XisSync, type ExecResultSync } from "#core/sync.js"
 import type { XisExecArgs } from "#core/args.js"
 import type { XisMessages, XisMsgArgs, XisMsgBuilder } from "#core/messages.js"
 import { Effect } from "#core/book-keeping.js"
+import { stringify } from "#util/base-type.js"
 
 export type StringLengthOpts = RangeOpts<number>
 
@@ -61,7 +62,7 @@ export class XisIsLength<Opts extends StringLengthOpts> extends XisSync<
 					input: { value, opts },
 				} = args
 
-				return `"${value}" length not in range ${JSON.stringify(opts)}`
+				return `"${value}" length not in range ${stringify(opts)}`
 			},
 		}
 	}

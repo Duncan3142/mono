@@ -40,11 +40,59 @@ void it("should fail bad keys", async () => {
 
 	const expected: ExtractValue<typeof res> = [
 		{
+			expected: sym,
+			message: 'Expected "Symbol(test)", received "badKey"',
+			name: "XIS_LITERAL",
+			path: [
+				{
+					segment: "badKey",
+					side: CheckSide.Key,
+				},
+			],
+			value: "badKey",
+		},
+		{
+			expected: "meow",
+			message: 'Expected "meow", received "badKey"',
+			name: "XIS_LITERAL",
+			path: [
+				{
+					segment: "badKey",
+					side: CheckSide.Key,
+				},
+			],
+			value: "badKey",
+		},
+		{
+			expected: "8",
+			message: 'Expected "8", received "badKey"',
+			name: "XIS_LITERAL",
+			path: [
+				{
+					segment: "badKey",
+					side: CheckSide.Key,
+				},
+			],
+			value: "badKey",
+		},
+		{
+			expected: null,
+			message: "Expected null, received [null]",
+			name: "XIS_LITERAL",
+			path: [
+				{
+					segment: "badKey",
+					side: CheckSide.Value,
+				},
+			],
+			value: [null],
+		},
+		{
 			name: "XIS_BASE_TYPE",
 			expected: "boolean",
 			received: "array",
 			value: [null],
-			message: "Expected a boolean",
+			message: "Expected boolean, received array",
 			path: [
 				{
 					segment: "badKey",
