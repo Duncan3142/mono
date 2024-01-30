@@ -1,7 +1,5 @@
 import {
 	xisListEffect,
-	type ExIn,
-	type ExOut,
 	type XisBase,
 	type XisListEffect,
 	type XisListCtx,
@@ -9,25 +7,12 @@ import {
 } from "#core/kernel.js"
 import type { XisIssueBase } from "#core/error.js"
 import { XisAsync, type ExecResultAsync, type ExecEitherAsync } from "#core/async.js"
-import type { XisChainIn, XisChainOut } from "./core.js"
+import type { XisChainIn, XisChainOut, XisChainSchema } from "./core.js"
 import type { XisExecArgs } from "#core/args.js"
 import { EitherAsync } from "purify-ts"
 
-type XisChainSchemaAsync<
-	Chain extends [XisBase, ...Array<XisBase>],
-	Remaining extends [...Array<XisBase>] = Chain,
-> = Remaining extends [
-	infer First extends XisBase,
-	infer Second extends XisBase,
-	...infer Rest extends Array<XisBase>,
-]
-	? [ExOut<First>] extends [ExIn<Second>]
-		? XisChainSchemaAsync<Chain, [Second, ...Rest]>
-		: never
-	: Chain
-
 export interface XisChainAsyncProps<Chain extends [XisBase, XisBase, ...Array<XisBase>]> {
-	schema: [...XisChainSchemaAsync<Chain>]
+	schema: [...XisChainSchema<Chain>]
 }
 
 export interface XisChainAsyncArgs<Chain extends [XisBase, XisBase, ...Array<XisBase>]> {
@@ -83,5 +68,5 @@ export class XisChainAsync<
 }
 
 export const chain = <Chain extends [XisBase, XisBase, ...Array<XisBase>]>(
-	schema: [...XisChainSchemaAsync<Chain>]
+	schema: [...XisChainSchema<Chain>]
 ): XisChainAsync<Chain> => new XisChainAsync({ props: { schema } })

@@ -1,7 +1,5 @@
 import {
 	xisListEffect,
-	type ExIn,
-	type ExOut,
 	type XisListCtx,
 	type XisListEffect,
 	type XisListIssues,
@@ -9,26 +7,13 @@ import {
 import type { XisIssueBase } from "#core/error.js"
 
 import { XisSync, type ExecResultSync, type XisSyncBase } from "#core/sync.js"
-import type { XisChainIn, XisChainOut } from "./core.js"
+import type { XisChainIn, XisChainOut, XisChainSchema } from "./core.js"
 import type { XisExecArgs } from "#core/args.js"
-
-type XisChainSchemaSync<
-	Chain extends [XisSyncBase, ...Array<XisSyncBase>],
-	Remaining extends [...Array<XisSyncBase>] = Chain,
-> = Remaining extends [
-	infer First extends XisSyncBase,
-	infer Second extends XisSyncBase,
-	...infer Rest extends Array<XisSyncBase>,
-]
-	? [ExOut<First>] extends [ExIn<Second>]
-		? XisChainSchemaSync<Chain, [Second, ...Rest]>
-		: never
-	: Chain
 
 export interface XisChainSyncProps<
 	Chain extends [XisSyncBase, XisSyncBase, ...Array<XisSyncBase>],
 > {
-	schema: [...XisChainSchemaSync<Chain>]
+	schema: [...XisChainSchema<Chain>]
 }
 
 export interface XisChainSyncArgs<
@@ -80,5 +65,5 @@ export class XisChainSync<
 }
 
 export const chain = <Chain extends [XisSyncBase, XisSyncBase, ...Array<XisSyncBase>]>(
-	schema: [...XisChainSchemaSync<Chain>]
+	schema: [...XisChainSchema<Chain>]
 ): XisChainSync<Chain> => new XisChainSync({ props: { schema } })
