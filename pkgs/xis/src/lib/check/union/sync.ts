@@ -7,26 +7,12 @@ import {
 	type ExIn,
 } from "#core/kernel.js"
 import { XisSync, type ExecResultSync, type XisSyncBase } from "#core/sync.js"
-import type { Same } from "#util/base-type.js"
-import { type UnionIn, type UnionOut, reduce } from "./core.js"
-
-type XisUnionSchemaSync<
-	Union extends [XisSyncBase, XisSyncBase, ...Array<XisSyncBase>],
-	Remaining extends [...Array<XisSyncBase>] = Union,
-> = Remaining extends [
-	infer First extends XisSyncBase,
-	infer Second extends XisSyncBase,
-	...infer Rest extends Array<XisSyncBase>,
-]
-	? [Same<ExIn<First>, ExIn<Second>>] extends [true]
-		? XisUnionSchemaSync<Union, [Second, ...Rest]>
-		: never
-	: Union
+import { type UnionIn, type UnionOut, reduce, type XisUnionSchema } from "./core.js"
 
 export interface XisUnionSyncProps<
 	Schema extends [XisSyncBase, XisSyncBase, ...Array<XisSyncBase>],
 > {
-	checks: [...XisUnionSchemaSync<Schema>]
+	checks: [...XisUnionSchema<Schema>]
 }
 
 export interface XisUnionSyncArgs<
@@ -38,7 +24,7 @@ export interface XisUnionSyncArgs<
 export class XisUnionSync<
 	Schema extends [XisSyncBase, XisSyncBase, ...Array<XisSyncBase>],
 > extends XisSync<
-	UnionIn<Schema, ExIn<Schema[0]>>,
+	UnionIn<Schema>,
 	XisListIssues<Schema>,
 	UnionOut<Schema>,
 	XisListEffect<Schema>,
@@ -65,5 +51,5 @@ export class XisUnionSync<
 }
 
 export const union = <Schema extends [XisSyncBase, XisSyncBase, ...Array<XisSyncBase>]>(
-	checks: [...XisUnionSchemaSync<Schema>]
+	checks: [...XisUnionSchema<Schema>]
 ): XisUnionSync<Schema> => new XisUnionSync({ props: { checks } })
