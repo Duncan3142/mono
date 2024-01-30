@@ -30,7 +30,7 @@
 		"@duncan3142/plop-pkg": "workspace:*",
 		"@duncan3142/prettier-config": "^0.1.2",
 		"commitizen": "^4.3.0",
-		"husky": "^9.0.6",
+		"husky": "^9.0.7",
 		"plop": "^4.0.1",
 		"prettier": "^3.2.4",
 		"turbo": "^1.11.3"

@@ -56,10 +56,9 @@ export class XisArrayAsync<Schema extends XisBase> extends XisAsync<
 	}
 }
 
-export const array = <Schema extends XisBase>(
-	schema: Schema
-): XisArrayAsync<Schema> => new XisArrayAsync({
-	props: {
-		check: schema,
-	},
-})
+export const array = <Schema extends XisBase>(schema: Schema): XisArrayAsync<Schema> =>
+	new XisArrayAsync({
+		props: {
+			check: schema,
+		},
+	})
