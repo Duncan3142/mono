@@ -63,7 +63,7 @@ void describe("object", () => {
 			{
 				name: "XIS_UUID",
 				expected: 4,
-				message: "Expected a UUID of length 4",
+				message: 'Expected UUID 4, received "bad"',
 				path: [
 					{
 						segment: "a",
@@ -71,6 +71,48 @@ void describe("object", () => {
 					},
 				],
 				received: "bad",
+			},
+			{
+				message: "Expected integer, received NaN",
+				name: "XIS_INTEGER",
+				path: [
+					{
+						segment: "b",
+						side: CheckSide.Value,
+					},
+				],
+				value: NaN,
+			},
+			{
+				message: "Expected integer, received 0.5",
+				name: "XIS_INTEGER",
+				path: [
+					{
+						segment: "c",
+						side: CheckSide.Value,
+					},
+					{
+						segment: "d",
+						side: CheckSide.Value,
+					},
+				],
+				value: 0.5,
+			},
+			{
+				expected: 4,
+				message: 'Expected UUID 4, received "fail"',
+				name: "XIS_UUID",
+				path: [
+					{
+						segment: "c",
+						side: CheckSide.Value,
+					},
+					{
+						segment: "e",
+						side: CheckSide.Value,
+					},
+				],
+				received: "fail",
 			},
 		]
 

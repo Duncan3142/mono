@@ -63,7 +63,7 @@ export class XisUUID<V extends Version> extends XisSync<string, UUIDIssue<V>, UU
 				const {
 					input: { value, version },
 				} = args
-				return `Expected UUID ${version}, received ${value}`
+				return `Expected UUID ${version}, received "${value}"`
 			},
 		}
 	}
