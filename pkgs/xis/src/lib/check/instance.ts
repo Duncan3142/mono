@@ -43,7 +43,7 @@ export class XisInstanceOf<T> extends XisSync<unknown, InstanceOfIssue, T> {
 				const {
 					input: { ctor, received },
 				} = args
-				return `${received} is not an instance of ${ctor.name}`
+				return `Expected ${ctor.name}, received ${received}`
 			},
 		}
 	}

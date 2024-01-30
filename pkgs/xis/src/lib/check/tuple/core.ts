@@ -70,10 +70,9 @@ export class IsNTuple<L extends number> extends XisSync<BaseArray, NTupleIssues<
 			XIS_TUPLE_LENGTH: (args: XisMsgArgs<NTupleMessageProps>): string => {
 				const {
 					input: { value, length },
-					path,
 				} = args
 
-				return `Actual length "${value.length}", expected ${length}, at ${JSON.stringify(path)} `
+				return `Expected "${length}", received ${value.length}`
 			},
 		}
 	}

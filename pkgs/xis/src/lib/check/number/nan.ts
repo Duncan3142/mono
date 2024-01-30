@@ -25,7 +25,7 @@ export class XisNan extends XisSync<number, NaNIssue> {
 		this.#messages = messages ?? {
 			XIS_NAN: (args: XisMsgArgs<number>) => {
 				const { input } = args
-				return `${input} is not a NaN`
+				return `Expected NaN, received ${input}`
 			},
 		}
 	}

@@ -61,7 +61,7 @@ export class XisIsLength<Opts extends StringLengthOpts> extends XisSync<
 					input: { value, opts },
 				} = args
 
-				return `"${value}" length is not in range ${JSON.stringify(opts)}`
+				return `"${value}" length not in range ${JSON.stringify(opts)}`
 			},
 		}
 	}
