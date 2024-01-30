@@ -32,7 +32,7 @@ void describe("number", () => {
 			{
 				name: "XIS_INTEGER",
 				value: 0.5,
-				message: "Expected an integer",
+				message: "Expected integer, received 0.5",
 				path: [],
 			},
 		]
@@ -50,7 +50,7 @@ void describe("number", () => {
 			{
 				name: "XIS_FINITE",
 				value: Infinity,
-				message: "Expected a finite number",
+				message: "Infinity is not finite",
 				path: [],
 			},
 		]
@@ -80,7 +80,7 @@ void describe("number", () => {
 				name: "XIS_DIVISIBLE",
 				divisor: 3,
 				path: [],
-				message: "Expected a number divisible by 3",
+				message: "5 is not divisible by 3",
 				remainder: 2,
 				value: 5,
 			},
@@ -109,7 +109,7 @@ void describe("number", () => {
 			{
 				name: "XIS_NAN",
 				value: 0,
-				message: "Expected NaN",
+				message: "Expected NaN, received 0",
 				path: [],
 			},
 		]
@@ -218,7 +218,7 @@ void describe("number", () => {
 		const expected: ExtractValue<typeof res> = [
 			{
 				name: "XIS_NUMBER_RANGE",
-				message: "Expected a number greater than 8",
+				message: '0 not in range [{"op":"gt","bound":8}]',
 				path: [],
 				opts: [{ op: "gt", bound: 8 }],
 				received: 0,

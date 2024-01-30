@@ -28,7 +28,7 @@ void it("should fail an invalid value", () => {
 		{
 			name: "XIS_INSTANCE_OF",
 			value: null,
-			message: "Expected an instance of Map",
+			message: "Expected Map, received null",
 			expected: "Map",
 			path: [],
 			received: "null",
@@ -51,7 +51,7 @@ void it("should fail instance", () => {
 		{
 			name: "XIS_INSTANCE_OF",
 			value,
-			message: "Expected an instance of Map",
+			message: "Expected Map, received URL",
 			expected: "Map",
 			path: [],
 			received: "URL",
@@ -73,10 +73,10 @@ void it("should fail instance", () => {
 		{
 			name: "XIS_INSTANCE_OF",
 			value: "test",
-			message: "Expected an instance of Map",
+			message: "Expected Map, received string",
 			expected: "Map",
 			path: [],
-			received: "String",
+			received: "string",
 		},
 	]
 
@@ -94,7 +94,7 @@ void it("should fail instance", () => {
 		{
 			name: "XIS_INSTANCE_OF",
 			value: null,
-			message: "Expected an instance of Map",
+			message: "Expected Map, received null",
 			expected: "Map",
 			path: [],
 			received: "null",
@@ -115,7 +115,7 @@ void it("should fail instance", () => {
 		{
 			name: "XIS_INSTANCE_OF",
 			value: undefined,
-			message: "Expected an instance of Map",
+			message: "Expected Map, received undefined",
 			expected: "Map",
 			path: [],
 			received: "undefined",
