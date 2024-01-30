@@ -23,10 +23,10 @@ jobs:
         with:
           fetch-depth: 0
       - name: Setup
-        uses: ./.github/actions/setup
+        uses: ./actions/setup
         with:
           github-actor: ${{ github.actor }}
       - name: Build
-        uses: ./.github/actions/build
+        uses: ./actions/build
         with:
           skip-changesets: ${{ github.event.pull_request.title == 'Version Packages' }}
