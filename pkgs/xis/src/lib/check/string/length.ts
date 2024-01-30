@@ -58,12 +58,9 @@ export class XisIsLength<Opts extends StringLengthOpts> extends XisSync<
 			XIS_STRING_LENGTH: (args: XisMsgArgs<StringLengthMessageProps>) => {
 				const {
 					input: { value, opts },
-					path,
 				} = args
 
-				return `Length of string "${value}", at ${JSON.stringify(
-					path
-				)}, is not in range ${JSON.stringify(opts)}`
+				return `"${value}" length is not in range ${JSON.stringify(opts)}`
 			},
 		}
 	}

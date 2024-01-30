@@ -36,10 +36,9 @@ export class XisDivisible extends XisSync<number, NumberDivisibleIssue> {
 		this.#messages = messages ?? {
 			XIS_DIVISIBLE: (args: XisMsgArgs<NumberDivisibleMsgProps>) => {
 				const {
-					input: { value, divisor, remainder },
-					path,
+					input: { value, divisor },
 				} = args
-				return `${value} at ${JSON.stringify(path)} is not divisible by ${divisor}, having remainder ${remainder}`
+				return `${value} is not divisible by ${divisor}`
 			},
 		}
 	}

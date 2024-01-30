@@ -22,8 +22,8 @@ export class XisFinite extends XisSync<number, FiniteIssue> {
 		const { messages } = args
 		this.#messages = messages ?? {
 			XIS_FINITE: (args: XisMsgArgs<number>) => {
-				const { input, path } = args
-				return `${input} at ${JSON.stringify(path)} is not a finite`
+				const { input } = args
+				return `${input} is not finite`
 			},
 		}
 	}

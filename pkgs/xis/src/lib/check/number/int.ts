@@ -22,8 +22,8 @@ export class XisInteger extends XisSync<number, IntegerIssue> {
 		const { messages } = args
 		this.#messages = messages ?? {
 			XIS_INTEGER: (args: XisMsgArgs<number>) => {
-				const { input, path } = args
-				return `${input} at ${JSON.stringify(path)} is not an integer`
+				const { input } = args
+				return `${input} is not an integer`
 			},
 		}
 	}

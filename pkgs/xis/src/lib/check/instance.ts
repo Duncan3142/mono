@@ -9,6 +9,7 @@ import { Left, Right } from "purify-ts/Either"
 export interface InstanceOfIssue extends XisIssue<"XIS_INSTANCE_OF"> {
 	expected: string
 	received: string
+	value: unknown
 }
 
 export type Constructor<T> = new (...args: Array<any>) => T
@@ -19,6 +20,7 @@ export type InstanceOfProps<T> = {
 
 export type InstanceOfMessageProps<T> = InstanceOfProps<T> & {
 	received: string
+	value: unknown
 }
 
 export interface InstanceOfMessages<T> extends XisMessages<InstanceOfIssue> {
@@ -40,9 +42,8 @@ export class XisInstanceOf<T> extends XisSync<unknown, InstanceOfIssue, T> {
 			XIS_INSTANCE_OF: (args: XisMsgArgs<InstanceOfMessageProps<T>>) => {
 				const {
 					input: { ctor, received },
-					path,
 				} = args
-				return `Value "${received}" at ${JSON.stringify(path)} is not an instance of ${ctor.name}`
+				return `${received} is not an instance of ${ctor.name}`
 			},
 		}
 	}
@@ -52,18 +53,14 @@ export class XisInstanceOf<T> extends XisSync<unknown, InstanceOfIssue, T> {
 	exec(args: XisExecArgs): ExecResultSync<InstanceOfIssue, T> {
 		const { value, path, locale, ctx } = args
 		const { ctor } = this.#props
-		if (value instanceof this.#props.ctor) {
+		if (value instanceof ctor) {
 			return Right(value)
 		}
 
-		const typeName = trueTypeOf(value)
-		const received =
-			typeName === "null" || typeName === "undefined"
-				? String(value)
-				: // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-					((Object.getPrototypeOf(value).constructor?.name ?? "UNKNOWN") as string)
+		const received = value instanceof Object ? value.constructor.name : trueTypeOf(value)
+
 		const message = this.#messages.XIS_INSTANCE_OF({
-			input: { ctor, received },
+			input: { ctor, received, value },
 			path,
 			locale,
 			ctx,
@@ -73,6 +70,7 @@ export class XisInstanceOf<T> extends XisSync<unknown, InstanceOfIssue, T> {
 			expected: ctor.name,
 			received,
 			message,
+			value,
 			path,
 		}
 		return Left([err])

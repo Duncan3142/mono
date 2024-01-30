@@ -37,10 +37,9 @@ export interface XisCoerceArgs {
 
 export const XIS_COERCE = (args: XisMsgArgs<CoerceIssueMsgProps>) => {
 	const {
-		input: { value, desired, type },
-		path,
+		input: { desired, type },
 	} = args
-	return `Unable to coerce ${String(value)} at ${JSON.stringify(path)}, of type ${type}, to type ${desired}`
+	return `Unable to coerce ${type} to ${desired}`
 }
 
 export const coerceIssue = (props: CoerceIssueProps): ExecResultSync<CoerceIssue, never> => {

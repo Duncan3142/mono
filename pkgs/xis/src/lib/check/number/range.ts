@@ -42,9 +42,8 @@ export class XisRange extends XisSync<number, NumberRangeIssue> {
 			XIS_NUMBER_RANGE: (args: XisMsgArgs<NumberRangeMessageProps>) => {
 				const {
 					input: { value, opts },
-					path,
 				} = args
-				return `${value} at ${JSON.stringify(path)} is not in range ${JSON.stringify(opts)}`
+				return `${JSON.stringify(value)} not in range ${JSON.stringify(opts)}`
 			},
 		}
 		this.#props = props

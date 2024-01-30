@@ -62,9 +62,8 @@ export class XisUUID<V extends Version> extends XisSync<string, UUIDIssue<V>, UU
 			XIS_UUID: (args: XisMsgArgs<XisUUIDMessageProps>) => {
 				const {
 					input: { value, version },
-					path,
 				} = args
-				return `Expected UUID version ${version}, received ${value} at ${JSON.stringify(path)}`
+				return `Expected UUID ${version}, received ${value}`
 			},
 		}
 	}

@@ -29,9 +29,9 @@ export interface ExtraPropertyIssue extends XisIssue<"XIS_EXTRA_PROPERTY"> {
 export type XIS_EXTRA_PROPERTY = XisMsgBuilder<BaseProp>
 
 export const XIS_EXTRA_PROPERTY = (args: XisMsgArgs<BaseProp>) => {
-	const { input, path } = args
-	const [key, val] = input
-	return `object has extra property "${String(key)}", with value ${JSON.stringify(val)}, at path "${JSON.stringify(path)}"`
+	const { input } = args
+	const [key] = input
+	return `Extra property "${String(key)}"`
 }
 
 export interface ExtraIssuesArgs {

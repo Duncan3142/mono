@@ -46,7 +46,7 @@ export class XisLiteral<const Literal extends TruePrimitiveType> extends XisSync
 				const {
 					input: { expected, found },
 				} = args
-				return `Value "${String(found)}" is not literal ${String(expected)}`
+				return `${JSON.stringify(found)} is not literal ${JSON.stringify(expected)}`
 			},
 		}
 	}

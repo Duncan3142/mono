@@ -77,8 +77,8 @@ export interface MissingPropertyIssue extends XisIssue<"XIS_MISSING_PROPERTY"> {
 export type XIS_MISSING_PROPERTY = XisMsgBuilder<TruePropertyKey>
 
 export const XIS_MISSING_PROPERTY = (args: XisMsgArgs<TruePropertyKey>) => {
-	const { input, path } = args
-	return `object missing property "${String(input)}" at path "${JSON.stringify(path)}"`
+	const { input } = args
+	return `Missing property "${String(input)}"`
 }
 
 export interface MissingIssueArgs {

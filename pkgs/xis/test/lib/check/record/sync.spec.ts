@@ -40,6 +40,54 @@ void it("should fail bad keys", () => {
 
 	const expected: ExtractValue<typeof res> = [
 		{
+			expected: sym,
+			message: 'Value "badKey" is not literal Symbol(test)',
+			name: "XIS_LITERAL",
+			path: [
+				{
+					segment: "badKey",
+					side: "KEY",
+				},
+			],
+			value: "badKey",
+		},
+		{
+			expected: "meow",
+			message: 'Value "badKey" is not literal meow',
+			name: "XIS_LITERAL",
+			path: [
+				{
+					segment: "badKey",
+					side: "KEY",
+				},
+			],
+			value: "badKey",
+		},
+		{
+			expected: "8",
+			message: 'Value "badKey" is not literal 8',
+			name: "XIS_LITERAL",
+			path: [
+				{
+					segment: "badKey",
+					side: "KEY",
+				},
+			],
+			value: "badKey",
+		},
+		{
+			expected: null,
+			message: 'Value "" is not literal null',
+			name: "XIS_LITERAL",
+			path: [
+				{
+					segment: "badKey",
+					side: "VALUE",
+				},
+			],
+			value: [null],
+		},
+		{
 			name: "XIS_BASE_TYPE",
 			expected: "boolean",
 			received: "array",

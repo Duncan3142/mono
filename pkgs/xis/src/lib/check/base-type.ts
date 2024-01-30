@@ -14,6 +14,7 @@ import { Effect } from "#core/book-keeping.js"
 export interface BaseTypeIssue extends XisIssue<"XIS_BASE_TYPE"> {
 	expected: TrueBaseTypeName
 	received: TrueBaseTypeName
+	value: unknown
 }
 
 export type BaseTypeProps<N extends TrueBaseTypeName> = {
@@ -23,6 +24,7 @@ export type BaseTypeProps<N extends TrueBaseTypeName> = {
 export type BaseTypeMessageProps = {
 	expected: TrueBaseTypeName
 	received: TrueBaseTypeName
+	value: unknown
 }
 
 export interface BaseTypeMessages extends XisMessages<BaseTypeIssue> {
@@ -49,10 +51,9 @@ export class XisTypeCheck<N extends TrueBaseTypeName> extends XisSync<
 			XIS_BASE_TYPE: (args: XisMsgArgs<BaseTypeMessageProps>) => {
 				const {
 					input: { expected, received },
-					path,
 				} = args
 
-				return `Value "${received}" at ${JSON.stringify(path)} is not an instance of ${expected}`
+				return `Expected ${expected}, received ${received}`
 			},
 		}
 	}
@@ -68,7 +69,7 @@ export class XisTypeCheck<N extends TrueBaseTypeName> extends XisSync<
 		}
 
 		const message = this.#messages.XIS_BASE_TYPE({
-			input: { expected, received },
+			input: { expected, received, value },
 			path,
 			locale,
 			ctx,
@@ -78,6 +79,7 @@ export class XisTypeCheck<N extends TrueBaseTypeName> extends XisSync<
 			name: "XIS_BASE_TYPE" as const,
 			expected,
 			received,
+			value,
 			message,
 			path,
 		}
