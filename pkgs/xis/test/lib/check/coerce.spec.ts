@@ -39,7 +39,7 @@ void it("should fail to coerce date", () => {
 	const expected: ExtractValue<typeof res> = [
 		{
 			name: "XIS_COERCE",
-			message: "Failed to coerce value",
+			message: "Unable to coerce string to date",
 			type: "string",
 			desired: "date",
 			path: [],
@@ -60,7 +60,7 @@ void it("should fail to coerce a bigint", () => {
 	const expected: ExtractValue<typeof res> = [
 		{
 			name: "XIS_COERCE",
-			message: "Failed to coerce value",
+			message: "Unable to coerce array to bigint",
 			desired: "bigint",
 			path: [],
 			type: "array",
@@ -122,7 +122,7 @@ void it("should fail to coerce a symbol", () => {
 	const expected: ExtractValue<typeof res> = [
 		{
 			name: "XIS_COERCE",
-			message: "Failed to coerce value",
+			message: "Unable to coerce boolean to symbol",
 			type: "boolean",
 			desired: "symbol",
 			path: [],
