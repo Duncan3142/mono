@@ -31,6 +31,7 @@ void describe("number", () => {
 		const expected: ExtractValue<typeof res> = [
 			{
 				name: "XIS_INTEGER",
+				value: 0.5,
 				message: "Expected an integer",
 				path: [],
 			},
@@ -48,6 +49,7 @@ void describe("number", () => {
 		const expected: ExtractValue<typeof res> = [
 			{
 				name: "XIS_FINITE",
+				value: Infinity,
 				message: "Expected a finite number",
 				path: [],
 			},
@@ -106,6 +108,7 @@ void describe("number", () => {
 		const expected: ExtractValue<typeof res> = [
 			{
 				name: "XIS_NAN",
+				value: 0,
 				message: "Expected NaN",
 				path: [],
 			},

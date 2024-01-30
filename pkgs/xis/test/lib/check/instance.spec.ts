@@ -27,6 +27,7 @@ void it("should fail an invalid value", () => {
 	const expected: ExtractValue<typeof res> = [
 		{
 			name: "XIS_INSTANCE_OF",
+			value: null,
 			message: "Expected an instance of Map",
 			expected: "Map",
 			path: [],
@@ -38,8 +39,9 @@ void it("should fail an invalid value", () => {
 })
 
 void it("should fail instance", () => {
+	const value = new URL("https://test.com")
 	const res = instance(Map).exec({
-		value: new URL("https://test.com"),
+		value,
 		ctx: {},
 		locale: null,
 		path: [],
@@ -48,6 +50,7 @@ void it("should fail instance", () => {
 	const expected: ExtractValue<typeof res> = [
 		{
 			name: "XIS_INSTANCE_OF",
+			value,
 			message: "Expected an instance of Map",
 			expected: "Map",
 			path: [],
@@ -69,6 +72,7 @@ void it("should fail instance", () => {
 	const expected: ExtractValue<typeof res> = [
 		{
 			name: "XIS_INSTANCE_OF",
+			value: "test",
 			message: "Expected an instance of Map",
 			expected: "Map",
 			path: [],
@@ -89,6 +93,7 @@ void it("should fail instance", () => {
 	const expected: ExtractValue<typeof res> = [
 		{
 			name: "XIS_INSTANCE_OF",
+			value: null,
 			message: "Expected an instance of Map",
 			expected: "Map",
 			path: [],
@@ -109,6 +114,7 @@ void it("should fail instance", () => {
 	const expected: ExtractValue<typeof res> = [
 		{
 			name: "XIS_INSTANCE_OF",
+			value: undefined,
 			message: "Expected an instance of Map",
 			expected: "Map",
 			path: [],

@@ -54,7 +54,8 @@ void it("should fail an invalid elements tuple", () => {
 		},
 		{
 			name: "XIS_INTEGER",
-			message: '0.5 at [{"segment":1,"side":"VALUE"}] is not an integer',
+			message: "0.5 is not an integer",
+			value: 0.5,
 			path: [
 				{
 					segment: 1,

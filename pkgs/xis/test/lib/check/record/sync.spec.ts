@@ -91,8 +91,8 @@ void it("should fail bad keys", () => {
 			name: "XIS_BASE_TYPE",
 			expected: "boolean",
 			received: "array",
-			message:
-				'Value "array" at [{"segment":"badKey","side":"VALUE"}] is not an instance of boolean',
+			value: [null],
+			message: "array is not a boolean",
 			path: [
 				{
 					segment: "badKey",

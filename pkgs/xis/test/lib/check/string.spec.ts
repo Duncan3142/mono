@@ -35,8 +35,9 @@ void describe("string", () => {
 				{
 					name: "XIS_STRING_LENGTH",
 					path: [],
+					value: "ab",
 					length: 2,
-					message: 'Length of string "ab", at [], is not in range [{"bound":3,"op":"gte"}]',
+					message: '"ab" length is not in range [{"bound":3,"op":"gte"}]',
 					opts: [{ bound: 3, op: "gte" }],
 				},
 			]

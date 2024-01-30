@@ -67,8 +67,8 @@ void it("should fail an invalid object", async () => {
 	const expected: ExtractValue<typeof res> = [
 		{
 			name: "XIS_FINITE",
-			message:
-				'NaN at [{"segment":"boss","side":"VALUE"},{"segment":"age","side":"VALUE"}] is not a finite',
+			message: "NaN is not a finite",
+			value: NaN,
 			path: [
 				{
 					segment: "boss",

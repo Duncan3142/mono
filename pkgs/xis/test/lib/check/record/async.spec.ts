@@ -43,6 +43,7 @@ void it("should fail bad keys", async () => {
 			name: "XIS_BASE_TYPE",
 			expected: "boolean",
 			received: "array",
+			value: [null],
 			message: "Expected a boolean",
 			path: [
 				{

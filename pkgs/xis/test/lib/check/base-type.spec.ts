@@ -33,6 +33,7 @@ void it("should fail not null", () => {
 	const expected: ExtractValue<typeof res> = [
 		{
 			name: "XIS_BASE_TYPE",
+			value: true,
 			message: "Invalid type",
 			expected: "null",
 			path: [],
