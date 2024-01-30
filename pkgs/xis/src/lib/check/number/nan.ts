@@ -5,7 +5,9 @@ import type { XisMessages, XisMsgArgs, XisMsgBuilder } from "#core/messages.js"
 import { XisSync, type ExecResultSync } from "#core/sync.js"
 import { Left, Right } from "purify-ts/Either"
 
-export type NaNIssue = XisIssue<"XIS_NAN">
+export interface NaNIssue extends XisIssue<"XIS_NAN"> {
+	value: number
+}
 
 export interface XisNaNMessages extends XisMessages<NaNIssue> {
 	XIS_NAN: XisMsgBuilder<number>
@@ -46,6 +48,7 @@ export class XisNan extends XisSync<number, NaNIssue> {
 		const err = {
 			name: "XIS_NAN" as const,
 			message,
+			value,
 			path,
 		}
 		return Left([err])

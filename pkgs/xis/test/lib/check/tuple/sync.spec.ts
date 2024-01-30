@@ -43,6 +43,7 @@ void it("should fail an invalid elements tuple", () => {
 			name: "XIS_BASE_TYPE",
 			message: 'Value "boolean" at [{"segment":0,"side":"VALUE"}] is not an instance of string',
 			expected: "string",
+			value: false,
 			path: [
 				{
 					segment: 0,

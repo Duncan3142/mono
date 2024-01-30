@@ -5,7 +5,9 @@ import type { XisMessages, XisMsgArgs, XisMsgBuilder } from "#core/messages.js"
 import { XisSync, type ExecResultSync } from "#core/sync.js"
 import { Left, Right } from "purify-ts/Either"
 
-export type FiniteIssue = XisIssue<"XIS_FINITE">
+export interface FiniteIssue extends XisIssue<"XIS_FINITE"> {
+	value: number
+}
 
 export interface XisFiniteMessages extends XisMessages<FiniteIssue> {
 	XIS_FINITE: XisMsgBuilder<number>
@@ -46,6 +48,7 @@ export class XisFinite extends XisSync<number, FiniteIssue> {
 		const err = {
 			name: "XIS_FINITE" as const,
 			message,
+			value,
 			path,
 		}
 		return Left([err])

@@ -36,6 +36,7 @@ export const reduce = (
 export interface NTupleIssue<N extends number> extends XisIssue<"XIS_TUPLE_LENGTH"> {
 	expected: N
 	actual: number
+	value: BaseArray
 }
 
 export type NTupleIssues<N extends number> = NTupleIssue<N>
@@ -97,6 +98,7 @@ export class IsNTuple<L extends number> extends XisSync<BaseArray, NTupleIssues<
 						name: "XIS_TUPLE_LENGTH",
 						path,
 						message,
+						value,
 						expected: length,
 						actual: value.length,
 					},

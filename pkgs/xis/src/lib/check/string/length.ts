@@ -22,6 +22,7 @@ export const toLength = () => new XisToLength()
 
 export interface StringLengthIssue extends XisIssue<"XIS_STRING_LENGTH"> {
 	length: number
+	value: string
 	opts: StringLengthOpts
 }
 
@@ -90,6 +91,7 @@ export class XisIsLength<Opts extends StringLengthOpts> extends XisSync<
 			name: "XIS_STRING_LENGTH" as const,
 			path,
 			message,
+			value,
 			length: value.length,
 			opts,
 		}
