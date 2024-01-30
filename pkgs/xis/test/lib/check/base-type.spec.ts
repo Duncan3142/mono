@@ -34,7 +34,7 @@ void it("should fail not null", () => {
 		{
 			name: "XIS_BASE_TYPE",
 			value: true,
-			message: "Invalid type",
+			message: "Expected null, received boolean",
 			expected: "null",
 			path: [],
 			received: "boolean",

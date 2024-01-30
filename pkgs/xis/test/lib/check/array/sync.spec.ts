@@ -39,7 +39,7 @@ void it("should fail an invalid value", () => {
 			name: "XIS_UUID",
 			expected: 4,
 			received: "bad",
-			message: "Expected UUID version 4, received bad at []",
+			message: 'Expected UUID 4, received "bad"',
 			path: [
 				{
 					segment: 0,
