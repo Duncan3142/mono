@@ -4,6 +4,8 @@ export type BaseArray = Array<unknown>
 
 export type TruePropertyKey = string | symbol
 
+export type BaseProp = [TruePropertyKey, unknown]
+
 export type BaseObject = Record<TruePropertyKey, unknown>
 
 export type BaseMap = Map<unknown, unknown>
@@ -12,10 +14,10 @@ export type BaseSet = Set<unknown>
 
 export type BaseFunction = (...args: Array<any>) => unknown
 
-export type TupleOf<N extends number, T = unknown, R extends Array<T> = []> = N extends number
+export type NTuple<N extends number, T = unknown, R extends Array<T> = []> = N extends number
 	? [R["length"]] extends [N]
 		? R
-		: TupleOf<N, T, [T, ...R]>
+		: NTuple<N, T, [T, ...R]>
 	: never
 
 export interface TruePrimitiveTypeNameMap {
@@ -29,6 +31,8 @@ export interface TruePrimitiveTypeNameMap {
 }
 
 export type TruePrimitiveTypeName = keyof TruePrimitiveTypeNameMap
+
+export type TruePrimitiveType = TruePrimitiveTypeNameMap[TruePrimitiveTypeName]
 
 export interface TrueObjectTypeNameMap {
 	array: BaseArray
@@ -54,6 +58,11 @@ export const trueTypeOf = (x: unknown): TrueBaseTypeName => {
 	return typeof x
 }
 
+export const stringify = (x: unknown): string =>
+	JSON.stringify(x, (_: unknown, value: unknown) =>
+		typeof value === "symbol" ? String(value) : value
+	)
+
 export const isBaseType = <N extends TrueBaseTypeName>(
 	typeName: N,
 	value: unknown
@@ -76,11 +85,9 @@ export type Entry<O> = {
 
 export type Entries<O> = Array<Entry<O>>
 
-export type EntryPair = [TruePropertyKey, unknown]
-
-export const objectEntries = <const Obj extends BaseObject>(
-	obj: Obj
-): Array<[TruePropertyKey, unknown]> => {
+export const objectEntries = <const Obj extends BaseObject>(obj: Obj): Entries<Obj> => {
 	const keys = Reflect.ownKeys(obj)
-	return keys.map((key) => [key, obj[key]] satisfies EntryPair)
+	return keys.map((key) => [key, obj[key]]) as Entries<Obj>
 }
+
+export const tup = <Args extends Array<any>>(...args: Args) => args

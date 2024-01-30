@@ -1,6 +1,17 @@
-import type { XisBuildArgs, XisOptArgs } from "#core/context.js"
-import type { ExArgs, ExExecIssues, ExGuardIssues, ExIn, ExOut, XisBase } from "#core/kernel.js"
-import type { XisIssueBase } from "#core/error.js"
+import type { ExIn, ExOut, XisBase } from "#core/kernel.js"
+
+export type XisChainSchema<
+	Chain extends [XisBase, XisBase, ...Array<XisBase>],
+	Remaining extends [...Array<XisBase>] = Chain,
+> = Remaining extends [
+	infer First extends XisBase,
+	infer Second extends XisBase,
+	...infer Rest extends Array<XisBase>,
+]
+	? [ExOut<First>] extends [ExIn<Second>]
+		? XisChainSchema<Chain, [Second, ...Rest]>
+		: never
+	: Chain
 
 export type XisChainIn<Chain extends [...Array<XisBase>]> = Chain extends [
 	infer First extends XisBase,
@@ -9,30 +20,9 @@ export type XisChainIn<Chain extends [...Array<XisBase>]> = Chain extends [
 	? ExIn<First>
 	: never
 
-export type XisChainGuardIssues<Chain extends [...Array<XisBase>]> = Chain extends [
-	infer First extends XisBase,
-	...Array<XisBase>,
-]
-	? ExGuardIssues<First>
-	: never
-
-export type XisChainExecIssues<
-	Chain extends [...Array<XisBase>],
-	Acc extends XisIssueBase = never,
-> = Chain extends [infer Next extends XisBase, ...infer Rest extends Array<XisBase>]
-	? XisChainExecIssues<Rest, Acc | ExExecIssues<Next>>
-	: Acc
-
 export type XisChainOut<Chain extends [...Array<XisBase>], Acc = never> = Chain extends [
 	infer Next extends XisBase,
 	...infer Rest extends Array<XisBase>,
 ]
 	? XisChainOut<Rest, ExOut<Next>>
-	: Acc
-
-export type XisChainArgs<
-	Chain extends [...Array<XisBase>],
-	Acc extends XisOptArgs = undefined,
-> = Chain extends [infer Next extends XisBase, ...infer Rest extends Array<XisBase>]
-	? XisChainArgs<Rest, XisBuildArgs<Acc, ExArgs<Next>>>
 	: Acc

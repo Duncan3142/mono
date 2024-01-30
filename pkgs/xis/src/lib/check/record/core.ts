@@ -1,45 +1,38 @@
-import { type BaseTypeIssue } from "#core/base-type.js"
 import { type BaseObject, type TruePropertyKey } from "#util/base-type.js"
 import type { XisIssueBase } from "#core/error.js"
-
-import { type XisBuildArgs } from "#core/context.js"
-
 import { Right, Either } from "purify-ts/Either"
 import {
 	mergeIssues,
-	type ExArgs,
-	type ExExecIssues,
-	type ExGuardIssues,
+	type ExIssues,
 	type ExIn,
 	type ExOut,
 	type Xis,
 	type XisBase,
+	type ExCtx,
 } from "#core/kernel.js"
 import type { ExecResultSync } from "#core/sync.js"
+import type { BuildObjArg } from "#util/arg.js"
+import type { Effect } from "#core/book-keeping.js"
 
-export type PropertyKeyBase = Xis<any, XisIssueBase, XisIssueBase, TruePropertyKey, any>
+export type PropertyKeyBase = Xis<any, XisIssueBase, TruePropertyKey, Effect, any>
 
 export type RecordIn<KeySchema extends PropertyKeyBase, ValueSchema extends XisBase> = Record<
 	ExIn<KeySchema>,
 	ExIn<ValueSchema>
 >
-export type RecordGuardIssues<KeySchema extends PropertyKeyBase, ValueSchema extends XisBase> =
-	| BaseTypeIssue<"object">
-	| ExGuardIssues<KeySchema>
-	| ExGuardIssues<ValueSchema>
 
-export type RecordExecIssues<KeySchema extends PropertyKeyBase, ValueSchema extends XisBase> =
-	| ExExecIssues<KeySchema>
-	| ExExecIssues<ValueSchema>
+export type RecordIssues<KeySchema extends PropertyKeyBase, ValueSchema extends XisBase> =
+	| ExIssues<KeySchema>
+	| ExIssues<ValueSchema>
 
 export type RecordOut<KeySchema extends PropertyKeyBase, ValueSchema extends XisBase> = Record<
 	ExOut<KeySchema>,
 	ExOut<ValueSchema>
 >
-export type RecordArgs<
+export type RecordCtx<
 	KeySchema extends PropertyKeyBase,
 	ValueSchema extends XisBase,
-> = XisBuildArgs<ExArgs<KeySchema>, ExArgs<ValueSchema>>
+> = BuildObjArg<ExCtx<KeySchema>, ExCtx<ValueSchema>>
 
 export const reduce = (
 	results: Array<

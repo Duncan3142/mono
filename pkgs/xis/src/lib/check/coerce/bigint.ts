@@ -1,38 +1,80 @@
-import type { XisCtxBase } from "#core/context.js"
-import { XisSync, type ExecResultSync, type ParseResultSync } from "#core/sync.js"
+import { XisSync, type ExecResultSync } from "#core/sync.js"
 import { trueTypeOf } from "#util/base-type.js"
-import { Either, Right } from "purify-ts/Either"
-import { coerceErr, type CoerceIssue } from "./core.js"
+import { Either, Left, Right } from "purify-ts/Either"
+import {
+	coerceIssue,
+	XIS_COERCE,
+	type CoerceIssue,
+	type XisCoerceArgs,
+	type XisCoerceMessages,
+} from "./core.js"
+import type { XisExecArgs } from "#core/args.js"
+import { Effect } from "#core/book-keeping.js"
 
 export type BigIntInput = bigint | number | string | boolean
 
+function isBigIntInput(value: unknown): value is BigIntInput {
+	const valueType = trueTypeOf(value)
+	switch (valueType) {
+		case "number":
+		case "string":
+		case "boolean":
+			return true
+		default:
+			return false
+	}
+}
+
 export class XisCoerceBigInt extends XisSync<
-	BigIntInput,
-	CoerceIssue<"bigint">,
-	CoerceIssue<"bigint">,
-	bigint
+	unknown,
+	CoerceIssue,
+	bigint,
+	typeof Effect.Transform
 > {
-	parse(
-		value: unknown,
-		ctx: XisCtxBase
-	): ParseResultSync<CoerceIssue<"bigint">, CoerceIssue<"bigint">, bigint> {
+	#messages: XisCoerceMessages
+	constructor(args: XisCoerceArgs) {
+		super()
+		this.#messages = args.messages ?? {
+			XIS_COERCE,
+		}
+	}
+	override get effect(): typeof Effect.Transform {
+		return Effect.Transform
+	}
+	exec(args: XisExecArgs): ExecResultSync<CoerceIssue, bigint> {
+		const { value, locale, path, ctx } = args
 		const valueType = trueTypeOf(value)
 		if (valueType === "bigint") {
 			return Right(value as bigint)
 		}
-		if (valueType === "number" || valueType === "string" || valueType === "boolean") {
-			return this.exec(value as BigIntInput, ctx)
-		}
-
-		return coerceErr("bigint", value, valueType, ctx)
-	}
-
-	exec(value: BigIntInput, ctx: XisCtxBase): ExecResultSync<CoerceIssue<"bigint">, bigint> {
-		return Either.encase(() => BigInt(value)).chainLeft((_) => {
-			const valueType = trueTypeOf(value)
-			return coerceErr("bigint", value, valueType, ctx)
+		const res = isBigIntInput(value) ? Either.encase(() => BigInt(value)) : Left(NaN)
+		return res.chainLeft((_) => {
+			const message = this.#messages.XIS_COERCE({
+				path,
+				locale,
+				ctx,
+				input: {
+					value,
+					desired: "bigint",
+					type: valueType,
+				},
+			})
+			return coerceIssue({
+				desired: "bigint",
+				received: value,
+				type: valueType,
+				message,
+				path,
+			})
 		})
 	}
 }
 
-export const bigint: XisCoerceBigInt = new XisCoerceBigInt()
+export const biginti18n = (messages: XisCoerceMessages) =>
+	new XisCoerceBigInt({
+		messages,
+	})
+export const bigint = () =>
+	new XisCoerceBigInt({
+		messages: null,
+	})

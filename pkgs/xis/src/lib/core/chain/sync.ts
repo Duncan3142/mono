@@ -1,93 +1,69 @@
-import type { XisCtx, XisCtxBase } from "#core/context.js"
 import {
-	invoke,
-	type ExInvoke,
-	type InvokeMode,
-	type ExIn,
-	type ExCtx,
-	type ExOut,
+	xisListEffect,
+	type XisListCtx,
+	type XisListEffect,
+	type XisListIssues,
 } from "#core/kernel.js"
 import type { XisIssueBase } from "#core/error.js"
 
-import {
-	XisSync,
-	type ExecResultSync,
-	type ParseResultSync,
-	type XisSyncBase,
-} from "#core/sync.js"
-import type {
-	XisChainArgs,
-	XisChainExecIssues,
-	XisChainGuardIssues,
-	XisChainIn,
-	XisChainOut,
-} from "./core.js"
+import { XisSync, type ExecResultSync, type XisSyncBase } from "#core/sync.js"
+import type { XisChainIn, XisChainOut, XisChainSchema } from "./core.js"
+import type { XisExecArgs } from "#core/args.js"
 
-type XisChainSchemaSync<
-	Chain extends [XisSyncBase, ...Array<XisSyncBase>],
-	Remaining extends [...Array<XisSyncBase>] = Chain,
-> = Remaining extends [
-	infer First extends XisSyncBase,
-	infer Second extends XisSyncBase,
-	...infer Rest extends Array<XisSyncBase>,
-]
-	? [ExOut<First>] extends [ExIn<Second>]
-		? XisChainSchemaSync<Chain, [Second, ...Rest]>
-		: never
-	: Chain
+export interface XisChainSyncProps<
+	Chain extends [XisSyncBase, XisSyncBase, ...Array<XisSyncBase>],
+> {
+	schema: [...XisChainSchema<Chain>]
+}
+
+export interface XisChainSyncArgs<
+	Chain extends [XisSyncBase, XisSyncBase, ...Array<XisSyncBase>],
+> {
+	props: XisChainSyncProps<Chain>
+}
 
 export class XisChainSync<
 	Chain extends [XisSyncBase, XisSyncBase, ...Array<XisSyncBase>],
 > extends XisSync<
 	XisChainIn<Chain>,
-	XisChainGuardIssues<Chain>,
-	XisChainExecIssues<Chain>,
+	XisListIssues<Chain>,
 	XisChainOut<Chain>,
-	XisChainArgs<Chain>
+	XisListEffect<Chain>,
+	XisListCtx<Chain>
 > {
-	readonly #schema: [...XisChainSchemaSync<Chain>]
+	#props: XisChainSyncProps<Chain>
 
-	constructor(schema: [...XisChainSchemaSync<Chain>]) {
+	constructor(args: XisChainSyncArgs<Chain>) {
 		super()
-		this.#schema = schema
+		this.#props = args.props
 	}
 
-	parse(
-		value: unknown,
-		ctx: XisCtx<XisChainArgs<Chain>>
-	): ParseResultSync<
-		XisChainGuardIssues<Chain>,
-		XisChainExecIssues<Chain>,
-		XisChainOut<Chain>
-	> {
-		return this.#invoke("parse", value, ctx)
+	override get effect(): XisListEffect<Chain> {
+		return xisListEffect(this.#props.schema)
 	}
 
 	exec(
-		value: XisChainIn<Chain>,
-		ctx: XisCtx<XisChainArgs<Chain>>
-	): ExecResultSync<XisChainExecIssues<Chain>, XisChainOut<Chain>> {
-		return this.#invoke("exec", value, ctx)
-	}
+		args: XisExecArgs<XisChainIn<Chain>, XisListCtx<Chain>>
+	): ExecResultSync<XisListIssues<Chain>, XisChainOut<Chain>> {
+		const { path, ctx, locale } = args
+		const [first, ...rest] = this.#props.schema
+		const acc: ExecResultSync<XisIssueBase, unknown> = first.exec(args)
 
-	#invoke<Mode extends InvokeMode>(
-		mode: Mode,
-		value: unknown,
-		ctx: XisCtxBase
-	): ExInvoke<this, Mode> {
-		type Res = ExInvoke<this, Mode>
-		const [first, ...rest] = this.#schema
-		const acc: ExecResultSync<XisIssueBase, unknown> = invoke(
-			mode,
-			first,
-			value as ExIn<[...XisChainSchemaSync<Chain>][0]>,
-			ctx as ExCtx<[...XisChainSchemaSync<Chain>][0]>
-		)
-
-		return rest.reduce((acc, xis) => acc.chain((input) => xis.exec(input, ctx)), acc) as Res
+		return rest.reduce(
+			(acc, xis) =>
+				acc.chain((value) =>
+					xis.exec({
+						value,
+						locale,
+						path,
+						ctx,
+					})
+				),
+			acc
+		) as ExecResultSync<XisListIssues<Chain>, XisChainOut<Chain>>
 	}
 }
 
 export const chain = <Chain extends [XisSyncBase, XisSyncBase, ...Array<XisSyncBase>]>(
-	schema: [...XisChainSchemaSync<Chain>]
-): XisChainSync<Chain> => new XisChainSync(schema)
+	schema: [...XisChainSchema<Chain>]
+): XisChainSync<Chain> => new XisChainSync({ props: { schema } })

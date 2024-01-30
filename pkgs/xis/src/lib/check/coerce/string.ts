@@ -1,14 +1,15 @@
-import { XisSync, type ExecResultSync, type ParseResultSync } from "#core/sync.js"
+import type { XisExecArgs } from "#core/args.js"
+import { Effect } from "#core/book-keeping.js"
+import { XisSync, type ExecResultSync } from "#core/sync.js"
 import { Right } from "purify-ts/Either"
 
-export class XisCoerceString extends XisSync<unknown, never, never, string> {
-	parse(value: unknown): ParseResultSync<never, never, string> {
-		return this.exec(value)
+export class XisCoerceString extends XisSync<unknown, never, string, typeof Effect.Transform> {
+	override get effect(): typeof Effect.Transform {
+		return Effect.Transform
 	}
-
-	exec(value: unknown): ExecResultSync<never, string> {
-		return Right(String(value))
+	exec(args: XisExecArgs): ExecResultSync<never, string> {
+		return Right(String(args.value))
 	}
 }
 
-export const string: XisCoerceString = new XisCoerceString()
+export const string = () => new XisCoerceString()

@@ -1,53 +1,55 @@
-import type { XisCtx } from "#core/context.js"
+import type { XisExecArgs } from "#core/args.js"
 import {
-	XisSync,
-	type ExecResultSync,
-	type ParseResultSync,
-	type XisSyncBase,
-} from "#core/sync.js"
-import {
-	type UnionArgs,
-	type UnionIssues,
-	type UnionIn,
-	type UnionOut,
-	reduce,
-} from "./core.js"
+	xisListEffect,
+	type XisListCtx,
+	type XisListEffect,
+	type XisListIssues,
+	type ExIn,
+} from "#core/kernel.js"
+import { XisSync, type ExecResultSync, type XisSyncBase } from "#core/sync.js"
+import { type UnionIn, type UnionOut, reduce, type XisUnionSchema } from "./core.js"
+
+export interface XisUnionSyncProps<
+	Schema extends [XisSyncBase, XisSyncBase, ...Array<XisSyncBase>],
+> {
+	checks: [...XisUnionSchema<Schema>]
+}
+
+export interface XisUnionSyncArgs<
+	Schema extends [XisSyncBase, XisSyncBase, ...Array<XisSyncBase>],
+> {
+	props: XisUnionSyncProps<Schema>
+}
 
 export class XisUnionSync<
 	Schema extends [XisSyncBase, XisSyncBase, ...Array<XisSyncBase>],
 > extends XisSync<
 	UnionIn<Schema>,
-	UnionIssues<Schema>,
-	UnionIssues<Schema>,
+	XisListIssues<Schema>,
 	UnionOut<Schema>,
-	UnionArgs<Schema>
+	XisListEffect<Schema>,
+	XisListCtx<Schema>
 > {
-	readonly #checks: [...Schema]
+	#props: XisUnionSyncProps<Schema>
 
-	constructor(chks: [...Schema]) {
+	constructor(args: XisUnionSyncArgs<Schema>) {
 		super()
-		this.#checks = chks
+		this.#props = args.props
 	}
 
-	parse(
-		value: unknown,
-		ctx: XisCtx<UnionArgs<Schema>>
-	): ParseResultSync<UnionIssues<Schema>, UnionIssues<Schema>, UnionOut<Schema>> {
-		type Res = ParseResultSync<UnionIssues<Schema>, UnionIssues<Schema>, UnionOut<Schema>>
-
-		const mapped = this.#checks.map((chk) => chk.parse(value, ctx))
-
-		return reduce(mapped) as Res
+	override get effect(): XisListEffect<Schema> {
+		return xisListEffect(this.#props.checks)
 	}
 
 	exec(
-		value: UnionIn<Schema>,
-		ctx: XisCtx<UnionArgs<Schema>>
-	): ExecResultSync<UnionIssues<Schema>, UnionOut<Schema>> {
-		return this.parse(value, ctx)
+		args: XisExecArgs<UnionIn<Schema, ExIn<Schema[0]>>, XisListCtx<Schema>>
+	): ExecResultSync<XisListIssues<Schema>, UnionOut<Schema>> {
+		const mapped = this.#props.checks.map((chk) => chk.exec(args))
+
+		return reduce(mapped) as ExecResultSync<XisListIssues<Schema>, UnionOut<Schema>>
 	}
 }
 
 export const union = <Schema extends [XisSyncBase, XisSyncBase, ...Array<XisSyncBase>]>(
-	checks: [...Schema]
-): XisUnionSync<Schema> => new XisUnionSync(checks)
+	checks: [...XisUnionSchema<Schema>]
+): XisUnionSync<Schema> => new XisUnionSync({ props: { checks } })

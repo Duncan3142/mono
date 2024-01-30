@@ -1,37 +1,29 @@
-import type { XisCtx, XisOptArgs } from "#core/context.js"
+import type { XisExecArgs } from "#core/args.js"
 import type { Either } from "purify-ts/Either"
 import type { XisIssueBase } from "#core/error.js"
-import { XisBookKeeping } from "./book-keeping.js"
+import { BookkeepingError, type Effect, type XisBookKeeping } from "./book-keeping.js"
+import type { ObjArgBase } from "#util/arg.js"
 
 export type ExecResultSync<Issues extends XisIssueBase, Out> = Either<Array<Issues>, Out>
 export type ExecResultSyncBase = ExecResultSync<XisIssueBase, unknown>
 
-export type XisSyncFn<
-	in In,
-	out Issues extends XisIssueBase = never,
-	out Out = In,
-	Args extends XisOptArgs = undefined,
-> = (value: In, ctx: XisCtx<Args>) => ExecResultSync<Issues, Out>
-
-export type ParseResultSync<
-	GuardIssues extends XisIssueBase,
-	ExecIssues extends XisIssueBase,
-	Out,
-> = ExecResultSync<GuardIssues | ExecIssues, Out>
-export type ParseResultSyncBase = ParseResultSync<XisIssueBase, XisIssueBase, unknown>
+const SYNC = "SYNC"
 
 export abstract class XisSync<
 	In,
-	GuardIssues extends XisIssueBase = never,
-	ExecIssues extends XisIssueBase = never,
+	Issues extends XisIssueBase = never,
 	Out = In,
-	Args extends XisOptArgs = undefined,
-> extends XisBookKeeping<In, GuardIssues, ExecIssues, Out, Args> {
-	abstract exec(value: In, ctx: XisCtx<Args>): ExecResultSync<ExecIssues, Out>
-	abstract parse(
-		value: unknown,
-		ctx: XisCtx<Args>
-	): ParseResultSync<GuardIssues, ExecIssues, Out>
+	Eff extends Effect = typeof Effect.Validate,
+	Ctx extends ObjArgBase = ObjArgBase,
+> {
+	get concurrency(): typeof SYNC {
+		return SYNC
+	}
+	abstract get effect(): Eff
+	abstract exec(args: XisExecArgs<In, Ctx>): ExecResultSync<Issues, Out>
+	get types(): XisBookKeeping<In, Issues, Out, Ctx> {
+		throw new BookkeepingError()
+	}
 }
 
-export type XisSyncBase = XisSync<any, XisIssueBase, XisIssueBase, unknown, any>
+export type XisSyncBase = XisSync<any, XisIssueBase, unknown, Effect, any>

@@ -1,38 +1,70 @@
-import type { XisCtxBase } from "#core/context.js"
-
-import { type ExecResultSync, type ParseResultSync, XisSync } from "#core/sync.js"
-
+import { type ExecResultSync, XisSync } from "#core/sync.js"
 import { trueTypeOf } from "#util/base-type.js"
 import { Right } from "purify-ts/Either"
-
-import { coerceErr, type CoerceIssue } from "./core.js"
+import {
+	coerceIssue,
+	XIS_COERCE,
+	type CoerceIssue,
+	type XisCoerceMessages,
+	type XisCoerceArgs,
+} from "./core.js"
+import type { XisExecArgs } from "#core/args.js"
+import { Effect } from "#core/book-keeping.js"
 
 export type SymbolInput = number | string | undefined
 
 export class XisCoerceSymbol extends XisSync<
-	SymbolInput,
-	CoerceIssue<"symbol">,
-	never,
-	symbol
+	unknown,
+	CoerceIssue,
+	symbol,
+	typeof Effect.Transform
 > {
-	parse(
-		value: unknown,
-		ctx: XisCtxBase
-	): ParseResultSync<CoerceIssue<"symbol">, never, symbol> {
-		const valueType = trueTypeOf(value)
-		if (
-			typeof value === "number" ||
-			typeof value === "string" ||
-			typeof value === "undefined"
-		) {
-			return this.exec(value)
+	#messages: XisCoerceMessages
+	constructor(args: XisCoerceArgs) {
+		super()
+		this.#messages = args.messages ?? {
+			XIS_COERCE,
 		}
-		return coerceErr("symbol", value, valueType, ctx)
 	}
-
-	exec(value: SymbolInput): ExecResultSync<never, symbol> {
-		return Right(Symbol(value))
+	override get effect(): typeof Effect.Transform {
+		return Effect.Transform
+	}
+	exec(args: XisExecArgs): ExecResultSync<CoerceIssue, symbol> {
+		const { value, locale, path, ctx } = args
+		const valueType = trueTypeOf(value)
+		switch (typeof value) {
+			case "number":
+			case "string":
+			case "undefined":
+				return Right(Symbol(value))
+			default: {
+				const message = this.#messages.XIS_COERCE({
+					path,
+					locale,
+					ctx,
+					input: {
+						value,
+						desired: "symbol",
+						type: valueType,
+					},
+				})
+				return coerceIssue({
+					desired: "symbol",
+					message,
+					received: value,
+					type: valueType,
+					path,
+				})
+			}
+		}
 	}
 }
 
-export const symbol: XisCoerceSymbol = new XisCoerceSymbol()
+export const symboli18n = (messages: XisCoerceMessages) =>
+	new XisCoerceSymbol({
+		messages,
+	})
+export const symbol = () =>
+	new XisCoerceSymbol({
+		messages: null,
+	})

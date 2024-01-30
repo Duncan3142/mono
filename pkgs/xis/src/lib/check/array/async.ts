@@ -1,78 +1,64 @@
-import { CheckSide, addElement as addCtxElement, type XisCtx } from "#core/context.js"
-import { XisAsync, type ExecResultAsync, type ParseResultAsync } from "#core/async.js"
-import {
-	invoke,
-	type ExInvoke,
-	type InvokeMode,
-	type ExIn,
-	type XisBase,
-} from "#core/kernel.js"
-import {
-	type ArrayIn,
-	type ArrayGuardIssues,
-	type ArrayExecIssues,
-	type ArrayOut,
-	type ArrayArgs,
-	reduce,
-} from "./core.js"
-import { isBaseArray } from "#core/base-type.js"
+import { CheckSide, addElement } from "#core/path.js"
+import { XisAsync, type ExecResultAsync } from "#core/async.js"
+import { type ArrayIn, type ArrayIssues, type ArrayOut, type ArrayCtx, reduce } from "./core.js"
 import type { XisIssueBase } from "#core/error.js"
-import { EitherAsync } from "purify-ts/EitherAsync"
+import type { XisExecArgs } from "#core/args.js"
+import type { XisBase } from "#core/kernel.js"
+import { Effect } from "#core/book-keeping.js"
+
+export interface XisArrayAsyncProps<Schema extends XisBase> {
+	check: Schema
+}
+
+export type ArrayAsyncArgs<Schema extends XisBase> = {
+	props: XisArrayAsyncProps<Schema>
+}
 
 export class XisArrayAsync<Schema extends XisBase> extends XisAsync<
 	ArrayIn<Schema>,
-	ArrayGuardIssues<Schema>,
-	ArrayExecIssues<Schema>,
+	ArrayIssues<Schema>,
 	ArrayOut<Schema>,
-	ArrayArgs<Schema>
+	typeof Effect.Transform,
+	ArrayCtx<Schema>
 > {
-	readonly #check: Schema
+	#props: XisArrayAsyncProps<Schema>
 
-	constructor(chk: Schema) {
+	constructor(args: ArrayAsyncArgs<Schema>) {
 		super()
-		this.#check = chk
+		this.#props = args.props
 	}
 
-	parse(
-		value: unknown,
-		ctx: XisCtx<ArrayArgs<Schema>>
-	): ParseResultAsync<ArrayGuardIssues<Schema>, ArrayExecIssues<Schema>, ArrayOut<Schema>> {
-		return EitherAsync.liftEither(isBaseArray(value, ctx))
-			.chain((arr) => this.#invoke("parse", arr, ctx))
-			.run()
+	override get effect(): typeof Effect.Transform {
+		return Effect.Transform
 	}
+	async exec(
+		args: XisExecArgs<ArrayIn<Schema>, ArrayCtx<Schema>>
+	): ExecResultAsync<ArrayIssues<Schema>, ArrayOut<Schema>> {
+		const { value, locale, path, ctx } = args
+		const { check } = this.#props
 
-	exec(
-		value: ArrayIn<Schema>,
-		ctx: XisCtx<ArrayArgs<Schema>>
-	): ExecResultAsync<ArrayExecIssues<Schema>, ArrayOut<Schema>> {
-		return this.#invoke("exec", value, ctx)
-	}
-
-	#invoke<Mode extends InvokeMode>(
-		mode: Mode,
-		value: Array<unknown>,
-		ctx: XisCtx<ArrayArgs<Schema>>
-	): ExInvoke<this, Mode> {
-		type Res = ExInvoke<this, InvokeMode>
-
-		return Promise.all(
+		const mapped = await Promise.all(
 			value.map<ExecResultAsync<XisIssueBase, unknown>>((elem, index) =>
 				Promise.resolve(
-					invoke(
-						mode,
-						this.#check,
-						elem as ExIn<Schema>,
-						addCtxElement(ctx, {
+					check.exec({
+						value: elem,
+						locale,
+						ctx,
+						path: addElement(path, {
 							segment: index,
 							side: CheckSide.Value,
-						})
-					)
+						}),
+					})
 				)
 			)
-		).then((mapped) => reduce(mapped)) as Res
+		)
+		return reduce(mapped)
 	}
 }
 
-export const array = <Schema extends XisBase>(check: Schema): XisArrayAsync<Schema> =>
-	new XisArrayAsync(check)
+export const array = <Schema extends XisBase>(schema: Schema): XisArrayAsync<Schema> =>
+	new XisArrayAsync({
+		props: {
+			check: schema,
+		},
+	})

@@ -1,35 +1,37 @@
-import type { XisCtx } from "#core/context.js"
-
-import type { ExIn, ExGuardIssues, ExExecIssues, ExOut, ExArgs } from "#core/kernel.js"
-import { XisAsync, type ExecResultAsync, type ParseResultAsync } from "#core/async.js"
+import type { ExIn, ExIssues, ExOut, ExArgs, ExCtx, ExEff } from "#core/kernel.js"
+import { XisAsync, type ExecResultAsync } from "#core/async.js"
 import type { XisSyncBase } from "./sync.js"
+
+export interface XisLiftProps<X extends XisSyncBase> {
+	inner: X
+}
+
+export interface XisLiftArgs<X extends XisSyncBase> {
+	props: XisLiftProps<X>
+}
 
 export class XisLift<X extends XisSyncBase> extends XisAsync<
 	ExIn<X>,
-	ExGuardIssues<X>,
-	ExExecIssues<X>,
+	ExIssues<X>,
 	ExOut<X>,
-	ExArgs<X>
+	ExEff<X>,
+	ExCtx<ExIn<X>>
 > {
-	#inner: X
-
-	constructor(inner: X) {
+	#props: XisLiftProps<X>
+	get inner(): X {
+		return this.#props.inner
+	}
+	get effect(): ExEff<X> {
+		return this.inner.effect
+	}
+	constructor(args: XisLiftArgs<X>) {
 		super()
-		this.#inner = inner
+		this.#props = args.props
 	}
-
-	parse(
-		value: unknown,
-		ctx: XisCtx<ExArgs<X>>
-	): ParseResultAsync<ExGuardIssues<X>, ExExecIssues<X>, ExOut<X>> {
-		type Res = ParseResultAsync<ExGuardIssues<X>, ExExecIssues<X>, ExOut<X>>
-		return Promise.resolve(this.#inner.parse(value, ctx)) as Res
-	}
-
-	exec(value: ExIn<X>, ctx: XisCtx<ExArgs<X>>): ExecResultAsync<ExExecIssues<X>, ExOut<X>> {
-		type Res = ExecResultAsync<ExExecIssues<X>, ExOut<X>>
-		return Promise.resolve(this.#inner.exec(value, ctx)) as Res
+	exec(args: ExArgs<X>): ExecResultAsync<ExIssues<X>, ExOut<X>> {
+		return Promise.resolve(this.inner.exec(args))
 	}
 }
 
-export const lift = <X extends XisSyncBase>(inner: X): XisLift<X> => new XisLift(inner)
+export const lift = <X extends XisSyncBase>(inner: X): XisLift<X> =>
+	new XisLift({ props: { inner } })

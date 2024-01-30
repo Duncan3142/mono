@@ -1,38 +1,36 @@
-import { isNumber, type BaseTypeIssue } from "#core/base-type.js"
-import type { XisCtxBase } from "#core/context.js"
-import { XisSync, type ExecResultSync, type ParseResultSync } from "#core/sync.js"
+import type { XisExecArgs } from "#core/args.js"
+import { Effect } from "#core/book-keeping.js"
+import { XisSync, type ExecResultSync } from "#core/sync.js"
 import { Right } from "purify-ts/Either"
 
-export interface ToStringOptions {
+export interface XisToStringProps {
 	radix: number
 }
 
-export class XisToString<Opts extends ToStringOptions> extends XisSync<
-	number,
-	BaseTypeIssue<"number">,
-	never,
-	string
-> {
-	#opts: Opts
+export interface XisToStringArgs {
+	props: XisToStringProps
+}
 
-	constructor(opts: Opts) {
+export class XisToString extends XisSync<number, never, string, typeof Effect.Transform> {
+	#props
+
+	constructor(args: XisToStringArgs) {
 		super()
-		this.#opts = opts
+		this.#props = args.props
+	}
+	override get effect(): typeof Effect.Transform {
+		return Effect.Transform
 	}
 
-	parse(
-		value: unknown,
-		ctx: XisCtxBase
-	): ParseResultSync<BaseTypeIssue<"number">, never, string> {
-		return isNumber(value, ctx).chain((value) => this.exec(value))
-	}
-
-	exec(value: number): ExecResultSync<never, string> {
-		const { radix } = this.#opts
+	exec(args: XisExecArgs<number>): ExecResultSync<never, string> {
+		const { radix } = this.#props
+		const { value } = args
 
 		return Right(value.toString(radix))
 	}
 }
 
-export const toString = <Opts extends ToStringOptions>(opts: Opts): XisToString<Opts> =>
-	new XisToString(opts)
+export const toString = (radix: number): XisToString =>
+	new XisToString({
+		props: { radix },
+	})

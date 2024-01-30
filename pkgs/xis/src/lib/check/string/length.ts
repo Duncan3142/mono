@@ -1,68 +1,117 @@
-import type { XisCtxBase } from "#core/context.js"
-
 import type { XisIssue } from "#core/error.js"
 import { inRange, type RangeOpts } from "#util/rangeOpts.js"
 import { Left, Right } from "purify-ts/Either"
-import { XisSync, type ExecResultSync, type ParseResultSync } from "#core/sync.js"
-import { isString, type BaseTypeIssue } from "#core/base-type.js"
+import { XisSync, type ExecResultSync } from "#core/sync.js"
+import type { XisExecArgs } from "#core/args.js"
+import type { XisMessages, XisMsgArgs, XisMsgBuilder } from "#core/messages.js"
+import { Effect } from "#core/book-keeping.js"
+import { stringify } from "#util/base-type.js"
 
 export type StringLengthOpts = RangeOpts<number>
 
-export class XisToLength extends XisSync<string, BaseTypeIssue<"string">, never, number> {
-	parse(
-		value: unknown,
-		ctx: XisCtxBase
-	): ParseResultSync<BaseTypeIssue<"string">, never, number> {
-		return isString(value, ctx).chain((v) => this.exec(v))
+export class XisToLength extends XisSync<string, never, number, typeof Effect.Transform> {
+	override get effect(): typeof Effect.Transform {
+		return Effect.Transform
 	}
-	exec(value: string): ExecResultSync<never, number> {
+	exec(args: XisExecArgs<string>): ExecResultSync<never, number> {
+		const { value } = args
 		return Right(value.length)
 	}
 }
 
-export const toLength: XisToLength = new XisToLength()
+export const toLength = () => new XisToLength()
 
-export interface StringLengthIssue extends XisIssue<"STRING_LENGTH"> {
+export interface StringLengthIssue extends XisIssue<"XIS_STRING_LENGTH"> {
 	length: number
+	value: string
 	opts: StringLengthOpts
+}
+
+export type StringLengthProps<Opts extends StringLengthOpts> = {
+	opts: Opts
+}
+
+export interface StringLengthMessageProps {
+	value: string
+	opts: StringLengthOpts
+}
+
+export interface StringLengthMessages extends XisMessages<StringLengthIssue> {
+	XIS_STRING_LENGTH: XisMsgBuilder<StringLengthMessageProps>
+}
+
+export interface StringLengthArgs<Opts extends StringLengthOpts> {
+	props: StringLengthProps<Opts>
+	messages: StringLengthMessages | null
 }
 
 export class XisIsLength<Opts extends StringLengthOpts> extends XisSync<
 	string,
-	BaseTypeIssue<"string">,
 	StringLengthIssue
 > {
-	#opts: Opts
+	#props: StringLengthProps<Opts>
+	#messages: StringLengthMessages
 
-	constructor(opts: Opts) {
+	constructor(args: StringLengthArgs<Opts>) {
 		super()
-		this.#opts = opts
+		const { props, messages } = args
+		this.#props = props
+		this.#messages = messages ?? {
+			XIS_STRING_LENGTH: (args: XisMsgArgs<StringLengthMessageProps>) => {
+				const {
+					input: { value, opts },
+				} = args
+
+				return `"${value}" length not in range ${stringify(opts)}`
+			},
+		}
 	}
 
-	parse(
-		value: unknown,
-		ctx: XisCtxBase
-	): ParseResultSync<BaseTypeIssue<"string">, StringLengthIssue, string> {
-		return isString(value, ctx).chain((v) => this.exec(v, ctx))
+	override get effect(): typeof Effect.Validate {
+		return Effect.Validate
 	}
-
-	exec(value: string, ctx: XisCtxBase): ExecResultSync<StringLengthIssue, string> {
-		const opts = this.#opts
+	exec(args: XisExecArgs<string>): ExecResultSync<StringLengthIssue, string> {
+		const { value, path, locale, ctx } = args
+		const { opts } = this.#props
 
 		if (inRange(value.length, opts)) {
 			return Right(value)
 		}
 
+		const message = this.#messages.XIS_STRING_LENGTH({
+			input: {
+				value,
+				opts,
+			},
+			locale,
+			path,
+			ctx,
+		})
+
 		const err = {
-			name: "STRING_LENGTH",
-			path: ctx.path,
+			name: "XIS_STRING_LENGTH" as const,
+			path,
+			message,
+			value,
 			length: value.length,
 			opts,
-		} satisfies StringLengthIssue
+		}
 
 		return Left([err])
 	}
 }
 
-export const isLength = <Opts extends StringLengthOpts>(options: Opts): XisIsLength<Opts> =>
-	new XisIsLength(options)
+export const isLengthi18n = <Opts extends StringLengthOpts>(
+	opts: Opts,
+	messages: StringLengthMessages
+): XisIsLength<Opts> =>
+	new XisIsLength({
+		messages,
+		props: { opts },
+	})
+
+export const isLength = <Opts extends StringLengthOpts>(opts: Opts): XisIsLength<Opts> =>
+	new XisIsLength({
+		messages: null,
+		props: { opts },
+	})

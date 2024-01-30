@@ -1,16 +1,15 @@
-import { type XisCtx, type XisOptArgs } from "#core/context.js"
-
 import type { XisIssueBase } from "#core/error.js"
 
-import type { ExecResultSync, ExecResultSyncBase, XisSync, XisSyncFn } from "./sync.js"
-import type { ExecResultAsync, XisAsync, XisAsyncFn } from "./async.js"
-import { neverGuard } from "#util/never-guard.js"
+import type { ExecResultSync, ExecResultSyncBase, XisSync } from "./sync.js"
+import type { ExecResultAsync, XisAsync } from "./async.js"
 import { Left } from "purify-ts/Either"
+import type { BuildObjArg, ObjArgBase } from "#util/arg.js"
+import type { XisExecArgs } from "./args.js"
+import { Effect } from "./book-keeping.js"
 
 export type ExecResult<Issues extends XisIssueBase, Out> =
 	| ExecResultSync<Issues, Out>
 	| ExecResultAsync<Issues, Out>
-
 export type ExecResultBase = ExecResult<XisIssueBase, unknown>
 
 export type ExExecResultIssues<R extends ExecResultBase> =
@@ -19,62 +18,27 @@ export type ExExecResultIssues<R extends ExecResultBase> =
 export type ExExecResultOut<R extends ExecResultBase> =
 	R extends ExecResult<any, infer Out> ? Out : never
 
-export type XisFn<
+export type Xis<
 	In,
 	Issues extends XisIssueBase = never,
 	Out = In,
-	Args extends XisOptArgs = undefined,
-> = XisSyncFn<In, Issues, Out, Args> | XisAsyncFn<In, Issues, Out, Args>
+	Eff extends Effect = typeof Effect.Validate,
+	Ctx extends ObjArgBase = ObjArgBase,
+> = XisSync<In, Issues, Out, Eff, Ctx> | XisAsync<In, Issues, Out, Eff, Ctx>
 
-export type Xis<
-	In,
-	GuardIssues extends XisIssueBase = never,
-	ExecIssues extends XisIssueBase = never,
-	Out = In,
-	Args extends XisOptArgs = undefined,
-> =
-	| XisSync<In, GuardIssues, ExecIssues, Out, Args>
-	| XisAsync<In, GuardIssues, ExecIssues, Out, Args>
+export type XisBase = Xis<any, XisIssueBase, unknown, Effect, any>
 
-export type XisBase = Xis<any, XisIssueBase, XisIssueBase, unknown, any>
+export type ExIn<T extends XisBase> = T["types"]["i"]
 
-export type ExIn<T extends XisBase> = T["_bk"]["i"]
+export type ExIssues<T extends XisBase> = T["types"]["is"]
 
-export type ExGuardIssues<T extends XisBase> = T["_bk"]["gi"]
+export type ExOut<T extends XisBase> = T["types"]["o"]
 
-export type ExExecIssues<T extends XisBase> = T["_bk"]["ei"]
+export type ExEff<T extends XisBase> = T["effect"]
 
-export type ExOut<T extends XisBase> = T["_bk"]["o"]
+export type ExCtx<T extends XisBase> = T["types"]["c"]
 
-export type ExArgs<T extends XisBase> = T["_bk"]["a"]
-
-export type ExCtx<T extends XisBase> = XisCtx<ExArgs<T>>
-
-export const InvokeMode = {
-	parse: "parse",
-	exec: "exec",
-} as const
-
-export type InvokeMode = (typeof InvokeMode)[keyof typeof InvokeMode]
-
-export type ExInvoke<T extends XisBase, Mode extends InvokeMode> = ReturnType<T[Mode]>
-
-export const invoke = <Mode extends InvokeMode, X extends XisBase>(
-	mode: Mode,
-	xis: X,
-	value: ExIn<X>,
-	ctx: ExCtx<X>
-): ExInvoke<X, Mode> => {
-	type Res = ExInvoke<X, Mode>
-	switch (mode) {
-		case InvokeMode.parse:
-			return xis.parse(value, ctx) as Res
-		case InvokeMode.exec:
-			return xis.exec(value, ctx) as Res
-		default:
-			return neverGuard(mode)
-	}
-}
+export type ExArgs<T extends XisBase> = XisExecArgs<ExIn<T>, ExCtx<T>>
 
 export const mergeIssues = <R extends ExecResultSyncBase>(
 	acc: R,
@@ -85,4 +49,34 @@ export const mergeIssues = <R extends ExecResultSyncBase>(
 		Right: (_) => Left(issues),
 	}) as R
 
-export const xt = <T extends Array<XisBase>>(...args: T): T => args
+export type XisListIssues<
+	List extends [...Array<XisBase>],
+	Acc extends XisIssueBase = never,
+> = List extends [infer Head extends XisBase, ...infer Tail extends Array<XisBase>]
+	? XisListIssues<Tail, Acc | ExIssues<Head>>
+	: Acc
+
+export type XisListEffect<
+	List extends [...Array<XisBase>],
+	Acc extends Effect = typeof Effect.Validate,
+> = List extends [infer Head extends XisBase, ...infer Tail extends Array<XisBase>]
+	? XisListEffect<
+			Tail,
+			[ExEff<Head>] extends [typeof Effect.Transform] ? typeof Effect.Transform : Acc
+		>
+	: Acc
+
+export type XisListCtx<
+	List extends [...Array<XisBase>],
+	Acc extends ObjArgBase = ObjArgBase,
+> = List extends [infer Next extends XisBase, ...infer Rest extends Array<XisBase>]
+	? XisListCtx<Rest, BuildObjArg<Acc, ExCtx<Next>>>
+	: Acc
+
+export const xisListEffect = <List extends [...Array<XisBase>]>(
+	list: [...List]
+): XisListEffect<List> =>
+	list.reduce<Effect>(
+		(acc, x) => (acc === Effect.Transform ? acc : x.effect),
+		Effect.Validate
+	) as XisListEffect<List>

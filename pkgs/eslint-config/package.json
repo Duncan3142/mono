@@ -41,7 +41,7 @@
 		"eslint-config-prettier": "^9.1.0"
 	},
 	"devDependencies": {
-		"@duncan3142/prettier-config": "^0.1.1",
-		"prettier": "^3.2.2"
+		"@duncan3142/prettier-config": "^0.1.2",
+		"prettier": "^3.2.4"
 	}
 }

@@ -1,58 +1,85 @@
-import type { XisCtxBase } from "#core/context.js"
+import type { XisExecArgs } from "#core/args.js"
+import { Effect } from "#core/book-keeping.js"
 import type { XisIssue } from "#core/error.js"
+import type { XisMessages, XisMsgArgs, XisMsgBuilder } from "#core/messages.js"
+import { XisSync, type ExecResultSync } from "#core/sync.js"
 import { Left, Right } from "purify-ts/Either"
-import { XisSync, type ExecResultSync, type ParseResultSync } from "#core/sync.js"
-import { isNumber, type BaseTypeIssue } from "#core/base-type.js"
 
-export interface NumberDivisibleOptions {
+export type NumberDivisibleProps = {
 	divisor: number
 }
 
-export interface NumberDivisibleIssue<Opts extends NumberDivisibleOptions>
-	extends XisIssue<"DIVISIBLE"> {
+export interface NumberDivisibleIssue extends XisIssue<"XIS_DIVISIBLE"> {
 	value: number
-	divisor: Opts["divisor"]
+	divisor: number
 	remainder: number
 }
 
-export class XisDivisible<const Opts extends NumberDivisibleOptions> extends XisSync<
-	number,
-	BaseTypeIssue<"number">,
-	NumberDivisibleIssue<Opts>
-> {
-	#opts: Opts
+export type NumberDivisibleMsgProps = { value: number; divisor: number; remainder: number }
 
-	constructor(opts: Opts) {
+export interface XisDivisibleMessages extends XisMessages<NumberDivisibleIssue> {
+	XIS_DIVISIBLE: XisMsgBuilder<NumberDivisibleMsgProps>
+}
+
+export interface XisDivisibleArgs {
+	props: NumberDivisibleProps
+	messages: XisDivisibleMessages | null
+}
+
+export class XisDivisible extends XisSync<number, NumberDivisibleIssue> {
+	#messages: XisDivisibleMessages
+	#props: NumberDivisibleProps
+	constructor(args: XisDivisibleArgs) {
 		super()
-		this.#opts = opts
+		const { messages, props } = args
+		this.#props = props
+		this.#messages = messages ?? {
+			XIS_DIVISIBLE: (args: XisMsgArgs<NumberDivisibleMsgProps>) => {
+				const {
+					input: { value, divisor },
+				} = args
+				return `${value} is not divisible by ${divisor}`
+			},
+		}
 	}
-
-	parse(
-		value: unknown,
-		ctx: XisCtxBase
-	): ParseResultSync<BaseTypeIssue<"number">, NumberDivisibleIssue<Opts>, number> {
-		return isNumber(value, ctx).chain((value) => this.exec(value, ctx))
+	override get effect(): typeof Effect.Validate {
+		return Effect.Validate
 	}
-
-	exec(value: number, ctx: XisCtxBase): ExecResultSync<NumberDivisibleIssue<Opts>, number> {
-		const { divisor } = this.#opts
+	exec(args: XisExecArgs<number>): ExecResultSync<NumberDivisibleIssue, number> {
+		const { value, ctx, locale, path } = args
+		const { divisor } = this.#props
 
 		const remainder = value % divisor
 		if (remainder === 0) {
 			return Right(value)
 		}
+
+		const message = this.#messages.XIS_DIVISIBLE({
+			input: { value, remainder, divisor },
+			path,
+			locale,
+			ctx,
+		})
+
 		const err = {
-			name: "DIVISIBLE",
-			path: ctx.path,
+			name: "XIS_DIVISIBLE" as const,
+			path,
 			value,
+			message,
 			divisor,
 			remainder,
-		} satisfies NumberDivisibleIssue<Opts>
-
+		}
 		return Left([err])
 	}
 }
 
-export const divisible = <const Opts extends NumberDivisibleOptions>(
-	options: Opts
-): XisDivisible<Opts> => new XisDivisible(options)
+export const isDivisiblei18n = (divisor: number, messages: XisDivisibleMessages) =>
+	new XisDivisible({
+		props: { divisor },
+		messages,
+	})
+export const isDivisible = (divisor: number) =>
+	new XisDivisible({
+		messages: null,
+		props: { divisor },
+	})
