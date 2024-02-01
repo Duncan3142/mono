@@ -1,28 +1,12 @@
-import { createMachine } from "xstate"
+import { fromPromise } from "xstate"
 
-interface StoreMachineTypes {
-	context: {
-		count: number
-	}
-	actions: { type: "store" }
+export type DoStoreHandler<I> = (input: I) => Promise<boolean>
+
+export type DoStoreActorInput = {
+	value: number
+	handler: DoStoreHandler<number>
 }
 
-export interface StoreMachineProps {
-	input: StoreMachineTypes["context"]
-}
-
-export const counterMachine = createMachine({
-	types: {} as StoreMachineTypes,
-	id: "store",
-	context: ({ input }: StoreMachineProps) => {
-		return {
-			count: input.count,
-		}
-	},
-	initial: "storing",
-	states: {
-		storing: {
-			entry: "store",
-		},
-	},
-})
+export const doStoreActor = fromPromise<boolean, DoStoreActorInput>(({ input }) =>
+	input.handler(input.value)
+)

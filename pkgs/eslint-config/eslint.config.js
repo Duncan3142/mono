@@ -78,6 +78,7 @@ const config = {
 		"@typescript-eslint/consistent-type-definitions": "off",
 		"@typescript-eslint/no-non-null-assertion": "off",
 		"@typescript-eslint/no-unsafe-declaration-merging": "off",
+		"@typescript-eslint/no-invalid-void-type": "off",
 		"@typescript-eslint/explicit-module-boundary-types": "off",
 		"@typescript-eslint/prefer-for-of": "off",
 		"@typescript-eslint/switch-exhaustiveness-check": "error",

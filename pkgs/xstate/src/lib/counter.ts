@@ -1,65 +1,70 @@
-import { createMachine, assign } from "xstate"
+import { setup, assign } from "xstate"
+import { doStoreActor, type DoStoreHandler } from "./store.js"
 
 interface CounterMachineTypes {
 	context: {
 		count: number
+		storeHandler: DoStoreHandler<number>
 	}
-	actions: { type: "up" } | { type: "down" } | { type: "reset" }
-
+	input: { count: number; storeHandler: DoStoreHandler<number> }
 	events: { type: "increment" } | { type: "decrement" } | { type: "reset" } | { type: "store" }
-
-	// actors: { type: "store" }
+	// children?: TChildrenMap;
+	// tags?: TTag;
+	// output?: TOutput;
 }
 
-export interface CounterMachineProps {
-	input: CounterMachineTypes["context"]
-}
-
-export const counterMachine = createMachine(
-	{
-		/** @xstate-layout N4IgpgJg5mDOIC5QGMD2BXAdgFzAJwDo0tsBLTKAYnOTzAFswcBtABgF1FQAHVWUsqkxcQAD0QBaAIwAWVgQCcS1gFYAHAGYVANhUyATCpUAaEAE9EUgOwKCU-dqkrWrGRqkbtqgL7fTxHHwiDBxyKggwWgYmbDZOJBBefkFhBPEECX1ZAitWfRkZBVY1FX0Fdw1TCwQFfQJ9Yq01ViLtNVrffxDcQgCyCko6WDBYjhEkgVIhEXSJPXrtDTl3GTUpBUcZKsQHFRy5MqLahU1NTpA+oL6wylhsVDo48b5J6bTLKzU7co01T7dWJ41PptggNLkCJp9NCZKVNM4ZL4-CBMKgIvAEpc8M9klNUqBZg46rl8oViqVylJQTJIUspIs2ostFYDOcsQQ7g8wjjXvixDtPnZtNorLInFYyqLQUsrAQRSobDo9CUVAo2d0rt1uQkJikZohCgQ8g5PoYPLkrCZzIhwVI7FJWPSNOCEcUkd4gA */
-		types: {} as CounterMachineTypes,
-		id: "counter",
-		context: ({ input }: CounterMachineProps) => {
-			return {
-				count: input.count,
-			}
-		},
-		initial: "counting",
-		states: {
-			storing: {
-				invoke: {
-					src: "store",
-					input: ({ context }) => {
-						return { count: context.count }
-					},
+export const counterMachine = setup({
+	types: {} as CounterMachineTypes,
+	actions: {
+		up: assign({ count: ({ context: { count } }) => count + 1 }),
+		down: assign({
+			count: ({ context: { count } }) => count - 1,
+		}),
+		reset: assign({ count: () => 0 }),
+	},
+	actors: { store: doStoreActor },
+	guards: {},
+}).createMachine({
+	id: "counter",
+	context: ({ input }) => {
+		return {
+			count: input.count,
+			storeHandler: input.storeHandler,
+		}
+	},
+	initial: "counting",
+	states: {
+		storing: {
+			invoke: {
+				src: "store",
+				input: ({ context }) => {
+					return { handler: context.storeHandler, value: context.count }
+				},
+				onDone: {
+					target: "counting",
+				},
+				onError: {
+					target: "counting",
 				},
 			},
-			counting: {
-				on: {
-					increment: {
-						actions: "up",
+		},
+		counting: {
+			on: {
+				increment: {
+					actions: {
+						type: "up",
 					},
-					decrement: {
-						actions: "down",
-					},
-					reset: {
-						actions: "reset",
-					},
-					store: {
-						target: "storing",
-					},
+				},
+				decrement: {
+					actions: "down",
+				},
+				reset: {
+					actions: "reset",
+				},
+				store: {
+					target: "storing",
 				},
 			},
 		},
 	},
-	{
-		actions: {
-			up: assign({ count: ({ context: { count } }) => count + 1 }),
-			down: assign({
-				count: ({ context: { count } }) => count - 1,
-			}),
-			reset: assign({ count: () => 0 }),
-		},
-	}
-)
+})
