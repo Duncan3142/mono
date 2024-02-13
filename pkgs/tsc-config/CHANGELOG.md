@@ -1,5 +1,11 @@
 # @duncan3142/tsc-config
 
+## 0.1.3
+
+### Patch Changes
+
+- 34d0911: void types
+
 ## 0.1.2
 
 ### Patch Changes
