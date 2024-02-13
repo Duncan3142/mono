@@ -1,5 +1,11 @@
 # @duncan3142/eslint-config
 
+## 1.0.0
+
+### Major Changes
+
+- d73907c: Peer deps
+
 ## 0.1.2
 
 ### Patch Changes
