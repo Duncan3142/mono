@@ -1,27 +1,66 @@
 import { describe, it, mock } from "node:test"
-import { deepEqual } from "node:assert/strict"
+import { expect } from "expect"
 import { counterMachine } from "#lib/counter.js"
 import { createActor } from "xstate"
 
 void describe("counterMachine", () => {
 	void it("equals", () => {
-		const fn = mock.fn<(count: number | null) => number>()
+		const subscribeFn =
+			mock.fn<(state: { value: string; context: { count: number } }) => void>()
 
 		const counterActor = createActor(counterMachine, {
 			input: { count: 8 },
 		})
-		counterActor.subscribe((state) => fn(state.context.count))
+		counterActor.subscribe((state) =>
+			subscribeFn({ value: state.value, context: state.context })
+		)
 		counterActor.start()
-		counterActor.send({ type: "increment" })
 		counterActor.send({ type: "increment" })
 		counterActor.send({ type: "reset" })
 		counterActor.send({ type: "decrement" })
-		counterActor.send({ type: "decrement" })
-		counterActor.send({ type: "decrement" })
+		counterActor.send({ type: "store" })
+		counterActor.send({ type: "save" })
 		counterActor.stop()
 
-		const args = fn.mock.calls.map((c) => c.arguments)
+		const subArgs = subscribeFn.mock.calls.map((c) => c.arguments).flat()
 
-		deepEqual(args, [[8], [9], [10], [0], [-1], [-2], [-3]])
+		expect(subArgs).toMatchObject([
+			{
+				context: {
+					count: 8,
+				},
+				value: "counting",
+			},
+			{
+				context: {
+					count: 9,
+				},
+				value: "counting",
+			},
+			{
+				context: {
+					count: 0,
+				},
+				value: "counting",
+			},
+			{
+				context: {
+					count: -1,
+				},
+				value: "counting",
+			},
+			{
+				context: {
+					count: -1,
+				},
+				value: "storing",
+			},
+			{
+				context: {
+					count: 0,
+				},
+				value: "counting",
+			},
+		])
 	})
 })
