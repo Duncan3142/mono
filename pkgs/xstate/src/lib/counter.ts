@@ -40,12 +40,9 @@ export const counterMachine = setup({
 				input: ({ context }) => {
 					return { handler: context.storeHandler, value: context.count }
 				},
-				onDone: {
-					target: "counting",
-				},
-				onError: {
-					target: "counting",
-				},
+				id: "store",
+				onDone: "counting",
+				onError: "counting",
 			},
 		},
 		counting: {

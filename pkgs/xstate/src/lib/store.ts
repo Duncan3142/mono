@@ -7,6 +7,8 @@ export type DoStoreActorInput = {
 	handler: DoStoreHandler<number>
 }
 
-export const doStoreActor = fromPromise<boolean, DoStoreActorInput>(({ input }) =>
-	input.handler(input.value)
-)
+export const doStoreActor = fromPromise<boolean, DoStoreActorInput>(async ({ input }) => {
+	console.log("storing", input.value)
+	await input.handler(input.value)
+	return true
+})
