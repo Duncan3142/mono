@@ -1,13 +1,16 @@
 import { setup, assign } from "xstate"
-import { doStoreActor, type DoStoreHandler } from "./store.js"
 
 interface CounterMachineTypes {
 	context: {
 		count: number
-		storeHandler: DoStoreHandler<number>
 	}
-	input: { count: number; storeHandler: DoStoreHandler<number> }
-	events: { type: "increment" } | { type: "decrement" } | { type: "reset" } | { type: "store" }
+	input: { count: number }
+	events:
+		| { type: "increment" }
+		| { type: "decrement" }
+		| { type: "reset" }
+		| { type: "store" }
+		| { type: "save" }
 	// children?: TChildrenMap;
 	// tags?: TTag;
 	// output?: TOutput;
@@ -22,30 +25,27 @@ export const counterMachine = setup({
 		}),
 		reset: assign({ count: () => 0 }),
 	},
-	actors: { store: doStoreActor },
 	guards: {},
 }).createMachine({
 	id: "counter",
 	context: ({ input }) => {
 		return {
 			count: input.count,
-			storeHandler: input.storeHandler,
 		}
 	},
 	initial: "counting",
 	states: {
 		storing: {
-			invoke: {
-				src: "store",
-				input: ({ context }) => {
-					return { handler: context.storeHandler, value: context.count }
+			id: "storing",
+			on: {
+				save: {
+					target: "counting",
+					actions: "reset",
 				},
-				id: "store",
-				onDone: "counting",
-				onError: "counting",
 			},
 		},
 		counting: {
+			id: "counting",
 			on: {
 				increment: {
 					actions: {
