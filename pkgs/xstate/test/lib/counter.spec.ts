@@ -3,15 +3,28 @@ import { expect } from "expect"
 import { counterMachine } from "#lib/counter.js"
 import { createActor } from "xstate"
 import { setTimeout } from "node:timers/promises"
+import { storeFactory } from "#lib/store.js"
 
 void describe("counterMachine", () => {
 	void it("works", async () => {
 		const subscribeFn =
 			mock.fn<(state: { value: string; context: { count: number } }) => void>()
 
-		const counterActor = createActor(counterMachine, {
-			input: { count: 8 },
+		const save = mock.fn<(count: number) => Promise<string>>((count) => {
+			const success = count % 2 === 0
+			return success ? Promise.resolve("even") : Promise.reject(new Error("odd"))
 		})
+
+		const counterActor = createActor(
+			counterMachine.provide({
+				actors: {
+					store: storeFactory({ repo: { save } }),
+				},
+			}),
+			{
+				input: { count: 8 },
+			}
+		)
 		counterActor.subscribe((state) =>
 			subscribeFn({ value: state.value, context: state.context })
 		)

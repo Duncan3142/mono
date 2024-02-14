@@ -1,17 +1,12 @@
 import { setup, assign } from "xstate"
-import { store } from "./store.js"
+import { dummyStore } from "./store.js"
 
 interface CounterMachineTypes {
 	context: {
 		count: number
 	}
 	input: { count: number }
-	events:
-		| { type: "increment" }
-		| { type: "decrement" }
-		| { type: "reset" }
-		| { type: "store" }
-		| { type: "save" }
+	events: { type: "increment" } | { type: "decrement" } | { type: "reset" } | { type: "store" }
 	// children?: TChildrenMap;
 	// tags?: TTag;
 	// output?: TOutput;
@@ -27,14 +22,15 @@ export const counterMachine = setup({
 		reset: assign({ count: () => 0 }),
 	},
 	actors: {
-		store,
+		store: dummyStore,
 	},
 	guards: {},
 }).createMachine({
 	id: "counter",
 	context: ({ input }) => {
+		const { count } = input
 		return {
-			count: input.count,
+			count,
 		}
 	},
 	initial: "counting",
@@ -44,7 +40,9 @@ export const counterMachine = setup({
 			invoke: {
 				id: "store",
 				src: "store",
-				input: ({ context: { count } }) => count,
+				input: ({ context: { count } }) => {
+					return { count }
+				},
 				onDone: {
 					target: "saved",
 				},
