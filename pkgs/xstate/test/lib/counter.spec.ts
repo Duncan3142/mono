@@ -2,9 +2,10 @@ import { describe, it, mock } from "node:test"
 import { expect } from "expect"
 import { counterMachine } from "#lib/counter.js"
 import { createActor } from "xstate"
+import { setTimeout } from "node:timers/promises"
 
 void describe("counterMachine", () => {
-	void it("equals", () => {
+	void it("works", async () => {
 		const subscribeFn =
 			mock.fn<(state: { value: string; context: { count: number } }) => void>()
 
@@ -18,8 +19,9 @@ void describe("counterMachine", () => {
 		counterActor.send({ type: "increment" })
 		counterActor.send({ type: "reset" })
 		counterActor.send({ type: "decrement" })
+		counterActor.send({ type: "decrement" })
 		counterActor.send({ type: "store" })
-		counterActor.send({ type: "save" })
+		await setTimeout(0)
 		counterActor.stop()
 
 		const subArgs = subscribeFn.mock.calls.map((c) => c.arguments).flat()
@@ -51,15 +53,21 @@ void describe("counterMachine", () => {
 			},
 			{
 				context: {
-					count: -1,
+					count: -2,
+				},
+				value: "counting",
+			},
+			{
+				context: {
+					count: -2,
 				},
 				value: "storing",
 			},
 			{
 				context: {
-					count: 0,
+					count: -2,
 				},
-				value: "counting",
+				value: "saved",
 			},
 		])
 	})

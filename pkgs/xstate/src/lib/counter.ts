@@ -1,4 +1,5 @@
 import { setup, assign } from "xstate"
+import { store } from "./store.js"
 
 interface CounterMachineTypes {
 	context: {
@@ -25,6 +26,9 @@ export const counterMachine = setup({
 		}),
 		reset: assign({ count: () => 0 }),
 	},
+	actors: {
+		store,
+	},
 	guards: {},
 }).createMachine({
 	id: "counter",
@@ -37,12 +41,23 @@ export const counterMachine = setup({
 	states: {
 		storing: {
 			id: "storing",
-			on: {
-				save: {
-					target: "counting",
-					actions: "reset",
+			invoke: {
+				id: "store",
+				src: "store",
+				input: ({ context: { count } }) => count,
+				onDone: {
+					target: "saved",
+				},
+				onError: {
+					target: "errored",
 				},
 			},
+		},
+		saved: {
+			type: "final",
+		},
+		errored: {
+			type: "final",
 		},
 		counting: {
 			id: "counting",
