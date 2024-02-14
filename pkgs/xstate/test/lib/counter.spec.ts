@@ -84,4 +84,22 @@ void describe("counterMachine", () => {
 			},
 		])
 	})
+	void it("restores", () => {
+		const initial = createActor(counterMachine, {
+			input: { count: 8 },
+		})
+		initial.start()
+		initial.send({ type: "increment" })
+		const state = initial.getPersistedSnapshot()
+		initial.stop()
+		const restored = createActor(counterMachine, {
+			input: { count: 0 },
+			snapshot: state,
+		})
+		const {
+			context: { count },
+		} = restored.getSnapshot()
+		restored.stop()
+		expect(count).toBe(9)
+	})
 })
