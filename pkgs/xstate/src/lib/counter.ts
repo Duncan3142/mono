@@ -24,7 +24,6 @@ export const counterMachine = setup({
 	actors: {
 		store: dummyStore,
 	},
-	guards: {},
 }).createMachine({
 	id: "counter",
 	context: ({ input }) => {
