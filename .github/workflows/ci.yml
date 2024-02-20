@@ -23,10 +23,10 @@ jobs:
         with:
           fetch-depth: 0
       - name: Setup
-        uses: ./actions/setup
+        uses: Duncan3142/js-pkgs/actions/setup
         with:
           github-actor: ${{ github.actor }}
       - name: Build
-        uses: ./actions/build
+        uses: Duncan3142/js-pkgs/actions/build
         with:
           skip-changesets: ${{ github.event.pull_request.title == 'Version Packages' }}

@@ -1,7 +1,10 @@
 add:
 	git add .
 
-commit: add
+change: add
+	pnpm exec changeset
+
+commit: change
 	pnpm exec cz
 
 up:
