@@ -23,7 +23,7 @@ jobs:
         with:
           fetch-depth: 0
       - name: Setup
-        uses: Duncan3142/js-pkgs/actions/setup@main
+        uses: Duncan3142/js-pkgs/actions/setup@gha-setup%400.0.2
         with:
           github-actor: ${{ github.actor }}
       - name: Build
