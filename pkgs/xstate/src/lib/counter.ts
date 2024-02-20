@@ -7,9 +7,13 @@ interface CounterMachineTypes {
 	}
 	input: { count: number }
 	events: { type: "increment" } | { type: "decrement" } | { type: "reset" } | { type: "store" }
-	// children?: TChildrenMap;
+	children: {
+		store: "store"
+	}
 	// tags?: TTag;
-	// output?: TOutput;
+	output: {
+		count: number
+	}
 }
 
 export const counterMachine = setup({
@@ -33,6 +37,13 @@ export const counterMachine = setup({
 		}
 	},
 	initial: "counting",
+	output: ({ context }) => {
+		const { count } = context
+		return {
+			count,
+		}
+	},
+
 	states: {
 		storing: {
 			id: "storing",

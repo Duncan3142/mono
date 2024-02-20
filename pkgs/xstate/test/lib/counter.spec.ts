@@ -1,7 +1,7 @@
 import { describe, it, mock } from "node:test"
 import { expect } from "expect"
 import { counterMachine } from "#lib/counter.js"
-import { createActor } from "xstate"
+import { createActor, toPromise } from "xstate"
 import { setTimeout } from "node:timers/promises"
 import { storeFactory } from "#lib/store.js"
 
@@ -25,9 +25,11 @@ void describe("counterMachine", () => {
 				input: { count: 8 },
 			}
 		)
+
 		counterActor.subscribe((state) =>
 			subscribeFn({ value: state.value, context: state.context })
 		)
+		const caPromise = toPromise(counterActor)
 		counterActor.start()
 		counterActor.send({ type: "increment" })
 		counterActor.send({ type: "reset" })
@@ -83,6 +85,7 @@ void describe("counterMachine", () => {
 				value: "saved",
 			},
 		])
+		expect(await caPromise).toEqual({ count: -2 })
 	})
 	void it("restores", () => {
 		const initial = createActor(counterMachine, {
@@ -98,7 +101,9 @@ void describe("counterMachine", () => {
 		})
 		const {
 			context: { count },
+			status,
 		} = restored.getSnapshot()
+		expect(status).toBe("active")
 		restored.stop()
 		expect(count).toBe(9)
 	})
