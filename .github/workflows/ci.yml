@@ -23,10 +23,10 @@ jobs:
         with:
           fetch-depth: 0
       - name: Setup
-        uses: Duncan3142/js-pkgs/actions/setup@6d36836b307f579880e650e1cd6473cbe4a2772c
+        uses: Duncan3142/js-pkgs/actions/setup@b9ccf32ec9dc855d2392e0bf2fc240441209699d # @gha/setup@0.0.4
         with:
           github-actor: ${{ github.actor }}
       - name: Build
-        uses: Duncan3142/js-pkgs/actions/build@6d36836b307f579880e650e1cd6473cbe4a2772c
+        uses: Duncan3142/js-pkgs/actions/build@3abd7e8d1420e40ab9896e74d9cfe9119cb55f8c # @gha/build@0.0.3
         with:
           skip-changesets: ${{ github.event.pull_request.title == 'Version Packages' }}
