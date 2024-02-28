@@ -1,5 +1,11 @@
 # @duncan3142/xis
 
+## 0.1.4
+
+### Patch Changes
+
+- e067c01: Deps
+
 ## 0.1.3
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # @duncan3142/plop-pkg
 
+## 0.0.6
+
+### Patch Changes
+
+- e067c01: Deps
+
 ## 0.0.5
 
 ### Patch Changes
