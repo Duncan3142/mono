@@ -1,3 +1,6 @@
+changeempty:
+	pnpm exec changeset --empty
+
 change:
 	pnpm exec changeset
 
