@@ -25,14 +25,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Setup
-        uses: Duncan3142/js-pkgs/actions/setup@main
+        uses: Duncan3142/js-pkgs/actions/setup@6d36836b307f579880e650e1cd6473cbe4a2772c
         with:
           github-actor: ${{ github.actor }}
       - name: Changesets
         id: changesets
-        uses: changesets/action@v1
-        with:
-          version: ./shell/version.sh
-          publish: ./shell/publish.sh
-          setupGitUser: false
-          createGithubReleases: true
+        uses: ./actions/changesets

@@ -23,9 +23,6 @@ pnpm-lock.yaml
 # NVM
 !.nvmrc
 
-# Commitzen
-!.czrc
-
 # Prettier
 !.prettierignore
 !.prettierrc.json

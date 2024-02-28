@@ -1,11 +1,10 @@
+change:
+	pnpm exec changeset
+
 add:
 	git add .
 
-change: add
-	pnpm exec changeset
-
-commit: change
-	pnpm exec cz
+stage: change add
 
 up:
 	pnpm up -r
