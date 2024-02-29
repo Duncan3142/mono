@@ -1,18 +1,8 @@
 name: "Build"
-description: "Build package"
-inputs:
-  skip-changesets:
-    description: "Skip changeset check"
-    required: false
-    default: "false"
+description: "Build packages"
 runs:
   using: "composite"
   steps:
-    - name: Changeset check
-      if: inputs.skip-changesets != 'true'
-      shell: bash
-      run: |
-        pnpm exec changeset status
     - name: Build
       shell: bash
       run: pnpm run turbo:build
