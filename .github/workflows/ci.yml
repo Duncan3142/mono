@@ -1,28 +1,28 @@
-name: CI
+# name: CI
 
-on:
-  pull_request:
-    types: [opened, synchronize, reopened, labeled, unlabeled]
-    branches: main
+# on:
+#   pull_request:
+#     types: [opened, synchronize, reopened, labeled, unlabeled]
+#     branches: main
 
-concurrency:
-  group: ${{ github.workflow_ref }}
-  cancel-in-progress: false
+# concurrency:
+#   group: ${{ github.workflow_ref }}
+#   cancel-in-progress: false
 
-jobs:
-  build:
-    name: Build
-    runs-on: ubuntu-latest
-    if: github.event.pull_request.draft == false
-    env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      GH_PACKAGES_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Setup
-        uses: Duncan3142/js-pkgs/actions/setup@b9ccf32ec9dc855d2392e0bf2fc240441209699d # @gha/setup@0.0.4
-        with:
-          github-actor: ${{ github.actor }}
-      - name: Build
-        uses: Duncan3142/js-pkgs/actions/build@0a31c0edbda02156f7232eeec6a4fe2a2ffcdac1 # @gha/build@0.0.4
+# jobs:
+#   build:
+#     name: Build
+#     runs-on: ubuntu-latest
+#     if: github.event.pull_request.draft == false
+#     env:
+#       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#       GH_PACKAGES_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#     steps:
+#       - name: Checkout
+#         uses: actions/checkout@v4
+#       - name: Setup
+#         uses: Duncan3142/mono/actions/setup@b9ccf32ec9dc855d2392e0bf2fc240441209699d # @gha/setup@0.0.4
+#         with:
+#           github-actor: ${{ github.actor }}
+#       - name: Build
+#         uses: Duncan3142/mono/actions/build@0a31c0edbda02156f7232eeec6a4fe2a2ffcdac1 # @gha/build@0.0.4

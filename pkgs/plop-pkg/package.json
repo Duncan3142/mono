@@ -1,6 +1,6 @@
 {
 	"name": "@duncan3142/plop-pkg",
-	"repository": "https://github.com/duncan3142/js-pkgs",
+	"repository": "https://github.com/Duncan3142/mono",
 	"publishConfig": {
 		"registry": "https://npm.pkg.github.com",
 		"access": "restricted"

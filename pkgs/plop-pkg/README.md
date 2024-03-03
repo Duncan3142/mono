@@ -22,8 +22,8 @@
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-	<a href="https://github.com/Duncan3142/js-pkgs/tree/main/pkgs/plop-pkg">
-		<img src="https://raw.githubusercontent.com/Duncan3142/js-pkgs/main/logo.png" alt="Logo" width="80" height="80">
+	<a href="https://github.com/Duncan3142/mono/tree/main/pkgs/plop-pkg">
+		<img src="https://raw.githubusercontent.com/Duncan3142/mono/main/logo.png" alt="Logo" width="80" height="80">
 	</a>
 
 <h3 align="center">Plop Pkg</h3>
@@ -31,7 +31,7 @@
 <p align="center">
 	Plop Typescript Package Template
 	<br />
-	<a href="https://github.com/Duncan3142/js-pkgs/tree/main/pkgs/plop-pkg"><strong>Explore the docs</strong></a>
+	<a href="https://github.com/Duncan3142/mono/tree/main/pkgs/plop-pkg"><strong>Explore the docs</strong></a>
 </p>
 
 </div>
@@ -92,14 +92,14 @@ Distributed under the MIT License. See [LICENSE.txt](./LICENSE.txt) for more inf
 
 Duncan Giles - duncan3142@gmail.com
 
-Project Link: [https://github.com/Duncan3142/js-pkgs/tree/main/pkgs/plop-pkg](https://github.com/Duncan3142/js-pkgs/tree/main/pkgs/plop-pkg)
+Project Link: [https://github.com/Duncan3142/mono/tree/main/pkgs/plop-pkg](https://github.com/Duncan3142/mono/tree/main/pkgs/plop-pkg)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
 
-[license-shield]: https://img.shields.io/github/license/Duncan3142/js-pkgs/tree/main/pkgs/plop-pkg.svg?style=for-the-badge
+[license-shield]: https://img.shields.io/github/license/Duncan3142/mono/tree/main/pkgs/plop-pkg.svg?style=for-the-badge
 [license-url]: ./LICENSE.txt
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://linkedin.com/in/duncan3142

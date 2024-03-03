@@ -22,16 +22,16 @@
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-	<a href="https://github.com/Duncan3142/js-pkgs">
-		<img src="https://raw.githubusercontent.com/Duncan3142/js-pkgs/main/logo.png" alt="Logo" width="80" height="80">
+	<a href="https://github.com/Duncan3142/mono">
+		<img src="https://raw.githubusercontent.com/Duncan3142/mono/main/logo.png" alt="Logo" width="80" height="80">
 	</a>
 
-<h3 align="center">Xis</h3>
+<h3 align="center">ESLint Config</h3>
 
 <p align="center">
-	Typescript object validation & transformation library
+	A Typescript template repository for packages or services
 	<br />
-	<a href="https://github.com/Duncan3142/js-pkgs"><strong>Explore the docs</strong></a>
+	<a href="https://github.com/Duncan3142/mono"><strong>Explore the docs</strong></a>
 </p>
 
 </div>
@@ -51,25 +51,28 @@
 			<ul>
 				<li><a href="#prerequisites">Prerequisites</a></li>
 				<li><a href="#installation">Installation</a></li>
+				<li><a href="#environment">Environment</a></li>
 			</ul>
 		</li>
 		<li><a href="#usage">Usage</a></li>
 		<li><a href="#license">License</a></li>
 		<li><a href="#contact">Contact</a></li>
-	</ol>
+
+  </ol>
+
 </details>
 
 <!-- ABOUT THE PROJECT -->
 
 ## About The Project
 
-Typescript object validation & transformation
+A typescript template repository
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 ### Built With
 
-- [Purify](https://gigobyte.github.io/purify/)
+- [Turborepo](https://turborepo.org/)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -80,14 +83,21 @@ Typescript object validation & transformation
 ### Prerequisites
 
 - [Node.js](https://nodejs.org/)
+- [pnpm](https://pnpm.io/)
 
 ### Installation
 
 Install packages
 
 ```sh
-npm i
+pnpm i
 ```
+
+### Environment
+
+See [example.env](./example.env) for details on available environment variables
+
+<p align="right">(<a href="#top">back to top</a>)</p>
 
 <!-- USAGE EXAMPLES -->
 
@@ -96,8 +106,10 @@ npm i
 To build the package and run all tests, run the following command
 
 ```sh
-npm run build
+pnpm test
 ```
+
+For use with an IDE, select the Typescript version found in `./node_modules/typescript/lib`
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -115,14 +127,14 @@ Distributed under the MIT License. See [LICENSE.txt](./LICENSE.txt) for more inf
 
 Duncan Giles - duncan3142@gmail.com
 
-Project Link: [https://github.com/Duncan3142/js-pkgs](https://github.com/Duncan3142/js-pkgs)
+Project Link: [https://github.com/Duncan3142/mono](https://github.com/Duncan3142/mono)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
 
-[license-shield]: https://img.shields.io/github/license/Duncan3142/js-pkgs.svg?style=for-the-badge
+[license-shield]: https://img.shields.io/github/license/Duncan3142/mono.svg?style=for-the-badge
 [license-url]: ./LICENSE.txt
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://linkedin.com/in/duncan3142

@@ -16,26 +16,24 @@
 *** https://www.markdownguide.org/basic-syntax/#reference-style-links
 -->
 
-[![MIT License][license-shield]][license-url] [![LinkedIn][linkedin-shield]][linkedin-url]
+[![MIT License][license-shield]][license-url]
+[![LinkedIn][linkedin-shield]][linkedin-url]
 
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-	<a href="https://github.com/Duncan3142/js-pkgs/tree/main/pkgs/xstate">
-		<img
-			src="https://raw.githubusercontent.com/Duncan3142/js-pkgs/main/logo.png"
-			alt="Logo"
-			width="80"
-			height="80"
-		/>
+	<a href="https://github.com/Duncan3142/mono">
+		<img src="https://raw.githubusercontent.com/Duncan3142/mono/main/logo.png" alt="Logo" width="80" height="80">
 	</a>
-	<h3 align="center">XState</h3>
-	<p align="center">
-		XState Sandbox
-		<br />
-		<a href="https://github.com/Duncan3142/js-pkgs/tree/main/pkgs/xstate"><strong
-			>Explore the docs</strong></a>
-	</p>
+
+<h3 align="center">ESLint Config</h3>
+
+<p align="center">
+	A Typescript template repository for packages or services
+	<br />
+	<a href="https://github.com/Duncan3142/mono"><strong>Explore the docs</strong></a>
+</p>
+
 </div>
 
 <!-- TABLE OF CONTENTS -->
@@ -48,23 +46,56 @@
 				<li><a href="#built-with">Built With</a></li>
 			</ul>
 		</li>
+		<li>
+			<a href="#getting-started">Getting Started</a>
+			<ul>
+				<li><a href="#prerequisites">Prerequisites</a></li>
+				<li><a href="#installation">Installation</a></li>
+				<li><a href="#environment">Environment</a></li>
+			</ul>
+		</li>
 		<li><a href="#usage">Usage</a></li>
 		<li><a href="#license">License</a></li>
 		<li><a href="#contact">Contact</a></li>
-	</ol>
+
+  </ol>
+
 </details>
 
 <!-- ABOUT THE PROJECT -->
 
 ## About The Project
 
-XState Sandbox
+A typescript template repository
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 ### Built With
 
-- [TypeScript](https://www.typescriptlang.org/)
+- [Turborepo](https://turborepo.org/)
+
+<p align="right">(<a href="#top">back to top</a>)</p>
+
+<!-- GETTING STARTED -->
+
+## Getting Started
+
+### Prerequisites
+
+- [Node.js](https://nodejs.org/)
+- [pnpm](https://pnpm.io/)
+
+### Installation
+
+Install packages
+
+```sh
+pnpm i
+```
+
+### Environment
+
+See [example.env](./example.env) for details on available environment variables
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -72,14 +103,21 @@ XState Sandbox
 
 ## Usage
 
+To build the package and run all tests, run the following command
+
+```sh
+pnpm test
+```
+
+For use with an IDE, select the Typescript version found in `./node_modules/typescript/lib`
+
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 <!-- LICENSE -->
 
 ## License
 
-Distributed under the MIT License.
-See [LICENSE.txt](./LICENSE.txt) for more information.
+Distributed under the MIT License. See [LICENSE.txt](./LICENSE.txt) for more information.
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -89,13 +127,14 @@ See [LICENSE.txt](./LICENSE.txt) for more information.
 
 Duncan Giles - duncan3142@gmail.com
 
-Project Link: [https://github.com/Duncan3142/js-pkgs/tree/main/pkgs/xstate](https://github.com/Duncan3142/js-pkgs/tree/main/pkgs/xstate)
+Project Link: [https://github.com/Duncan3142/mono](https://github.com/Duncan3142/mono)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
 
-[license-shield]: https://img.shields.io/github/license/Duncan3142/js-pkgs/tree/main/pkgs/xstate.svg?style=for-the-badge [license-url]: ./LICENSE.txt [linkedin-shield]:
-https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
+[license-shield]: https://img.shields.io/github/license/Duncan3142/mono.svg?style=for-the-badge
+[license-url]: ./LICENSE.txt
+[linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://linkedin.com/in/duncan3142
