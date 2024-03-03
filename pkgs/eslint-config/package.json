@@ -7,7 +7,7 @@
 	},
 	"description": "ESLint config",
 	"keywords": [],
-	"version": "1.0.0",
+	"version": "0.0.0",
 	"author": "Duncan Giles",
 	"type": "commonjs",
 	"license": "MIT",

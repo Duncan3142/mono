@@ -1,2 +1,0 @@
-pnpm run turbo:clean
-pnpm run turbo:build --force
