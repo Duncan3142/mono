@@ -1,7 +1,7 @@
 {
-	"name": "@Duncan3142/mono",
+	"name": "@duncan3142/mono",
 	"repository": "https://github.com/Duncan3142/mono",
-	"description": "JavaScript All The Things",
+	"description": "GitHub All The Things",
 	"private": true,
 	"author": "Duncan Giles",
 	"type": "module",
@@ -23,14 +23,12 @@
 		"turbo:build": "turbo run build --cache-dir=\"./.turbo\""
 	},
 	"devDependencies": {
-		"@changesets/cli": "^2.27.1",
 		"@commitlint/cli": "^19.0.3",
 		"@commitlint/config-conventional": "^19.0.3",
 		"@duncan3142/plop-pkg": "workspace:*",
 		"@duncan3142/prettier-config": "^0.1.2",
 		"husky": "^9.0.11",
 		"plop": "^4.0.1",
-		"prettier": "^3.2.5",
-		"turbo": "^1.12.4"
+		"prettier": "^3.2.5"
 	}
 }
