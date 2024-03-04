@@ -36,7 +36,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Setup
-        uses: ./actions/setup
+        uses: ./actions/pnpm/setup
         with:
           github-actor: ${{ github.actor }}
           cwd: ${{ env.MONO_WORK_DIR }}
@@ -69,7 +69,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Setup
-        uses: ./actions/setup
+        uses: ./actions/pnpm/setup
         with:
           github-actor: ${{ github.actor }}
           cwd: ${{ env.MONO_WORK_DIR }}
