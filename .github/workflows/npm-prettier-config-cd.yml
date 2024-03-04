@@ -1,0 +1,82 @@
+name: Prettier Config CD
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+     - 'pkgs/prettier-config/**'
+
+permissions:
+  packages: write
+  pull-requests: write
+  contents: write
+
+env:
+  MONO_WORK_DIR: ./pkgs/prettier-config
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: false
+
+defaults:
+  run:
+    working-directory: ./pkgs/prettier-config
+
+jobs:
+  publish:
+    name: Publish
+    runs-on: ubuntu-latest
+    outputs:
+      requires-versioning: ${{ steps.pending-changes.outputs.count != '0' }}
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GH_PACKAGES_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup
+        uses: ./actions/setup
+        with:
+          github-actor: ${{ github.actor }}
+          cwd: ${{ env.MONO_WORK_DIR }}
+      - name: Pending changes
+        id: pending-changes
+        run: |
+          echo Current directory: $(pwd)
+          mkdir -p .tmp
+          pnpm exec changeset status --output="./.tmp/changes_status.json"
+          CHANGE_COUNT=$(jq '.changesets | length' ./.tmp/changes_status.json)
+          echo Change count: "$CHANGE_COUNT"
+          echo "count=${CHANGE_COUNT}" >> "$GITHUB_OUTPUT"
+      - name: Publish
+        if: steps.pending-changes.outputs.count != '0'
+        run: |
+          echo Current directory: $(pwd)
+          echo Running publish...
+          # pnpm exec changeset publish
+          # git push --follow-tags --no-verify
+
+  version:
+    name: Version
+    runs-on: ubuntu-latest
+    concurrency: ${{ 'sync-version-branch' }}
+    needs: publish
+    if: needs.publish.outputs.requires-versioning == 'true'
+    steps:
+      - name: Do versioning
+        run: echo "Do versioning"
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup
+        uses: ./actions/setup
+        with:
+          github-actor: ${{ github.actor }}
+          cwd: ${{ env.MONO_WORK_DIR }}
+      - name: Version
+        id: version
+        run: |
+          echo Current directory: $(pwd)
+          echo Running version...
+          pnpm exec changeset version
+          git status

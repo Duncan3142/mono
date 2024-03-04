@@ -1,13 +1,24 @@
 name: "Setup"
-description: "Setup runtime"
+description: "Setup PNPM"
 inputs:
   github-actor:
     description: "GitHub actor"
+    required: true
+  cwd:
+    description: "Working directory"
     required: true
 
 runs:
   using: "composite"
   steps:
+    - name: Working Directory
+      shell: bash
+      run: |
+        cd "$WORK_DIR"
+        echo Current directory: $(pwd)
+        echo MONO_WORK_DIR: "$MONO_WORK_DIR"
+      env:
+        WORK_DIR: ${{ inputs.cwd }}
     - name: Git Config
       shell: bash
       run: |

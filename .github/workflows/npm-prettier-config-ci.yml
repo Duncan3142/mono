@@ -6,17 +6,23 @@ on:
     branches: main
     paths:
       - 'pkgs/prettier-config/**'
-      - '!pkgs/prettier-config/.gitignore'
       - '!pkgs/prettier-config/.changeset/*'
       - '!pkgs/prettier-config/CHANGELOG.md'
+
+env:
+  MONO_WORK_DIR: ./pkgs/prettier-config
 
 concurrency:
   group: ${{ github.workflow_ref }}
   cancel-in-progress: true
 
+defaults:
+  run:
+    working-directory: pkgs/prettier-config
+
 jobs:
-  build:
-    name: Build
+  test:
+    name: Test
     runs-on: ubuntu-latest
     if: github.event.pull_request.draft == false
     env:
@@ -29,5 +35,7 @@ jobs:
         uses: ./actions/setup
         with:
           github-actor: ${{ github.actor }}
-      - name: Build
-        uses: ./actions/build
+          cwd: ${{ env.MONO_WORK_DIR }}
+      - name: Test
+        run: |
+          pnpm run format
