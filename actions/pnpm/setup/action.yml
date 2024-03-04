@@ -26,9 +26,8 @@ runs:
       with:
         check-latest: true
         cache: "pnpm"
-        node-version-file: .nvmrc
-        cache-dependency-path: pnpm-lock.yaml
-      working-directory: ${{ inputs.cwd }}
+        node-version-file: ${{ inputs.cwd }}/.nvmrc
+        cache-dependency-path: ${{ inputs.cwd }}/pnpm-lock.yaml
     - name: Install
       shell: bash
       run: |
