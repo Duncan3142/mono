@@ -1,4 +1,4 @@
-name: Node Prettier Config CD
+name: Prettier Config CD
 
 on:
   push:

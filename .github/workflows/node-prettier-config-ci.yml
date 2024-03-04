@@ -1,4 +1,4 @@
-name: Node Prettier Config CI
+name: Prettier Config CI
 
 on:
   pull_request:
