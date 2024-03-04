@@ -1,8 +1,0 @@
-name: "Build"
-description: "Build packages"
-runs:
-  using: "composite"
-  steps:
-    - name: Build
-      shell: bash
-      run: pnpm run turbo:build
