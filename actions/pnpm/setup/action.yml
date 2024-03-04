@@ -14,6 +14,7 @@ runs:
     - name: Working Directory
       shell: bash
       run: |
+        echo Original directory: $(pwd)
         cd "$WORK_DIR"
         echo Current directory: $(pwd)
         echo MONO_WORK_DIR: "$MONO_WORK_DIR"
@@ -34,7 +35,8 @@ runs:
       with:
         check-latest: true
         cache: "pnpm"
-        node-version-file: ".nvmrc"
+        node-version-file: ${{ inputs.cwd }}/.nvmrc
+        cache-dependency-path: ${{ inputs.cwd }}/pnpm-lock.yaml
     - name: Install
       shell: bash
       run: |
