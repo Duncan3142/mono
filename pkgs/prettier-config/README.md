@@ -22,16 +22,16 @@
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-	<a href="https://github.com/Duncan3142/mono">
+	<a href="https://github.com/Duncan3142/mono/pkgs/prettier-config">
 		<img src="https://raw.githubusercontent.com/Duncan3142/mono/main/logo.png" alt="Logo" width="80" height="80">
 	</a>
 
-<h3 align="center">ESLint Config</h3>
+<h3 align="center">Prettier Config</h3>
 
 <p align="center">
-	A Typescript template repository for packages or services
+	Prettier Config
 	<br />
-	<a href="https://github.com/Duncan3142/mono"><strong>Explore the docs</strong></a>
+	<a href="https://github.com/Duncan3142/mono/pkgs/prettier-config"><strong>Explore the docs</strong></a>
 </p>
 
 </div>
@@ -46,14 +46,6 @@
 				<li><a href="#built-with">Built With</a></li>
 			</ul>
 		</li>
-		<li>
-			<a href="#getting-started">Getting Started</a>
-			<ul>
-				<li><a href="#prerequisites">Prerequisites</a></li>
-				<li><a href="#installation">Installation</a></li>
-				<li><a href="#environment">Environment</a></li>
-			</ul>
-		</li>
 		<li><a href="#usage">Usage</a></li>
 		<li><a href="#license">License</a></li>
 		<li><a href="#contact">Contact</a></li>
@@ -66,50 +58,29 @@
 
 ## About The Project
 
-A typescript template repository
+Prettier configuration
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 ### Built With
 
-- [Turborepo](https://turborepo.org/)
+- [Prettier](https://prettier.io/)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
-
-<!-- GETTING STARTED -->
-
-## Getting Started
-
-### Prerequisites
-
-- [Node.js](https://nodejs.org/)
-- [pnpm](https://pnpm.io/)
-
-### Installation
-
-Install packages
-
-```sh
-pnpm i
-```
-
-### Environment
-
-See [example.env](./example.env) for details on available environment variables
-
-<p align="right">(<a href="#top">back to top</a>)</p>
-
-<!-- USAGE EXAMPLES -->
 
 ## Usage
 
-To build the package and run all tests, run the following command
+Install the package as a dev dependency
 
 ```sh
-pnpm test
+pnpm add -D @duncan3142/prettier-config
 ```
 
-For use with an IDE, select the Typescript version found in `./node_modules/typescript/lib`
+then reference the package in your `.prettierrc.json`
+
+```json
+"@duncan3142/prettier-config/.prettierrc.json"
+```
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -127,7 +98,7 @@ Distributed under the MIT License. See [LICENSE.txt](./LICENSE.txt) for more inf
 
 Duncan Giles - duncan3142@gmail.com
 
-Project Link: [https://github.com/Duncan3142/mono](https://github.com/Duncan3142/mono)
+Project Link: [https://github.com/Duncan3142/mono/pkgs/prettier-config](https://github.com/Duncan3142/mono/pkgs/prettier-config)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
