@@ -42,7 +42,7 @@ jobs:
           echo Changeset count: "$CHANGE_COUNT"
           echo "count=${CHANGE_COUNT}" >> "$GITHUB_OUTPUT"
       - name: Publish
-        if: steps.changeset-status.outputs.count != '0'
+        if: steps.changeset-status.outputs.count == '0'
         run: |
           echo Running publish...
           # pnpm exec changeset publish
