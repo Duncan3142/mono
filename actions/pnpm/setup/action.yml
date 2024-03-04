@@ -11,15 +11,6 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: Working Directory
-      shell: bash
-      run: |
-        echo Original directory: $(pwd)
-        cd "$WORK_DIR"
-        echo Current directory: $(pwd)
-        echo MONO_WORK_DIR: "$MONO_WORK_DIR"
-      env:
-        WORK_DIR: ${{ inputs.cwd }}
     - name: Git Config
       shell: bash
       run: |
@@ -35,9 +26,11 @@ runs:
       with:
         check-latest: true
         cache: "pnpm"
-        node-version-file: ${{ inputs.cwd }}/.nvmrc
-        cache-dependency-path: ${{ inputs.cwd }}/pnpm-lock.yaml
+        node-version-file: .nvmrc
+        cache-dependency-path: pnpm-lock.yaml
+      working-directory: ${{ inputs.cwd }}
     - name: Install
       shell: bash
       run: |
         pnpm install --frozen-lockfile
+      working-directory: ${{ inputs.cwd }}
