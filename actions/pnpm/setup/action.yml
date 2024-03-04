@@ -1,12 +1,5 @@
 name: "Setup"
 description: "Setup PNPM"
-inputs:
-  github-actor:
-    description: "GitHub actor"
-    required: true
-  cwd:
-    description: "Working directory"
-    required: true
 
 runs:
   using: "composite"
@@ -16,8 +9,6 @@ runs:
       run: |
         git config --global user.name "$GITHUB_ACTOR"
         git config --global user.email "$GITHUB_ACTOR@users.noreply.github.com"
-      env:
-        GITHUB_ACTOR: ${{ inputs.github-actor }}
     - uses: pnpm/action-setup@v3
       with:
         version: latest
@@ -26,10 +17,10 @@ runs:
       with:
         check-latest: true
         cache: "pnpm"
-        node-version-file: ${{ inputs.cwd }}/.nvmrc
-        cache-dependency-path: ${{ inputs.cwd }}/pnpm-lock.yaml
+        node-version-file: ${{ env.MONO_WORK_DIR }}/.nvmrc
+        cache-dependency-path: ${{ env.MONO_WORK_DIR }}/pnpm-lock.yaml
     - name: Install
       shell: bash
       run: |
         pnpm install --frozen-lockfile
-      working-directory: ${{ inputs.cwd }}
+      working-directory: ${{ env.MONO_WORK_DIR }}

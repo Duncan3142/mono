@@ -16,26 +16,21 @@ concurrency:
   group: ${{ github.workflow_ref }}
   cancel-in-progress: true
 
-defaults:
-  run:
-    working-directory: pkgs/prettier-config
-
 jobs:
   test:
     name: Test
     runs-on: ubuntu-latest
     if: github.event.pull_request.draft == false
     env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       GH_PACKAGES_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    defaults:
+      run:
+        working-directory: ${{ env.MONO_WORK_DIR }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Setup
         uses: ./actions/setup
-        with:
-          github-actor: ${{ github.actor }}
-          cwd: ${{ env.MONO_WORK_DIR }}
       - name: Test
         run: |
           pnpm run format
