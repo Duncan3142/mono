@@ -22,7 +22,7 @@
 		".prettierrc.json"
 	],
 	"scripts": {
-		"clean": "rm -rf .prettier .package",
+		"clean": "rm -rf .prettier",
 		"format": "prettier --check --cache --cache-location='.prettier/cache' --cache-strategy content .",
 		"format:fix": "prettier --write --cache --cache-location='.prettier/cache' --cache-strategy content ."
 	},
