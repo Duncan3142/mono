@@ -42,16 +42,20 @@ jobs:
 
           echo "Fetching Versioning Branch"
           git fetch origin --depth="${INITIAL_FETCH_DEPTH}" "refs/heads/${VERSIONING_BRANCH}:refs/remotes/origin/${VERSIONING_BRANCH}" || true
+
           echo "Branch list"
           git branch -a
+
           git checkout "${VERSIONING_BRANCH}" || git checkout -b "${VERSIONING_BRANCH}" --track "origin/${VERSIONING_BRANCH}"
 
-          echo "Merge Base"
-          git merge-base main "${VERSIONING_BRANCH}" || echo Not Found
+          echo "Finding merge base"
+          while [ git merge-base --is-ancestor main "${VERSIONING_BRANCH}" || false ]
+          do
+            echo "Deepening fetch..."
+            git fetch --deepen=2 origin "${GITHUB_REF}" "refs/heads/${VERSIONING_BRANCH}"
+          done
 
-          git fetch --deepen=1024 origin "${GITHUB_REF}" "refs/heads/${VERSIONING_BRANCH}"
-
-          echo "Merge Base"
+          echo "Merge base found"
           git merge-base main "${VERSIONING_BRANCH}"
 
           # git merge main
