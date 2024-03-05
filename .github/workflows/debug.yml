@@ -42,7 +42,7 @@ jobs:
           git config --global user.name "${GITHUB_ACTOR}"
           git config --global user.email "${GITHUB_ACTOR}@users.noreply.github.com"
 
-          echo "Fetching Versioning Branch"
+          echo "Fetching versioning branch"
           git fetch origin --depth="${INITIAL_FETCH_DEPTH}" "refs/heads/${VERSIONING_BRANCH}:refs/remotes/origin/${VERSIONING_BRANCH}" || true
 
           echo "Branch list"
@@ -50,11 +50,14 @@ jobs:
 
           git checkout "${VERSIONING_BRANCH}" || git checkout -b "${VERSIONING_BRANCH}" --track "origin/${VERSIONING_BRANCH}"
 
+          FETCH_DEPTH=$INITIAL_FETCH_DEPTH
+
           echo "Finding merge base"
           until git merge-base main "${VERSIONING_BRANCH}"
           do
             echo "Deepening fetch..."
-            git fetch --deepen=8 origin "${GITHUB_REF}" "refs/heads/${VERSIONING_BRANCH}"
+            FETCH_DEPTH=$((FETCH_DEPTH * 2))
+            git fetch --deepen=${FETCH_DEPTH} origin "${GITHUB_REF}" "refs/heads/${VERSIONING_BRANCH}"
           done
 
           echo "Merge base found"
