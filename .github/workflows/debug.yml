@@ -35,7 +35,7 @@ jobs:
         run: |
           gh --version
 
-          echo GITHUB_REF is "${GITHUB_REF}""
+          echo GITHUB_REF is "${GITHUB_REF}"
 
           git config --global user.name "${GITHUB_ACTOR}"
           git config --global user.email "${GITHUB_ACTOR}@users.noreply.github.com"
