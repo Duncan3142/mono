@@ -38,4 +38,9 @@ jobs:
           echo "CI Branches"
           git branch -a
           git checkout $VERSIONING_BRANCH
+
+          echo "Merge Base"
+          git merge-base main $VERSIONING_BRANCH
+
+
           git merge main
