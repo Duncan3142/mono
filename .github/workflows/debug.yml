@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - main
+    paths:
+      - '.github/workflows/debug.yml'
 
 permissions:
   pull-requests: write
@@ -52,7 +54,10 @@ jobs:
           until git merge-base --is-ancestor main "${VERSIONING_BRANCH}"
           do
             echo "Deepening fetch..."
-            git fetch --deepen=2 origin "${GITHUB_REF}" "refs/heads/${VERSIONING_BRANCH}"
+            git fetch --deepen=1024 origin "${GITHUB_REF}" "refs/heads/${VERSIONING_BRANCH}"
+
+            echo "Merge base"
+            git merge-base main "${VERSIONING_BRANCH}" || echo Not found
           done
 
           echo "Merge base found"
