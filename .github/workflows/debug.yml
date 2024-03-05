@@ -51,10 +51,17 @@ jobs:
           git checkout "${VERSIONING_BRANCH}" || git checkout -b "${VERSIONING_BRANCH}" --track "origin/${VERSIONING_BRANCH}"
 
           FETCH_DEPTH=$INITIAL_FETCH_DEPTH
+          MAX_DEPTH=65536
 
           echo "Finding merge base"
           until git merge-base main "${VERSIONING_BRANCH}" 1> /dev/null
           do
+
+            if [ $FETCH_DEPTH -gt $MAX_DEPTH ]; then
+              echo "Fetch depth exceeded $MAX_DEPTH"
+              exit 1
+            fi
+
             echo "Deepening fetch..."
             FETCH_DEPTH=$((FETCH_DEPTH * 2))
             git fetch --deepen=${FETCH_DEPTH} origin "${GITHUB_REF}" "refs/heads/${VERSIONING_BRANCH}"
