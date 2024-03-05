@@ -28,6 +28,9 @@ jobs:
         uses: actions/checkout@v4
       - name: Git Tings
         run: |
+          echo "Remotes"
           git remote -v
+          echo "Fetching"
           git fetch --depth=1 origin
+          echo "Branches"
           git branch -a
