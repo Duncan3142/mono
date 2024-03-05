@@ -30,17 +30,8 @@ jobs:
         uses: actions/checkout@v4
       - name: Git Tings
         run: |
-          echo Versioning Branch: $VERSIONING_BRANCH
-          echo "Remotes"
-          git remote -v
-          echo "Pre fetch"
-          echo "Branches"
-          git branch -a
-          echo "Fetching Meow"
-          git fetch --depth=1 origin 'refs/heads/Meow/*:refs/remotes/origin/Meow/*' || true
-          echo "Meow Branches"
-          git branch -a
           echo "Fetching CI"
           git fetch --depth=1 origin "refs/heads/${VERSIONING_BRANCH}:refs/remotes/origin/${VERSIONING_BRANCH}" || true
-          echo "Ci Branches"
+          echo "CI Branches"
           git branch -a
+          git checkout $VERSIONING_BRANCH
