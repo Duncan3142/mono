@@ -14,6 +14,7 @@ permissions:
 
 env:
   MONO_WORK_DIR: ./pkgs/prettier-config
+  GH_PACKAGES_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 concurrency:
   group: ${{ github.workflow }}
@@ -23,8 +24,6 @@ jobs:
   publish:
     name: Publish
     runs-on: ubuntu-latest
-    env:
-      GH_PACKAGES_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     defaults:
       run:
         working-directory: ${{ env.MONO_WORK_DIR }}
@@ -56,8 +55,6 @@ jobs:
     concurrency: ${{ vars.VERSION_CONCURRENCY_GROUP }}
     needs: publish
     if: needs.publish.outputs.requires-versioning == 'true'
-    env:
-      GH_PACKAGES_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     defaults:
       run:
         working-directory: ${{ env.MONO_WORK_DIR }}

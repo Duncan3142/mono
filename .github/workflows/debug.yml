@@ -11,6 +11,7 @@ permissions:
 
 env:
   MONO_WORK_DIR: ./pkgs/prettier-config
+  VERSIONING_BRANCH: ${{ vars.VERSIONING_BRANCH }}
 
 
 concurrency:
@@ -21,8 +22,6 @@ jobs:
   debug:
     name: Debug
     runs-on: ubuntu-latest
-    # env:
-    #   VERSIONING_BRANCH: ${{ vars.VERSIONING_BRANCH }}
     defaults:
       run:
         working-directory: ${{ env.MONO_WORK_DIR }}

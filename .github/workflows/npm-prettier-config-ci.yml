@@ -11,6 +11,7 @@ on:
 
 env:
   MONO_WORK_DIR: ./pkgs/prettier-config
+  GH_PACKAGES_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 concurrency:
   group: ${{ github.workflow_ref }}
@@ -21,8 +22,6 @@ jobs:
     name: Test
     runs-on: ubuntu-latest
     if: github.event.pull_request.state == 'open' && github.event.pull_request.draft == false
-    env:
-      GH_PACKAGES_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     defaults:
       run:
         working-directory: ${{ env.MONO_WORK_DIR }}
