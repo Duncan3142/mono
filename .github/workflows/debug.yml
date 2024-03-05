@@ -34,6 +34,9 @@ jobs:
         run: |
           gh --version
 
+          git config --global user.name "$GITHUB_ACTOR"
+          git config --global user.email "$GITHUB_ACTOR@users.noreply.github.com"
+
           echo "Fetching CI"
           git fetch origin "refs/heads/${VERSIONING_BRANCH}:refs/remotes/origin/${VERSIONING_BRANCH}" || true
           echo "Branch list"
