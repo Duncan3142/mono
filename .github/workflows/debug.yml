@@ -49,7 +49,7 @@ jobs:
           git checkout "${VERSIONING_BRANCH}" || git checkout -b "${VERSIONING_BRANCH}" --track "origin/${VERSIONING_BRANCH}"
 
           echo "Finding merge base"
-          while [ git merge-base --is-ancestor main "${VERSIONING_BRANCH}" || false ]
+          until git merge-base --is-ancestor main "${VERSIONING_BRANCH}"
           do
             echo "Deepening fetch..."
             git fetch --deepen=2 origin "${GITHUB_REF}" "refs/heads/${VERSIONING_BRANCH}"
