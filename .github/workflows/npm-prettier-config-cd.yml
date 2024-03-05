@@ -5,6 +5,7 @@ on:
     branches:
       - main
     paths:
+     - '.github/workflows/npm-prettier-config-cd.yml'
      - 'pkgs/prettier-config/**'
 
 permissions:
@@ -68,10 +69,10 @@ jobs:
         run: |
           echo Running version...
           pnpm exec changeset version
-      - name: Create PR
-        uses: peter-evans/create-pull-request@v6.0.1
-        with:
-          title: Version packages
-          branch: CI/version
-          add-paths: ${{ env.MONO_WORK_DIR }}/
-          commit-message: Prettier Config
+      # - name: Create PR
+      #   uses: peter-evans/create-pull-request@v6.0.1
+      #   with:
+      #     title: Version packages
+      #     branch: CI/version
+      #     add-paths: ${{ env.MONO_WORK_DIR }}/
+      #     commit-message: Prettier Config

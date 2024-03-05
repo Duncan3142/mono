@@ -5,6 +5,7 @@ on:
     types: [opened, synchronize, reopened, labeled]
     branches: main
     paths:
+      - '.github/workflows/npm-prettier-config-ci.yml'
       - 'pkgs/prettier-config/**'
       - '!pkgs/prettier-config/.changeset/*'
       - '!pkgs/prettier-config/CHANGELOG.md'
