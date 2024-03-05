@@ -30,7 +30,14 @@ jobs:
         run: |
           echo "Remotes"
           git remote -v
-          echo "Fetching"
-          git fetch --depth=1 origin
+          echo "Pre fetch"
           echo "Branches"
+          git branch -a
+          echo "Fetching Meow"
+          git fetch --depth=1 origin 'refs/heads/Meow/*:refs/remotes/origin/Meow/*'
+          echo "Meow Branches"
+          git branch -a
+          echo "Fetching CI"
+          git fetch --depth=1 origin 'refs/heads/CI/*:refs/remotes/origin/CI/*'
+          echo "Ci Branches"
           git branch -a
