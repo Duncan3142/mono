@@ -50,15 +50,21 @@ jobs:
 
           git checkout "${VERSIONING_BRANCH}" || git checkout -b "${VERSIONING_BRANCH}" --track "origin/${VERSIONING_BRANCH}"
 
-          echo "Finding merge base"
-          until git merge-base --is-ancestor main "${VERSIONING_BRANCH}"
-          do
-            echo "Deepening fetch..."
-            git fetch --deepen=1024 origin "${GITHUB_REF}" "refs/heads/${VERSIONING_BRANCH}"
 
-            echo "Merge base"
-            git merge-base main "${VERSIONING_BRANCH}" || echo Not found
-          done
+          echo "Merge base"
+          git merge-base main "${VERSIONING_BRANCH}" || echo Not found
+
+          git fetch --deepen=1024 origin "${GITHUB_REF}" "refs/heads/${VERSIONING_BRANCH}"
+
+          # echo "Finding merge base"
+          # until git merge-base --is-ancestor main "${VERSIONING_BRANCH}"
+          # do
+          #   echo "Deepening fetch..."
+          #   git fetch --deepen=1024 origin "${GITHUB_REF}" "refs/heads/${VERSIONING_BRANCH}"
+
+          #   echo "Merge base"
+          #   git merge-base main "${VERSIONING_BRANCH}" || echo Not found
+          # done
 
           echo "Merge base found"
           git merge-base main "${VERSIONING_BRANCH}"
