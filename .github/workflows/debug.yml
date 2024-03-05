@@ -29,4 +29,5 @@ jobs:
       - name: Git Tings
         run: |
           git remote -v
+          git fetch --depth=1 origin
           git branch -a
