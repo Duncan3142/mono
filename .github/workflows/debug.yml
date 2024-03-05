@@ -30,8 +30,12 @@ jobs:
         uses: actions/checkout@v4
       - name: Git Tings
         run: |
+          gh -v
+
+
           echo "Fetching CI"
           git fetch --depth=1 origin "refs/heads/${VERSIONING_BRANCH}:refs/remotes/origin/${VERSIONING_BRANCH}" || true
           echo "CI Branches"
           git branch -a
           git checkout $VERSIONING_BRANCH
+          git merge main
