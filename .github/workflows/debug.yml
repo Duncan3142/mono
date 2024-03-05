@@ -38,6 +38,6 @@ jobs:
           echo "Meow Branches"
           git branch -a
           echo "Fetching CI"
-          git fetch --depth=1 origin "refs/heads/${VERSIONING_BRANCH}:refs/remotes/origin/{VERSIONING_BRANCH}"" || true
+          git fetch --depth=1 origin "refs/heads/${VERSIONING_BRANCH}:refs/remotes/origin/{VERSIONING_BRANCH}" || true
           echo "Ci Branches"
           git branch -a
