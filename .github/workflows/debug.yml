@@ -41,3 +41,4 @@ jobs:
           git fetch --depth=1 origin 'refs/heads/CI/*:refs/remotes/origin/CI/*'
           echo "Ci Branches"
           git branch -a
+        continue-on-error: true
