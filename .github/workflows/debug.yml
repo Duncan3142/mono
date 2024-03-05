@@ -14,7 +14,7 @@ permissions:
 env:
   MONO_WORK_DIR: ./pkgs/prettier-config
   VERSIONING_BRANCH: ${{ vars.VERSIONING_BRANCH }}
-  INITIAL_FETCH_DEPTH: 2
+  INITIAL_FETCH_DEPTH: 8
 
 
 concurrency:
@@ -53,7 +53,7 @@ jobs:
           FETCH_DEPTH=$INITIAL_FETCH_DEPTH
 
           echo "Finding merge base"
-          until git merge-base main "${VERSIONING_BRANCH}"
+          until git merge-base main "${VERSIONING_BRANCH}" 1> /dev/null
           do
             echo "Deepening fetch..."
             FETCH_DEPTH=$((FETCH_DEPTH * 2))
