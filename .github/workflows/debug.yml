@@ -35,7 +35,8 @@ jobs:
         run: |
           gh --version
 
-          echo ${GITHUB_REF}
+          echo GITHUB_REF ${GITHUB_REF}
+          echo GITHUB_HEAD_REF ${GITHUB_HEAD_REF}
 
           git config --global user.name "$GITHUB_ACTOR"
           git config --global user.email "$GITHUB_ACTOR@users.noreply.github.com"
@@ -48,7 +49,7 @@ jobs:
 
 
           echo "Merge Base"
-          git merge-base main $VERSIONING_BRANCH
+          git merge-base main $VERSIONING_BRANCH || echo Not Found
 
           git fetch --deepen=128 origin main "{$VERSIONING_BRANCH}"
 
