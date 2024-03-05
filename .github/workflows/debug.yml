@@ -28,19 +28,19 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - name: Git Tings
         run: |
           gh --version
 
-
           echo "Fetching CI"
-          git fetch --depth=1 origin "refs/heads/${VERSIONING_BRANCH}:refs/remotes/origin/${VERSIONING_BRANCH}" || true
-          echo "CI Branches"
+          git fetch origin "refs/heads/${VERSIONING_BRANCH}:refs/remotes/origin/${VERSIONING_BRANCH}" || true
+          echo "Branch list"
           git branch -a
-          git checkout $VERSIONING_BRANCH
+          git checkout "${VERSIONING_BRANCH}" || git checkout -b "{$VERSIONING_BRANCH}" --track "origin/${VERSIONING_BRANCH}"
 
           echo "Merge Base"
           git merge-base main $VERSIONING_BRANCH
-
 
           git merge main
