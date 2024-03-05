@@ -7,8 +7,8 @@ runs:
     - name: Git Config
       shell: bash
       run: |
-        git config --global user.name "$GITHUB_ACTOR"
-        git config --global user.email "$GITHUB_ACTOR@users.noreply.github.com"
+        git config --global user.name "${GITHUB_ACTOR}"
+        git config --global user.email "${GITHUB_ACTOR}@users.noreply.github.com"
     - uses: pnpm/action-setup@v3
       with:
         version: latest

@@ -12,7 +12,7 @@ permissions:
 env:
   MONO_WORK_DIR: ./pkgs/prettier-config
   VERSIONING_BRANCH: ${{ vars.VERSIONING_BRANCH }}
-  INITIAL_FETCH_DEPTH: 4
+  INITIAL_FETCH_DEPTH: 2
 
 
 concurrency:
@@ -35,25 +35,23 @@ jobs:
         run: |
           gh --version
 
-          echo GITHUB_REF ${GITHUB_REF}
-          echo GITHUB_HEAD_REF ${GITHUB_HEAD_REF}
+          echo GITHUB_REF is "${GITHUB_REF}""
 
-          git config --global user.name "$GITHUB_ACTOR"
-          git config --global user.email "$GITHUB_ACTOR@users.noreply.github.com"
+          git config --global user.name "${GITHUB_ACTOR}"
+          git config --global user.email "${GITHUB_ACTOR}@users.noreply.github.com"
 
           echo "Fetching Versioning Branch"
-          git fetch origin --depth=${INITIAL_FETCH_DEPTH} "refs/heads/${VERSIONING_BRANCH}:refs/remotes/origin/${VERSIONING_BRANCH}" || true
+          git fetch origin --depth="${INITIAL_FETCH_DEPTH}" "refs/heads/${VERSIONING_BRANCH}:refs/remotes/origin/${VERSIONING_BRANCH}" || true
           echo "Branch list"
           git branch -a
-          git checkout "${VERSIONING_BRANCH}" || git checkout -b "{$VERSIONING_BRANCH}" --track "origin/${VERSIONING_BRANCH}"
-
-
-          echo "Merge Base"
-          git merge-base main $VERSIONING_BRANCH || echo Not Found
-
-          git fetch --deepen=128 origin main "{$VERSIONING_BRANCH}"
+          git checkout "${VERSIONING_BRANCH}" || git checkout -b "${VERSIONING_BRANCH}" --track "origin/${VERSIONING_BRANCH}"
 
           echo "Merge Base"
-          git merge-base main $VERSIONING_BRANCH
+          git merge-base main "${VERSIONING_BRANCH}" || echo Not Found
+
+          git fetch --deepen=1024 origin "${GITHUB_REF}" "refs/heads/${VERSIONING_BRANCH}"
+
+          echo "Merge Base"
+          git merge-base main "${VERSIONING_BRANCH}"
 
           # git merge main
