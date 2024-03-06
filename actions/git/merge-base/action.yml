@@ -33,8 +33,8 @@ runs:
       id: base
       shell: bash
       run: |
-        FETCH_DEPTH="${{ inputs.deepen }}"
-        MAX_DEPTH="${{ inputs.max-depth }}"
+        FETCH_DEPTH=${{ inputs.deepen }}
+        MAX_DEPTH=${{ inputs.max-depth }}
 
         echo "Finding merge base"
         until git merge-base "${{ inputs.base-ref }}" "${{ inputs.head-ref }}" 1> /dev/null

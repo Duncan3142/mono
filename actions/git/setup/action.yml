@@ -40,7 +40,7 @@ runs:
                 REF_SPECS="${REF_SPECS} ${spec}"
             fi
         done
-        git fetch origin --depth="${{ inputs.fetch-depth }}" $REF_SPECS || true
+        git fetch origin --depth=${{ inputs.fetch-depth }} $REF_SPECS || true
 
-        echo "Refs fetched:"
+        echo "Local refs:"
         git branch -a
