@@ -29,7 +29,7 @@ runs:
       shell: bash
       run: |
         REF_SPECS=""
-        echo $(echo "${{ inputs.ref-specs }}" | jq -r '.[]') | while read spec; do
+        echo $(echo '${{ inputs.ref-specs }}' | jq -r '.[]') | while read spec; do
             if [ -z "$REF_SPECS" ]; then
                 REF_SPECS="${spec}"
             else

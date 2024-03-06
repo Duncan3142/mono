@@ -37,7 +37,7 @@ runs:
         MAX_DEPTH=${{ inputs.max-depth }}
 
         echo "Finding merge base"
-        until git merge-base "${{ inputs.base-ref }}" "${{ inputs.head-ref }}" 1> /dev/null
+        until git merge-base '${{ inputs.base-ref }}' '${{ inputs.head-ref }}' 1> /dev/null
         do
 
           if [ $FETCH_DEPTH -gt $MAX_DEPTH ]; then
@@ -47,10 +47,10 @@ runs:
 
           echo "Deepening fetch..."
           FETCH_DEPTH=$((FETCH_DEPTH * 2))
-          git fetch --deepen=${FETCH_DEPTH} origin "${{ inputs.base-ref }}" "${{ inputs.head-ref }}"
+          git fetch --deepen=${FETCH_DEPTH} origin '${{ inputs.base-ref }}' '${{ inputs.head-ref }}'
         done
 
-        MERGE_BASE=$(git merge-base "${{ inputs.base-ref }}" "${{ inputs.head-ref }}")
+        MERGE_BASE=$(git merge-base '${{ inputs.base-ref }}' '${{ inputs.head-ref }}')
 
         echo "Merge base found: $MERGE_BASE"
         echo "sha=${MERGE_BASE}" >> $GITHUB_OUTPUT
