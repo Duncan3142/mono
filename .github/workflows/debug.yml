@@ -29,8 +29,10 @@ jobs:
       run:
         working-directory: ${{ env.MONO_WORK_DIR }}
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
       - name: Git
-        uses: Duncan3142/mono/actions/git/setup@git-setup-v0.0.1
+        uses: ./actions/git/setup
         with:
           fetch-depth: ${{ env.INITIAL_FETCH_DEPTH }}
           ref-specs: '["refs/heads/${{ env.VERSIONING_BRANCH }}:refs/remotes/origin/${{ env.VERSIONING_BRANCH }}"]'
