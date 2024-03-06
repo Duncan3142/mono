@@ -51,7 +51,10 @@ jobs:
       - name: Version
         id: version
         run: |
-          git rebase main
+          if ! git rebase main; then
+            git status
+            exit 1
+          fi
 
           git restore --source '${{ github.ref }}' -- .changeset CHANGELOG.md
 
