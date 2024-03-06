@@ -43,9 +43,9 @@ jobs:
           echo GITHUB_REF is "${GITHUB_REF}"
 
           if git checkout "${VERSIONING_BRANCH}"; then
-            echo "Branch ${VERSIONING_BRANCH} exists locally"
+            echo "Ref for ${VERSIONING_BRANCH} existed locally"
           else
-            echo "Branch ${VERSIONING_BRANCH} does not exist locally"
+            echo "Ref for ${VERSIONING_BRANCH} does not exist locally"
             git checkout -b "${VERSIONING_BRANCH}" --track "origin/${VERSIONING_BRANCH}"
           fi
       - name: Merge base
