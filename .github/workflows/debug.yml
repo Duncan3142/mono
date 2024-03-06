@@ -51,7 +51,7 @@ jobs:
       - name: Version
         id: version
         run: |
-          if ! git rebase main; then
+          if ! git merge main; then
             git status
             exit 1
           fi
