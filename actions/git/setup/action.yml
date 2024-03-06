@@ -29,20 +29,17 @@ runs:
       shell: bash
       run: |
 
-        echo "Local refs before:"
+        echo "Local refs before"
         git branch -a
 
-        REF_SPECS=""
-        echo $(echo '${{ inputs.ref-specs }}' | jq -r '.[]') | while read spec; do
-            if [ -z "$REF_SPECS" ]; then
-                REF_SPECS="${spec}"
-            else
-                REF_SPECS="${REF_SPECS} ${spec}"
-            fi
-        done
+        REF_SPECS=()
+        while read spec; do
+            REF_SPECS+=("${spec}")
+        done < <(echo '${{ inputs.ref-specs }}' | jq -r '.[]')
 
-        echo "Fetching additional ref specs: $REF_SPECS"
-        git fetch origin --depth=${{ inputs.fetch-depth }} $REF_SPECS || true
+        echo "Fetching additional ref specs ${REF_SPECS}"
 
-        echo "Local refs after:"
+        git fetch origin --depth=${{ inputs.fetch-depth }} "${REF_SPECS[@]}" || true
+
+        echo "Local refs after"
         git branch -a
