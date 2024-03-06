@@ -16,7 +16,6 @@ env:
   VERSIONING_BRANCH: ${{ vars.VERSIONING_BRANCH }}
   INITIAL_FETCH_DEPTH: 32
 
-
 concurrency:
   group: ${{ github.workflow }}
   cancel-in-progress: false
@@ -33,6 +32,11 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: ${{ env.INITIAL_FETCH_DEPTH }}
+      - name: Set Temp Directory
+        run: |
+          CHANGES_TMP_DIR="${{ runner.temp }}/changesets"
+          mkdir -p "${CHANGES_TMP_DIR}"
+          echo "CHANGES_TMP_DIR=${CHANGES_TMP_DIR}" >> $GITHUB_ENV
       - name: Git Tings
         run: |
           gh --version
@@ -50,15 +54,15 @@ jobs:
 
           git checkout "${VERSIONING_BRANCH}" || git checkout -b "${VERSIONING_BRANCH}" --track "origin/${VERSIONING_BRANCH}"
 
-          FETCH_DEPTH=$INITIAL_FETCH_DEPTH
+          FETCH_DEPTH="${INITIAL_FETCH_DEPTH}""
           MAX_DEPTH=65536
 
           echo "Finding merge base"
-          until git merge-base main "${VERSIONING_BRANCH}" 1> /dev/null
+          until git merge-base main "${VERSIONING_BRANCH}" 1> "${CHANGES_TMP_DIR}/merge-base"
           do
 
             if [ $FETCH_DEPTH -gt $MAX_DEPTH ]; then
-              echo "Fetch depth exceeded $MAX_DEPTH"
+              echo "Fetch depth exceeded ${MAX_DEPTH}"
               exit 1
             fi
 
@@ -68,6 +72,9 @@ jobs:
           done
 
           echo "Merge base found"
-          git merge-base main "${VERSIONING_BRANCH}"
+          cat "${CHANGES_TMP_DIR}/merge-base
 
-          git merge main
+          # ----------------------------------------------------- #
+
+          # rm ./.changeset/*.md
+          # git checkout main --
