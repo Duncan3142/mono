@@ -29,7 +29,7 @@ runs:
         git config --global user.name "${GITHUB_ACTOR}"
         git config --global user.email "${GITHUB_ACTOR}@users.noreply.github.com"
     - name: Ref specs
-      if: fromJSON(inputs.ref-specs).length > 0
+      if: inputs.ref-specs != '[]'
       shell: bash
       run: |
         REF_SPECS=""

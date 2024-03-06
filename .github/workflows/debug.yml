@@ -30,7 +30,7 @@ jobs:
         working-directory: ${{ env.MONO_WORK_DIR }}
     steps:
       - name: Git
-        uses: Duncan3142/mono/actions/git/setup@manual-git-action
+        uses: Duncan3142/mono/actions/git/setup@git-setup-v0.0.1
         with:
           fetch-depth: ${{ env.INITIAL_FETCH_DEPTH }}
           ref-specs: '["refs/heads/${{ env.VERSIONING_BRANCH }}:refs/remotes/origin/${{ env.VERSIONING_BRANCH }}"]'
