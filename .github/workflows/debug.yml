@@ -34,11 +34,13 @@ jobs:
         with:
           fetch-depth: ${{ env.INITIAL_FETCH_DEPTH }}
           ref-specs: '["refs/heads/${{ env.VERSIONING_BRANCH }}:refs/remotes/origin/${{ env.VERSIONING_BRANCH }}"]'
+
       - name: Checkout Versioning Branch
         id: checkout
         uses: Duncan3142/mono/actions/git/checkout@main
         with:
           name: ${{ env.VERSIONING_BRANCH }}
+
       - name: Merge base
         id: base
         uses: Duncan3142/mono/actions/git/merge-base@main
@@ -46,15 +48,16 @@ jobs:
           head-ref: refs/heads/${{ env.VERSIONING_BRANCH }}
           base-ref: ${{ github.ref}}
 
-    # ----------------------------------------------------- #
+      - name: Version
+        id: version
+        run: |
+          git rebase main
 
-      # - name: Set Temp Directory
-      #   run: |
-      #     CHANGES_TMP_DIR="${{ runner.temp }}/changesets"
-      #     mkdir -p "${CHANGES_TMP_DIR}"
-      #     echo "CHANGES_TMP_DIR=${CHANGES_TMP_DIR}" >> $GITHUB_ENV
+          CHANGES_TMP_DIR="${{ runner.temp }}/changesets"
+          mkdir -p "${CHANGES_TMP_DIR}"
+          echo "CHANGES_TMP_DIR=${CHANGES_TMP_DIR}" >> $GITHUB_ENV
 
-      # - name: Debug
-      #   run: |
-          # rm ./.changeset/*.md
+          rm ./.changeset/*.md
           # git checkout main --
+
+          # git push --force-with-lease origin ${{ env.VERSIONING_BRANCH }}
