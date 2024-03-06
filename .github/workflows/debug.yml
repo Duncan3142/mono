@@ -6,6 +6,7 @@ on:
       - main
     paths:
       - '.github/workflows/debug.yml'
+      - 'actions/**'
 
 permissions:
   pull-requests: write
@@ -14,7 +15,7 @@ permissions:
 env:
   MONO_WORK_DIR: ./pkgs/prettier-config
   VERSIONING_BRANCH: ${{ vars.VERSIONING_BRANCH }}
-  INITIAL_FETCH_DEPTH: 32
+  INITIAL_FETCH_DEPTH: 16
 
 concurrency:
   group: ${{ github.workflow }}
@@ -28,53 +29,39 @@ jobs:
       run:
         working-directory: ${{ env.MONO_WORK_DIR }}
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - name: Git
+        uses: ./actions/git/setup
         with:
           fetch-depth: ${{ env.INITIAL_FETCH_DEPTH }}
-      - name: Set Temp Directory
-        run: |
-          CHANGES_TMP_DIR="${{ runner.temp }}/changesets"
-          mkdir -p "${CHANGES_TMP_DIR}"
-          echo "CHANGES_TMP_DIR=${CHANGES_TMP_DIR}" >> $GITHUB_ENV
-      - name: Git Tings
+          ref-specs: '["refs/heads/${{ env.VERSIONING_BRANCH }}:refs/remotes/origin/${{ env.VERSIONING_BRANCH }}"]'
+      - name: Checkout
         run: |
           gh --version
 
           echo GITHUB_REF is "${GITHUB_REF}"
 
-          git config --global user.name "${GITHUB_ACTOR}"
-          git config --global user.email "${GITHUB_ACTOR}@users.noreply.github.com"
+          if git checkout "${VERSIONING_BRANCH}"; then
+            echo "Branch ${VERSIONING_BRANCH} exists locally"
+          else
+            echo "Branch ${VERSIONING_BRANCH} does not exist locally"
+            git checkout -b "${VERSIONING_BRANCH}" --track "origin/${VERSIONING_BRANCH}"
+          fi
+      - name: Merge base
+        id: base
+        uses: ./actions/git/merge-base
+        with:
+          head-ref: refs/heads/${{ env.VERSIONING_BRANCH }}
+          base-ref: ${{ github.ref}}
 
-          echo "Fetching versioning branch"
-          git fetch origin --depth="${INITIAL_FETCH_DEPTH}" "refs/heads/${VERSIONING_BRANCH}:refs/remotes/origin/${VERSIONING_BRANCH}" || true
+    # ----------------------------------------------------- #
 
-          echo "Branch list"
-          git branch -a
+      # - name: Set Temp Directory
+      #   run: |
+      #     CHANGES_TMP_DIR="${{ runner.temp }}/changesets"
+      #     mkdir -p "${CHANGES_TMP_DIR}"
+      #     echo "CHANGES_TMP_DIR=${CHANGES_TMP_DIR}" >> $GITHUB_ENV
 
-          git checkout "${VERSIONING_BRANCH}" || git checkout -b "${VERSIONING_BRANCH}" --track "origin/${VERSIONING_BRANCH}"
-
-          FETCH_DEPTH="${INITIAL_FETCH_DEPTH}""
-          MAX_DEPTH=65536
-
-          echo "Finding merge base"
-          until git merge-base main "${VERSIONING_BRANCH}" 1> "${CHANGES_TMP_DIR}/merge-base"
-          do
-
-            if [ $FETCH_DEPTH -gt $MAX_DEPTH ]; then
-              echo "Fetch depth exceeded ${MAX_DEPTH}"
-              exit 1
-            fi
-
-            echo "Deepening fetch..."
-            FETCH_DEPTH=$((FETCH_DEPTH * 2))
-            git fetch --deepen=${FETCH_DEPTH} origin "${GITHUB_REF}" "refs/heads/${VERSIONING_BRANCH}"
-          done
-
-          echo "Merge base found"
-          cat "${CHANGES_TMP_DIR}/merge-base
-
-          # ----------------------------------------------------- #
-
+      # - name: Debug
+      #   run: |
           # rm ./.changeset/*.md
           # git checkout main --

@@ -27,10 +27,10 @@ jobs:
       run:
         working-directory: ${{ env.MONO_WORK_DIR }}
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Setup
-        uses: ./actions/setup
+      - name: Git
+        uses: ./actions/git/setup
+      - name: PNPM
+        uses: ./actions/pnpm/setup
       - name: Test
         run: |
           pnpm run format

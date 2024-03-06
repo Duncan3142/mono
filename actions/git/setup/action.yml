@@ -1,0 +1,46 @@
+name: "Setup"
+description: "Setup Git"
+
+inputs:
+  fetch-depth:
+    description: "The depth of commits to fetch."
+    required: false
+    default: '1'
+  ref-specs:
+    description: |
+      Additional ref specs to fetch
+        e.g. `["refs/heads/another-branch:refs/remotes/origin/another-branch", "refs/heads/yet-another-branch:refs/remotes/origin/yet-another-branch"]`
+      Should be a JSON array, where each element is a ref spec
+      Each ref will be fetched with a depth of `fetch-depth`
+      If the remote ref does not exist, the local ref will not be created
+    required: false
+    default: '[]'
+
+runs:
+  using: "composite"
+  steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: ${{ inputs.fetch-depth }}
+    - name: User
+      shell: bash
+      run: |
+        git config --global user.name "${GITHUB_ACTOR}"
+        git config --global user.email "${GITHUB_ACTOR}@users.noreply.github.com"
+    - name: Ref specs
+      if: fromJSON(inputs.ref-specs).length > 0
+      shell: bash
+      run: |
+        REF_SPECS=""
+        echo $(echo "${{ inputs.ref-specs }}" | jq -r '.[]') | while read spec; do
+            if [ -z "$REF_SPECS" ]; then
+                REF_SPECS="${spec}"
+            else
+                REF_SPECS="${REF_SPECS} ${spec}"
+            fi
+        done
+        git fetch origin --depth="${{ inputs.fetch-depth }}" $REF_SPECS || true
+
+        echo "Refs fetched:"
+        git branch -a

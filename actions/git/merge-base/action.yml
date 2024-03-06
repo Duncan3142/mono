@@ -1,0 +1,56 @@
+name: "Merge Base"
+description: "Find Merge Base"
+
+inputs:
+  head-ref:
+    description: |
+      The head ref to compare
+        e.g. `refs/heads/feature-branch`
+    required: true
+  base-ref:
+    description: |
+      The base ref to compare
+        e.g. `refs/heads/main`
+    required: true
+  deepen:
+    description: "Depth by which to deepen the fetch"
+    required: false
+    default: '128'
+  max-depth:
+    description: "The maximum depth to fetch to"
+    required: false
+    default: '65536'
+
+outputs:
+  sha:
+    description: "The merge base of the head and base refs"
+    value: ${{ steps.base.outputs.sha }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: Find base
+      id: base
+      shell: bash
+      run: |
+        FETCH_DEPTH="${{ inputs.deepen }}"
+        MAX_DEPTH="${{ inputs.max-depth }}"
+
+        echo "Finding merge base"
+        until git merge-base "${{ inputs.base-ref }}" "${{ inputs.head-ref }}" 1> /dev/null
+        do
+
+          if [ $FETCH_DEPTH -gt $MAX_DEPTH ]; then
+            echo "Fetch depth exceeded ${MAX_DEPTH}"
+            exit 1
+          fi
+
+          echo "Deepening fetch..."
+          FETCH_DEPTH=$((FETCH_DEPTH * 2))
+          git fetch --deepen=${FETCH_DEPTH} origin "${{ inputs.base-ref }}" "${{ inputs.head-ref }}"
+        done
+
+        MERGE_BASE=$(git merge-base "${{ inputs.base-ref }}" "${{ inputs.head-ref }}")
+
+        echo "Merge base found: $MERGE_BASE"
+        echo "sha=${MERGE_BASE}" >> $GITHUB_OUTPUT

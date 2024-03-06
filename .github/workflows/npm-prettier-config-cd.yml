@@ -29,9 +29,9 @@ jobs:
       run:
         working-directory: ${{ env.MONO_WORK_DIR }}
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Setup
+      - name: Git
+        uses: ./actions/git/setup
+      - name: PNPM
         uses: ./actions/pnpm/setup
       - name: Changeset Status
         id: changeset-status
@@ -60,9 +60,9 @@ jobs:
       run:
         working-directory: ${{ env.MONO_WORK_DIR }}
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Setup
+      - name: Git
+        uses: ./actions/git/setup
+      - name: PNPM
         uses: ./actions/pnpm/setup
       - name: Version
         id: version
