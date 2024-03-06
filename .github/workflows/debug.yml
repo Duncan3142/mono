@@ -50,7 +50,7 @@ jobs:
           fi
       - name: Merge base
         id: base
-        uses: ./actions/git/merge-base
+        uses: Duncan3142/mono/actions/git/merge-base@main
         with:
           head-ref: refs/heads/${{ env.VERSIONING_BRANCH }}
           base-ref: ${{ github.ref}}
