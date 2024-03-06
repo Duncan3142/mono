@@ -1,0 +1,32 @@
+name: "Checkout"
+description: "Checkout a branch, creating it if it does not exist locally"
+
+inputs:
+  name:
+    description: |
+      The branch to checkout. If it does not exist locally, create it as a tracking branch.
+        e.g. `feature-branch`
+    required: true
+
+outputs:
+  created:
+    description: "'true' if the branch was created, 'false' otherwise"
+    value: ${{ steps.checkout.outputs.created }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: Find base
+      id: checkout
+      shell: bash
+      env:
+        BRANCH_NAME: ${{ inputs.name }}
+      run: |
+        if git checkout "${BRANCH_NAME}"; then
+          echo "Ref for ${BRANCH_NAME} existed locally"
+          echo "created=false" >> $GITHUB_OUTPUT
+        else
+          echo "Ref for ${BRANCH_NAME} does not exist locally"
+          git checkout -b "${BRANCH_NAME}" --track "origin/${BRANCH_NAME}"
+          echo "created=true" >> $GITHUB_OUTPUT
+        fi

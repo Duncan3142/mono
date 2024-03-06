@@ -27,10 +27,8 @@ jobs:
       run:
         working-directory: ${{ env.MONO_WORK_DIR }}
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
       - name: Git
-        uses: ./actions/git/setup
+        uses: Duncan3142/mono/actions/git/setup@main
       - name: PNPM
         uses: ./actions/pnpm/setup
       - name: Test

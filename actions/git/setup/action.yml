@@ -19,6 +19,10 @@ inputs:
 runs:
   using: "composite"
   steps:
+    - name: Clone
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: ${{ inputs.fetch-depth }}
     - name: User
       shell: bash
       run: |
