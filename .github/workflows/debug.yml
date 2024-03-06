@@ -53,11 +53,13 @@ jobs:
         run: |
           git rebase main
 
-          CHANGES_TMP_DIR="${{ runner.temp }}/changesets"
-          mkdir -p "${CHANGES_TMP_DIR}"
-          echo "CHANGES_TMP_DIR=${CHANGES_TMP_DIR}" >> $GITHUB_ENV
+          git restore --source '${{ github.ref }}' -- .changeset CHANGELOG.md
 
-          rm ./.changeset/*.md
+          CURRENT_VERSION=$(git show ${{ github.ref }}:./package.json | jq -r '.version')
+
+          pnpm version --no-git-tag-version --allow-same-version "${CURRENT_VERSION}"
+
+          pnpm exec changeset version
 
           git status
 
