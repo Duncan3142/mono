@@ -52,7 +52,7 @@ jobs:
         id: version
         run: |
           if ! git merge main; then
-            git status
+            git status --porcelain
             exit 1
           fi
 
