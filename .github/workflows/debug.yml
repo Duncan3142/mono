@@ -58,6 +58,9 @@ jobs:
           echo "CHANGES_TMP_DIR=${CHANGES_TMP_DIR}" >> $GITHUB_ENV
 
           rm ./.changeset/*.md
+
+          git status
+
           # git checkout main --
 
           # git push --force-with-lease origin ${{ env.VERSIONING_BRANCH }}
