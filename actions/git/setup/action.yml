@@ -28,6 +28,10 @@ runs:
       if: inputs.ref-specs != '[]'
       shell: bash
       run: |
+
+        echo "Local refs before:"
+        git branch -a
+
         REF_SPECS=""
         echo $(echo '${{ inputs.ref-specs }}' | jq -r '.[]') | while read spec; do
             if [ -z "$REF_SPECS" ]; then
@@ -40,5 +44,5 @@ runs:
         echo "Fetching additional ref specs: $REF_SPECS"
         git fetch origin --depth=${{ inputs.fetch-depth }} $REF_SPECS || true
 
-        echo "Local refs:"
+        echo "Local refs after:"
         git branch -a
