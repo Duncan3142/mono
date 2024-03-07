@@ -35,7 +35,7 @@ runs:
         git add .
 
         if git commit -m "Semver $(cat package.json | jq '.name')"; then
-          git push --force-with-lease origin ${{ env.VERSIONING_BRANCH }}
+          git push --force-with-lease origin "$(git rev-parse --abbrev-ref HEAD)"
           echo "changes=true" >> $GITHUB_OUTPUT
         else
           echo "changes=false" >> $GITHUB_OUTPUT
