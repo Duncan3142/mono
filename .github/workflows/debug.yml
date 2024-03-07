@@ -67,8 +67,6 @@ jobs:
 
           pnpm exec changeset version
 
-          git status
-
           git add .
 
           if git commit -m "Semver $(cat package.json | jq '.name')"; then
