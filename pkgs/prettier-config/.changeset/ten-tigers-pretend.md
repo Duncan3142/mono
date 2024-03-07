@@ -2,4 +2,4 @@
 "@duncan3142/prettier-config": patch
 ---
 
-test pr mod
+test pr mod x
