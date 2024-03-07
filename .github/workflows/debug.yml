@@ -71,8 +71,9 @@ jobs:
 
           git add .
 
-          git commit -m "Semver $(cat package.json | jq '.name')"
-
-          git push --force-with-lease origin ${{ env.VERSIONING_BRANCH }}
-
-          # debug
+          if git commit -m "Semver $(cat package.json | jq '.name')"; then
+            git push --force-with-lease origin ${{ env.VERSIONING_BRANCH }}
+            echo "changes=true" >> $GITHUB_OUTPUT
+          else
+            echo "changes=false" >> $GITHUB_OUTPUT
+          fi
