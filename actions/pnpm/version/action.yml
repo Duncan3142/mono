@@ -28,7 +28,7 @@ runs:
 
         CURRENT_VERSION=$(git show ${{ inputs.base }}:./package.json | jq -r '.version')
 
-        pnpm version --no-git-tag-version --allow-same-version "${CURRENT_VERSION}"
+        pnpm version --no-git-tag-version --allow-same-version "${CURRENT_VERSION}" > /dev/null
 
         pnpm exec changeset version
 
