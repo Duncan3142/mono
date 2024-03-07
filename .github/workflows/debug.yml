@@ -51,8 +51,8 @@ jobs:
       - name: Version
         id: version
         run: |
-          if ! git merge main; then
-            git status --porcelain
+          if ! git rebase main; then
+            git status
             exit 1
           fi
 
@@ -65,7 +65,5 @@ jobs:
           pnpm exec changeset version
 
           git status
-
-          # git checkout main --
 
           # git push --force-with-lease origin ${{ env.VERSIONING_BRANCH }}
