@@ -74,3 +74,5 @@ jobs:
           git commit -m "Semver $(cat package.json | jq '.name')"
 
           git push --force-with-lease origin ${{ env.VERSIONING_BRANCH }}
+
+          # debug
