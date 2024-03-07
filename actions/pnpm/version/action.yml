@@ -19,8 +19,8 @@ runs:
       id: version
       shell: bash
       run: |
-        if ! git rebase ${{ inputs.base }}; then
-          echo "Failed to rebase against ${{ inputs.base }}"
+        if ! git merge ${{ inputs.base }}; then
+          echo "Failed to merge ${{ inputs.base }}"
           git diff --name-only --diff-filter=U
           exit 1
         fi
