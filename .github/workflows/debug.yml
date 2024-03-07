@@ -48,6 +48,9 @@ jobs:
           head-ref: refs/heads/${{ env.VERSIONING_BRANCH }}
           base-ref: ${{ github.ref}}
 
+      - name: PNPM
+        uses: Duncan3142/mono/actions/pnpm/setup@main
+
       - name: Version
         id: version
         run: |
@@ -66,4 +69,4 @@ jobs:
 
           git status
 
-          # git push --force-with-lease origin ${{ env.VERSIONING_BRANCH }}
+          git push --force-with-lease origin ${{ env.VERSIONING_BRANCH }}
