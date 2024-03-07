@@ -54,7 +54,7 @@ jobs:
       - name: Version
         id: version
         run: |
-          if ! git rebase main; then
+          if ! git rebase ${{ github.ref }}; then
             git status
             exit 1
           fi
