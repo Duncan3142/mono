@@ -45,6 +45,8 @@ runs:
             if [ '${{ inputs.push }}' = 'true' ]; then
               git push -u '${{ inputs.remote }}' "${BRANCH_NAME}"
             fi
+          else
+            exit 1
           fi
         fi
         echo "created=${CREATED}" >> $GITHUB_OUTPUT
