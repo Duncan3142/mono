@@ -102,6 +102,6 @@ jobs:
           cwd: ${{ env.MONO_WORK_DIR }}
 
       - name: PR
-        if : steps.version.outputs.changes == true
+        if : steps.version.outputs.changes == 'true'
         run: |
           gh pr create --base ${{ github.ref_name }} --title "Version packages" --body "Version packages"
