@@ -11,7 +11,7 @@ on:
       - '!pkgs/prettier-config/CHANGELOG.md'
 
 env:
-  MONO_WORK_DIR: ./pkgs/prettier-config
+  MONO_WORK_DIR: ${{ vars.PRETTIER_CONFIG_DIR }}
   GH_PACKAGES_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 concurrency:

@@ -1,0 +1,29 @@
+name: "Changesets"
+description: "Package changeset status"
+
+inputs:
+  cwd:
+    description: |
+      The directory of the package
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+
+    - name: Status
+      id: status
+      shell: bash
+      run: |
+        mkdir -p .tmp
+        pnpm exec changeset status --output=".tmp/changes_status.json"
+        STATUS_JSON=$(cat ./.tmp/changes_status.json)
+        CHANGE_COUNT=$(echo "${STATUS_JSON}" | jq '.changesets | length')
+        echo Changeset count: "$CHANGE_COUNT"
+        echo "count=${CHANGE_COUNT}" >> "$GITHUB_OUTPUT"
+      working-directory: ${{ inputs.cwd }}
+
+outputs:
+  count:
+    description: The number of pending changesets
+    value: ${{ steps.status.outputs.count }}

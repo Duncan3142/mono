@@ -14,10 +14,11 @@ permissions:
   contents: write
 
 env:
-  MONO_WORK_DIR: ./pkgs/prettier-config
+  MONO_WORK_DIR: ${{ vars.PRETTIER_CONFIG_DIR }}
   GH_PACKAGES_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  VERSIONING_BRANCH: ${{ vars.VERSIONING_BRANCH }}
-  INITIAL_FETCH_DEPTH: 16
+  VERSIONING_BRANCH: ${{ vars.CI_BRANCH_PATH }}/${{ vars.SEMVER_BRANCH_PATH }}/${{ vars.PRETTIER_CONFIG_DIR }}
+  INITIAL_FETCH_DEPTH: ${{ vars.INITIAL_FETCH_DEPTH }}
+
 
 concurrency:
   group: ${{ github.workflow }}
@@ -40,31 +41,27 @@ jobs:
         with:
           cwd: ${{ env.MONO_WORK_DIR }}
 
-      - name: Changeset Status
-        id: changeset-status
-        run: |
-          mkdir -p .tmp
-          pnpm exec changeset status --output="./.tmp/changes_status.json"
-          CHANGE_COUNT=$(jq '.changesets | length' ./.tmp/changes_status.json)
-          echo Changeset count: "$CHANGE_COUNT"
-          echo "count=${CHANGE_COUNT}" >> "$GITHUB_OUTPUT"
+      - name: Changesets
+        id: changesets
+        uses: Duncan3142/mono/actions/pnpm/changesets@main
+        with:
+          cwd: ${{ env.MONO_WORK_DIR }}
 
       - name: Publish
-        if: steps.changeset-status.outputs.count == '0'
+        if: steps.changesets.outputs.count == '0'
         run: |
           echo Running publish...
           # pnpm exec changeset publish
           # git push --follow-tags --no-verify
 
     outputs:
-      requires-versioning: ${{ steps.changeset-status.outputs.count != '0' }}
+      requires-semver: ${{ steps.changesets.outputs.count != '0' }}
 
   version:
     name: Version
     runs-on: ubuntu-latest
-    concurrency: ${{ vars.VERSION_CONCURRENCY_GROUP }}
     needs: publish
-    if: needs.publish.outputs.requires-versioning == 'true'
+    if: needs.publish.outputs.requires-semver == 'true'
     defaults:
       run:
         working-directory: ${{ env.MONO_WORK_DIR }}
@@ -90,6 +87,7 @@ jobs:
           base-ref: ${{ github.ref}}
 
       - name: PNPM
+        id: pnpm
         uses: Duncan3142/mono/actions/pnpm/setup@main
         with:
           cwd: ${{ env.MONO_WORK_DIR }}
@@ -104,7 +102,7 @@ jobs:
       - name: PR
         if : steps.version.outputs.changes == 'true'
         run: |
-          gh pr create --base ${{ github.ref_name }} --title "Version packages" --body "Version packages"
-          gh pr merge --auto --squash
+          gh pr create --base ${{ github.ref_name }} --title "SemVer ${{ steps.pnpm.outputs.name }}" --body "This is an auto generated to semantically version ${{ steps.pnpm.outputs.name }}"
+          # gh pr merge --auto --squash
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

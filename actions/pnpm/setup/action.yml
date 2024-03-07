@@ -28,3 +28,22 @@ runs:
       run: |
         pnpm install --frozen-lockfile
       working-directory: ${{ inputs.cwd }}
+
+    - name: Package Metadata
+      id: meta
+      shell: bash
+      run: |
+        PACKAGE_JSON=$(cat package.json)
+        PACKAGE_NAME=$(echo "${PACKAGE_JSON}" | jq -r '.name')
+        PACKAGE_VERSION=$(echo "${PACKAGE_JSON}" | jq -r '.version')
+        echo "name=${PACKAGE_NAME}" >> $GITHUB_OUTPUT
+        echo "version=${PACKAGE_VERSION}" >> $GITHUB_OUTPUT
+      working-directory: ${{ inputs.cwd }}
+
+outputs:
+  name:
+    description: "The name of the package"
+    value: ${{ steps.meta.outputs.name }}
+  version:
+    description: "The version of the package"
+    value: ${{ steps.meta.outputs.version }}
