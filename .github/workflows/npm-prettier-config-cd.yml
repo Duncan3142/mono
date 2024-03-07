@@ -101,11 +101,7 @@ jobs:
           base: ${{ github.ref }}
           cwd: ${{ env.MONO_WORK_DIR }}
 
-      # - name: Create PR
-      #   uses: peter-evans/create-pull-request@v6.0.1
-      #   with:
-      #     title: Version packages
-      #     branch: CI/version
-      #     add-paths: ${{ env.MONO_WORK_DIR }}/
-      #     commit-message: Prettier Config
-      #
+      - name: PR
+        if : steps.version.outputs.changes == true
+        run: |
+          gh pr create --base ${{ github.ref_name }} --title "Version packages" --body "Version packages"
