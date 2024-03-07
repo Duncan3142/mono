@@ -1,21 +1,30 @@
 name: "Setup"
 description: "Setup PNPM"
 
+inputs:
+  cwd:
+    description: |
+      The directory of the package
+    required: true
+
 runs:
   using: "composite"
   steps:
+
     - uses: pnpm/action-setup@v3
       with:
         version: latest
+
     - name: Setup Node
       uses: actions/setup-node@v4
       with:
         check-latest: true
         cache: "pnpm"
-        node-version-file: ${{ env.MONO_WORK_DIR }}/.nvmrc
-        cache-dependency-path: ${{ env.MONO_WORK_DIR }}/pnpm-lock.yaml
+        node-version-file: ${{ inputs.cwd }}/.nvmrc
+        cache-dependency-path: ${{ inputs.cwd }}/pnpm-lock.yaml
+
     - name: Install
       shell: bash
       run: |
         pnpm install --frozen-lockfile
-      working-directory: ${{ env.MONO_WORK_DIR }}
+      working-directory: ${{ inputs.cwd }}

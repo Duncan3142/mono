@@ -16,6 +16,8 @@ permissions:
 env:
   MONO_WORK_DIR: ./pkgs/prettier-config
   GH_PACKAGES_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  VERSIONING_BRANCH: ${{ vars.VERSIONING_BRANCH }}
+  INITIAL_FETCH_DEPTH: 16
 
 concurrency:
   group: ${{ github.workflow }}
@@ -29,12 +31,15 @@ jobs:
       run:
         working-directory: ${{ env.MONO_WORK_DIR }}
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+
       - name: Git
-        uses: ./actions/git/setup
+        uses: Duncan3142/mono/actions/git/setup@main
+
       - name: PNPM
-        uses: ./actions/pnpm/setup
+        uses: Duncan3142/mono/actions/pnpm/setup@main
+        with:
+          cwd: ${{ env.MONO_WORK_DIR }}
+
       - name: Changeset Status
         id: changeset-status
         run: |
@@ -43,12 +48,14 @@ jobs:
           CHANGE_COUNT=$(jq '.changesets | length' ./.tmp/changes_status.json)
           echo Changeset count: "$CHANGE_COUNT"
           echo "count=${CHANGE_COUNT}" >> "$GITHUB_OUTPUT"
+
       - name: Publish
         if: steps.changeset-status.outputs.count == '0'
         run: |
           echo Running publish...
           # pnpm exec changeset publish
           # git push --follow-tags --no-verify
+
     outputs:
       requires-versioning: ${{ steps.changeset-status.outputs.count != '0' }}
 
@@ -62,15 +69,38 @@ jobs:
       run:
         working-directory: ${{ env.MONO_WORK_DIR }}
     steps:
+
       - name: Git
         uses: Duncan3142/mono/actions/git/setup@main
+        with:
+          fetch-depth: ${{ env.INITIAL_FETCH_DEPTH }}
+          ref-specs: '["refs/heads/${{ env.VERSIONING_BRANCH }}:refs/remotes/origin/${{ env.VERSIONING_BRANCH }}"]'
+
+      - name: Checkout Versioning Branch
+        id: checkout
+        uses: Duncan3142/mono/actions/git/checkout@main
+        with:
+          name: ${{ env.VERSIONING_BRANCH }}
+
+      - name: Merge base
+        id: base
+        uses: Duncan3142/mono/actions/git/merge-base@main
+        with:
+          head-ref: refs/heads/${{ env.VERSIONING_BRANCH }}
+          base-ref: ${{ github.ref}}
+
       - name: PNPM
-        uses: ./actions/pnpm/setup
+        uses: Duncan3142/mono/actions/pnpm/setup@main
+        with:
+          cwd: ${{ env.MONO_WORK_DIR }}
+
       - name: Version
         id: version
-        run: |
-          echo Running version...
-          pnpm exec changeset version
+        uses: Duncan3142/mono/actions/pnpm/version@main
+        with:
+          base: ${{ github.ref }}
+          cwd: ${{ env.MONO_WORK_DIR }}
+
       # - name: Create PR
       #   uses: peter-evans/create-pull-request@v6.0.1
       #   with:

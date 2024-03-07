@@ -1,0 +1,48 @@
+name: "Version"
+description: "Apply semantic versioning on the current branch"
+
+inputs:
+  base:
+    description: |
+      The base ref to version against, must exist locally
+    required: true
+  cwd:
+    description: |
+      The directory of the package to version
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+
+    - name: Version
+      id: version
+      shell: bash
+      run: |
+        if ! git rebase ${{ inputs.base }}; then
+          git status
+          exit 1
+        fi
+
+        git restore --source '${{ inputs.base }}' -- .changeset CHANGELOG.md
+
+        CURRENT_VERSION=$(git show ${{ inputs.base }}:./package.json | jq -r '.version')
+
+        pnpm version --no-git-tag-version --allow-same-version "${CURRENT_VERSION}"
+
+        pnpm exec changeset version
+
+        git add .
+
+        if git commit -m "Semver $(cat package.json | jq '.name')"; then
+          git push --force-with-lease origin ${{ env.VERSIONING_BRANCH }}
+          echo "changes=true" >> $GITHUB_OUTPUT
+        else
+          echo "changes=false" >> $GITHUB_OUTPUT
+        fi
+      working-directory: ${{ inputs.cwd }}
+
+outputs:
+  changes:
+    description: "'true' if the package version was bumped, 'false' otherwise"
+    value: ${{ steps.version.outputs.changes }}

@@ -8,14 +8,10 @@ inputs:
         e.g. `feature-branch`
     required: true
 
-outputs:
-  created:
-    description: "'true' if the branch was created, 'false' otherwise"
-    value: ${{ steps.checkout.outputs.created }}
-
 runs:
   using: "composite"
   steps:
+
     - name: Find base
       id: checkout
       shell: bash
@@ -30,3 +26,8 @@ runs:
           git checkout -b "${BRANCH_NAME}"
           echo "created=true" >> $GITHUB_OUTPUT
         fi
+
+outputs:
+  created:
+    description: "'true' if the branch was created, 'false' otherwise"
+    value: ${{ steps.checkout.outputs.created }}

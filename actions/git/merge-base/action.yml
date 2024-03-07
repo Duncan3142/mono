@@ -21,14 +21,10 @@ inputs:
     required: false
     default: '65536'
 
-outputs:
-  sha:
-    description: "The merge base of the head and base refs"
-    value: ${{ steps.base.outputs.sha }}
-
 runs:
   using: "composite"
   steps:
+
     - name: Find base
       id: base
       shell: bash
@@ -54,3 +50,8 @@ runs:
 
         echo "Merge base found: $MERGE_BASE"
         echo "sha=${MERGE_BASE}" >> $GITHUB_OUTPUT
+
+outputs:
+  sha:
+    description: "The merge base of the head and base refs"
+    value: ${{ steps.base.outputs.sha }}
