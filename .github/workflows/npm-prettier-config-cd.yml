@@ -78,6 +78,7 @@ jobs:
         uses: Duncan3142/mono/actions/git/checkout@main
         with:
           name: ${{ env.VERSIONING_BRANCH }}
+          push: true
 
       - name: Merge base
         id: base
