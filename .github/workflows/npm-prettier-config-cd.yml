@@ -103,7 +103,7 @@ jobs:
       - name: PR
         if : steps.version.outputs.changes == 'true'
         run: |
-          gh pr create --base ${{ github.ref_name }} --title "SemVer ${{ steps.pnpm.outputs.name }}" --body "This is an auto generated to semantically version ${{ steps.pnpm.outputs.name }}"
+          gh pr create --base ${{ github.ref_name }} --title "SemVer ${{ steps.pnpm.outputs.name }}" --body "This is an auto generated PR to semantically version ${{ steps.pnpm.outputs.name }}"
           # gh pr merge --auto --squash
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
