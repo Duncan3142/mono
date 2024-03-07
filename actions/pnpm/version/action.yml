@@ -10,6 +10,11 @@ inputs:
     description: |
       The directory of the package to version
     required: true
+  remote:
+    description: |
+      The remote to push the branch to
+    required: false
+    default: "origin"
 
 runs:
   using: "composite"
@@ -19,26 +24,16 @@ runs:
       id: version
       shell: bash
       run: |
-        if ! git rebase --quiet --onto ${{ inputs.base }}; then
-          echo "Failed to rebase onto ${{ inputs.base }}"
-          git diff --name-only --diff-filter=U
-          exit 1
-        fi
-
-        echo "Restoring against ${{ inputs.base }}"
-
-        git restore --source '${{ inputs.base }}' -- .changeset CHANGELOG.md
-
-        CURRENT_VERSION=$(git show ${{ inputs.base }}:./package.json | jq -r '.version')
-
-        pnpm version --no-git-tag-version --allow-same-version "${CURRENT_VERSION}" > /dev/null
+        VERSIONING_BRANCH="$(git rev-parse --abbrev-ref HEAD)"
+        echo "Resetting ${VERSIONING_BRANCH} to ${{ inputs.base }}"
+        git reset --hard ${{ inputs.base }}
 
         pnpm exec changeset version
 
         git add .
 
         if git commit -m "Semver $(cat package.json | jq '.name')"; then
-          git push --force-with-lease origin "$(git rev-parse --abbrev-ref HEAD)"
+          git push --force-with-lease '${{ inputs.remote }}' "$(git rev-parse --abbrev-ref HEAD)"
           echo "changes=true" >> $GITHUB_OUTPUT
         else
           echo "changes=false" >> $GITHUB_OUTPUT
@@ -47,5 +42,5 @@ runs:
 
 outputs:
   changes:
-    description: "'true' if the package version was bumped, 'false' otherwise"
+    description: "'true' if the package was versioned, 'false' otherwise"
     value: ${{ steps.version.outputs.changes }}

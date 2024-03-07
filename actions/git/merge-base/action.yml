@@ -20,6 +20,11 @@ inputs:
     description: "The maximum depth to fetch to"
     required: false
     default: '65536'
+  remote:
+    description: |
+      The remote to fetch from
+    required: false
+    default: "origin"
 
 runs:
   using: "composite"
@@ -43,7 +48,7 @@ runs:
 
           echo "Deepening fetch..."
           FETCH_DEPTH=$((FETCH_DEPTH * 2))
-          git fetch --deepen=${FETCH_DEPTH} origin '${{ inputs.base-ref }}' '${{ inputs.head-ref }}'
+          git fetch --deepen=${FETCH_DEPTH} '${{ inputs.remote }}' '${{ inputs.base-ref }}' '${{ inputs.head-ref }}'
         done
 
         MERGE_BASE=$(git merge-base '${{ inputs.base-ref }}' '${{ inputs.head-ref }}')

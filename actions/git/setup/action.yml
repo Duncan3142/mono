@@ -6,15 +6,6 @@ inputs:
     description: "The depth of commits to fetch."
     required: false
     default: '1'
-  ref-specs:
-    description: |
-      Additional ref specs to fetch
-        e.g. `["refs/heads/another-branch:refs/remotes/origin/another-branch", "refs/heads/yet-another-branch:refs/remotes/origin/yet-another-branch"]`
-      Should be a JSON array, where each element is a ref spec
-      Each ref will be fetched with a depth of `fetch-depth`
-      If the remote ref does not exist, the local ref will not be created
-    required: false
-    default: '[]'
 
 runs:
   using: "composite"
@@ -30,23 +21,3 @@ runs:
       run: |
         git config --global user.name "${GITHUB_ACTOR}"
         git config --global user.email "${GITHUB_ACTOR}@users.noreply.github.com"
-
-    - name: Ref specs
-      if: inputs.ref-specs != '[]'
-      shell: bash
-      run: |
-
-        echo "Local refs before"
-        git branch -a
-
-        REF_SPECS=()
-        while read spec; do
-            REF_SPECS+=("${spec}")
-        done < <(echo '${{ inputs.ref-specs }}' | jq -r '.[]')
-
-        echo "Fetching additional ref specs ${REF_SPECS}"
-
-        git fetch origin --depth=${{ inputs.fetch-depth }} "${REF_SPECS[@]}" || true
-
-        echo "Local refs after"
-        git branch -a

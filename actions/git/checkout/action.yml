@@ -1,18 +1,28 @@
 name: "Checkout"
 description: |
-  Checkout a branch, creating it if it does not exist locally
+  Checkout a branch
 
 inputs:
   name:
     description: |
-      The branch to checkout. If it does not exist locally, create it
+      The branch to checkout
         e.g. `feature-branch`
     required: true
-  push:
+  create:
     description: |
-      Push the branch to the remote if it did not exist locally
+      Create the branch if it does not exist locally
     required: false
     default: "false"
+  push:
+    description: |
+      Push a newly created branch to the remote
+    required: false
+    default: "false"
+  remote:
+    description: |
+      The remote to push a newly created the branch to
+    required: false
+    default: "origin"
 
 runs:
   using: "composite"
@@ -24,17 +34,20 @@ runs:
       env:
         BRANCH_NAME: ${{ inputs.name }}
       run: |
+        CREATED=false
         if git checkout "${BRANCH_NAME}"; then
           echo "Ref for ${BRANCH_NAME} existed locally"
-          echo "created=false" >> $GITHUB_OUTPUT
         else
           echo "Ref for ${BRANCH_NAME} does not exist locally"
-          git checkout -b "${BRANCH_NAME}"
-          if [ '${{ inputs.push }}' = 'true' ]; then
-            git push -u origin "${BRANCH_NAME}"
+          if [ '${{ inputs.create }}' = 'true' ]; then
+            git checkout -b "${BRANCH_NAME}"
+            CREATED=true
+            if [ '${{ inputs.push }}' = 'true' ]; then
+              git push -u '${{ inputs.remote }}' "${BRANCH_NAME}"
+            fi
           fi
-          echo "created=true" >> $GITHUB_OUTPUT
         fi
+        echo "created=${CREATED}" >> $GITHUB_OUTPUT
 
 outputs:
   created:

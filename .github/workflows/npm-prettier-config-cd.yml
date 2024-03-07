@@ -71,21 +71,12 @@ jobs:
         uses: Duncan3142/mono/actions/git/setup@main
         with:
           fetch-depth: ${{ env.INITIAL_FETCH_DEPTH }}
-          ref-specs: '["refs/heads/${{ env.VERSIONING_BRANCH }}:refs/remotes/origin/${{ env.VERSIONING_BRANCH }}"]'
 
-      - name: Checkout Versioning Branch
+      - name: Versioning Branch
         id: checkout
         uses: Duncan3142/mono/actions/git/checkout@main
         with:
           name: ${{ env.VERSIONING_BRANCH }}
-          push: true
-
-      - name: Merge base
-        id: base
-        uses: Duncan3142/mono/actions/git/merge-base@main
-        with:
-          head-ref: refs/heads/${{ env.VERSIONING_BRANCH }}
-          base-ref: ${{ github.ref}}
 
       - name: PNPM
         id: pnpm
