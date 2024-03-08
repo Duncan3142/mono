@@ -41,7 +41,7 @@ runs:
         NAME=$(echo "${PACKAGE_JSON}" | jq -r '.name')
         VERSION=$(echo "${PACKAGE_JSON}" | jq -r '.version')
         EXISTS=false
-        if pnpm show "${NAME}@${LOCAL_VERSION}" version; then
+        if JSON=$(pnpm show "${NAME}@${LOCAL_VERSION}" version); then
           echo "Package ${NAME} already exists at version ${VERSION}"
           EXISTS=true
         fi

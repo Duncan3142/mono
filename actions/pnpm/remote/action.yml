@@ -24,13 +24,23 @@ runs:
         VERSION: ${{ inputs.version }}
       run: |
         EXISTS=false
-        if pnpm show "${NAME}@${LOCAL_VERSION}" version; then
-          echo "Package ${NAME} already exists at version ${VERSION}"
+        LATEST='0.0.0'
+        if JSON=$(pnpm show "${NAME}@${VERSION}" --json); then
           EXISTS=true
+          echo "Package ${NAME} already exists at version ${VERSION}"
+
+          LATEST=$(echo -E "${JSON}" | jq -r '."dist-tags".latest')
+          echo "Latest version is ${LATEST}"
+        else
+          echo "Package ${NAME} does not exist at version ${VERSION}"
         fi
         echo "exists=${EXISTS}" >> $GITHUB_OUTPUT
+        echo "latest=${LATEST}" >> $GITHUB_OUTPUT
 
 outputs:
   exists:
     description: The package version exists in the registry
     value: ${{ steps.remote.output.exists == 'true' }}
+  latest:
+    description: The latest version of the package
+    value: ${{ steps.remote.output.latest }}

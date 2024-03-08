@@ -16,8 +16,8 @@ inputs:
     description: "Depth by which to deepen the fetch"
     required: false
     default: '128'
-  max-depth:
-    description: "The maximum depth to fetch to"
+  max-deepen:
+    description: "The maximum amount to deepen by before failing"
     required: false
     default: '65536'
   remote:
@@ -33,25 +33,26 @@ runs:
     - name: Find base
       id: base
       shell: bash
+      env:
+        HEAD_REF: ${{ inputs.head-ref }}
+        BASE_REF: ${{ inputs.base-ref }}
+        REMOTE: ${{ inputs.remote }}
+        DEEPEN: ${{ inputs.deepen }}
+        MAX_DEEPEN: ${{ inputs.max-deepen }}
       run: |
-        FETCH_DEPTH=${{ inputs.deepen }}
-        MAX_DEPTH=${{ inputs.max-depth }}
-
         echo "Finding merge base"
-        until git merge-base '${{ inputs.base-ref }}' '${{ inputs.head-ref }}' 1> /dev/null
+        until MERGE_BASE=$(git merge-base "${BASE_REF}" "${HEAD_REF}")
         do
 
-          if [ $FETCH_DEPTH -gt $MAX_DEPTH ]; then
-            echo "Fetch depth exceeded ${MAX_DEPTH}"
+          if [ $DEEPEN -gt $MAX_DEEPEN ]; then
+            echo "Fetch deepen exceeded ${MAX_DEEPEN}"
             exit 1
           fi
 
           echo "Deepening fetch..."
-          FETCH_DEPTH=$((FETCH_DEPTH * 2))
-          git fetch --deepen=${FETCH_DEPTH} '${{ inputs.remote }}' '${{ inputs.base-ref }}' '${{ inputs.head-ref }}'
+          DEEPEN=$((DEEPEN * 2))
+          git fetch --deepen="${DEEPEN}"" "${REMOTE}" "${BASE_REF}" "${HEAD_REF}"
         done
-
-        MERGE_BASE=$(git merge-base '${{ inputs.base-ref }}' '${{ inputs.head-ref }}')
 
         echo "Merge base found: $MERGE_BASE"
         echo "sha=${MERGE_BASE}" >> $GITHUB_OUTPUT

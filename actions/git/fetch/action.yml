@@ -25,6 +25,10 @@ runs:
   steps:
     - name: Fetch
       shell: bash
+      env:
+        FETCH_DEPTH: ${{ inputs.fetch-depth }}
+        RAW_REF_SPECS: ${{ inputs.ref-specs }}
+        REMOTE: ${{ inputs.remote }}
       run: |
 
         echo "Local refs before"
@@ -32,12 +36,12 @@ runs:
 
         REF_SPECS=()
         while read spec; do
-            REF_SPECS+=("${spec}")
-        done < <(echo '${{ inputs.ref-specs }}' | jq -r '.[]')
+            REF_SPECS+=($spec)
+        done < <(echo "${RAW_REF_SPECS}" | jq -r '.[]')
 
         echo "Fetching additional ref specs ${REF_SPECS}"
 
-        git fetch '${{ inputs.remote }}' --depth=${{ inputs.fetch-depth }} "${REF_SPECS[@]}" || true
+        git fetch "${REMOTE}" --depth="${FETCH_DEPTH}" "${REF_SPECS[@]}" || true
 
         echo "Local refs after"
         git branch -a

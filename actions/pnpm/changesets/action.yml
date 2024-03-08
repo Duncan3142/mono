@@ -18,8 +18,9 @@ runs:
         mkdir -p .tmp
         pnpm exec changeset status --output=".tmp/changes_status.json"
         STATUS_JSON=$(cat ./.tmp/changes_status.json)
+        rm ./.tmp/changes_status.json
         CHANGE_COUNT=$(echo "${STATUS_JSON}" | jq '.changesets | length')
-        echo Changeset count: "$CHANGE_COUNT"
+        echo "Changeset count: ${CHANGE_COUNT}"
         echo "count=${CHANGE_COUNT}" >> "$GITHUB_OUTPUT"
       working-directory: ${{ inputs.cwd }}
 
