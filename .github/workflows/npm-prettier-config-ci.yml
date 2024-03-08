@@ -20,9 +20,9 @@ concurrency:
 
 jobs:
   test:
+    if: github.event.pull_request.state == 'open' && github.event.pull_request.draft == false
     name: Test
     runs-on: ubuntu-latest
-    if: github.event.pull_request.state == 'open' && github.event.pull_request.draft == false
     defaults:
       run:
         working-directory: ${{ env.MONO_WORK_DIR }}

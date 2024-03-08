@@ -1,0 +1,36 @@
+name: "Fetch Remote NPM Package Details"
+description: "Fetch Remote NPM Package Details"
+
+inputs:
+  name:
+    description: |
+      The name of the package
+    required: true
+  version:
+    description: |
+      The version of the package
+    required: false
+    default: "latest"
+
+runs:
+  using: "composite"
+  steps:
+
+    - name: Check remote
+      id: remote
+      shell: bash
+      env:
+        NAME: ${{ inputs.name }}
+        VERSION: ${{ inputs.version }}
+      run: |
+        EXISTS=false
+        if pnpm show "${NAME}@${LOCAL_VERSION}" version; then
+          echo "Package ${NAME} already exists at version ${VERSION}"
+          EXISTS=true
+        fi
+        echo "exists=${EXISTS}" >> $GITHUB_OUTPUT
+
+outputs:
+  exists:
+    description: The package version exists in the registry
+    value: ${{ steps.remote.output.exists == 'true' }}

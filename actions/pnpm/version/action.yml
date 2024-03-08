@@ -1,7 +1,11 @@
 name: "Version"
-description: "Apply semantic versioning on the current branch"
+description: "Apply semantic versioning to the current branch"
 
 inputs:
+  branch:
+    description: |
+      The branch to use for versioning
+    required: true
   base:
     description: |
       The base ref to version against, must exist locally
@@ -19,6 +23,12 @@ inputs:
 runs:
   using: "composite"
   steps:
+    - name: Versioning Branch
+      id: checkout
+      uses: Duncan3142/mono/actions/git/checkout@main
+      with:
+        name: ${{ inputs.branch }}
+        create: true
 
     - name: Version
       id: version
@@ -39,6 +49,15 @@ runs:
           echo "changes=false" >> $GITHUB_OUTPUT
         fi
       working-directory: ${{ inputs.cwd }}
+
+    - name: PR
+      shell: bash
+      if : steps.version.outputs.changes == 'true'
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        gh pr create --base ${{ github.ref_name }} --title "SemVer ${{ steps.pnpm.outputs.name }}" --body "This is an auto generated PR to semantically version ${{ steps.pnpm.outputs.name }}" || true
+        # gh pr merge --auto --squash
 
 outputs:
   changes:

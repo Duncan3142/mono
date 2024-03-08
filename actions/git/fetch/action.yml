@@ -24,7 +24,6 @@ runs:
   using: "composite"
   steps:
     - name: Fetch
-      if: inputs.ref-specs != '[]'
       shell: bash
       run: |
 

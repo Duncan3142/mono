@@ -17,7 +17,6 @@ env:
   MONO_WORK_DIR: ${{ vars.PRETTIER_CONFIG_DIR }}
   GH_PACKAGES_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   VERSIONING_BRANCH: ${{ vars.CI_BRANCH_PATH }}/${{ vars.SEMVER_BRANCH_PATH }}/${{ vars.PRETTIER_CONFIG_DIR }}
-  INITIAL_FETCH_DEPTH: ${{ vars.INITIAL_FETCH_DEPTH }}
 
 
 concurrency:
@@ -25,8 +24,8 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  publish:
-    name: Publish
+  cd:
+    name: CD
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -48,54 +47,16 @@ jobs:
           cwd: ${{ env.MONO_WORK_DIR }}
 
       - name: Publish
-        if: steps.changesets.outputs.count == '0'
-        run: |
-          echo Running publish...
-          # pnpm exec changeset publish
-          # git push --follow-tags --no-verify
-
-    outputs:
-      requires-semver: ${{ steps.changesets.outputs.count != '0' }}
-
-  version:
-    name: Version
-    runs-on: ubuntu-latest
-    needs: publish
-    if: needs.publish.outputs.requires-semver == 'true'
-    defaults:
-      run:
-        working-directory: ${{ env.MONO_WORK_DIR }}
-    steps:
-
-      - name: Git
-        uses: Duncan3142/mono/actions/git/setup@main
-        with:
-          fetch-depth: ${{ env.INITIAL_FETCH_DEPTH }}
-
-      - name: Versioning Branch
-        id: checkout
-        uses: Duncan3142/mono/actions/git/checkout@main
-        with:
-          name: ${{ env.VERSIONING_BRANCH }}
-          create: true
-
-      - name: PNPM
-        id: pnpm
-        uses: Duncan3142/mono/actions/pnpm/setup@main
+        id: publish
+        uses: Duncan3142/mono/actions/publish/npm@main
         with:
           cwd: ${{ env.MONO_WORK_DIR }}
 
-      - name: Version
+      - if: steps.publish.outputs.requires-semver == 'true'
+        name: Version
         id: version
         uses: Duncan3142/mono/actions/pnpm/version@main
         with:
+          branch: ${{ env.VERSIONING_BRANCH }}
           base: ${{ github.ref }}
           cwd: ${{ env.MONO_WORK_DIR }}
-
-      - name: PR
-        if : steps.version.outputs.changes == 'true'
-        run: |
-          gh pr create --base ${{ github.ref_name }} --title "SemVer ${{ steps.pnpm.outputs.name }}" --body "This is an auto generated PR to semantically version ${{ steps.pnpm.outputs.name }}" || true
-          # gh pr merge --auto --squash
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

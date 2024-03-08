@@ -1,0 +1,61 @@
+name: "Attempt NPM Package"
+description: "Attempt NPM Package"
+
+inputs:
+  cwd:
+    description: |
+      The directory of the package
+    required: true
+  pre:
+    description: |
+      The pre-publish command to run
+    required: false
+    default: ""
+  cmd:
+    description: |
+      The publish command to run
+    required: false
+    default: ""
+  post:
+    description: |
+      The post-publish command to run
+    required: false
+    default: ""
+
+runs:
+  using: "composite"
+  steps:
+
+    - name: Changesets
+      id: changesets
+      uses: Duncan3142/mono/actions/pnpm/changesets@main
+      with:
+        cwd: ${{ inputs.cwd }}
+
+    - if: steps.changesets.outputs.count == '0'
+      name: Check remote
+      id: remote
+      shell: bash
+      run: |
+        PACKAGE_JSON=$(cat package.json)
+        NAME=$(echo "${PACKAGE_JSON}" | jq -r '.name')
+        VERSION=$(echo "${PACKAGE_JSON}" | jq -r '.version')
+        EXISTS=false
+        if pnpm show "${NAME}@${LOCAL_VERSION}" version; then
+          echo "Package ${NAME} already exists at version ${VERSION}"
+          EXISTS=true
+        fi
+        echo "exists=${EXISTS}" >> $GITHUB_OUTPUT
+      working-directory: ${{ inputs.cwd }}
+
+    - if: steps.remote.outcome == 'success' && steps.remote.outputs.exists == 'false'
+      name: Publish
+      id: publish
+      uses: Duncan3142/mono/actions/pnpm/publish@main
+      with:
+        cwd: ${{ inputs.cwd }}
+
+outputs:
+  requires-semver:
+    description: The package requires a semver
+    value: ${{ steps.changesets.output.count != '0' }}
