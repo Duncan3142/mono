@@ -1,0 +1,37 @@
+name: Debug
+
+on:
+  push:
+    paths:
+     - '.github/workflows/debug.yml'
+     - 'actions/debug/**'
+
+env:
+  MONO_WORK_DIR: ${{ vars.PRETTIER_CONFIG_DIR }}
+  GH_PACKAGES_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+concurrency:
+  group: ${{ github.workflow_ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: Debug
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ env.MONO_WORK_DIR }}
+    steps:
+
+      - name: Git
+        uses: Duncan3142/mono/actions/git/setup@main
+
+      - name: NPM
+        uses: Duncan3142/mono/actions/npm/setup@main
+        with:
+          cwd: ${{ env.MONO_WORK_DIR }}
+
+      - name: Debug
+        uses: Duncan3142/mono/actions/debug@main
+        with:
+          cwd: ${{ env.MONO_WORK_DIR }}

@@ -1,0 +1,16 @@
+name: Debug
+description: Debug Container Action
+
+inputs:
+  cwd:
+    description: The working directory
+    required: true
+
+runs:
+  using: docker
+  image: Dockerfile
+  env:
+    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    MONO_WORK_DIR: ${{ inputs.cwd }}
+  args:
+    - "--help"
