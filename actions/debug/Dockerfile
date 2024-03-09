@@ -1,12 +1,11 @@
 FROM node:lts-alpine
 
-RUN apk add --no-cache 'bash=5.2.21-r0' 'git=2.43.0-r0'
+RUN apk add --no-cache 'bash>=5.2.21-r0' 'git>=2.43.0-r0' 'github-cli>=github-cli-2.39.2-r1'
 
 # SHELL [ "/bin/bash" ]
 
 ENV ACTION_DIR=/action
 ENV PATH=${ACTION_DIR}/shell:${PATH}
-ENV REPO_DIR=/repo
 
 WORKDIR ${ACTION_DIR}
 
@@ -15,8 +14,6 @@ COPY package.json package-lock.json ./
 RUN npm ci --omit=dev
 
 COPY . .
-
-WORKDIR /repo
 
 ENTRYPOINT [ "/action/entry-point.sh" ]
 

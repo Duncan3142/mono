@@ -2,7 +2,7 @@ build:
 	docker build -t debug:latest .
 
 rm:
-	docker rm debug || true
+	docker rm debug 2> /dev/null || true
 
 it: rm build
 	docker run -it --entrypoint /bin/sh --name debug debug:latest
