@@ -4,7 +4,6 @@ set -e
 
 # shellcheck source=./shell/log.sh
 . log.sh
-
 # shellcheck source=./shell/clone-repo.sh
 . clone-repo.sh
 
