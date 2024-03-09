@@ -1,5 +1,5 @@
 change:
-	pnpm exec changeset
+	npm exec -- changeset
 
 add:
 	git add .
@@ -10,10 +10,10 @@ commit: stage
 	git commit
 
 version:
-	pnpm exec changeset version
+	npm exec -- changeset version
 
 up:
-	pnpm up
+	npm up
 
-upi: up
-	pnpm up -iL
+# upi: up
+# 	npm up -iL

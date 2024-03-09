@@ -2,7 +2,7 @@
 
 EXISTS=false
 LATEST='0.0.0'
-if JSON=$(pnpm show "${NAME}@${VERSION}" --json); then
+if JSON=$(npm show "${NAME}@${VERSION}" --json); then
 	EXISTS=true
 	echo "Package ${NAME} already exists at version ${VERSION}"
 

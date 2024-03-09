@@ -16,9 +16,9 @@ node_modules
 # GitHub
 !.github
 
-# PNPM
+# NPM
 !.npmrc
-pnpm-lock.yaml
+package-lock.json
 
 # NVM
 !.nvmrc

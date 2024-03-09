@@ -1,5 +1,5 @@
 name: "Setup"
-description: "Setup PNPM"
+description: "Setup NPM"
 
 inputs:
   cwd:
@@ -11,17 +11,13 @@ runs:
   using: "composite"
   steps:
 
-    - uses: pnpm/action-setup@v3
-      with:
-        version: latest
-
     - name: Setup Node
       uses: actions/setup-node@v4
       with:
         check-latest: true
-        cache: "pnpm"
+        cache: "npm"
         node-version-file: ${{ inputs.cwd }}/.nvmrc
-        cache-dependency-path: ${{ inputs.cwd }}/pnpm-lock.yaml
+        cache-dependency-path: ${{ inputs.cwd }}/package-lock.json
 
     - name: Install
       shell: bash

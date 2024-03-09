@@ -73,7 +73,7 @@ Prettier configuration
 Install the package as a dev dependency
 
 ```sh
-pnpm add -D @duncan3142/prettier-config
+npm add -D @duncan3142/prettier-config
 ```
 
 then reference the package in your `.prettierrc.json`

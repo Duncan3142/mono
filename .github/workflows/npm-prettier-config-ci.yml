@@ -31,11 +31,11 @@ jobs:
       - name: Git
         uses: Duncan3142/mono/actions/git/setup@main
 
-      - name: PNPM
-        uses: Duncan3142/mono/actions/pnpm/setup@main
+      - name: NPM
+        uses: Duncan3142/mono/actions/npm/setup@main
         with:
           cwd: ${{ env.MONO_WORK_DIR }}
 
       - name: Test
         run: |
-          pnpm run format
+          npm run format

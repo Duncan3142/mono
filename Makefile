@@ -5,7 +5,7 @@ commit: add
 	git commit
 
 up:
-	pnpm up
+	npm up
 
-upi: up
-	pnpm up -iL
+# upi: up
+# 	npm up

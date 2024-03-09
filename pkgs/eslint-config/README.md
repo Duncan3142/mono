@@ -83,14 +83,14 @@ A typescript template repository
 ### Prerequisites
 
 - [Node.js](https://nodejs.org/)
-- [pnpm](https://pnpm.io/)
+- [npm](https://www.npmjs.com/)
 
 ### Installation
 
 Install packages
 
 ```sh
-pnpm i
+npm ci
 ```
 
 ### Environment
@@ -106,7 +106,7 @@ See [example.env](./example.env) for details on available environment variables
 To build the package and run all tests, run the following command
 
 ```sh
-pnpm test
+npm test
 ```
 
 For use with an IDE, select the Typescript version found in `./node_modules/typescript/lib`
