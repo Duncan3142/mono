@@ -4,7 +4,7 @@ on:
   push:
     paths:
      - '.github/workflows/debug.yml'
-     - 'actions/debug/**'
+     - 'actions/cd/npm-container/**'
 
 env:
   MONO_WORK_DIR: ${{ vars.PRETTIER_CONFIG_DIR }}

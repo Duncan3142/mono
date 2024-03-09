@@ -1,8 +1,8 @@
 FROM node:lts-alpine
 
-RUN apk add --no-cache 'bash>=5.2.21-r0' 'git>=2.43.0-r0' 'github-cli>=github-cli-2.39.2-r1'
+RUN apk add --no-cache 'bash>=5.2.21-r0' 'git>=2.43.0-r0' 'github-cli>=2.39.2-r1' 'make>=4.4.1-r2' 'docker-cli>=25.0.3-r1'
 
-# SHELL [ "/bin/bash" ]
+SHELL ["/bin/bash", "-c"]
 
 ENV ACTION_DIR=/action
 ENV PATH=${ACTION_DIR}/shell:${PATH}
@@ -15,6 +15,6 @@ RUN npm ci --omit=dev
 
 COPY . .
 
-ENTRYPOINT [ "/action/entry-point.sh" ]
+ENTRYPOINT [ "/action/cd.sh" ]
 
 CMD [ ]

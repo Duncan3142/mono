@@ -11,5 +11,6 @@ runs:
   image: Dockerfile
   env:
     MONO_WORK_DIR: ${{ inputs.cwd }}
+  entrypoint: /action/cd.sh
   args:
     - "--help"
