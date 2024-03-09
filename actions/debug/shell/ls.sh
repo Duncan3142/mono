@@ -1,7 +1,8 @@
 #!/usr/bin/env sh
 
-pwd;
-
-ls -A;
-
 echo "Hello sh!";
+
+echo "Working dir: $(pwd)";
+
+echo "Working dir files:";
+ls -A;

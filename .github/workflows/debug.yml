@@ -26,11 +26,6 @@ jobs:
       - name: Git
         uses: Duncan3142/mono/actions/git/setup@main
 
-      - name: NPM
-        uses: Duncan3142/mono/actions/npm/setup@main
-        with:
-          cwd: ${{ env.MONO_WORK_DIR }}
-
       - name: Debug
         uses: Duncan3142/mono/actions/debug@main
         with:
