@@ -23,6 +23,10 @@ inputs:
       The remote to push the branch to
     required: false
     default: "origin"
+  gh-token:
+    description: |
+      The GitHub token
+    required: true
 
 runs:
   using: "composite"
@@ -49,6 +53,7 @@ runs:
         remote: ${{ inputs.remote }}
         base-branch: ${{ inputs.base-branch }}
         pkg-name: ${{ inputs.pkg-name }}
+        gh-token: ${{ inputs.gh-token }}
 
 outputs:
   url:

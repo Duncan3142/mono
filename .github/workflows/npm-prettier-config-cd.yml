@@ -56,6 +56,7 @@ jobs:
           base-branch: ${{ github.ref_name }}
           cwd: ${{ env.MONO_WORK_DIR }}
           pkg-name: ${{ steps.pnpm.outputs.name }}
+          gh-token: ${{ secrets.GITHUB_TOKEN }}
 
       - if: steps.version.outcome == 'skipped'
         name: Publish
