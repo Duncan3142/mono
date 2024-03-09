@@ -23,8 +23,8 @@ jobs:
         working-directory: ${{ env.MONO_WORK_DIR }}
     steps:
 
-      - name: Git
-        uses: Duncan3142/mono/actions/git/setup@main
+      # - name: Git
+      #   uses: Duncan3142/mono/actions/git/setup@main
 
       - name: Debug
         uses: Duncan3142/mono/actions/debug@main
