@@ -36,6 +36,7 @@ jobs:
         uses: Duncan3142/mono/actions/git/setup@main
 
       - name: PNPM
+        id: pnpm
         uses: Duncan3142/mono/actions/pnpm/setup@main
         with:
           cwd: ${{ env.MONO_WORK_DIR }}
@@ -46,17 +47,18 @@ jobs:
         with:
           cwd: ${{ env.MONO_WORK_DIR }}
 
-      - name: Publish
-        id: publish
-        uses: Duncan3142/mono/actions/publish/npm@main
-        with:
-          cwd: ${{ env.MONO_WORK_DIR }}
-
-      - if: steps.publish.outputs.requires-semver == 'true'
+      - if: steps.changesets.outputs.count != '0'
         name: Version
         id: version
-        uses: Duncan3142/mono/actions/pnpm/version@main
+        uses: Duncan3142/mono/actions/version/npm@main
         with:
-          branch: ${{ env.VERSIONING_BRANCH }}
-          base: ${{ github.ref }}
+          semver-branch: ${{ env.VERSIONING_BRANCH }}
+          base-branch: ${{ github.ref_name }}
+          cwd: ${{ env.MONO_WORK_DIR }}
+          pkg-name: ${{ steps.pnpm.outputs.name }}
+
+      - if: steps.version.outcome == 'skipped'
+        name: Publish
+        uses: Duncan3142/mono/actions/publish/npm@main
+        with:
           cwd: ${{ env.MONO_WORK_DIR }}
