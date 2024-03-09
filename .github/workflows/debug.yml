@@ -24,6 +24,6 @@ jobs:
     steps:
 
       - name: Debug
-        uses: Duncan3142/mono/actions/debug@main
+        uses: Duncan3142/mono/actions/cd/npm-container@main
         with:
           cwd: ${{ env.MONO_WORK_DIR }}
