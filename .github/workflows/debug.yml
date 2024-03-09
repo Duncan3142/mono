@@ -8,6 +8,7 @@ on:
 
 env:
   MONO_WORK_DIR: ${{ vars.PRETTIER_CONFIG_DIR }}
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   GH_PACKAGES_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 concurrency:

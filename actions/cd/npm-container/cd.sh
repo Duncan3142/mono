@@ -1,21 +1,43 @@
 #!/usr/bin/env bash
 
-# cd "${MONO_WORK_DIR}" || exit 1
+set -e
 
-cat ~/.gitconfig
+# shellcheck source=./shell/log.sh
+. log.sh
 
 git config --global user.name "${GITHUB_ACTOR}"
 git config --global user.email "${GITHUB_ACTOR}@users.noreply.github.com"
 
-cat ~/.gitconfig
+gh auth setup-git
 
-gh auth login --with-token "${GITHUB_TOKEN}"
+if [[ $LOG_LEVEL -le $LOG_LEVEL_INFO ]]; then
+	log_info "Auth status:"
+	gh auth status
+fi
 
-cat ~/.gitconfig
+mkdir -p "${GITHUB_WORKSPACE}"
 
-# git config --global user.name "${GITHUB_ACTOR}"
-# git config --global user.email "${GITHUB_ACTOR}@users.noreply.github.com"
+cd "${GITHUB_WORKSPACE}"
 
-ls.sh
+gh repo clone "${GITHUB_REPOSITORY}" . -- --depth 1 --single-branch --branch "${GITHUB_REF_NAME}"
+
+if [[ $LOG_LEVEL -le $LOG_LEVEL_INFO ]]; then
+	log_info "Local branches:"
+	git branch -a
+
+	log_info "Git config:"
+	cat ~/.gitconfig
+fi
+
+cd "${MONO_WORK_DIR}"
+
+if [[ $LOG_LEVEL -le $LOG_LEVEL_INFO ]]; then
+
+	log_info "Work dir:"
+	pwd
+
+	log_info "Work dir files:"
+	ls -A
+fi
 
 node "${ACTION_DIR}/main.js" "$@"

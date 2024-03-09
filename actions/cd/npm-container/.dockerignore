@@ -3,3 +3,4 @@ action.yml
 .*
 Dockerfile
 Makefile
+example.env
