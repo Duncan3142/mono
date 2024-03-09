@@ -32,34 +32,10 @@ jobs:
         working-directory: ${{ env.MONO_WORK_DIR }}
     steps:
 
-      - name: Git
-        uses: Duncan3142/mono/actions/git/setup@main
-
-      - name: PNPM
-        id: pnpm
-        uses: Duncan3142/mono/actions/pnpm/setup@main
+      - name: CD
+        uses: Duncan3142/mono/actions/cd/npm@main
         with:
           cwd: ${{ env.MONO_WORK_DIR }}
-
-      - name: Changesets
-        id: changesets
-        uses: Duncan3142/mono/actions/pnpm/changesets@main
-        with:
-          cwd: ${{ env.MONO_WORK_DIR }}
-
-      - if: steps.changesets.outputs.count != '0'
-        name: Version
-        id: version
-        uses: Duncan3142/mono/actions/version/npm@main
-        with:
+          gh-token: ${{ secrets.GITHUB_TOKEN }}
           semver-branch: ${{ env.VERSIONING_BRANCH }}
           base-branch: ${{ github.ref_name }}
-          cwd: ${{ env.MONO_WORK_DIR }}
-          pkg-name: ${{ steps.pnpm.outputs.name }}
-          gh-token: ${{ secrets.GITHUB_TOKEN }}
-
-      - if: steps.version.outcome == 'skipped'
-        name: Publish
-        uses: Duncan3142/mono/actions/publish/npm@main
-        with:
-          cwd: ${{ env.MONO_WORK_DIR }}
