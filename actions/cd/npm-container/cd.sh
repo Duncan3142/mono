@@ -26,7 +26,7 @@ if JSON=$(./shell/changes.sh >(cat)); then
 	REMOTE="${CLONE_REMOTE}"
 	BASE_BRANCH="${CLONE_BRANCH}"
 	# shellcheck source=./shell/version.sh
-	. version.sh
+	. version.sh <(echo -E "${JSON}")
 else
 	log_info "SemVer current"
 fi
