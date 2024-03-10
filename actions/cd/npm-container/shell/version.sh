@@ -18,25 +18,36 @@ fi
 if [[ -z "${1}" ]]; then
 	log_error "CHANGES_FILE is not set"
 	exit 1
-	else
-		CHANGES=$1
+else
+	CHANGES_FILE=$1
 fi
 
-# Check if the HEAD is at the base branch
-HEAD_SHA=$(git rev-parse HEAD)
-BASE_SHA=$(git rev-parse "${BASE_BRANCH}")
+# Try to fetch remote semver branch
+if git fetch "${REMOTE}" --depth=1 "refs/heads/${SEMVER_BRANCH}:refs/remotes/${REMOTE}/${SEMVER_BRANCH}"; then
+	log_debug "Fetched ${SEMVER_BRANCH} from ${REMOTE}"
+	git branch -a
+	# Checkout and reset semver branch
+	git checkout "${SEMVER_BRANCH}"
+	log_debug "Resetting ${SEMVER_BRANCH} to ${BASE_BRANCH}"
+	git reset --hard "${BASE_BRANCH}"
+else
+	# Check if the HEAD is at the base branch
+	HEAD_SHA=$(git rev-parse HEAD)
+	BASE_SHA=$(git rev-parse "${BASE_BRANCH}")
 
-if [[ "${HEAD_SHA}" != "${BASE_SHA}" ]]; then
-	log_error "HEAD is not at ${BASE_BRANCH}"
-	log_debug "HEAD: ${HEAD_SHA}"
-	log_debug "${BASE_BRANCH}: ${BASE_SHA}"
-	exit 1
+	if [[ "${HEAD_SHA}" != "${BASE_SHA}" ]]; then
+		log_error "HEAD is not at ${BASE_BRANCH}"
+		log_debug "HEAD: ${HEAD_SHA}"
+		log_debug "${BASE_BRANCH}: ${BASE_SHA}"
+		exit 1
+	fi
+
+	unset HEAD_SHA BASE_SHA
+
+	# Create semver branch from base
+	log_debug "Creating ${SEMVER_BRANCH} from ${BASE_BRANCH}"
+	git checkout -b "${SEMVER_BRANCH}"
 fi
-
-unset HEAD_SHA BASE_SHA
-
-# Checkout SemVer branch from base branch
-git checkout -b "${SEMVER_BRANCH}"
 
 make version
 
@@ -45,7 +56,7 @@ VERSION_UPDATED=false
 
 git add .
 
-PKG_NAME=$(jq '.name' "$CHANGES")
+PKG_NAME=$(jq '.name' "$CHANGES_FILE")
 
 if git commit -m "Semver ${PKG_NAME}"; then
 	VERSION_UPDATED=true
@@ -60,6 +71,8 @@ if ! PR_URL=$(gh pr create --base "${BASE_BRANCH}" --head "${SEMVER_BRANCH}" --t
 		log_error "Failed to find existing SemVer PR with base \"${BASE_BRANCH}\" and head \"${SEMVER_BRANCH}\""
 		exit 1
 	fi
+
+	# ::TODO:: Update PR
 fi
 
 # gh pr merge --auto --squash

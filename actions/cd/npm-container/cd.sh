@@ -15,8 +15,13 @@ log_info "Running install"
 make install
 
 if JSON=$(./shell/changes.sh >(cat)); then
+
 	log_info "SemVer pending"
-	echo -E "${JSON}" | jq '.'
+
+	if [[ $LOG_LEVEL -le $LOG_LEVEL_DEBUG ]]; then
+		log_debug "Changes JSON:"
+		echo -E "${JSON}" | jq '.'
+	fi
 
 	if [[ -z "${CLONE_BRANCH}" ]]; then
 		log_error "CLONE_BRANCH is not set"
