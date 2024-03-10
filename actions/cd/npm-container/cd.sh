@@ -13,7 +13,7 @@ debug_env "$@"
 
 clone_repo
 
-npm ci
+make install
 
 if JSON=$(./shell/changes.sh >(cat)); then
 	log_info "SemVer pending"

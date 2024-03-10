@@ -12,6 +12,9 @@ commit: stage
 version:
 	npm exec -- changeset version
 
+install:
+	npm ci
+
 up:
 	npm up
 
