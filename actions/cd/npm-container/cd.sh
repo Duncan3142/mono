@@ -21,3 +21,5 @@ else
 fi
 
 node "${ACTION_DIR}/main.js" "$@"
+
+echo "Done"
