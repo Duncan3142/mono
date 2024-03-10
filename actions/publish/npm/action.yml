@@ -17,8 +17,3 @@ runs:
       run: |
         echo "Publish required"
       working-directory: ${{ inputs.cwd }}
-
-outputs:
-  requires-semver:
-    description: The package requires a semver
-    value: ${{ steps.changesets.output.count != '0' }}
