@@ -5,7 +5,7 @@ git branch -a
 
 REF_SPECS=()
 while read -r spec; do
-		REF_SPECS+=("${spec}")
+	REF_SPECS+=("${spec}")
 done < <(echo "${RAW_REF_SPECS}" | jq -r '.[]')
 
 echo "Fetching additional ref specs ${REF_SPECS[*]}"
