@@ -1,3 +1,5 @@
+#!/usr/bin/env sh
+
 if [ -z "$CI" ]
 then
   npm exec husky
