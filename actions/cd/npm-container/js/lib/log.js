@@ -16,7 +16,7 @@ const LOG_LEVEL = {
 	ERROR:4,
 }
 
-const pretty = (...args) => args.map((arg, index) => index > 0 ? JSON.stringify(arg, null, '\t') : arg)
+const pretty = (args) => args.map((arg, index) => index > 0 ? JSON.stringify(arg, null, '\t') : arg)
 
 export class Logger {
 	#level = LOG_LEVEL.INFO

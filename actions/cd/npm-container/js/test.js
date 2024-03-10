@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 
 import {parseEnv as parseLogEnv, Logger} from './lib/log.js'
-import {configuration} from './lib/env.js'
+import {configuration} from './lib/config.js'
 
-const config = configuration({parseLogEnv})
-const logger = new Logger(config.log)
+const {env,raw} = configuration({parseLogEnv})
+const logger = new Logger(env.log)
 
-logger.info('Hello, Nodejs!', config)
+logger.debug('Hello, Nodejs!', raw)
