@@ -9,8 +9,8 @@ changesets_status() {
 	STATUS_JSON=$(cat "${STATUS_FILE}")
 	rm "${STATUS_FILE}"
 	RELEASE_COUNT=$(echo -E "${STATUS_JSON}" | jq '.releases | length')
+	cat <<<"${STATUS_JSON}" > "$OUTPUT_FILE"
 	if [[ $RELEASE_COUNT -gt 0 ]]; then
-		echo -E "${STATUS_JSON}" > "${OUTPUT_FILE}"
 		return 0
 	else
 		return 1
