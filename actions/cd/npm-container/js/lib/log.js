@@ -20,7 +20,8 @@ const pretty = (...args) => args.map((arg, index) => index > 0 ? JSON.stringify(
 
 export class Logger {
 	#level = LOG_LEVEL.INFO
-	constructor(level) {
+	constructor(props) {
+		const {level} = props
 		this.#level = level
 	}
 
@@ -29,22 +30,22 @@ export class Logger {
 			console.trace(...pretty(args))
 		}
 	}
-	logDebug  (...args) {
+	debug  (...args) {
 		if (this.#level <= LOG_LEVEL.DEBUG) {
 			console.debug(...pretty(args))
 		}
 	}
-	logInfo  (...args) {
+	info  (...args) {
 		if (this.#level <= LOG_LEVEL.INFO) {
 			console.info(...pretty(args))
 		}
 	}
-	logWarn  (...args) {
+	warn  (...args) {
 		if (this.#level <= LOG_LEVEL.WARN) {
 			console.warn(...pretty(args))
 		}
 	}
-	 logError  (...args) {
+	 error  (...args) {
 		if (this.#level <= LOG_LEVEL.ERROR) {
 			console.error(...pretty(args))
 		}

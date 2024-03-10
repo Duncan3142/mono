@@ -5,7 +5,7 @@ RUN apk add --no-cache 'bash>=5.2.21-r0' 'git>=2.43.0-r0' 'github-cli>=2.39.2-r1
 SHELL ["/bin/bash", "-c"]
 
 ENV ACTION_DIR=/action
-ENV PATH=${ACTION_DIR}/shell:${PATH}
+ENV PATH=${ACTION_DIR}/shell:${ACTION_DIR}/js:${PATH}
 
 WORKDIR ${ACTION_DIR}
 

@@ -17,33 +17,23 @@ IRed='\033[0;91m'         # Red
 INC='\033[0m'             # No Color
 
 function log_trace() {
-	if [[ $LOG_LEVEL -le $LOG_LEVEL_TRACE ]]; then
-		echo -e "${ICyan}$*${INC}"
-	fi
+	echo -e "${ICyan}$*${INC}"
 }
 
 function log_debug() {
-	if [[ $LOG_LEVEL -le $LOG_LEVEL_DEBUG ]]; then
-		echo -e "${IBlue}$*${INC}"
-	fi
+	echo -e "${IBlue}$*${INC}"
 }
 
 function log_info() {
-	if [[ $LOG_LEVEL -le $LOG_LEVEL_INFO ]]; then
-		echo -e "${IGreen}$*${INC}"
-	fi
+	echo -e "${IGreen}$*${INC}"
 }
 
 function log_warn() {
-	if [[ $LOG_LEVEL -le $LOG_LEVEL_WARN ]]; then
-		echo -e "${IYellow}$*${INC}"
-	fi
+	echo -e "${IYellow}$*${INC}"
 }
 
 function log_error() {
-	if [[ $LOG_LEVEL -le $LOG_LEVEL_ERROR ]]; then
-		echo -e "${IRed}$*${INC}"
-	fi
+	echo -e "${IRed}$*${INC}"
 }
 
 export -f log_trace log_debug log_info log_warn log_error

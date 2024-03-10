@@ -7,9 +7,10 @@ on:
      - 'actions/cd/npm-container/**'
 
 env:
-  MONO_WORK_DIR: ${{ vars.PRETTIER_CONFIG_DIR }}
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   GH_PACKAGES_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  MONO_WORK_DIR: ${{ vars.PRETTIER_CONFIG_DIR }}
+  SEMVER_BRANCH: ${{ vars.CI_BRANCH_PATH }}/${{ vars.SEMVER_BRANCH_PATH }}/${{ vars.PRETTIER_CONFIG_DIR }}
 
 concurrency:
   group: ${{ github.workflow_ref }}
@@ -24,6 +25,8 @@ jobs:
       - name: Debug
         uses: Duncan3142/mono/actions/cd/npm-container@main
         env:
+          CLONE_BRANCH: ${{ github.ref_name }}
+          CLONE_REMOTE: origin
           LOG_LEVEL: 1
         with:
           cwd: ${{ env.MONO_WORK_DIR }}
