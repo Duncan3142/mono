@@ -27,7 +27,7 @@ if git fetch "${REMOTE}" --depth=1 "refs/heads/${SEMVER_BRANCH}:refs/remotes/${R
 	log_debug "Fetched ${SEMVER_BRANCH} from ${REMOTE}"
 	git --no-pager branch -a
 	# Checkout and reset semver branch
-	git checkout "${SEMVER_BRANCH}"
+	git checkout -b "${SEMVER_BRANCH}" "remotes/${REMOTE}/${SEMVER_BRANCH}"
 	log_debug "Resetting ${SEMVER_BRANCH} to ${BASE_BRANCH}"
 	git reset --hard "${BASE_BRANCH}"
 else
