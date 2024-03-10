@@ -34,8 +34,8 @@ runs:
         PKG_NAME: ${{ inputs.pkg-name }}
       run: |
         . '${{ github.action_path }}/pr.sh'
-        echo "changes=${CHANGES}" >> $GITHUB_OUTPUT
-        echo "url=${URL}" >> $GITHUB_OUTPUT
+        echo "changes=${VERSION_UPDATED}" >> $GITHUB_OUTPUT
+        echo "url=${PR_URL}" >> $GITHUB_OUTPUT
 
 outputs:
   url:
