@@ -2,7 +2,7 @@
 
 if [ -z "$CI" ]
 then
-  npm exec husky
+  npm exec -- husky
 else
   echo "Skipping husky install in CI environment"
 fi
