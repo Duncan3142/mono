@@ -15,9 +15,11 @@ if [[ -z "${REMOTE}" ]]; then
 	exit 1
 fi
 
-if [[ -z "${CHANGES_FILE}" ]]; then
+if [[ -z "${1}" ]]; then
 	log_error "CHANGES_FILE is not set"
 	exit 1
+	else
+		CHANGES=$1
 fi
 
 # Check if the HEAD is at the base branch
@@ -43,6 +45,8 @@ VERSION_UPDATED=false
 
 git add .
 
+PKG_NAME=$(jq '.name' "$CHANGES")
+
 if git commit -m "Semver \"${PKG_NAME}\""; then
 	VERSION_UPDATED=true
 	git push --force-with-lease "${REMOTE}" "${SEMVER_BRANCH}"
@@ -59,5 +63,7 @@ if ! PR_URL=$(gh pr create --base "${BASE_BRANCH}" --head "${SEMVER_BRANCH}" --t
 fi
 
 # gh pr merge --auto --squash
+
+unset PKG_NAME
 
 export VERSION_UPDATED PR_URL
