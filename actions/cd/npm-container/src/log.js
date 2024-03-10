@@ -1,10 +1,12 @@
-import {argv, env} from "node:process"
-
-console.log("Hello Nodejs!")
-
-const args = argv.slice(2)
-
-const {LOG_LEVEL: LOG_LEVEL_ENV} = env
+/**
+ * @param {ProcessEnv} env
+ */
+export const parseEnv = (env) => {
+	const {LOG_LEVEL} = env
+	return {
+		level : LOG_LEVEL !== undefined ? Number.parseInt(LOG_LEVEL, 10) : LOG_LEVEL.INFO
+	}
+}
 
 const LOG_LEVEL = {
 	TRACE:0,
@@ -14,9 +16,37 @@ const LOG_LEVEL = {
 	ERROR:4,
 }
 
-const logLevel =  Number.parseInt(LOG_LEVEL_ENV ?? LOG_LEVEL.INFO.toString(10), 10)
+const pretty = (...args) => args.map((arg, index) => index > 0 ? JSON.stringify(arg, null, '\t') : arg)
 
-if (logLevel <= LOG_LEVEL.DEBUG) {
-	console.log('Env:', JSON.stringify(env, null, '\t'))
-	console.log('Args:', JSON.stringify(args))
+export class Logger {
+	#level = LOG_LEVEL.INFO
+	constructor(level) {
+		this.#level = level
+	}
+
+	trace  (...args) {
+		if (this.#level <= LOG_LEVEL.TRACE) {
+			console.trace(...pretty(args))
+		}
+	}
+	logDebug  (...args) {
+		if (this.#level <= LOG_LEVEL.DEBUG) {
+			console.debug(...pretty(args))
+		}
+	}
+	logInfo  (...args) {
+		if (this.#level <= LOG_LEVEL.INFO) {
+			console.info(...pretty(args))
+		}
+	}
+	logWarn  (...args) {
+		if (this.#level <= LOG_LEVEL.WARN) {
+			console.warn(...pretty(args))
+		}
+	}
+	 logError  (...args) {
+		if (this.#level <= LOG_LEVEL.ERROR) {
+			console.error(...pretty(args))
+		}
+	}
 }

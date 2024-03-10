@@ -6,20 +6,22 @@ set -e
 . log.sh
 # shellcheck source=./shell/clone-repo.sh
 . clone-repo.sh
-# shellcheck source=./shell/changesets.sh
-. changesets.sh
+# shellcheck source=./shell/debug.sh
+. debug.sh
+
+debug_env "$@"
 
 clone_repo
 
 npm ci
 
-if JSON=$(changesets_status >(cat)); then
-	log_info "Changesets pending"
+if JSON=$(./shell/changes.sh >(cat)); then
+	log_info "SemVer pending"
 	echo -E "${JSON}" | jq '.'
 else
-	log_info "No changesets pending"
+	log_info "SemVer current"
 fi
 
-node "${ACTION_DIR}/main.js" "$@"
+# node "${ACTION_DIR}/main.js" "$@"
 
 echo "Done"

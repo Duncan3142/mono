@@ -19,12 +19,11 @@ jobs:
   test:
     name: Debug
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ${{ env.MONO_WORK_DIR }}
     steps:
 
       - name: Debug
         uses: Duncan3142/mono/actions/cd/npm-container@main
+        env:
+          LOG_LEVEL: 1
         with:
           cwd: ${{ env.MONO_WORK_DIR }}
