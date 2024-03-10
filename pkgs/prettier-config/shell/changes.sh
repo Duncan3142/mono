@@ -4,7 +4,7 @@ OUTPUT_FILE=$1
 mkdir -p .tmp
 STATUS_FILE=".tmp/$(cat /proc/sys/kernel/random/uuid)"
 touch "${STATUS_FILE}"
-npm exec changeset -- status --output="${STATUS_FILE}"
+npm exec changeset -- status --output="${STATUS_FILE}" &> /dev/null
 RAW_STATUS_JSON=$(cat "${STATUS_FILE}")
 rm "${STATUS_FILE}"
 
@@ -18,7 +18,7 @@ read -r -d '' JQ_TRANSFORM << EOF
 }
 EOF
 
-PENDING_CHANGES_COUNT=$(echo -E "${STATUS_JSON}" | jq -r '.changesets | length')
+PENDING_CHANGES_COUNT=$(echo -E "${RAW_STATUS_JSON}" | jq -r '.changesets | length')
 
 if [[ $PENDING_CHANGES_COUNT -gt 0 ]]; then
 	STATUS_JSON=$(echo -E "${RAW_STATUS_JSON}" | jq "${JQ_TRANSFORM}")
