@@ -47,15 +47,15 @@ git add .
 
 PKG_NAME=$(jq '.name' "$CHANGES")
 
-if git commit -m "Semver \"${PKG_NAME}\""; then
+if git commit -m "Semver ${PKG_NAME}"; then
 	VERSION_UPDATED=true
 	git push --force-with-lease "${REMOTE}" "${SEMVER_BRANCH}"
 fi
 
 # Create PR
 
-if ! PR_URL=$(gh pr create --base "${BASE_BRANCH}" --head "${SEMVER_BRANCH}" --title "SemVer \"${PKG_NAME}\"" --body "This is an auto generated PR to semantically version \"${PKG_NAME}\"" --label ci --label semver); then
-	PR_URL=$(gh pr list --base "${BASE_BRANCH}" --head "${SEMVER_BRANCH}" --json url --jq '.[0].url')
+if ! PR_URL=$(gh pr create --base "${BASE_BRANCH}" --head "${SEMVER_BRANCH}" --title "SemVer ${PKG_NAME}" --body "This is an auto generated PR to semantically version ${PKG_NAME}" --label bot --label semver); then
+	PR_URL=$(gh pr list --base "${BASE_BRANCH}" --head "${SEMVER_BRANCH}" --label bot --label semver --json url --jq '.[0].url')
 	if [ -z "${PR_URL}" ]; then
 		log_error "Failed to find existing SemVer PR with base \"${BASE_BRANCH}\" and head \"${SEMVER_BRANCH}\""
 		exit 1

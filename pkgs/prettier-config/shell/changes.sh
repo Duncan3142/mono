@@ -18,10 +18,11 @@ read -r -d '' JQ_TRANSFORM << EOF
 }
 EOF
 
-STATUS_JSON=$(echo -E "${RAW_STATUS_JSON}" | jq "${JQ_TRANSFORM}")
-PENDING_CHANGES_COUNT=$(echo -E "${STATUS_JSON}" | jq -r '.changes | length')
-echo -E "${STATUS_JSON}" > "$OUTPUT_FILE"
+PENDING_CHANGES_COUNT=$(echo -E "${STATUS_JSON}" | jq -r '.changesets | length')
+
 if [[ $PENDING_CHANGES_COUNT -gt 0 ]]; then
+	STATUS_JSON=$(echo -E "${RAW_STATUS_JSON}" | jq "${JQ_TRANSFORM}")
+	echo -E "${STATUS_JSON}" > "$OUTPUT_FILE"
 	exit 0
 else
 	exit 1

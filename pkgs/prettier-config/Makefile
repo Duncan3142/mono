@@ -10,7 +10,7 @@ commit: stage
 	git commit
 
 version:
-	npm exec -- changeset version
+	npm exec changeset -- version
 
 install:
 	npm ci

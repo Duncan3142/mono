@@ -6,6 +6,11 @@ on:
      - '.github/workflows/debug.yml'
      - 'actions/cd/npm-container/**'
 
+permissions:
+  packages: write
+  pull-requests: write
+  contents: write
+
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   GH_PACKAGES_TOKEN: ${{ secrets.GITHUB_TOKEN }}
