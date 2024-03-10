@@ -47,7 +47,7 @@ gh repo clone "${GITHUB_REPOSITORY}" . -- --depth 1 --single-branch --branch "${
 
 if [[ $LOG_LEVEL -le $LOG_LEVEL_DEBUG ]]; then
 	log_debug "Local branches:"
-	git branch -a
+	git --no-pager branch -a
 
 	log_debug "Git config:"
 	cat ~/.gitconfig
