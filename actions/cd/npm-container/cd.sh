@@ -14,13 +14,13 @@ set -e
 log_info "Running install"
 make install
 
-if JSON=$(./shell/changes.sh >(cat)); then
+if CHANGES_JSON=$(./shell/changes.sh >(cat)); then
 
 	log_info "SemVer pending"
 
 	if [[ $LOG_LEVEL -le $LOG_LEVEL_DEBUG ]]; then
 		log_debug "Changes JSON:"
-		echo -E "${JSON}" | jq '.'
+		echo -E "${CHANGES_JSON}" | jq '.'
 	fi
 
 	if [[ -z "${CLONE_BRANCH}" ]]; then
@@ -31,7 +31,7 @@ if JSON=$(./shell/changes.sh >(cat)); then
 	REMOTE="${CLONE_REMOTE}"
 	BASE_BRANCH="${CLONE_BRANCH}"
 	# shellcheck source=./shell/version.sh
-	. version.sh <(echo -E "${JSON}")
+	. version.sh
 else
 	log_info "SemVer current"
 fi

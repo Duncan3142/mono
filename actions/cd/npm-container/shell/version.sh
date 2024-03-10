@@ -15,11 +15,9 @@ if [[ -z "${REMOTE}" ]]; then
 	exit 1
 fi
 
-if [[ -z "${1}" ]]; then
-	log_error "CHANGES_FILE is not set"
+if [[ -z "${CHANGES_JSON}" ]]; then
+	log_error "CHANGES_JSON is not set"
 	exit 1
-else
-	CHANGES_FILE=$1
 fi
 
 # Try to fetch remote semver branch
@@ -56,7 +54,7 @@ VERSION_UPDATED=false
 
 git add .
 
-PKG_NAME=$(jq '.name' "$CHANGES_FILE")
+PKG_NAME=$(echo -E "${CHANGES_JSON}" | jq '.name')
 
 if git commit -m "Semver ${PKG_NAME}"; then
 	VERSION_UPDATED=true
