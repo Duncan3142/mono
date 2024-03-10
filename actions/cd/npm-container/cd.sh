@@ -13,12 +13,12 @@ clone_repo
 
 npm ci
 
-if JSON=$(changesets_status >(cat)); then
-	log_info "Changesets pending"
-	echo -E "${JSON}" | jq '.'
-else
-	log_info "No changesets pending"
-fi
+# if JSON=$(changesets_status >(cat)); then
+# 	log_info "Changesets pending"
+# 	echo -E "${JSON}" | jq '.'
+# else
+# 	log_info "No changesets pending"
+# fi
 
 node "${ACTION_DIR}/main.js" "$@"
 
