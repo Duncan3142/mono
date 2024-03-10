@@ -73,7 +73,7 @@ Plop Typescript Package Template
 
 ```bash
 npm i -D @Duncan3142/plop-pkg plop
-npm exec -- plop pkg
+npm exec plop -- pkg
 ```
 
 <p align="right">(<a href="#top">back to top</a>)</p>

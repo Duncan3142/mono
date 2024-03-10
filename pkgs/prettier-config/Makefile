@@ -1,5 +1,5 @@
 change:
-	npm exec -- changeset
+	npm exec changeset
 
 add:
 	git add .

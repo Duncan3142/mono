@@ -4,7 +4,7 @@ OUTPUT_FILE=$1
 mkdir -p .tmp
 STATUS_FILE=".tmp/$(cat /proc/sys/kernel/random/uuid)"
 touch "${STATUS_FILE}"
-npm exec -- changeset status --output="${STATUS_FILE}" &> /dev/null
+npm exec changeset -- status --output="${STATUS_FILE}"
 RAW_STATUS_JSON=$(cat "${STATUS_FILE}")
 rm "${STATUS_FILE}"
 
