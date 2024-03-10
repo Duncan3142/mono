@@ -10,7 +10,7 @@ rm "${STATUS_FILE}"
 PENDING_RELEASE_COUNT=$(echo -E "${STATUS_JSON}" | jq -r '.releases | length')
 echo -E "${STATUS_JSON}" > "$OUTPUT_FILE"
 if [[ $PENDING_RELEASE_COUNT -gt 0 ]]; then
-	return 0
+	exit 0
 else
-	return 1
+	exit 1
 fi
