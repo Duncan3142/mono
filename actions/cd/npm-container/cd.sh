@@ -22,4 +22,4 @@ fi
 
 node "${ACTION_DIR}/main.js" "$@"
 
-echo "Done"
+echo "Done didly done"
