@@ -5,7 +5,8 @@ set -e
 # shellcheck source=./shell/log.sh
 . log.sh
 
-debug-env.sh
+# shellcheck source=./shell/debug-env.sh
+. debug-env.sh
 
 # shellcheck source=./shell/clone-repo.sh
 . clone-repo.sh

@@ -33,7 +33,7 @@ git config --global --add safe.directory "${GITHUB_WORKSPACE}"
 gh auth setup-git
 
 if [[ $LOG_LEVEL -le $LOG_LEVEL_DEBUG ]]; then
-	log_info "Auth status:"
+	log_debug "Auth status:"
 	gh auth status
 fi
 
@@ -46,10 +46,10 @@ export CLONE_REMOTE=${CLONE_REMOTE:-origin}
 gh repo clone "${GITHUB_REPOSITORY}" . -- --depth 1 --single-branch --branch "${CLONE_BRANCH}" --origin "${CLONE_REMOTE}"
 
 if [[ $LOG_LEVEL -le $LOG_LEVEL_DEBUG ]]; then
-	log_info "Local branches:"
+	log_debug "Local branches:"
 	git branch -a
 
-	log_info "Git config:"
+	log_debug "Git config:"
 	cat ~/.gitconfig
 fi
 
@@ -57,9 +57,9 @@ cd "${MONO_WORK_DIR}" || exit 1
 
 if [[ $LOG_LEVEL -le $LOG_LEVEL_DEBUG ]]; then
 
-	log_info "Work dir:"
+	log_debug "Work dir:"
 	pwd
 
-	log_info "Work dir files:"
+	log_debug "Work dir files:"
 	ls -A
 fi
