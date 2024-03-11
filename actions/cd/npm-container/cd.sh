@@ -4,19 +4,23 @@ set -e
 
 export REMOTE=origin
 
-if [[ -z "${CHECKOUT_BRANCH}" ]]; then
-	log_error "CHECKOUT_BRANCH is not set"
-	exit 1
-fi
-
 # shellcheck source=./shell/log.sh
 . log.sh
 
 # shellcheck source=./shell/debug-env.sh
 . debug-env.sh
 
+# shellcheck source=./shell/var-guard.sh
+. var-guard.sh
+
 # shellcheck source=./shell/init-repo.sh
 . init-repo.sh
+
+REQUIRED_VARS=(
+	"CHECKOUT_BRANCH"
+)
+
+var_guard "${REQUIRED_VARS[@]}"
 
 log_info "Running install"
 make install

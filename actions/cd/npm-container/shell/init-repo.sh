@@ -1,40 +1,16 @@
 #!/usr/bin/env bash
 
+REQUIRED_VARS=(
+	"GITHUB_ACTOR"
+	"GITHUB_SERVER_URL"
+	"GITHUB_REPOSITORY"
+	"GITHUB_WORKSPACE"
+	"CHECKOUT_BRANCH"
+	"MONO_WORK_DIR"
+	"REMOTE"
+)
 
-if [[ -z "${GITHUB_ACTOR}" ]]; then
-	log_error "GITHUB_ACTOR is not set"
-	exit 1
-fi
-
-if [[ -z "${GITHUB_SERVER_URL}" ]]; then
-	log_error "GITHUB_SERVER_URL is not set"
-	exit 1
-fi
-
-if [[ -z "${GITHUB_REPOSITORY}" ]]; then
-	log_error "GITHUB_REPOSITORY is not set"
-	exit 1
-fi
-
-if [[ -z "${GITHUB_WORKSPACE}" ]]; then
-	log_error "GITHUB_WORKSPACE is not set"
-	exit 1
-fi
-
-if [[ -z "${CHECKOUT_BRANCH}" ]]; then
-	log_error "CHECKOUT_BRANCH is not set"
-	exit 1
-fi
-
-if [[ -z "${MONO_WORK_DIR}" ]]; then
-	log_error "MONO_WORK_DIR is not set"
-	exit 1
-fi
-
-if [[ -z "${REMOTE}" ]]; then
-	log_error "REMOTE is not set"
-	exit 1
-fi
+var_guard "${REQUIRED_VARS[@]}"
 
 git config --global user.name "${GITHUB_ACTOR}"
 git config --global user.email "${GITHUB_ACTOR}@users.noreply.github.com"

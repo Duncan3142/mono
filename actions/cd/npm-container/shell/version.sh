@@ -1,24 +1,13 @@
 #!/usr/bin/env bash
 
-if [[ -z "${BASE_BRANCH}" ]]; then
-	log_error "BASE_BRANCH is not set"
-	exit 1
-fi
+REQUIRED_VARS=(
+	"BASE_BRANCH"
+	"SEMVER_BRANCH"
+	"REMOTE"
+	"CHANGES_JSON"
+)
 
-if [[ -z "${SEMVER_BRANCH}" ]]; then
-	log_error "SEMVER_BRANCH is not set"
-	exit 1
-fi
-
-if [[ -z "${REMOTE}" ]]; then
-	log_error "REMOTE is not set"
-	exit 1
-fi
-
-if [[ -z "${CHANGES_JSON}" ]]; then
-	log_error "CHANGES_JSON is not set"
-	exit 1
-fi
+var_guard "${REQUIRED_VARS[@]}"
 
 # Try to fetch remote semver branch
 if git fetch "${REMOTE}" --depth=1 "refs/heads/${SEMVER_BRANCH}:refs/remotes/${REMOTE}/${SEMVER_BRANCH}" 2> /dev/null; then
