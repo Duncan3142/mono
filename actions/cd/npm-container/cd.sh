@@ -2,6 +2,13 @@
 
 set -e
 
+export REMOTE=origin
+
+if [[ -z "${CHECKOUT_BRANCH}" ]]; then
+	log_error "CHECKOUT_BRANCH is not set"
+	exit 1
+fi
+
 # shellcheck source=./shell/log.sh
 . log.sh
 
@@ -23,13 +30,7 @@ if CHANGES_JSON=$(./shell/changes.sh >(cat)); then
 		echo -E "${CHANGES_JSON}" | jq '.'
 	fi
 
-	if [[ -z "${CLONE_BRANCH}" ]]; then
-		log_error "CLONE_BRANCH is not set"
-		exit 1
-	fi
-
-	REMOTE="${CLONE_REMOTE}"
-	BASE_BRANCH="${CLONE_BRANCH}"
+	BASE_BRANCH="${CHECKOUT_BRANCH}"
 	# shellcheck source=./shell/version.sh
 	. version.sh
 else

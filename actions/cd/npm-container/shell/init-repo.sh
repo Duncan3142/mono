@@ -6,6 +6,11 @@ if [[ -z "${GITHUB_ACTOR}" ]]; then
 	exit 1
 fi
 
+if [[ -z "${GITHUB_SERVER_URL}" ]]; then
+	log_error "GITHUB_SERVER_URL is not set"
+	exit 1
+fi
+
 if [[ -z "${GITHUB_REPOSITORY}" ]]; then
 	log_error "GITHUB_REPOSITORY is not set"
 	exit 1
@@ -16,8 +21,8 @@ if [[ -z "${GITHUB_WORKSPACE}" ]]; then
 	exit 1
 fi
 
-if [[ -z "${CLONE_BRANCH}" ]]; then
-	log_error "CLONE_BRANCH is not set"
+if [[ -z "${CHECKOUT_BRANCH}" ]]; then
+	log_error "CHECKOUT_BRANCH is not set"
 	exit 1
 fi
 
@@ -26,7 +31,10 @@ if [[ -z "${MONO_WORK_DIR}" ]]; then
 	exit 1
 fi
 
-export CLONE_REMOTE=${CLONE_REMOTE:-origin}
+if [[ -z "${REMOTE}" ]]; then
+	log_error "REMOTE is not set"
+	exit 1
+fi
 
 git config --global user.name "${GITHUB_ACTOR}"
 git config --global user.email "${GITHUB_ACTOR}@users.noreply.github.com"
@@ -39,7 +47,7 @@ cd "${GITHUB_WORKSPACE}" || exit 1
 
 git init
 
-git remote add "${CLONE_REMOTE}" "${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}.git"
+git remote add "${REMOTE}" "${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}.git"
 
 gh auth setup-git
 
@@ -53,7 +61,7 @@ if [[ $LOG_LEVEL -le $LOG_LEVEL_DEBUG ]]; then
 	cat ~/.gitconfig
 fi
 
-git fetch "${CLONE_REMOTE}" --depth=1 "refs/heads/${CLONE_BRANCH}:refs/remotes/${CLONE_REMOTE}/${CLONE_BRANCH}"
+git fetch "${REMOTE}" --depth=1 "refs/heads/${CHECKOUT_BRANCH}:refs/remotes/${REMOTE}/${CHECKOUT_BRANCH}"
 
 if [[ $LOG_LEVEL -le $LOG_LEVEL_DEBUG ]]; then
 	log_debug "Branches post fetch:"
@@ -61,7 +69,7 @@ if [[ $LOG_LEVEL -le $LOG_LEVEL_DEBUG ]]; then
 fi
 
 log_debug "Checkout clone branch:"
-git checkout --progress -b "${CLONE_BRANCH}" "${CLONE_REMOTE}/${CLONE_BRANCH}"
+git checkout --progress -b "${CHECKOUT_BRANCH}" "${REMOTE}/${CHECKOUT_BRANCH}"
 
 if [[ $LOG_LEVEL -le $LOG_LEVEL_DEBUG ]]; then
 	log_debug "Branches post checkout:"

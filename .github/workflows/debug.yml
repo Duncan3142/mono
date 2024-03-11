@@ -30,8 +30,7 @@ jobs:
       - name: Debug
         uses: Duncan3142/mono/actions/cd/npm-container@main
         env:
-          CLONE_BRANCH: ${{ github.ref_name }}
-          CLONE_REMOTE: origin
+          CHECKOUT_BRANCH: ${{ github.ref_name }}
           LOG_LEVEL: 1
         with:
           cwd: ${{ env.MONO_WORK_DIR }}
