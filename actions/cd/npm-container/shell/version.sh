@@ -21,7 +21,7 @@ if [[ -z "${CHANGES_JSON}" ]]; then
 fi
 
 # Try to fetch remote semver branch
-if git fetch "${REMOTE}" --depth=1 "refs/heads/${SEMVER_BRANCH}:refs/remotes/${REMOTE}/${SEMVER_BRANCH}"; then
+if git fetch "${REMOTE}" --depth=1 "refs/heads/${SEMVER_BRANCH}:refs/remotes/${REMOTE}/${SEMVER_BRANCH}" 2> /dev/null; then
 	log_debug "Fetched ${SEMVER_BRANCH} from ${REMOTE}"
 	git --no-pager branch -a
 	# Checkout and reset semver branch
