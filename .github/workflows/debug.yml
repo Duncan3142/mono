@@ -34,3 +34,4 @@ jobs:
           LOG_LEVEL: 1
         with:
           cwd: ${{ env.MONO_WORK_DIR }}
+        # Trigger
