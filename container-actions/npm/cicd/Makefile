@@ -1,3 +1,5 @@
+SHELL := /usr/bin/bash
+
 build:
 	docker build -t debug:latest .
 
