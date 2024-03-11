@@ -4,7 +4,7 @@ on:
   push:
     paths:
      - '.github/workflows/debug.yml'
-     - 'actions/cd/npm-container/**'
+     - 'container-actions/npm/cicd/**'
 
 permissions:
   packages: write
@@ -28,7 +28,7 @@ jobs:
     steps:
 
       - name: Debug
-        uses: Duncan3142/mono/actions/cd/npm-container@main
+        uses: Duncan3142/mono/container-actions/npm/cicd@main
         env:
           CHECKOUT_BRANCH: ${{ github.ref_name }}
           LOG_LEVEL: 1
