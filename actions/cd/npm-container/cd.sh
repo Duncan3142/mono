@@ -8,8 +8,8 @@ set -e
 # shellcheck source=./shell/debug-env.sh
 . debug-env.sh
 
-# shellcheck source=./shell/clone-repo.sh
-. clone-repo.sh
+# shellcheck source=./shell/init-repo.sh
+. init-repo.sh
 
 log_info "Running install"
 make install

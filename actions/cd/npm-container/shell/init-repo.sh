@@ -26,9 +26,20 @@ if [[ -z "${MONO_WORK_DIR}" ]]; then
 	exit 1
 fi
 
+export CLONE_REMOTE=${CLONE_REMOTE:-origin}
+
 git config --global user.name "${GITHUB_ACTOR}"
 git config --global user.email "${GITHUB_ACTOR}@users.noreply.github.com"
 git config --global --add safe.directory "${GITHUB_WORKSPACE}"
+git config --global init.defaultBranch main
+
+mkdir -p "${GITHUB_WORKSPACE}"
+
+cd "${GITHUB_WORKSPACE}" || exit 1
+
+git init
+
+git remote add "${CLONE_REMOTE}" "${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}.git"
 
 gh auth setup-git
 
@@ -37,20 +48,24 @@ if [[ $LOG_LEVEL -le $LOG_LEVEL_DEBUG ]]; then
 	gh auth status
 fi
 
-mkdir -p "${GITHUB_WORKSPACE}"
-
-cd "${GITHUB_WORKSPACE}" || exit 1
-
-export CLONE_REMOTE=${CLONE_REMOTE:-origin}
-
-gh repo clone "${GITHUB_REPOSITORY}" . -- --depth 1 --single-branch --branch "${CLONE_BRANCH}" --origin "${CLONE_REMOTE}"
-
 if [[ $LOG_LEVEL -le $LOG_LEVEL_DEBUG ]]; then
-	log_debug "Local branches:"
-	git --no-pager branch -a
-
 	log_debug "Git config:"
 	cat ~/.gitconfig
+fi
+
+git fetch "${CLONE_REMOTE}" --depth=1 "refs/heads/${CLONE_BRANCH}:refs/remotes/${CLONE_REMOTE}/${CLONE_BRANCH}"
+
+if [[ $LOG_LEVEL -le $LOG_LEVEL_DEBUG ]]; then
+	log_debug "Branches post fetch:"
+	git --no-pager branch -a -v -v
+fi
+
+log_debug "Checkout clone branch:"
+git checkout --progress -b "${CLONE_BRANCH}" "${CLONE_REMOTE}/${CLONE_BRANCH}"
+
+if [[ $LOG_LEVEL -le $LOG_LEVEL_DEBUG ]]; then
+	log_debug "Branches post checkout:"
+	git --no-pager branch -a -v -v
 fi
 
 cd "${MONO_WORK_DIR}" || exit 1

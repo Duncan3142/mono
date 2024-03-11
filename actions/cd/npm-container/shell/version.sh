@@ -22,12 +22,29 @@ fi
 
 # Try to fetch remote semver branch
 if git fetch "${REMOTE}" --depth=1 "refs/heads/${SEMVER_BRANCH}:refs/remotes/${REMOTE}/${SEMVER_BRANCH}" 2> /dev/null; then
-	log_debug "Fetched ${SEMVER_BRANCH} from ${REMOTE}"
-	git --no-pager branch -a
 	# Checkout and reset semver branch
-	git checkout -b "${SEMVER_BRANCH}" "remotes/${REMOTE}/${SEMVER_BRANCH}"
-	log_debug "Resetting ${SEMVER_BRANCH} to ${BASE_BRANCH}"
+	if [[ $LOG_LEVEL -le $LOG_LEVEL_DEBUG ]]; then
+		log_debug "Fetched ${SEMVER_BRANCH} from ${REMOTE}"
+		git --no-pager branch -a -v -v
+	fi
+
+	if [[ $LOG_LEVEL -le $LOG_LEVEL_DEBUG ]]; then
+		log_debug "Checkout ${SEMVER_BRANCH}"
+	fi
+
+	git checkout --progress -b "${SEMVER_BRANCH}" "${REMOTE}/${SEMVER_BRANCH}"
+
+	if [[ $LOG_LEVEL -le $LOG_LEVEL_DEBUG ]]; then
+		git --no-pager branch -a -v -v
+	fi
+
+	if [[ $LOG_LEVEL -le $LOG_LEVEL_DEBUG ]]; then
+		log_debug "Resetting ${SEMVER_BRANCH} to ${BASE_BRANCH}"
+	fi
 	git reset --hard "${BASE_BRANCH}"
+	if [[ $LOG_LEVEL -le $LOG_LEVEL_DEBUG ]]; then
+		git --no-pager branch -a -v -v
+	fi
 else
 	# Check if the HEAD is at the base branch
 	HEAD_SHA=$(git rev-parse HEAD)
@@ -58,6 +75,7 @@ PKG_NAME=$(echo -E "${CHANGES_JSON}" | jq '.name')
 
 if git commit -m "Semver ${PKG_NAME}"; then
 	VERSION_UPDATED=true
+	log_debug "Pushing ${SEMVER_BRANCH} to ${REMOTE}"
 	git push --force-with-lease "${REMOTE}" "${SEMVER_BRANCH}"
 fi
 
