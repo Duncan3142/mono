@@ -21,6 +21,7 @@ mkdir -p "${GITHUB_WORKSPACE}"
 
 cd "${GITHUB_WORKSPACE}" || exit 1
 
+log_debug "Init repo:"
 git init
 
 git remote add "${REMOTE}" "${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}.git"
