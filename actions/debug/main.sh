@@ -9,4 +9,4 @@ echo "GLOBAL GIT CONFIG"
 cat ~/.gitconfig
 
 echo "LOCAL GIT CONFIG"
-cat ./.git/config
+cat "${GITHUB_WORKSPACE}/.git/config"
