@@ -2,4 +2,4 @@
 
 echo "MAIN MAIN MAIN MAIN MAIN MAIN"
 echo "PATH: ${PATH}"
-cat "$HOME/.gitconfig"
+git config --list
