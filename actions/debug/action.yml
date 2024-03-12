@@ -15,7 +15,7 @@ runs:
       run: |
         AWD='${{ github.action_path}}'
         (cd "$AWD" && npm ci --omit=dev)
-        echo "Work dir: $pwd\n"
+        echo "Work dir: $(pwd)\n"
         export PATH="${{ github.action_path}}/:"$PATH"
         main.sh
         main.js
