@@ -1,31 +1,31 @@
 #!/usr/bin/env bash
 
-declare -A pids=()
-outputRoot=/tmp/mono-task
+declare -A MONO_PIDS=()
+MONO_LOGS_ROOT=/tmp/mono-logs
 
-mkdir -p "$outputRoot"
+mkdir -p "$MONO_LOGS_ROOT"
 
 (
 	echo -e "\n\nWORK DIR: $(pwd)" &&
   sleep 2s &&
 	echo -e "\n\nMEOW WOOF\n\n"
-) &> "$outputRoot/sleepy" &
-pids["$!"]='sleepy'
+) &> "$MONO_LOGS_ROOT/sleepy" &
+MONO_PIDS["$!"]='sleepy'
 
 (
 	sleep 3s &&
 	echo -e "\n\nDozy\n\n" &&
 	exit 0
-) &> "$outputRoot/dozy" &
-pids["$!"]='dozy'
+) &> "$MONO_LOGS_ROOT/dozy" &
+MONO_PIDS["$!"]='dozy'
 
-echo -e "\n\nRAAARRR\n\n" &> "$outputRoot/raaarrr" &
-pids["$!"]='raaarrr'
+echo -e "\n\nRAAARRR\n\n" &> "$MONO_LOGS_ROOT/raaarrr" &
+MONO_PIDS["$!"]='raaarrr'
 
-echo "${!pids[*]}"
-echo "${pids[*]}"
+echo "${!MONO_PIDS[*]}"
+echo "${MONO_PIDS[*]}"
 status=0
-for id in "${!pids[@]}"
+for id in "${!MONO_PIDS[@]}"
 do
 	wait "${id}"
 	last_status="$?"
@@ -33,11 +33,11 @@ do
 		status=1
 	fi
 	echo "PID: ${id}, STATUS: ${last_status}"
-	file="${pids[$id]}"
+	file="${MONO_PIDS[$id]}"
 	echo "${file}"
-	cat "${outputRoot}/${file}"
-	unset "pids[$id]"
+	cat "${MONO_LOGS_ROOT}/${file}"
+	unset "MONO_PIDS[$id]"
 done
-unset pids outputRoot
+unset MONO_PIDS MONO_LOGS_ROOT
 echo "ALL DONE"
 exit "$status"
