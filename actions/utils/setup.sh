@@ -2,6 +2,9 @@
 
 # shellcheck disable=SC2034
 
+# shellcheck source=./shell/wait.sh
+. shell/wait.sh
+
 set -u -e
 
 mkdir -p "${LBIN}"
@@ -36,9 +39,6 @@ pids["$!"]='install-mono-debug-env'
 	ln -s "$LBIN/mono-chalk/main.js" "$LBIN/mono-chalk.js"
 ) &>"$MONO_LOGS_ROOT/install-mono-chalk" &
 pids["$!"]='install-mono-chalk'
-
-# shellcheck source=./shell/wait.sh
-. shell/wait.sh
 
 if ! mono_wait pids; then
 	echo "Install error"
