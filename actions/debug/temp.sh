@@ -22,22 +22,11 @@ MONO_PIDS["$!"]='dozy'
 echo -e "\n\nRAAARRR\n\n" &> "$MONO_LOGS_ROOT/raaarrr" &
 MONO_PIDS["$!"]='raaarrr'
 
-echo "${!MONO_PIDS[*]}"
-echo "${MONO_PIDS[*]}"
-status=0
-for id in "${!MONO_PIDS[@]}"
-do
-	wait "${id}"
-	last_status="$?"
-	if [[ $last_status -ne 0 ]]; then
-		status=1
-	fi
-	echo "PID: ${id}, STATUS: ${last_status}"
-	file="${MONO_PIDS[$id]}"
-	echo "${file}"
-	cat "${MONO_LOGS_ROOT}/${file}"
-	unset "MONO_PIDS[$id]"
-done
+. ./wait.sh
+
+if ! mono_wait; then
+	exit 1
+fi
+
 unset MONO_PIDS MONO_LOGS_ROOT
 echo "ALL DONE"
-exit "$status"
