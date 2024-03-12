@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -u -e
+
 OUTPUT_FILE=$1
 mkdir -p .tmp
 STATUS_FILE=".tmp/$(cat /proc/sys/kernel/random/uuid)"
@@ -27,3 +29,7 @@ if [[ $PENDING_CHANGES_COUNT -gt 0 ]]; then
 else
 	exit 1
 fi
+
+# if CHANGES_JSON=$(npm-changes.sh >(cat)); then
+#   echo -E "$CHANGES_JSON" | jq '.'
+# fi

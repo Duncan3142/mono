@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
-set -u -e
-
 # shellcheck source=./log.sh
 . mono-log.sh
+
+set -u -e
 
 if mono_log_level debug; then
 	mono_log debug "Env:"
