@@ -10,16 +10,13 @@ inputs:
 runs:
   using: "composite"
   steps:
+    - name: Setup
+      shell: bash
+      run: |
+        ./setup.sh
+      working-directory: ${{ github.action_path}}
     - name: Debug
       shell: bash
       run: |
-        AWD='${{ github.action_path}}'
-        (cd "$AWD" && npm ci --omit=dev)
-        echo "Work dir: $(pwd)"
-        echo "PATH: $PATH"
-        export PATH="${{ github.action_path}}/:$PATH"
-        echo "PATH: $PATH"
-        main.sh
-        export FORCE_COLOR=3
-        main.js
+        mono-debug.js
       working-directory: ${{ inputs.cwd }}

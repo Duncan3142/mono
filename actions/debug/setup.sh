@@ -1,15 +1,7 @@
 #!/usr/bin/env bash
 
-echo "PATH: ${PATH}"
+cp -r "node" "$LBIN/mono-debug"
 
-echo "GIT CONFIG"
-git config --list
+(cd "$LBIN/mono-debug" && npm ci --omit=dev)
 
-echo "GLOBAL GIT CONFIG"
-cat ~/.gitconfig
-
-echo "LOCAL GIT CONFIG"
-cat "${GITHUB_WORKSPACE}/.git/config"
-
-echo "LOCAL BIN CONTENTS:"
-ls -A /usr/local/bin
+ln -s "$LBIN/mono-debug/main.js" "$LBIN/mono-debug.js"
