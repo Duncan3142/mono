@@ -14,4 +14,4 @@ jobs:
     steps:
 
       - name: Debug
-        uses: Duncan3142/mono/actions/debug/@debug
+        uses: Duncan3142/mono/actions/debug/@main
