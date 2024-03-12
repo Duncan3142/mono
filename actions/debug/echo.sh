@@ -10,4 +10,4 @@ echo "GLOBAL GIT CONFIG"
 cat ~/.gitconfig
 
 echo "LOCAL GIT CONFIG"
-cat ./.gitconfig
+cat ./.git/config
