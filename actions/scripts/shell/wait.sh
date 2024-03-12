@@ -16,7 +16,6 @@ function mono_wait {
 		file="${_pids[$id]}"
 		echo "${file}"
 		cat "${MONO_LOGS_ROOT}/${file}"
-		unset "_pids[$id]"
 	done
 
 	return "$status"
