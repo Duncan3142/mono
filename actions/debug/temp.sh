@@ -1,31 +1,43 @@
 #!/usr/bin/env bash
 
-pids=()
+declare -A pids=()
+
+OUTPUT_ROOT=/tmp/mono-task
+mkdir -p "$OUTPUT_ROOT"
 
 (
-	echo -e "WORK DIR: $(pwd)\n\n\n" &&
-  sleep 4s &&
-	echo -e "\n\n\nMEOW WOOF"
-) &> /tmp/sleepy.txt &
-pids+=($!)
-(sleep 1s && exit 0) &
-pids+=($!)
-env &> /tmp/env.txt &
-pids+=($!)
+	echo -e "\n\nWORK DIR: $(pwd)" &&
+  sleep 2s &&
+	echo -e "\n\nMEOW WOOF\n\n"
+) &> "$OUTPUT_ROOT/sleepy" &
+pids["$!"]="$OUTPUT_ROOT/sleepy"
+
+(
+	sleep 3s &&
+	echo -e "\n\nDozy\n\n" &&
+	exit 1
+) &> "$OUTPUT_ROOT/dozy" &
+pids["$!"]="$OUTPUT_ROOT/dozy"
+
+echo -e "\n\nRAAARRR\n\n" &> "$OUTPUT_ROOT/raaarrr" &
+pids["$!"]="$OUTPUT_ROOT/raaarrr"
+
+echo "${!pids[*]}"
 echo "${pids[*]}"
 status=0
-for i in "${!pids[@]}"
+for id in "${!pids[@]}"
 do
-	if ! wait "${pids[i]}"; then
+	wait "${id}"
+	last_status="$?"
+	if [[ $last_status -ne 0 ]]; then
 		status=1
 	fi
-	unset "pids[$i]"
+	echo "PID: ${id}, STATUS: ${last_status}"
+	file="${pids[$id]}"
+	echo "${file#"$OUTPUT_ROOT/"}"
+	file="${pids[$id]}"
+	cat "${file}"
+	unset "pids[$id]"
 done
-echo "SLEEPY.TXT"
-cat /tmp/sleepy.txt
-echo ""
-echo "ENV.TXT"
-cat /tmp/env.txt
-echo ""
 echo "ALL DONE"
-exit "${status}"
+exit "$status"
