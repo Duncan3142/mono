@@ -19,4 +19,5 @@ runs:
       shell: bash
       run: |
         mono-debug.js
+        mono-temp.sh
       working-directory: ${{ inputs.cwd }}
