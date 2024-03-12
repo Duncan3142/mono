@@ -4,4 +4,4 @@ import chalk from 'chalk'
 
 const {redBright, blueBright, greenBright} = chalk
 
-console.log(redBright('Hello'), blueBright('world'), greenBright('!'))
+console.log(`${redBright('Hello')} ${blueBright('Nodejs')}${greenBright('!')}`)

@@ -20,5 +20,6 @@ runs:
         export PATH="${{ github.action_path}}/:$PATH"
         echo "PATH: $PATH"
         main.sh
+        export FORCE_COLOR=3
         main.js
       working-directory: ${{ inputs.cwd }}
