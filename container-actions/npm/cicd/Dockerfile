@@ -9,12 +9,8 @@ ENV PATH=${ACTION_DIR}/shell:${ACTION_DIR}/js:${PATH}
 
 WORKDIR ${ACTION_DIR}
 
-COPY package.json package-lock.json ./
-
-RUN npm ci --omit=dev
-
 COPY . .
 
-ENTRYPOINT [ "/action/cd.sh" ]
+ENTRYPOINT [ "/action/setup.sh" ]
 
 CMD [ ]

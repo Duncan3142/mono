@@ -1,6 +1,7 @@
-node_modules
+**/node_modules
 action.yml
 .*
 Dockerfile
 Makefile
 example.env
+README.md
