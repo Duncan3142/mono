@@ -1,0 +1,11 @@
+name: "Utility scripts"
+description: "Install utility scripts"
+
+runs:
+  using: "composite"
+  steps:
+    - name: Setup
+      shell: bash
+      run: |
+        ./setup.sh
+      working-directory: ${{ github.action_path}}

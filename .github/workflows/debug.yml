@@ -22,7 +22,7 @@ env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   FORCE_COLOR: 3
   LBIN: /home/runner/.local/bin
-  MONO_LOGS_ROOT: /tmp/mono-logs
+  MONO_LOGS_ROOT: /tmp/mono/logs
 
 jobs:
   test:
@@ -39,7 +39,5 @@ jobs:
         with:
           cwd: ${{ env.MONO_WORK_DIR }}
 
-      - name: Debug
-        uses: Duncan3142/mono/actions/debug/@main
-        with:
-          cwd: ${{ env.MONO_WORK_DIR }}
+      - name: Utils
+        uses: Duncan3142/mono/actions/utils/@main
