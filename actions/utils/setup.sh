@@ -16,6 +16,11 @@ mkdir -p "${MONO_LOGS_ROOT}"
 pids["$!"]='install-mono-wait'
 
 (
+	cp "shell/log.sh" "$LBIN/mono-log.sh"
+) &> "$MONO_LOGS_ROOT/install-mono-log" &
+pids["$!"]='install-mono-log'
+
+(
 	cp "shell/init-repo.sh" "$LBIN/mono-init-repo.sh"
 ) &> "$MONO_LOGS_ROOT/install-init-repo" &
 pids["$!"]='install-init-repo'

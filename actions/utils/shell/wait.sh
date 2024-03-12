@@ -1,14 +1,19 @@
 #! /usr/bin/env bash
 
 function mono_wait {
-	local -n _pids=$1
+	local -n _pids=${1:?}
+	_pids=${_pids:()}
+	if [[ "${_pids[*]}" == "()" ]]; then
+		echo "Invalid wait reference: $1"
+		return 1
+	fi
 	echo "${!_pids[*]}"
 	echo "${_pids[*]}"
-	status=0
+	local status=0
 	for id in "${!_pids[@]}"
 	do
 		wait "${id}"
-		last_status="$?"
+		local last_status="$?"
 		if [[ $last_status -ne 0 ]]; then
 			status=1
 		fi
@@ -18,5 +23,5 @@ function mono_wait {
 		cat "${MONO_LOGS_ROOT}/${file}"
 	done
 
-	return "$status"
+	return $status
 }
