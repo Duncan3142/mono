@@ -19,6 +19,7 @@ concurrency:
 env:
   MONO_WORK_DIR: ${{ vars.PRETTIER_CONFIG_DIR }}
   GH_PACKAGES_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 jobs:
   test:
