@@ -2,6 +2,8 @@
 
 echo "PATH: $PATH"
 
+mkdir -p "$LBIN"
+
 ls -A /home/runner/.local/bin
 
 cp "wait.sh" "$LBIN/mono-wait.sh"

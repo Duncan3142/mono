@@ -21,7 +21,7 @@ env:
   GH_PACKAGES_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   FORCE_COLOR: 3
-  LBIN: /usr/local/bin
+  LBIN: /home/runner/.local/bin
   MONO_LOGS_ROOT: /tmp/mono-logs
 
 jobs:
