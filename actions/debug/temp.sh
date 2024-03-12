@@ -14,7 +14,7 @@ pids["$!"]='sleepy'
 (
 	sleep 3s &&
 	echo -e "\n\nDozy\n\n" &&
-	exit 1
+	exit 0
 ) &> "$MONO_LOGS_ROOT/dozy" &
 pids["$!"]='dozy'
 

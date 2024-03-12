@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-ls -A "$LBIN"
+echo "PATH: $PATH"
 
 cp "wait.sh" "$LBIN/mono-wait.sh"
 
