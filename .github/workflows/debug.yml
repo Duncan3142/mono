@@ -13,5 +13,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
 
+      - name: Setup
+        uses: Duncan3142/mono/actions/git/setup@main
+
       - name: Debug
-        uses: Duncan3142/mono/actions/debug/@debug
+        uses: Duncan3142/mono/actions/debug/@main
