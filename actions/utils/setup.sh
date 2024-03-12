@@ -22,8 +22,13 @@ pids["$!"]='install-mono-log'
 
 (
 	cp "shell/init-repo.sh" "$LBIN/mono-init-repo.sh"
-) &> "$MONO_LOGS_ROOT/install-init-repo" &
-pids["$!"]='install-init-repo'
+) &> "$MONO_LOGS_ROOT/install-mono-init-repo" &
+pids["$!"]='install-mono-init-repo'
+
+(
+	cp "shell/debug-env.sh" "$LBIN/mono-debug-env.sh"
+) &> "$MONO_LOGS_ROOT/install-mono-debug-env" &
+pids["$!"]='install-mono-debug-env'
 
 (
 	cp -r "chalk" "$LBIN/mono-chalk"
