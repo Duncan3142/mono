@@ -10,3 +10,6 @@ cat ~/.gitconfig
 
 echo "LOCAL GIT CONFIG"
 cat "${GITHUB_WORKSPACE}/.git/config"
+
+echo "LOCAL BIN CONTENTS:"
+ls -A /usr/local/bin
