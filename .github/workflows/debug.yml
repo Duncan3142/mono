@@ -2,10 +2,22 @@ name: Debug
 
 on:
   push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/debug.yml'
+      - 'actions/debug/**'
+
+permissions:
+  packages: read
 
 concurrency:
   group: ${{ github.workflow_ref }}
   cancel-in-progress: true
+
+env:
+  MONO_WORK_DIR: ${{ vars.PRETTIER_CONFIG_DIR }}
+  GH_PACKAGES_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 jobs:
   test:
@@ -13,8 +25,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
 
-      - name: Setup
+      - name: GIT
         uses: Duncan3142/mono/actions/git/setup@main
+
+      - name: NPM
+        id: npm
+        uses: Duncan3142/mono/actions/npm/setup@main
+        with:
+          cwd: ${{ env.MONO_WORK_DIR }}
 
       - name: Debug
         uses: Duncan3142/mono/actions/debug/@main
+        with:
+          cwd: ${{ env.MONO_WORK_DIR }}

@@ -1,10 +1,22 @@
 name: "Debug"
 description: "Check script paths"
 
+inputs:
+  cwd:
+    description: |
+      The directory of the package
+    required: true
+
 runs:
   using: "composite"
   steps:
-    - name: Fetch
+    - name: Debug
       shell: bash
       run: |
-        '${{ github.action_path}}/echo.sh'
+        AWD='${{ github.action_path}}'
+        (cd "$AWD" && npm ci --omit=dev)
+        echo "Work dir: $pwd\n"
+        export PATH="${{ github.action_path}}/:"$PATH"
+        main.sh
+        main.js
+      working-directory: ${{ inputs.cwd }}
