@@ -1,0 +1,10 @@
+name: "Debug"
+description: "Check script paths"
+
+runs:
+  using: "composite"
+  steps:
+    - name: Fetch
+      shell: bash
+      run: |
+        '${{ github.action_path}}/echo.sh'

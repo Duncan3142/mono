@@ -2,20 +2,6 @@ name: Debug
 
 on:
   push:
-    paths:
-     - '.github/workflows/debug.yml'
-     - 'container-actions/npm/cicd/**'
-
-permissions:
-  packages: write
-  pull-requests: write
-  contents: write
-
-env:
-  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  GH_PACKAGES_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  MONO_WORK_DIR: ${{ vars.PRETTIER_CONFIG_DIR }}
-  SEMVER_BRANCH: DEBUG/${{ vars.SEMVER_BRANCH_PATH }}/${{ vars.PRETTIER_CONFIG_DIR }}
 
 concurrency:
   group: ${{ github.workflow_ref }}
@@ -28,10 +14,4 @@ jobs:
     steps:
 
       - name: Debug
-        uses: Duncan3142/mono/container-actions/npm/cicd@main
-        env:
-          CHECKOUT_BRANCH: ${{ github.ref_name }}
-          LOG_LEVEL: 1
-        with:
-          cwd: ${{ env.MONO_WORK_DIR }}
-        # Trigger
+        uses: Duncan3142/mono/actions/debug/@main
