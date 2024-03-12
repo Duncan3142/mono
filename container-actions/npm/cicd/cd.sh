@@ -39,6 +39,8 @@ if CHANGES_JSON=$(./shell/changes.sh >(cat)); then
 	. version.sh
 else
 	log_info "SemVer current"
+	# shellcheck source=./shell/publish.sh
+	. publish.sh
 fi
 
 test.js
