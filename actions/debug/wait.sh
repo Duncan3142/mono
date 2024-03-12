@@ -1,11 +1,11 @@
 #! /usr/bin/env bash
 
 function mono_wait {
-	# declare -n innerPids=$1
-	echo "${!MONO_PIDS[*]}"
-	echo "${MONO_PIDS[*]}"
+	declare -n innerPids=$1
+	echo "${!innerPids[*]}"
+	echo "${innerPids[*]}"
 	status=0
-	for id in "${!MONO_PIDS[@]}"
+	for id in "${!innerPids[@]}"
 	do
 		wait "${id}"
 		last_status="$?"
@@ -13,10 +13,10 @@ function mono_wait {
 			status=1
 		fi
 		echo "PID: ${id}, STATUS: ${last_status}"
-		file="${MONO_PIDS[$id]}"
+		file="${innerPids[$id]}"
 		echo "${file}"
 		cat "${MONO_LOGS_ROOT}/${file}"
-		unset "MONO_PIDS[$id]"
+		unset "innerPids[$id]"
 	done
 
 	return "$status"

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-declare -A MONO_PIDS=()
+declare -A pids=()
 MONO_LOGS_ROOT=/tmp/mono-logs
 
 mkdir -p "$MONO_LOGS_ROOT"
@@ -10,21 +10,22 @@ mkdir -p "$MONO_LOGS_ROOT"
   sleep 2s &&
 	echo -e "\n\nMEOW WOOF\n\n"
 ) &> "$MONO_LOGS_ROOT/sleepy" &
-MONO_PIDS["$!"]='sleepy'
+pids["$!"]='sleepy'
 
 (
 	sleep 3s &&
 	echo -e "\n\nDozy\n\n" &&
 	exit 0
 ) &> "$MONO_LOGS_ROOT/dozy" &
-MONO_PIDS["$!"]='dozy'
+pids["$!"]='dozy'
 
 echo -e "\n\nRAAARRR\n\n" &> "$MONO_LOGS_ROOT/raaarrr" &
-MONO_PIDS["$!"]='raaarrr'
+# shellcheck disable=SC2034
+pids["$!"]='raaarrr'
 
 . ./wait.sh
 
-if ! mono_wait; then
+if ! mono_wait pids; then
 	exit 1
 fi
 
