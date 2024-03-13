@@ -1,6 +1,6 @@
 #! /usr/bin/env bash
 
-function mono_wait {
+function mono_pwait {
 	local -n _pids=${1:?}
 	_pids=${_pids:()}
 	if [[ "${_pids[*]}" == "()" ]]; then

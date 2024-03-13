@@ -2,8 +2,8 @@
 
 # shellcheck disable=SC2034
 
-# shellcheck source=./shell/wait.sh
-. shell/wait.sh
+# shellcheck source=./shell/pwait.sh
+. shell/pwait.sd
 
 set -u -e
 
@@ -40,7 +40,7 @@ pids["$!"]='install-mono-debug-env'
 ) &>"$MONO_LOGS_ROOT/install-mono-chalk" &
 pids["$!"]='install-mono-chalk'
 
-if ! mono_wait pids; then
+if ! mono_pwait pids; then
 	echo "Install error"
 	exit 1
 fi
