@@ -14,7 +14,7 @@ function await() {
 			echo -E "$line"
 		done
 	} || true
-	echo '' >&"${2}"
+	echo '' >&"${2}" || true
 }
 
 function costatus() {

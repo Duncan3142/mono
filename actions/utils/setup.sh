@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -uC
+set -ueC
 
 cd "${ACTION_DIR}" || exit 1
 
