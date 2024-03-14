@@ -2,7 +2,7 @@
 
 set -ueC
 
-cd "${ACTION_DIR}" || exit 1
+cd "${ACTION_DIR}"
 
 mkdir -p "${LBIN}"
 
