@@ -1,6 +1,6 @@
-FROM alpine:3
+FROM ubuntu:22.04
 
-RUN apk add --no-cache 'bash>=5.2.21-r0' 'git>=2.43.0-r0' 'github-cli>=2.39.2-r1' 'jq>=1.7.1-r0' 'nodejs>=20.11.1-r0' 'npm>=10.2.5-r0'
+# RUN apt-get install 'git>=2.43.0-r0' 'github-cli>=2.39.2-r1' 'jq>=1.7.1-r0' 'nodejs>=20.11.1-r0' 'npm>=10.2.5-r0'
 
 SHELL ["/bin/bash", "-c"]
 

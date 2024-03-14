@@ -1,48 +1,60 @@
 #!/usr/bin/env bash
 
-# shellcheck disable=SC2034
-
-# shellcheck source=./shell/pwait.sh
-. shell/pwait.sd
-
-set -u -e
+set -ueC
 
 mkdir -p "${LBIN}"
 
-declare -A pids=()
+declare -a pids=()
 
-mkdir -p "${MONO_LOGS_ROOT}"
+coproc coshell (
+	(
+		echo Installing shell script...
+		cd shell
+		cp \
+			"init-repo.sh" \
+			"npm-changes.sh" \
+			"npm-publish.sh" \
+			"print-env.sh" \
+			"semver-branch.sh" \
+			"semver-commit.sh" \
+			"semver-pr.sh" \
+			"timber.sh" \
+			"$LBIN/"
+		sleep 8s
+		echo Installed shell scripts
+	) 2>&1 || true
+	echo "Done Shell"
+	exec >&-
+	read -r
+)
+coshell_std=("${coshell[@]}") coshell_id=${coshell_ID:?}
+pids+=("${coshell_id}")
 
-(
-	cp "shell/wait.sh" "$LBIN/mono-wait.sh"
-) &> "$MONO_LOGS_ROOT/install-mono-wait" &
-pids["$!"]='install-mono-wait'
+coproc cochalk (
+	(
+		echo Installing mono-chalk...
+		cp -r "mono-chalk" "$LBIN/mono-chalk"
+		(cd "$LBIN/mono-chalk" && npm ci --omit=dev)
+		ln -s "$LBIN/mono-chalk/main.js" "$LBIN/mono-chalk.js"
+		echo Installed mono-chalk
+	) 2>&1 || true
+	echo "Done Chalk"
+	exec >&-
+	read -r
+)
+cochalk_std=("${cochalk[@]}")  cochalk_id=${cochalk_ID?}
+pids+=("${cochalk_id}")
 
-(
-	cp "shell/log.sh" "$LBIN/mono-log.sh"
-) &> "$MONO_LOGS_ROOT/install-mono-log" &
-pids["$!"]='install-mono-log'
+cat "${coshell_std[0]}" && echo '' > "${coshell_std[1]}"
+cat "${cochalk_std[0]}" && echo '' > "${cochalk_std[1]}"
 
-(
-	cp "shell/init-repo.sh" "$LBIN/mono-init-repo.sh"
-) &> "$MONO_LOGS_ROOT/install-mono-init-repo" &
-pids["$!"]='install-mono-init-repo'
-
-(
-	cp "shell/debug-env.sh" "$LBIN/mono-debug-env.sh"
-) &> "$MONO_LOGS_ROOT/install-mono-debug-env" &
-pids["$!"]='install-mono-debug-env'
-
-(
-	cp -r "chalk" "$LBIN/mono-chalk"
-	(cd "$LBIN/mono-chalk" && npm ci --omit=dev)
-	ln -s "$LBIN/mono-chalk/main.js" "$LBIN/mono-chalk.js"
-) &>"$MONO_LOGS_ROOT/install-mono-chalk" &
-pids["$!"]='install-mono-chalk'
-
-if ! mono_pwait pids; then
-	echo "Install error"
-	exit 1
-fi
+for id in "${pids[@]}"; do
+	wait "${id}"
+	status="$?"
+	if [[ $status -ne 0 ]]; then
+		echo "Error"
+		exit 1
+	fi
+done
 
 echo "All done"

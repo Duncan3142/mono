@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
 
-set -u -e
+set -ueC
 
 echo publish
