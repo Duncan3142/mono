@@ -6,6 +6,15 @@ cd "${ACTION_DIR}"
 
 mkdir -p "${LBIN}"
 
+function coawait() {
+	{
+		while read -u "${1}" -r line; do
+			echo -E "$line"
+		done
+	} || true
+	echo '' >&"${2}"
+}
+
 function await() {
 	{
 		while read -u "${1}" -r line; do
@@ -34,8 +43,7 @@ coproc coshell (
 			"$LBIN/"
 		echo -e "Installed shell scripts\n"
 	) 2>&1 &
-	id=$!
-	wait "${id}"
+	wait $!
 	status="$?"
 	exec >&-
 	read -r
@@ -53,8 +61,7 @@ coproc cochalk (
 		ln -s "$LBIN/mono-chalk/main.js" "$LBIN/mono-chalk.js"
 		echo -e "Installed mono-chalk\n"
 	) 2>&1 &
-	id=$!
-	wait "${id}"
+	wait $!
 	status="$?"
 	exec >&-
 	read -r
@@ -64,8 +71,8 @@ cochalk_std=("${cochalk[@]}")
 cochalk_id=${cochalk_PID:?}
 pids+=("${cochalk_id}")
 
-await "${cochalk_std[@]}"
 await "${coshell_std[@]}"
+await "${cochalk_std[@]}"
 
 for id in "${pids[@]}"; do
 	wait "${id}"
