@@ -6,13 +6,12 @@ cd "${ACTION_DIR}"
 
 mkdir -p "${LBIN}"
 
-function coawait() {
-	{
-		while read -u "${1}" -r line; do
-			echo -E "$line"
-		done
-	} || true
-	echo '' >&"${2}"
+function coexit() {
+	wait $!
+	status="$?"
+	exec >&-
+	read -r
+	exit $status
 }
 
 function await() {
@@ -29,7 +28,6 @@ declare -a pids=()
 coproc coshell (
 	(
 		echo Installing shell script...
-		sleep 6s
 		cd shell
 		cp \
 			"init-repo.sh" \
@@ -43,11 +41,7 @@ coproc coshell (
 			"$LBIN/"
 		echo -e "Installed shell scripts\n"
 	) 2>&1 &
-	wait $!
-	status="$?"
-	exec >&-
-	read -r
-	exit $status
+	coexit
 )
 coshell_std=("${coshell[@]}")
 coshell_id=${coshell_PID:?}
@@ -61,18 +55,14 @@ coproc cochalk (
 		ln -s "$LBIN/mono-chalk/main.js" "$LBIN/mono-chalk.js"
 		echo -e "Installed mono-chalk\n"
 	) 2>&1 &
-	wait $!
-	status="$?"
-	exec >&-
-	read -r
-	exit $status
+	coexit
 )
 cochalk_std=("${cochalk[@]}")
 cochalk_id=${cochalk_PID:?}
 pids+=("${cochalk_id}")
 
-await "${coshell_std[@]}"
 await "${cochalk_std[@]}"
+await "${coshell_std[@]}"
 
 for id in "${pids[@]}"; do
 	wait "${id}"
