@@ -20,6 +20,7 @@ declare -a pids=()
 coproc coshell (
 	(
 		echo Installing shell script...
+		sleep 6s
 		cd shell
 		cp \
 			"init-repo.sh" \
@@ -31,10 +32,14 @@ coproc coshell (
 			"semver-pr.sh" \
 			"timber.sh" \
 			"$LBIN/"
-		echo Installed shell scripts
-	) 2>&1 || true # ::TODO:: capture true exit code
+		echo -e "Installed shell scripts\n"
+	) 2>&1 &
+	id=$!
+	wait "${id}"
+	status="$?"
 	exec >&-
 	read -r
+	exit $status
 )
 coshell_std=("${coshell[@]}")
 coshell_id=${coshell_PID:?}
@@ -46,10 +51,14 @@ coproc cochalk (
 		cp -r "mono-chalk" "$LBIN/mono-chalk"
 		(cd "$LBIN/mono-chalk" && npm ci --omit=dev)
 		ln -s "$LBIN/mono-chalk/main.js" "$LBIN/mono-chalk.js"
-		echo Installed mono-chalk
-	) 2>&1 || true # ::TODO:: capture true exit code
+		echo -e "Installed mono-chalk\n"
+	) 2>&1 &
+	id=$!
+	wait "${id}"
+	status="$?"
 	exec >&-
 	read -r
+	exit $status
 )
 cochalk_std=("${cochalk[@]}")
 cochalk_id=${cochalk_PID:?}
