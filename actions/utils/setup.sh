@@ -47,8 +47,8 @@ coproc cochalk (
 cochalk_std=("${cochalk[@]}")
 pids+=("${cochalk_PID}")
 
-await "${coshell_std[@]}"
 await "${cochalk_std[@]}"
+await "${coshell_std[@]}"
 
 if ! costatus "${pids[@]}"; then
 	echo "Error"

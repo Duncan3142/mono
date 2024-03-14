@@ -13,11 +13,9 @@ function coexit() {
 function await() {
 	local -
 	set +e
-	{
-		while read -u "${1}" -r line; do
-			echo -E "$line"
-		done
-	}
+	while read -u "${1}" -r line; do
+		echo -E "$line"
+	done
 	echo '' >&"${2}"
 }
 
