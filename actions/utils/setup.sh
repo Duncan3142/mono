@@ -31,12 +31,10 @@ coproc coshell (
 			"timber.sh" \
 			"$LBIN/"
 		echo Installed shell scripts
-	) 2>&1 &
-	wait $!
-	status="$?"
+	) 2>&1 || true
+	sleep 4s
 	exec >&-
 	read -r
-	exit $status
 )
 coshell_std=("${coshell[@]}")
 coshell_id=${coshell_PID:?}
@@ -49,20 +47,20 @@ coproc cochalk (
 		(cd "$LBIN/mono-chalk" && npm ci --omit=dev)
 		ln -s "$LBIN/mono-chalk/main.js" "$LBIN/mono-chalk.js"
 		echo Installed mono-chalk
-	) 2>&1 &
-	wait $!
-	status="$?"
+	) 2>&1 || true
+	sleep 6s
 	exec >&-
 	read -r
-	sleep 6s
-	exit $status
 )
 cochalk_std=("${cochalk[@]}")
 cochalk_id=${cochalk_PID:?}
 pids+=("${cochalk_id}")
 
-log "${coshell_std[@]}"
+echo "${cochalk_std[@]}"
 log "${cochalk_std[@]}"
+echo "${coshell_std[@]}"
+log "${coshell_std[@]}"
+
 
 for id in "${pids[@]}"; do
 	wait "${id}"

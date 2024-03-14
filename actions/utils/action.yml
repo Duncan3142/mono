@@ -7,5 +7,6 @@ runs:
     - name: Setup
       shell: bash
       run: |
+        exit 1
         ./setup.sh
       working-directory: ${{ github.action_path}}
