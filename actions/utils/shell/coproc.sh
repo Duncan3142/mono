@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 
 function coexit() {
+	local -
+	set +e
 	wait $!
 	status="$?"
 	exec >&-
@@ -9,12 +11,14 @@ function coexit() {
 }
 
 function await() {
+	local -
+	set +e
 	{
 		while read -u "${1}" -r line; do
 			echo -E "$line"
 		done
-	} || true
-	echo '' >&"${2}" || true
+	}
+	echo '' >&"${2}"
 }
 
 function costatus() {
