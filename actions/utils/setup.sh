@@ -2,19 +2,20 @@
 
 set -ueC
 
+cd "${ACTION_DIR}"
+
 mkdir -p "${LBIN}"
 
-declare -a pids=()
-
-function log() {
+function await() {
 	{
 		while read -u "${1}" -r line; do
-			echo "$line"
+			echo -E "$line"
 		done
-	} && echo '' >&"${2}"
+	} || true
+	echo '' >&"${2}"
 }
 
-cd "${ACTION_DIR}"
+declare -a pids=()
 
 coproc coshell (
 	(
@@ -31,8 +32,7 @@ coproc coshell (
 			"timber.sh" \
 			"$LBIN/"
 		echo Installed shell scripts
-	) 2>&1 || true
-	sleep 4s
+	) 2>&1 || true # ::TODO:: capture true exit code
 	exec >&-
 	read -r
 )
@@ -47,8 +47,7 @@ coproc cochalk (
 		(cd "$LBIN/mono-chalk" && npm ci --omit=dev)
 		ln -s "$LBIN/mono-chalk/main.js" "$LBIN/mono-chalk.js"
 		echo Installed mono-chalk
-	) 2>&1 || true
-	sleep 6s
+	) 2>&1 || true # ::TODO:: capture true exit code
 	exec >&-
 	read -r
 )
@@ -56,11 +55,8 @@ cochalk_std=("${cochalk[@]}")
 cochalk_id=${cochalk_PID:?}
 pids+=("${cochalk_id}")
 
-echo "${cochalk_std[@]}"
-log "${cochalk_std[@]}"
-echo "${coshell_std[@]}"
-log "${coshell_std[@]}"
-
+await "${cochalk_std[@]}"
+await "${coshell_std[@]}"
 
 for id in "${pids[@]}"; do
 	wait "${id}"

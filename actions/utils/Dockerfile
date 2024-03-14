@@ -1,8 +1,20 @@
 FROM ubuntu:22.04
 
-# RUN apt-get install 'git>=2.43.0-r0' 'github-cli>=2.39.2-r1' 'jq>=1.7.1-r0' 'nodejs>=20.11.1-r0' 'npm>=10.2.5-r0'
+SHELL ["/bin/bash", "-o", "pipefail", "-euC", "-c"]
 
-SHELL ["/bin/bash", "-c"]
+# hadolint ignore=DL3008,SC2174
+RUN apt-get update \
+	&& apt-get upgrade -y \
+	&& apt-get install --no-install-recommends -y 'curl' 'ca-certificates' \
+	&& curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
+	&&  mkdir -p -m 755 /etc/apt/keyrings \
+	&& curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | tee /etc/apt/keyrings/githubcli-archive-keyring.gpg > /dev/null \
+	&& chmod go+r /etc/apt/keyrings/githubcli-archive-keyring.gpg \
+	&& echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
+	&& apt-get install --no-install-recommends -y 'nodejs' 'git' 'gh' 'jq' \
+	&& apt-get clean \
+	&& rm -rf /var/lib/apt/lists/* \
+	echo Done
 
 ENV ACTION_DIR=/action
 ENV LBIN=${ACTION_DIR}/bin

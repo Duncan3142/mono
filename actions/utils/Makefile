@@ -6,11 +6,11 @@ stop:
 rm: stop
 	docker rm github-utils || true
 
-build:
+build: rm
 	docker build -t github-utils:latest .
 
-it: rm build
+it: build
 	docker run -it --env-file .env --entrypoint /bin/bash --name github-utils github-utils:latest
 
-run: rm build
+run: build
 	docker run --env-file .env --name github-utils github-utils:latest
