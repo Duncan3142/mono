@@ -16,3 +16,15 @@ function await() {
 	} || true
 	echo '' >&"${2}"
 }
+
+function costatus() {
+	local -i status=0
+	for id in "$@"; do
+		wait "${id}"
+		last_status="$?"
+		if [[ $last_status -ne 0 ]]; then
+			status=1
+		fi
+	done
+	return $status
+}

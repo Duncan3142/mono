@@ -31,8 +31,7 @@ coproc coshell (
 	coexit
 )
 coshell_std=("${coshell[@]}")
-coshell_id=${coshell_PID:?}
-pids+=("${coshell_id}")
+pids+=("${coshell_PID}")
 
 coproc cochalk (
 	(
@@ -46,19 +45,14 @@ coproc cochalk (
 	coexit
 )
 cochalk_std=("${cochalk[@]}")
-cochalk_id=${cochalk_PID:?}
-pids+=("${cochalk_id}")
+pids+=("${cochalk_PID}")
 
-await "${cochalk_std[@]}"
 await "${coshell_std[@]}"
+await "${cochalk_std[@]}"
 
-for id in "${pids[@]}"; do
-	wait "${id}"
-	status="$?"
-	if [[ $status -ne 0 ]]; then
-		echo "Error"
-		exit 1
-	fi
-done
+if ! costatus "${pids[@]}"; then
+	echo "Error"
+	exit 1
+fi
 
 echo "All done"
