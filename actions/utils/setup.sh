@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
-set -ueC
+set -uC
 
-cd "${ACTION_DIR}"
+cd "${ACTION_DIR}" || exit 1
 
 mkdir -p "${LBIN}"
 
@@ -27,6 +27,7 @@ declare -a pids=()
 
 coproc coshell (
 	(
+		set -e
 		echo Installing shell script...
 		cd shell
 		cp \
@@ -49,6 +50,7 @@ pids+=("${coshell_id}")
 
 coproc cochalk (
 	(
+		set -e
 		echo Installing mono-chalk...
 		cp -r "mono-chalk" "$LBIN/mono-chalk"
 		(cd "$LBIN/mono-chalk" && npm ci --omit=dev)
