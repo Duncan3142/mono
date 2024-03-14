@@ -6,22 +6,7 @@ cd "${ACTION_DIR}" || exit 1
 
 mkdir -p "${LBIN}"
 
-function coexit() {
-	wait $!
-	status="$?"
-	exec >&-
-	read -r
-	exit $status
-}
-
-function await() {
-	{
-		while read -u "${1}" -r line; do
-			echo -E "$line"
-		done
-	} || true
-	echo '' >&"${2}"
-}
+. ./shell/coproc.sh
 
 declare -a pids=()
 
@@ -31,6 +16,7 @@ coproc coshell (
 		echo Installing shell script...
 		cd shell
 		cp \
+			"coproc.sh" \
 			"init-repo.sh" \
 			"npm-changes.sh" \
 			"npm-publish.sh" \
