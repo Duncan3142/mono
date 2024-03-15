@@ -1,5 +1,7 @@
 **/node_modules
-action.yml
+**/action.yml
+**/README.md
+**/CHANGELOG.md
 .*
 Dockerfile
 Makefile
