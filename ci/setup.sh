@@ -32,6 +32,7 @@ pids+=("${coshell_PID}")
 coproc cochalk (
 	(
 		set -e
+		volta install node@20
 		echo Installing mono-chalk...
 		cp -r "mono-chalk" "$LBIN/mono-chalk"
 		(cd "$LBIN/mono-chalk" && npm ci --omit=dev)
