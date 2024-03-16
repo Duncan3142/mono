@@ -2,9 +2,9 @@
 
 set -ueC
 
-if timber -l debug; then
-	timber debug "Env:"
+if timber.sh -l debug; then
+	timber.sh debug "Env:"
 	for n in $(compgen -e); do echo "$n=${!n}"; done
-	timber debug "Args:"
+	timber.sh debug "Args:"
 	echo -E "$@"
 fi

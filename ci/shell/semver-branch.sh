@@ -11,26 +11,26 @@ GIT_REMOTE="${GIT_REMOTE:-origin}"
 # Try to fetch remote semver branch
 if git fetch "${GIT_REMOTE}" --depth=1 "refs/heads/${SEMVER_BRANCH}:refs/remotes/${GIT_REMOTE}/${SEMVER_BRANCH}" 2> /dev/null; then
 	# Checkout and reset semver branch
-	if timber -l debug; then
-		timber debug "Fetched ${SEMVER_BRANCH} from ${GIT_REMOTE}"
+	if timber.sh -l debug; then
+		timber.sh debug "Fetched ${SEMVER_BRANCH} from ${GIT_REMOTE}"
 		git_branches
 	fi
 
-	if timber -l debug; then
-		timber debug "Checkout ${SEMVER_BRANCH}"
+	if timber.sh -l debug; then
+		timber.sh debug "Checkout ${SEMVER_BRANCH}"
 	fi
 
 	git checkout --progress -b "${SEMVER_BRANCH}" "${GIT_REMOTE}/${SEMVER_BRANCH}"
 
-	if timber -l debug; then
+	if timber.sh -l debug; then
 		git_branches
 	fi
 
-	if timber -l debug; then
-		timber debug "Resetting ${SEMVER_BRANCH} to ${BASE_BRANCH}"
+	if timber.sh -l debug; then
+		timber.sh debug "Resetting ${SEMVER_BRANCH} to ${BASE_BRANCH}"
 	fi
 	git reset --hard "${BASE_BRANCH}"
-	if timber -l debug; then
+	if timber.sh -l debug; then
 		git_branches
 	fi
 else
