@@ -16,9 +16,11 @@ cd "${GITHUB_WORKSPACE}" || exit 1
 timber debug "Init repo:"
 git init
 
-git remote add "${REMOTE}" "${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}.git"
+authHeaderKey="http.${GITHUB_SERVER_URL}/.extraheader"
+authHeaderValue="AUTHORIZATION: basic $(base64 "x-access-token:${GITHUB_TOKEN}")"
+git config "${authHeaderKey}" "${authHeaderValue}"
 
-gh auth setup-git
+git remote add "${REMOTE}" "${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}.git"
 
 if timber -l debug; then
 	mono_log debug "Auth status:"

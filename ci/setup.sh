@@ -15,16 +15,12 @@ coproc coshell (
 		set -e
 		echo Installing shell script...
 		cd shell
+		scripts=()
+		while read -r script; do
+			scripts+=("$script")
+		done < <(ls -1)
 		cp \
-			"coproc.sh" \
-			"init-repo.sh" \
-			"npm-changes.sh" \
-			"npm-publish.sh" \
-			"print-env.sh" \
-			"semver-branch.sh" \
-			"semver-commit.sh" \
-			"semver-pr.sh" \
-			"timber.sh" \
+			"${scripts[@]}" \
 			"$LBIN/"
 		echo -e "Installed shell scripts\n"
 	) 2>&1 &
