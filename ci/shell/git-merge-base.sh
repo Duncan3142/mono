@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+GIT_REMOTE="${GIT_REMOTE:-origin}"
+
 baseRef=$1
 headRef=$2
 OUTPUT=$3
@@ -20,7 +22,7 @@ do
 	echo "Deepening fetch..."
 	deepenBy=$((deepenBy * 2))
 	(( depth+=deepenBy ))
-	git fetch --deepen="${deepenBy}" "${REMOTE}" "${baseRef}" "${headRef}"
+	git fetch --deepen="${deepenBy}" "${GIT_REMOTE}" "${baseRef}" "${headRef}"
 done
 
 echo "Merge base found: $mergeBase"

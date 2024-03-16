@@ -2,7 +2,7 @@
 
 set -ueC
 
-REMOTE="${REMOTE:-origin}"
+GIT_REMOTE="${GIT_REMOTE:-origin}"
 
 git config --global user.name "${GITHUB_ACTOR}"
 git config --global user.email "${GITHUB_ACTOR}@users.noreply.github.com"
@@ -20,7 +20,7 @@ authHeaderKey="http.${GITHUB_SERVER_URL}/.extraheader"
 authHeaderValue="AUTHORIZATION: basic $(base64 "x-access-token:${GITHUB_TOKEN}")"
 git config "${authHeaderKey}" "${authHeaderValue}"
 
-git remote add "${REMOTE}" "${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}.git"
+git remote add "${GIT_REMOTE}" "${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}.git"
 
 if timber -l debug; then
 	mono_log debug "Auth status:"
@@ -32,7 +32,7 @@ if timber -l debug; then
 	cat ~/.gitconfig
 fi
 
-git fetch "${REMOTE}" --depth=1 "refs/heads/${CHECKOUT_BRANCH}:refs/remotes/${REMOTE}/${CHECKOUT_BRANCH}"
+git fetch "${GIT_REMOTE}" --depth=1 "refs/heads/${CHECKOUT_BRANCH}:refs/remotes/${GIT_REMOTE}/${CHECKOUT_BRANCH}"
 
 if timber -l debug; then
 	mono_log debug "Branches post fetch:"
@@ -40,7 +40,7 @@ if timber -l debug; then
 fi
 
 timber debug "Checkout clone branch:"
-git checkout --progress -b "${CHECKOUT_BRANCH}" "${REMOTE}/${CHECKOUT_BRANCH}"
+git checkout --progress -b "${CHECKOUT_BRANCH}" "${GIT_REMOTE}/${CHECKOUT_BRANCH}"
 
 if timber -l debug; then
 	mono_log debug "Branches post checkout:"

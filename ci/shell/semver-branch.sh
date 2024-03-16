@@ -6,11 +6,13 @@ function git_branches () {
 	git --no-pager branch -a -v -v
 }
 
+GIT_REMOTE="${GIT_REMOTE:-origin}"
+
 # Try to fetch remote semver branch
-if git fetch "${REMOTE}" --depth=1 "refs/heads/${SEMVER_BRANCH}:refs/remotes/${REMOTE}/${SEMVER_BRANCH}" 2> /dev/null; then
+if git fetch "${GIT_REMOTE}" --depth=1 "refs/heads/${SEMVER_BRANCH}:refs/remotes/${GIT_REMOTE}/${SEMVER_BRANCH}" 2> /dev/null; then
 	# Checkout and reset semver branch
 	if timber -l debug; then
-		timber debug "Fetched ${SEMVER_BRANCH} from ${REMOTE}"
+		timber debug "Fetched ${SEMVER_BRANCH} from ${GIT_REMOTE}"
 		git_branches
 	fi
 
@@ -18,7 +20,7 @@ if git fetch "${REMOTE}" --depth=1 "refs/heads/${SEMVER_BRANCH}:refs/remotes/${R
 		timber debug "Checkout ${SEMVER_BRANCH}"
 	fi
 
-	git checkout --progress -b "${SEMVER_BRANCH}" "${REMOTE}/${SEMVER_BRANCH}"
+	git checkout --progress -b "${SEMVER_BRANCH}" "${GIT_REMOTE}/${SEMVER_BRANCH}"
 
 	if timber -l debug; then
 		git_branches
