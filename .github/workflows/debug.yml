@@ -22,6 +22,7 @@ env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   FORCE_COLOR: 3
   LBIN: /home/runner/.local/bin
+  LLIB: /home/runner/.local/mono
   MONO_LOGS_ROOT: /tmp/mono/logs
 
 jobs:
@@ -31,13 +32,11 @@ jobs:
     steps:
 
       - name: GIT
-        uses: Duncan3142/mono/actions/git/setup@main
+        uses: actions/checkout@v4
 
-      - name: NPM
-        id: npm
-        uses: Duncan3142/mono/actions/npm/setup@main
-        with:
-          cwd: ${{ env.MONO_WORK_DIR }}
-
-      - name: Utils
-        uses: Duncan3142/mono/actions/utils/@main
+      - name: Debug
+        run: |
+          echo Config
+          cat .git/config
+          echo Token
+          echo "x-access-token:${GITHUB_TOKEN}" | base64
