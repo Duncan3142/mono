@@ -11,8 +11,8 @@ RUN apt-get update \
 && echo Done
 
 ENV ACTION_DIR=/action
-ENV LBIN=${ACTION_DIR}/bin
-ENV PATH=${LBIN}:${PATH}
+ENV LBIN=/usr/local/bin
+ENV LLIB=/usr/local/mono
 ENV MONO_LOGS_ROOT=${ACTION_DIR}/logs
 
 WORKDIR ${ACTION_DIR}

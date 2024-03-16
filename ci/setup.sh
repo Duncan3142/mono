@@ -5,8 +5,9 @@ set -ueC
 cd "${ACTION_DIR}"
 
 mkdir -p "${LBIN}"
+mkdir -p "${LLIB}"
 
-. ./shell/coproc.sh
+. ./shell/coproc-utils.sh
 
 declare -a pids=()
 
@@ -15,13 +16,9 @@ coproc coshell (
 		set -e
 		echo Installing shell script...
 		cd shell
-		scripts=()
 		while read -r script; do
-			scripts+=("$script")
+			cp "$script" "$LBIN/${script%.*}"
 		done < <(ls -1)
-		cp \
-			"${scripts[@]}" \
-			"$LBIN/"
 		echo -e "Installed shell scripts\n"
 	) 2>&1 &
 	coexit
@@ -33,11 +30,11 @@ coproc cochalk (
 	(
 		set -e
 		volta install node@20
-		echo Installing mono-chalk...
-		cp -r "mono-chalk" "$LBIN/mono-chalk"
-		(cd "$LBIN/mono-chalk" && npm ci --omit=dev)
-		ln -s "$LBIN/mono-chalk/main.js" "$LBIN/mono-chalk.js"
-		echo -e "Installed mono-chalk\n"
+		echo Installing chalk...
+		cp -r "chalk" "$LLIB/chalk"
+		(cd "$LLIB/chalk" && npm ci --omit=dev)
+		ln -s "$LLIB/chalk/main.js" "$LBIN/chalk"
+		echo -e "Installed chalk\n"
 	) 2>&1 &
 	coexit
 )
