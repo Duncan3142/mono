@@ -5,9 +5,9 @@ SHELL ["/bin/bash", "-o", "pipefail", "-euC", "-c"]
 # hadolint ignore=DL3008,SC2174,DL3009
 RUN apt-get update \
 && apt-get upgrade -y \
-&& apt-get install --no-install-recommends -y 'curl' 'ca-certificates' 'git' 'gh' 'jq' \
-&& apt-get clean \
+&& apt-get install --no-install-recommends -y 'curl' 'ca-certificates' 'git' 'gh' 'jq' 'parallel' \
 && curl -fsSL https://get.volta.sh | bash \
+&& apt-get clean \
 && echo Done
 
 ENV ACTION_DIR=/action
