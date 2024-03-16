@@ -39,13 +39,13 @@ else
 	baseSha=$(git rev-parse "${BASE_BRANCH}")
 
 	if [[ "${headSha}" != "${baseSha}" ]]; then
-		mono_log error "HEAD is not at ${BASE_BRANCH}"
-		mono_log debug "HEAD: ${headSha}"
-		mono_log debug "${BASE_BRANCH}: ${baseSha}"
+		timber error "HEAD is not at ${BASE_BRANCH}"
+		timber debug "HEAD: ${headSha}"
+		timber debug "${BASE_BRANCH}: ${baseSha}"
 		exit 1
 	fi
 
 	# Create semver branch from base
-	mono_log debug "Creating ${SEMVER_BRANCH} from ${BASE_BRANCH}"
+	timber debug "Creating ${SEMVER_BRANCH} from ${BASE_BRANCH}"
 	git checkout -b "${SEMVER_BRANCH}"
 fi
