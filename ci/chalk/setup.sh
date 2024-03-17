@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 set -ueC
+
 volta install node@20
 echo Installing chalk...
 cp -r "chalk" "$LLIB/chalk"
