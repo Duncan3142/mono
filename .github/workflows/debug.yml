@@ -18,8 +18,6 @@ concurrency:
 
 env:
   MONO_WORK_DIR: ${{ vars.PRETTIER_CONFIG_DIR }}
-  GH_PACKAGES_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   FORCE_COLOR: 3
   LBIN: /home/runner/.local/bin
   LLIB: /home/runner/.local/mono
@@ -33,10 +31,20 @@ jobs:
 
       - name: GIT
         uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.MY_PAT }}
 
       - name: Debug
         run: |
+
+          echo Fetch
+          git fetch
+
           echo Config
-          cat .git/config
-          echo Token
-          echo "x-access-token:${GITHUB_TOKEN}" | base64
+          git --no-pager config --list
+
+          echo Git token
+          authConfig="$(git --no-pager config --list | grep http.https)"
+          declare -a chars
+          for ((i=0; i<${#authConfig}; i++)); do chars[$i]="${authConfig:$i:1}"; done
+          declare -p chars
