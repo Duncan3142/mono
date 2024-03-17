@@ -28,23 +28,7 @@ jobs:
     name: Debug
     runs-on: ubuntu-22.04
     steps:
-
-      - name: GIT
-        uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.MY_PAT }}
-
       - name: Debug
         run: |
 
-          echo Fetch
-          git fetch
-
-          echo Config
-          git --no-pager config --list
-
-          echo Git token
-          authConfig="$(git --no-pager config --list | grep http.https)"
-          declare -a chars
-          for ((i=0; i<${#authConfig}; i++)); do chars[$i]="${authConfig:$i:1}"; done
-          declare -p chars
+          echo Debug

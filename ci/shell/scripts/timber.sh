@@ -69,7 +69,7 @@ function log {
 	shift
 	local args=("${@}")
 	local color=${logColors[$level]:-$INC}
-	echo -e "${color}$message${INC}"
+	echo -e "${color}${message}${INC}"
 	for arg in "${args[@]}"; do
 		echo -E "$arg"
 	done
@@ -77,8 +77,7 @@ function log {
 
 case $1 in
 	"-l")
-		shift
-		if enabled "$1"; then
+		if enabled "$2"; then
 			exit 0
 		fi
 		exit 1

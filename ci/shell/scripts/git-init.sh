@@ -2,6 +2,24 @@
 
 set -ueC
 
+for arg in "$@"; do
+	case $arg in
+		-b=* | --branches=*)
+			branches="${arg#*=}"
+			shift
+			;;
+		"-b" | "--branches")
+			branches="$2"
+			shift
+			shift
+			;;
+		*)
+			timber error "Invalid argument: $1"
+			exit 1
+			;;
+	esac
+done
+
 GIT_REMOTE="${GIT_REMOTE:-origin}"
 
 git config --global user.name "${GITHUB_ACTOR}"
@@ -27,7 +45,7 @@ if timber -l debug; then
 	cat ~/.gitconfig
 fi
 
-git fetch "${GIT_REMOTE}" --depth=1 "refs/heads/${CHECKOUT_BRANCH}:refs/remotes/${GIT_REMOTE}/${CHECKOUT_BRANCH}"
+git-fetch "${branches}"
 
 if timber -l debug; then
 	timber debug "Branches post fetch:"
