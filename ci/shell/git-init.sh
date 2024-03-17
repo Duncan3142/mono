@@ -17,15 +17,10 @@ timber debug "Init repo:"
 git init
 
 authHeaderConfigKey="http.${GITHUB_SERVER_URL}/.extraheader"
-authHeaderConfigValue="AUTHORIZATION: basic $(echo "x-access-token:${GITHUB_TOKEN}" | base64)"
+authHeaderConfigValue="AUTHORIZATION: basic $(echo -n "x-access-token:${GITHUB_TOKEN}" | base64)"
 git config "${authHeaderConfigKey}" "${authHeaderConfigValue}"
 
 git remote add "${GIT_REMOTE}" "${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}.git"
-
-if timber -l debug; then
-	timber debug "Auth status:"
-	gh auth status
-fi
 
 if timber -l debug; then
 	timber debug "Git config:"
