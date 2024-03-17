@@ -9,15 +9,15 @@ function gitBranches() {
 	git branch -a -v -v
 }
 
-if timber -l debug; then
-	timber debug "Local refs before"
-	gitBranches
-fi
-
 refSpecs=()
 for ref in "$@"; do
 	refSpecs+=("refs/heads/${ref}:refs/remotes/${GIT_REMOTE}/${ref}")
 done
+
+if timber -l debug; then
+	timber debug "Local refs before"
+	gitBranches
+fi
 
 timber info "Fetching ref specs ${refSpecs[*]}"
 

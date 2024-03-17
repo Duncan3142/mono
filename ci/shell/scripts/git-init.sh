@@ -4,22 +4,12 @@ set -ueC
 
 fetchRefs=()
 
-for arg in "$@"; do
-	case $arg in
-		-c=* | --checkout=*)
-			checkoutBranch="${arg#*=}"
-			fetchRefs+=("${checkoutBranch}")
-			shift
-			;;
+while (( "$#" )); do
+	case $1 in
 		-c | --checkout)
 			checkoutBranch="$2"
 			fetchRefs+=("${checkoutBranch}")
 			shift
-			shift
-			;;
-		-f=* | --fetch=*)
-			ref="${arg#*=}"
-			fetchRefs+=("${ref}")
 			shift
 			;;
 		-f | --fetch)
@@ -57,15 +47,10 @@ git remote add "${GIT_REMOTE}" "${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}.git"
 
 if timber -l debug; then
 	timber debug "Git config:"
-	cat ~/.gitconfig
+	git config -list
 fi
 
 git-fetch "${fetchRefs[@]}"
-
-if timber -l debug; then
-	timber debug "Branches post fetch:"
-	git --no-pager branch -a -v -v
-fi
 
 timber debug "Checkout clone branch:"
 git checkout --progress -b "${checkoutBranch}" "${GIT_REMOTE}/${checkoutBranch}"

@@ -8,10 +8,10 @@ baseRef=$1
 headRef=$2
 OUTPUT=$3
 
-maxDepth=${GIT_MAX_DEEPTH:-1024}
+maxDepth=${GIT_MAX_DEPTH:-4096}
 
 depth=0
-deepenBy=2
+deepenBy=128
 
 echo "Finding merge base"
 until mergeBase=$(git merge-base "${baseRef}" "${headRef}")

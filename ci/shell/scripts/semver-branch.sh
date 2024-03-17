@@ -6,33 +6,17 @@ function git_branches () {
 	git --no-pager branch -a -v -v
 }
 
-GIT_REMOTE="${GIT_REMOTE:-origin}"
+if timber -l debug; then
+	timber debug "Local refs before"
+	git_branches
+fi
 
 # Try to fetch remote semver branch
-if git fetch "${GIT_REMOTE}" --depth=1 "refs/heads/${SEMVER_BRANCH}:refs/remotes/${GIT_REMOTE}/${SEMVER_BRANCH}" 2> /dev/null; then
-	# Checkout and reset semver branch
-	if timber -l debug; then
-		timber debug "Fetched ${SEMVER_BRANCH} from ${GIT_REMOTE}"
-		git_branches
-	fi
-
-	if timber -l debug; then
-		timber debug "Checkout ${SEMVER_BRANCH}"
-	fi
-
-	git checkout --progress -b "${SEMVER_BRANCH}" "${GIT_REMOTE}/${SEMVER_BRANCH}"
-
-	if timber -l debug; then
-		git_branches
-	fi
-
+if git checkout "${SEMVER_BRANCH}"; then
 	if timber -l debug; then
 		timber debug "Resetting ${SEMVER_BRANCH} to ${BASE_BRANCH}"
 	fi
 	git reset --hard "${BASE_BRANCH}"
-	if timber -l debug; then
-		git_branches
-	fi
 else
 	# Check if the HEAD is at the base branch
 	headSha=$(git rev-parse HEAD)
@@ -47,5 +31,5 @@ else
 
 	# Create semver branch from base
 	timber debug "Creating ${SEMVER_BRANCH} from ${BASE_BRANCH}"
-	git checkout -b "${SEMVER_BRANCH}"
+	git checkout --progress -b "${SEMVER_BRANCH}"
 fi
