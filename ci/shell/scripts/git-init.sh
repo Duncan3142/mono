@@ -2,14 +2,29 @@
 
 set -ueC
 
+fetchRefs=()
+
 for arg in "$@"; do
 	case $arg in
-		-b=* | --branches=*)
-			branches="${arg#*=}"
+		-c=* | --checkout=*)
+			checkoutBranch="${arg#*=}"
+			fetchRefs+=("${checkoutBranch}")
 			shift
 			;;
-		"-b" | "--branches")
-			branches="$2"
+		-c | --checkout)
+			checkoutBranch="$2"
+			fetchRefs+=("${checkoutBranch}")
+			shift
+			shift
+			;;
+		-f=* | --fetch=*)
+			ref="${arg#*=}"
+			fetchRefs+=("${ref}")
+			shift
+			;;
+		-f | --fetch)
+			ref="$2"
+			fetchRefs+=("${ref}")
 			shift
 			shift
 			;;
@@ -45,7 +60,7 @@ if timber -l debug; then
 	cat ~/.gitconfig
 fi
 
-git-fetch "${branches}"
+git-fetch "${fetchRefs[@]}"
 
 if timber -l debug; then
 	timber debug "Branches post fetch:"
@@ -53,7 +68,7 @@ if timber -l debug; then
 fi
 
 timber debug "Checkout clone branch:"
-git checkout --progress -b "${CHECKOUT_BRANCH}" "${GIT_REMOTE}/${CHECKOUT_BRANCH}"
+git checkout --progress -b "${checkoutBranch}" "${GIT_REMOTE}/${checkoutBranch}"
 
 if timber -l debug; then
 	timber debug "Branches post checkout:"

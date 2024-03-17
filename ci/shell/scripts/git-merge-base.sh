@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -ueC
+
 GIT_REMOTE="${GIT_REMOTE:-origin}"
 
 baseRef=$1

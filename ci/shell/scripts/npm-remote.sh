@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -ueC
+
 OUTPUT=$1
 
 if JSON=$(npm show "${NAME}@${VERSION}" --json); then
