@@ -6,10 +6,11 @@ OUTPUT_FILE=$1
 mkdir -p .tmp
 STATUS_FILE=".tmp/$(cat /proc/sys/kernel/random/uuid)"
 touch "${STATUS_FILE}"
-npm exec -- changeset status --output="${STATUS_FILE}" @> /dev/null
+npm exec -- changeset status --output="${STATUS_FILE}"
 RAW_STATUS_JSON=$(cat "${STATUS_FILE}")
 rm "${STATUS_FILE}"
 
+set +e
 read -r -d '' JQ_TRANSFORM << EOF
 {
 	name: .releases[0].name,
@@ -19,6 +20,7 @@ read -r -d '' JQ_TRANSFORM << EOF
 	changes: .changesets | map_values({summary: .summary, id: .id})
 }
 EOF
+set -e
 
 PENDING_CHANGES_COUNT=$(echo -E "${RAW_STATUS_JSON}" | jq -r '.changesets | length')
 
@@ -29,7 +31,3 @@ if [[ $PENDING_CHANGES_COUNT -gt 0 ]]; then
 else
 	exit 1
 fi
-
-# if CHANGES_JSON=$(npm-changes.sh >(cat)); then
-#   echo -E "$CHANGES_JSON" | jq '.'
-# fi

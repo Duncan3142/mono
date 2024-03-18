@@ -14,6 +14,8 @@ ENV ACTION_DIR=/action
 ENV LBIN=/usr/local/bin
 ENV LLIB=/usr/local/mono
 ENV MONO_LOGS_ROOT=${ACTION_DIR}/logs
+ENV VOLTA_HOME="/root/.volta"
+ENV PATH="$VOLTA_HOME/bin:$PATH"
 
 WORKDIR ${ACTION_DIR}
 
@@ -23,6 +25,6 @@ ENV GIT_WORKSPACE=/github/workspace
 
 WORKDIR ${GIT_WORKSPACE}
 
-ENTRYPOINT [ "/action/setup.sh" ]
+ENTRYPOINT [ "/action/cd.sh" ]
 
 CMD [ ]
