@@ -10,9 +10,10 @@ cd "${MONO_WORK_DIR}"
 
 npm ci
 
-if CHANGES_JSON=$(npm-changes >(cat)); then
+changesJson=$(npm-changes >(cat))
+
+if [[ $(echo -E "${changesJson}" | jq '.changes | length') -ge 0 ]]; then
 	echo "Changes detected"
-	echo -E "${CHANGES_JSON}" | jq '.'
 else
 	echo "No changes detected"
 fi

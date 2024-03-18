@@ -12,22 +12,19 @@ rm "${STATUS_FILE}"
 
 set +e
 read -r -d '' JQ_TRANSFORM << EOF
-{
-	name: .releases[0].name,
-	type: .releases[0].type,
-	oldVersion: .releases[0].oldVersion,
-	newVersion: .releases[0].newVersion,
-	changes: .changesets | map_values({summary: .summary, id: .id})
-}
+if .releases | length > 0 then
+	{
+		release: .releases[0] | {name: .name, type: .type, oldVersion: .oldVersion, newVersion: .newVersion},
+		changes: .changesets | map_values({summary: .summary, id: .id})
+	}
+else
+	{
+		release: null,
+		changes: .changesets | map_values({summary: .summary, id: .id})
+	}
+end
 EOF
 set -e
 
-PENDING_CHANGES_COUNT=$(echo -E "${RAW_STATUS_JSON}" | jq -r '.changesets | length')
-
-if [[ $PENDING_CHANGES_COUNT -gt 0 ]]; then
-	STATUS_JSON=$(echo -E "${RAW_STATUS_JSON}" | jq "${JQ_TRANSFORM}")
-	echo -E "${STATUS_JSON}" > "$OUTPUT_FILE"
-	exit 0
-else
-	exit 1
-fi
+STATUS_JSON=$(echo -E "${RAW_STATUS_JSON}" | jq "${JQ_TRANSFORM}")
+echo -E "${STATUS_JSON}" > "$OUTPUT_FILE"
