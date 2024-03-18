@@ -47,17 +47,17 @@ git remote add "${GIT_REMOTE}" "${GIT_SERVER_URL}/${GIT_REPOSITORY}.git"
 
 if timber -l debug; then
 	timber debug "Git config:"
-	git config -list
+	git config --list
 fi
 
 git-fetch "${fetchRefs[@]}"
 
-timber debug "Checkout clone branch:"
-git checkout --progress -b "${checkoutBranch}" "${GIT_REMOTE}/${checkoutBranch}"
+timber debug "Checkout ${checkoutBranch}:"
+git checkout --progress "${checkoutBranch}"
 
 if timber -l debug; then
-	timber debug "Branches post checkout:"
-	git --no-pager branch -a -v -v
+	timber debug "Refs post checkout"
+	git-branches
 fi
 
 cd "${MONO_WORK_DIR}" || exit 1

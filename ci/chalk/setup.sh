@@ -2,7 +2,6 @@
 
 set -ueC
 
-volta install node@20
 echo Installing chalk...
 cp -r "chalk" "$LLIB/chalk"
 (cd "$LLIB/chalk" && npm ci --omit=dev)

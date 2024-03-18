@@ -2,6 +2,8 @@
 
 set -ueC
 
+"${ACTION_DIR}/setup.sh"
+
 git-init --checkout "${BASE_BRANCH}" --fetch "${SEMVER_BRANCH}"
 
 cd "${MONO_WORK_DIR}"

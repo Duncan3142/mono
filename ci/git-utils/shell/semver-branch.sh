@@ -2,17 +2,13 @@
 
 set -euC
 
-function git_branches () {
-	git --no-pager branch -a -v -v
-}
-
 if timber -l debug; then
-	timber debug "Local refs before"
-	git_branches
+	timber debug "Refs pre checkout"
+	git-branches
 fi
 
 # Try to fetch remote semver branch
-if git checkout "${SEMVER_BRANCH}"; then
+if git checkout --progress "${SEMVER_BRANCH}"; then
 	if timber -l debug; then
 		timber debug "Resetting ${SEMVER_BRANCH} to ${BASE_BRANCH}"
 	fi
@@ -32,4 +28,9 @@ else
 	# Create semver branch from base
 	timber debug "Creating ${SEMVER_BRANCH} from ${BASE_BRANCH}"
 	git checkout --progress -b "${SEMVER_BRANCH}"
+fi
+
+if timber -l debug; then
+	timber debug "Refs post checkout:"
+	git-branches
 fi
