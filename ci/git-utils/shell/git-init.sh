@@ -27,23 +27,23 @@ done
 
 GIT_REMOTE="${GIT_REMOTE:-origin}"
 
-git config --global user.name "${GITHUB_ACTOR}"
-git config --global user.email "${GITHUB_ACTOR}@users.noreply.github.com"
-git config --global --add safe.directory "${GITHUB_WORKSPACE}"
+git config --global user.name "${GIT_ACTOR}"
+git config --global user.email "${GIT_ACTOR}@users.noreply.github.com"
+git config --global --add safe.directory "${GIT_WORKSPACE}"
 git config --global init.defaultBranch main
 
-mkdir -p "${GITHUB_WORKSPACE}"
+mkdir -p "${GIT_WORKSPACE}"
 
-cd "${GITHUB_WORKSPACE}" || exit 1
+cd "${GIT_WORKSPACE}" || exit 1
 
 timber debug "Init repo:"
 git init
 
-authHeaderConfigKey="http.${GITHUB_SERVER_URL}/.extraheader"
-authHeaderConfigValue="AUTHORIZATION: basic $(echo -n "x-access-token:${GITHUB_TOKEN}" | base64)"
+authHeaderConfigKey="http.${GIT_SERVER_URL}/.extraheader"
+authHeaderConfigValue="AUTHORIZATION: basic $(echo -n "x-access-token:${GIT_TOKEN}" | base64)"
 git config "${authHeaderConfigKey}" "${authHeaderConfigValue}"
 
-git remote add "${GIT_REMOTE}" "${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}.git"
+git remote add "${GIT_REMOTE}" "${GIT_SERVER_URL}/${GIT_REPOSITORY}.git"
 
 if timber -l debug; then
 	timber debug "Git config:"

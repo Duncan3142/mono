@@ -19,9 +19,9 @@ WORKDIR ${ACTION_DIR}
 
 COPY . .
 
-ENV GITHUB_WORKSPACE=/github/workspace
+ENV GIT_WORKSPACE=/github/workspace
 
-WORKDIR ${GITHUB_WORKSPACE}
+WORKDIR ${GIT_WORKSPACE}
 
 ENTRYPOINT [ "/action/setup.sh" ]
 
