@@ -13,9 +13,9 @@ fi
 
 git add .
 
-PKG_NAME=$(echo -E "${CHANGES_JSON}" | jq '.name')
+pkgName=$(echo -E "${CHANGES_JSON}" | jq '.pkg.name')
 
-if git commit -m "Semver ${PKG_NAME}"; then
+if git commit -m "Semver ${pkgName}"; then
 	timber debug "Pushing ${SEMVER_BRANCH} to ${GIT_REMOTE}"
 	git push --force-with-lease "${GIT_REMOTE}" "${SEMVER_BRANCH}"
 	exit 0

@@ -9,12 +9,6 @@ stage: change add
 commit: stage
 	git commit
 
-version:
-	npm exec -- changeset version > /dev/null 2>&1
-
-install:
-	npm ci
-
 up:
 	npm up
 

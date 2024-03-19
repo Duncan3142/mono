@@ -10,21 +10,36 @@ npm exec -- changeset status --output="${STATUS_FILE}"
 RAW_STATUS_JSON=$(cat "${STATUS_FILE}")
 rm "${STATUS_FILE}"
 
-set +e
-read -r -d '' JQ_TRANSFORM << EOF
-if .releases | length > 0 then
-	{
-		release: .releases[0] | {name: .name, type: .type, oldVersion: .oldVersion, newVersion: .newVersion},
-		changes: .changesets | map_values({summary: .summary, id: .id})
-	}
-else
-	{
-		release: null,
-		changes: .changesets | map_values({summary: .summary, id: .id})
-	}
-end
-EOF
-set -e
+counts=$(echo -E "${RAW_STATUS_JSON}" | jq -r "(.releases | length), (.changesets | length)")
+mapfile -t array <<< "$counts"
+releaseCount=${array[0]}
+changeCount=${array[1]}
 
-STATUS_JSON=$(echo -E "${RAW_STATUS_JSON}" | jq "${JQ_TRANSFORM}")
-echo -E "${STATUS_JSON}" > "$OUTPUT_FILE"
+if [ "$releaseCount" -eq 0 ] && [ "$changeCount" -gt 0 ]; then
+	timber error "Empty changeset"
+	exit 1
+fi
+
+if [ "$changeCount" -eq 0 ]; then
+	timber debug "No changes"
+	cat <<- EOF > "$OUTPUT_FILE"
+	{
+	  "release": null,
+	  "changes": []
+	}
+	EOF
+	exit 0
+fi
+
+timber debug "Pending changes"
+
+function transform () {
+	cat <<- EOF
+	{
+	  pkg: .releases[0] | {name: .name, type: .type, oldVersion: .oldVersion, newVersion: .newVersion},
+	  changes: .changesets | map_values({summary: .summary, id: .id})
+	}
+	EOF
+}
+
+echo -E "$RAW_STATUS_JSON" | jq "$(transform)" >| "$OUTPUT_FILE"
