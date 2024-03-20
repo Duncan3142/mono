@@ -12,14 +12,14 @@
 	"type": "module",
 	"license": "MIT",
 	"engines": {
-		"node": ">=18",
+		"node": ">=20",
 		"npm": ">=10"
 	},
 	"exports": {
-		"./.prettierrc.json": "./.prettierrc.json"
+		".": "./.prettierrc.js"
 	},
 	"files": [
-		".prettierrc.json"
+		".prettierrc.js"
 	],
 	"scripts": {
 		"clean": "rm -rf .prettier",

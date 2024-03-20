@@ -14,12 +14,9 @@ node_modules
 !.npmrc
 !.npmignore
 
-# NVM
-!.nvmrc
-
 # Prettier
 !.prettierignore
-!.prettierrc.json
+!.prettierrc.js
 
 # Changesets
 !.changeset

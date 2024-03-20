@@ -12,17 +12,17 @@ cd "${MONO_WORK_DIR}"
 
 npm ci
 
-outfile="$(mktemp --tmpdir='/dev/shm/')"
+outFile="$(mktemp --tmpdir='/dev/shm/')"
 
-npm-changes "${outfile}"
-changesJson=$(cat "${outfile}")
+npm-changes "${outFile}"
+changesJson=$(cat "${outFile}")
 
 if [[ $(echo -E "${changesJson}" | jq '.changes | length') -ge 0 ]]; then
 	semver-branch
 	npm exec -- changeset version
 	if semver-commit "${changesJson}"; then
-		semver-pr "${changesJson}" "${outfile}"
+		semver-pr "${changesJson}" "${outFile}"
 	fi
 else
-	echo "No changes detected"
+	npm-remote "${outFile}"
 fi
