@@ -3,7 +3,8 @@ name: Debug
 on:
   push:
     branches:
-      - main
+      # - main
+      - disabled
     paths:
       - '.github/workflows/debug.yml'
       - 'actions/debug/**'
@@ -31,7 +32,7 @@ jobs:
     name: Debug
     runs-on: ubuntu-22.04
     steps:
+
       - name: Debug
         run: |
-
           echo Debug

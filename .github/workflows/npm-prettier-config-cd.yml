@@ -3,7 +3,8 @@ name: Prettier Config CD
 on:
   push:
     branches:
-      - main
+      # - main
+      - disabled
     paths:
      - '.github/workflows/npm-prettier-config-cd.yml'
      - 'pkgs/prettier-config/**'
@@ -32,9 +33,5 @@ jobs:
     steps:
 
       - name: CD
-        uses: Duncan3142/mono/actions/cd/npm@main
-        with:
-          cwd: ${{ env.MONO_WORK_DIR }}
-          gh-token: ${{ secrets.GITHUB_TOKEN }}
-          semver-branch: ${{ env.VERSIONING_BRANCH }}
-          base-branch: ${{ github.ref_name }}
+        run: |
+          exit 0

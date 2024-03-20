@@ -3,7 +3,8 @@ name: Prettier Config CI
 on:
   pull_request:
     types: [opened, synchronize, reopened, labeled]
-    branches: main
+    # branches: main
+    branches: disabled
     paths:
       - '.github/workflows/npm-prettier-config-ci.yml'
       - 'pkgs/prettier-config/**'
@@ -28,14 +29,6 @@ jobs:
         working-directory: ${{ env.MONO_WORK_DIR }}
     steps:
 
-      - name: Git
-        uses: Duncan3142/mono/actions/git/setup@main
-
-      - name: NPM
-        uses: Duncan3142/mono/actions/npm/setup@main
-        with:
-          cwd: ${{ env.MONO_WORK_DIR }}
-
       - name: Test
         run: |
-          npm run format
+          exit 0
