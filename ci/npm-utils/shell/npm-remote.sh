@@ -2,11 +2,12 @@
 
 set -ueC
 
-OUTPUT=$1
+pkgName=$1
+pkgVersion=$2
+outFile=$3
 
-if JSON=$(npm show "${NAME}@${VERSION}" --json); then
-	echo -E "${JSON}" > "${OUTPUT}"
+if remoteJson=$(npm show "${pkgName}@${pkgVersion}" --json); then
+	echo -E "${remoteJson}" > "${outFile}"
 else
-	timber info "Package ${NAME} does not exist at version ${VERSION}"
 	exit 1
 fi

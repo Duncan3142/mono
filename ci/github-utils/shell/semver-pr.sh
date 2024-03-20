@@ -2,17 +2,17 @@
 
 set -euC
 
-CHANGES_JSON=$1
-OUT_FILE=$2
+changesJson=$1
+outFile=$2
 
-pkgName=$(jq -r '.pkg.name' <<< "${CHANGES_JSON}")
+pkgName=$(jq -r '.pkg.name' <<< "${changesJson}")
 
-if ! PR_URL=$(gh pr create --base "${BASE_BRANCH}" --head "${SEMVER_BRANCH}" --title "SemVer ${pkgName}" --body "This is an auto generated PR to semantically version ${pkgName}" --label bot --label semver); then
-	PR_URL=$(gh pr list --base "${BASE_BRANCH}" --head "${SEMVER_BRANCH}" --json url --jq '.[].url')
-	if [ -z "${PR_URL}" ]; then
+if ! prUrl=$(gh pr create --base "${BASE_BRANCH}" --head "${SEMVER_BRANCH}" --title "SemVer ${pkgName}" --body "This is an auto generated PR to semantically version ${pkgName}" --label bot --label semver); then
+	prUrl=$(gh pr list --base "${BASE_BRANCH}" --head "${SEMVER_BRANCH}" --json url --jq '.[].url')
+	if [ -z "${prUrl}" ]; then
 		timber error "Failed to find existing SemVer PR with base \"${BASE_BRANCH}\" and head \"${SEMVER_BRANCH}\""
 		exit 1
 	fi
 fi
 
-echo -E "PR_URL=${PR_URL}" >| "${OUT_FILE}"
+echo -E "prUrl=${prUrl}" >| "${outFile}"

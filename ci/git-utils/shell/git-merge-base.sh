@@ -6,7 +6,7 @@ GIT_REMOTE="${GIT_REMOTE:-origin}"
 
 baseRef=$1
 headRef=$2
-OUTPUT=$3
+outFile=$3
 
 maxDepth=${GIT_MAX_DEPTH:-4096}
 
@@ -28,4 +28,4 @@ do
 done
 
 echo "Merge base found: $mergeBase"
-echo "MERGE_BASE=$mergeBase" > "$OUTPUT"
+echo "MERGE_BASE=$mergeBase" > "$outFile"

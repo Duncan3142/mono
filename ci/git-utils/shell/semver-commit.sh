@@ -2,18 +2,18 @@
 
 set -euC
 
-CHANGES_JSON=$1
+changesJson=$1
 
 GIT_REMOTE="${GIT_REMOTE:-origin}"
 
-HEAD_BRANCH=$(git rev-parse --abbrev-ref HEAD)
-if [ "$HEAD_BRANCH" != "${SEMVER_BRANCH}" ]; then
+headBranch=$(git rev-parse --abbrev-ref HEAD)
+if [ "$headBranch" != "${SEMVER_BRANCH}" ]; then
 	timber error "HEAD is not on ${SEMVER_BRANCH}"
 fi
 
 git add .
 
-pkgName=$(echo -E "${CHANGES_JSON}" | jq '.pkg.name')
+pkgName=$(echo -E "${changesJson}" | jq '.pkg.name')
 
 if git commit -m "Semver ${pkgName}"; then
 	timber debug "Pushing ${SEMVER_BRANCH} to ${GIT_REMOTE}"

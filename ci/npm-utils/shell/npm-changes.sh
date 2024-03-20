@@ -2,15 +2,15 @@
 
 set -ueC
 
-OUTPUT_FILE=$1
+outFile=$1
 mkdir -p .tmp
-STATUS_FILE=".tmp/$(cat /proc/sys/kernel/random/uuid)"
-touch "${STATUS_FILE}"
-npm exec -- changeset status --output="${STATUS_FILE}"
-RAW_STATUS_JSON=$(cat "${STATUS_FILE}")
-rm "${STATUS_FILE}"
+statusFile=".tmp/$(cat /proc/sys/kernel/random/uuid)"
+touch "${statusFile}"
+npm exec -- changeset status --output="${statusFile}"
+rawStatusJson=$(cat "${statusFile}")
+rm "${statusFile}"
 
-counts=$(echo -E "${RAW_STATUS_JSON}" | jq -r "(.releases | length), (.changesets | length)")
+counts=$(echo -E "${rawStatusJson}" | jq -r "(.releases | length), (.changesets | length)")
 mapfile -t array <<< "$counts"
 releaseCount=${array[0]}
 changeCount=${array[1]}
@@ -22,7 +22,7 @@ fi
 
 if [ "$changeCount" -eq 0 ]; then
 	timber debug "No changes"
-	cat <<- EOF > "$OUTPUT_FILE"
+	cat <<- EOF > "$outFile"
 	{
 	  "release": null,
 	  "changes": []
@@ -42,4 +42,4 @@ function transform () {
 	EOF
 }
 
-echo -E "$RAW_STATUS_JSON" | jq "$(transform)" >| "$OUTPUT_FILE"
+echo -E "$rawStatusJson" | jq "$(transform)" >| "$outFile"
