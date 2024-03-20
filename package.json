@@ -7,25 +7,18 @@
 	"type": "module",
 	"license": "MIT",
 	"engines": {
-		"node": ">=18",
+		"node": ">=20",
 		"npm": ">=10"
 	},
 	"scripts": {
 		"prepare": "./.husky/install.sh",
 		"clean": "rm -rf .prettier",
 		"format": "prettier --check --cache --cache-location='.prettier/cache' --cache-strategy content .",
-		"format:fix": "prettier --write --cache --cache-location='.prettier/cache' --cache-strategy content .",
-		"turbo:clean": "turbo run clean --cache-dir=\"./.turbo\"",
-		"turbo:format": "turbo run format --cache-dir=\"./.turbo\"",
-		"turbo:format:fix": "turbo run format:fix --cache-dir=\"./.turbo\"",
-		"turbo:assets": "turbo run assets --cache-dir=\"./.turbo\"",
-		"turbo:test": "turbo run test --cache-dir=\"./.turbo\"",
-		"turbo:build": "turbo run build --cache-dir=\"./.turbo\""
+		"format:fix": "prettier --write --cache --cache-location='.prettier/cache' --cache-strategy content ."
 	},
 	"devDependencies": {
 		"@commitlint/cli": "^19.0.3",
 		"@commitlint/config-conventional": "^19.0.3",
-		"@duncan3142/plop-pkg": "workspace:*",
 		"@duncan3142/prettier-config": "^0.1.2",
 		"husky": "^9.0.11",
 		"plop": "^4.0.1",

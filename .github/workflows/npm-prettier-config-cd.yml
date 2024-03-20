@@ -16,7 +16,7 @@ permissions:
 
 env:
   MONO_WORK_DIR: ${{ vars.PRETTIER_CONFIG_DIR }}
-  GH_PACKAGES_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  GITHUB_PKG_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   VERSIONING_BRANCH: ${{ vars.CI_BRANCH_PATH }}/${{ vars.SEMVER_BRANCH_PATH }}/${{ vars.PRETTIER_CONFIG_DIR }}
 
 concurrency:

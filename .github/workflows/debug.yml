@@ -21,7 +21,7 @@ env:
   MONO_WORK_DIR: ${{ vars.PRETTIER_CONFIG_DIR }}
   SEMVER_BRANCH: DEBUG/SEMVER/pkgs/prettier-config
   MONO_LOG_LEVEL: debug
-  GH_PACKAGES_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  GITHUB_PKG_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   FORCE_COLOR: 3
   LBIN: /home/runner/.local/bin
   LLIB: /home/runner/.local/mono

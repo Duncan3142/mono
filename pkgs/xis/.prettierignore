@@ -13,4 +13,4 @@ package-lock.json
 
 # Prettier
 !.prettierignore
-!.prettierrc.json
+!.prettierrc.js

@@ -20,12 +20,9 @@ node_modules
 !.npmrc
 package-lock.json
 
-# NVM
-!.nvmrc
-
 # Prettier
 !.prettierignore
-!.prettierrc.json
+!.prettierrc.js
 
 # Changesets
 !.changeset
