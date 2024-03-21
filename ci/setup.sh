@@ -9,8 +9,8 @@ mkdir -p "${LLIB}"
 
 parallel ::: \
 	'cd bash-utils && ./setup.sh' \
-	'cd chalk && ./setup.sh' \
 	'cd git-utils && ./setup.sh' \
+	'cd github-npm-utils && ./setup.sh' \
 	'cd github-utils && ./setup.sh' \
 	'cd npm-utils && ./setup.sh'
 
