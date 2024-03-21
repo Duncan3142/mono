@@ -4,12 +4,8 @@ set -ueC
 
 pkgTag=$1
 
-outFile=$(mktemp)
-
-if npm-remote "${pkgTag}" "${outFile}"; then
+if npm-remote "${pkgTag}" '/dev/null'; then
 	timber warn "Package ${pkgTag} already published"
 else
 	npm publish
 fi
-
-rm "${outFile}"

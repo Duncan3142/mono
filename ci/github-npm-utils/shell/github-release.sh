@@ -3,10 +3,11 @@
 set -ueC
 
 pkgTag=$1
-files=$2
+releaseFiles=$2
 
 if gh release view "${pkgTag}"; then
 	timber warn "Release ${pkgTag} already exists"
 else
-	gh release create "${pkgTag}" --verify-tag --title "${pkgTag}" --notes "${pkgTag}"
+	mapfile -t releaseFilesArray < "$(cat "${releaseFiles}")"
+	gh release create "${pkgTag}" --verify-tag --title "${pkgTag}" --notes "${pkgTag}" "${releaseFilesArray[@]}"
 fi

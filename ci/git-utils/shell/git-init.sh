@@ -9,14 +9,12 @@ while (( "$#" )); do
 		-c | --checkout)
 			checkoutBranch="$2"
 			fetchRefs+=("${checkoutBranch}")
-			shift
-			shift
+			shift 2
 			;;
 		-f | --fetch)
 			ref="$2"
 			fetchRefs+=("${ref}")
-			shift
-			shift
+			shift 2
 			;;
 		*)
 			timber error "Invalid argument: $1"

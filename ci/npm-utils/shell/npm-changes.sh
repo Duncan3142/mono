@@ -7,10 +7,9 @@ mkdir -p .tmp
 statusFile=".tmp/$(cat /proc/sys/kernel/random/uuid)"
 touch "${statusFile}"
 npm exec -- changeset status --output="${statusFile}"
-rawStatusJson=$(cat "${statusFile}")
 rm "${statusFile}"
 
-counts=$(echo -E "${rawStatusJson}" | jq -r "(.releases | length), (.changesets | length)")
+counts=$(jq -r "(.releases | length), (.changesets | length)" "${statusFile}")
 mapfile -t array <<< "$counts"
 releaseCount=${array[0]}
 changeCount=${array[1]}
@@ -42,4 +41,6 @@ function transform () {
 	EOF
 }
 
-echo -E "$rawStatusJson" | jq "$(transform)" >| "$outFile"
+jq "$(transform)" "${statusFile}" >| "$outFile"
+
+rm "${statusFile}"
