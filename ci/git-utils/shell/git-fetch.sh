@@ -3,7 +3,6 @@
 set -ueC
 
 GIT_FETCH_DEPTH=${GIT_FETCH_DEPTH:-1}
-GIT_REMOTE=${GIT_REMOTE:-origin}
 
 refSpecs=()
 for ref in "$@"; do

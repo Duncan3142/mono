@@ -2,10 +2,7 @@
 
 set -euC
 
-changesJson=$1
-outFile=$2
-
-pkgName=$(jq -r '.pkg.name' <<< "${changesJson}")
+pkgName=$1
 
 if ! prUrl=$(gh pr create --base "${BASE_BRANCH}" --head "${SEMVER_BRANCH}" --title "SemVer ${pkgName}" --body "This is an auto generated PR to semantically version ${pkgName}" --label bot --label semver); then
 	prUrl=$(gh pr list --base "${BASE_BRANCH}" --head "${SEMVER_BRANCH}" --json url --jq '.[].url')
@@ -14,5 +11,3 @@ if ! prUrl=$(gh pr create --base "${BASE_BRANCH}" --head "${SEMVER_BRANCH}" --ti
 		exit 1
 	fi
 fi
-
-echo -E "prUrl=${prUrl}" >| "${outFile}"

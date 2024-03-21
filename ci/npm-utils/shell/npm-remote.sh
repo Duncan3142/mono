@@ -2,12 +2,7 @@
 
 set -ueC
 
-pkgName=$1
-pkgVersion=$2
-outFile=$3
+pkgTag=$1
+outFile=$2
 
-if remoteJson=$(npm show "${pkgName}@${pkgVersion}" --json); then
-	echo -E "${remoteJson}" > "${outFile}"
-else
-	exit 1
-fi
+npm show "${pkgTag}" --json > "${outFile}"

@@ -2,9 +2,7 @@
 
 set -euC
 
-changesJson=$1
-
-GIT_REMOTE="${GIT_REMOTE:-origin}"
+pkgName=$1
 
 headBranch=$(git rev-parse --abbrev-ref HEAD)
 if [ "$headBranch" != "${SEMVER_BRANCH}" ]; then
@@ -12,8 +10,6 @@ if [ "$headBranch" != "${SEMVER_BRANCH}" ]; then
 fi
 
 git add .
-
-pkgName=$(echo -E "${changesJson}" | jq '.pkg.name')
 
 if git commit -m "Semver ${pkgName}"; then
 	timber debug "Pushing ${SEMVER_BRANCH} to ${GIT_REMOTE}"
