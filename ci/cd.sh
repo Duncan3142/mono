@@ -27,14 +27,43 @@ else
 	localJson=$(cat package.json)
 	pkgName=$(echo -E "${localJson}" | jq -r '.name')
 	pkgVersion=$(echo -E "${localJson}" | jq -r '.version')
-	if npm-remote "$pkgName" "$pkgVersion" "${outFile}"; then
-		timber warn "Package ${pkgName} already exists at version ${pkgVersion}"
-		exit 0
-	fi
-	GIT_REMOTE=${GIT_REMOTE:-origin}
 	pkgTag=${pkgName}@${pkgVersion}
-	git tag "${pkgTag}"
-	git push "${GIT_REMOTE}" "${pkgTag}"
-	npm publish
-	gh release create "${pkgTag}" --verify-tag --title "${pkgTag}" --notes "${pkgTag}"
+	pkgPublished=false
+	pkgTagged=false
+	pkgReleased=false
+
+	if tagSha=$(git show-ref --tags "/refs/tags/${pkgTag}"); then
+		timber warn "Tag ${pkgTag} already exists"
+		if [[ "${tagSha}" != "$(git rev-parse HEAD)" ]]; then
+			timber error "Tag ${pkgTag} does not reference ${BASE_BRANCH} HEAD"
+			exit 1
+		fi
+		pkgTagged=true
+	fi
+
+	if npm-remote "$pkgName" "$pkgVersion" "${outFile}"; then
+		timber warn "Package ${pkgTag} already published"
+		pkgPublished=true
+	fi
+
+	GIT_REMOTE=${GIT_REMOTE:-origin}
+
+	if [[ "${pkgPublished}" == false ]]; then
+		npm publish
+	fi
+
+	if [[ "${pkgTagged}" == false ]] ; then
+		git tag "${pkgTag}"
+		git push "${GIT_REMOTE}" "${pkgTag}"
+	fi
+
+	if gh release view "${pkgTag}"; then
+		timber warn "Release ${pkgTag} already exists"
+		pkgReleased=true
+	fi
+
+	if [[ "${pkgReleased}" == false ]]; then
+		gh release create "${pkgTag}" --verify-tag --title "${pkgTag}" --notes "${pkgTag}"
+	fi
+
 fi
