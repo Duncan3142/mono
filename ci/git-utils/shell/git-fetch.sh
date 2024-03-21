@@ -16,7 +16,7 @@ fi
 
 timber info "Fetching ref specs ${refSpecs[*]}"
 
-git fetch "${GIT_REMOTE}" --depth="${GIT_FETCH_DEPTH}" "${refSpecs[@]}" || true
+git fetch "${GIT_REMOTE}" --depth="${GIT_FETCH_DEPTH}" "${refSpecs[@]}"
 
 if timber -l debug; then
 	timber debug "Refs post fetch"

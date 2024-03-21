@@ -2,19 +2,23 @@
 
 set -ueC
 
-fetchRefs=()
+extraRefs=()
+requireRefs=false
 
 while (( "$#" )); do
 	case $1 in
 		-c | --checkout)
 			checkoutBranch="$2"
-			fetchRefs+=("${checkoutBranch}")
 			shift 2
 			;;
-		-f | --fetch)
+		-r | --ref)
 			ref="$2"
-			fetchRefs+=("${ref}")
+			extraRefs+=("${ref}")
 			shift 2
+			;;
+		-R | --require-refs)
+			requireRefs=true
+			shift 1
 			;;
 		*)
 			timber error "Invalid argument: $1"
@@ -46,7 +50,10 @@ if timber -l debug; then
 	git config --list
 fi
 
-git-fetch "${fetchRefs[@]}"
+git-fetch "$checkoutBranch"
+if [[ ${#extraRefs[@]} -gt 0 ]]; then
+	git-fetch "${extraRefs[@]}" || [[ $requireRefs != true ]]
+fi
 
 timber debug "Checkout ${checkoutBranch}:"
 git checkout --progress "${checkoutBranch}"

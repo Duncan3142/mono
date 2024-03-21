@@ -7,7 +7,6 @@ mkdir -p .tmp
 statusFile=".tmp/$(cat /proc/sys/kernel/random/uuid)"
 touch "${statusFile}"
 npm exec -- changeset status --output="${statusFile}"
-rm "${statusFile}"
 
 counts=$(jq -r "(.releases | length), (.changesets | length)" "${statusFile}")
 mapfile -t array <<< "$counts"

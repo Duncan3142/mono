@@ -25,6 +25,8 @@ ENV GIT_WORKSPACE=/github/workspace
 
 WORKDIR ${GIT_WORKSPACE}
 
-ENTRYPOINT [ "/action/cd.sh" ]
+RUN ${ACTION_DIR}/setup.sh
+
+ENTRYPOINT [ "github-npm-cd" ]
 
 CMD [ ]

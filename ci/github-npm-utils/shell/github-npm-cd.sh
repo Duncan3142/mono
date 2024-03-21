@@ -6,7 +6,7 @@ export GIT_REMOTE=${GIT_REMOTE:-origin}
 
 gh auth login --with-token <<< "${GIT_TOKEN}"
 
-git-init --checkout "${BASE_BRANCH}" --fetch "${SEMVER_BRANCH}"
+git-init --checkout "${BASE_BRANCH}" --ref "${SEMVER_BRANCH}"
 
 cd "${MONO_WORK_DIR}"
 
