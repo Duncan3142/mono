@@ -23,9 +23,6 @@ node_modules
 !.npmrc
 !.npmignore
 
-# NVM
-!.nvmrc
-
 # Prettier
 !.prettierignore
 !.prettierrc.js
