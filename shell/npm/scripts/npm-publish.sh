@@ -4,6 +4,8 @@ set -ueC
 
 pkgTag=$1
 
+timber info "Publishing package ${pkgTag}..."
+
 outFile=$(mktemp)
 remoteStatus=0
 npm-remote "${pkgTag}" "$outFile" || remoteStatus=$?

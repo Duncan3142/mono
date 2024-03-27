@@ -3,6 +3,9 @@
 set -ueC
 
 outFile=$1
+
+timber info "Checking changeset status..."
+
 mkdir -p .tmp
 statusFile=".tmp/$(cat /proc/sys/kernel/random/uuid)"
 touch "${statusFile}"

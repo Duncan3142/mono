@@ -11,15 +11,14 @@ git-init --checkout "${EVENT_BRANCH}" -b "${SEMVER_BRANCH}"
 cd "${MONO_WORK_DIR}"
 
 pkgName=$(jq -r '.name' package.json)
-timber info "Install packages..."
-npm ci
+npm-install
 
 changesFile="$(mktemp)"
 npm-changes "${changesFile}"
 
 if [[ $(jq '.changes | length' "${changesFile}") -gt 0 ]]; then
 	semver-branch
-	npm exec -- changeset version
+	npm-semver
 	if semver-commit "${pkgName}"; then
 		semver-pr "${pkgName}"
 	fi

@@ -4,6 +4,8 @@ set -euC
 
 pkgTag=$1
 
+timber info "Tagging ${pkgTag}..."
+
 if git-fetch -t "${pkgTag}"; then
 	timber warn "Tag ${pkgTag} already exists"
 	tagSha=$(git show-ref --hash --tags "${pkgTag}")
