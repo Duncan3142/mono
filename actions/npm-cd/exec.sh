@@ -4,11 +4,14 @@ set -ueC
 
 export GIT_REMOTE=${GIT_REMOTE:-origin}
 
+export SEMVER_BRANCH=${SEMVER_BRANCH_PREFIX}/${MONO_WORK_DIR}
+
 git-init --checkout "${EVENT_BRANCH}" -b "${SEMVER_BRANCH}"
 
 cd "${MONO_WORK_DIR}"
 
 pkgName=$(jq -r '.name' package.json)
+timber info "Install packages..."
 npm ci
 
 changesFile="$(mktemp)"
@@ -31,6 +34,7 @@ else
 		exit 1
 	fi
 	releaseFiles="$(mktemp)"
+	timber info "Run build..."
 	./shell/build.sh "${releaseFiles}"
 	parallel ::: "npm-publish '${pkgTag}' 2>&1" "github-release '${pkgTag}' '${releaseFiles}' 2>&1"
 fi

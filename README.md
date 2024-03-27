@@ -23,10 +23,7 @@
 <br />
 <div align="center">
 	<a href="https://github.com/Duncan3142/mono">
-		<?xml version="1.0" encoding="iso-8859-1"?>
-		<!-- Uploaded to: SVG Repo, www.svgrepo.com, Generator: SVG Repo Mixer Tools -->
-		<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-			viewBox="0 0 512 512" xml:space="preserve" height="128">
+		<svg viewBox="0 0 512 512" height="128">
 			<path style="fill:#167EE6;" d="M439.652,512H72.348c-9.217,0-16.696-7.479-16.696-16.696V16.696C55.652,7.479,63.131,0,72.348,0
 				h233.739c4.424,0,8.674,1.761,11.804,4.892l133.565,133.565c3.131,3.13,4.892,7.379,4.892,11.804v345.043
 				C456.348,504.521,448.869,512,439.652,512z"/>
@@ -49,10 +46,10 @@
 		</svg>
 	</a>
 
-<h3 align="center">Node Tooling Config</h3>
+<h3 align="center">GitHub Monorepo</h3>
 
 <p align="center">
-	A Typescript template repository for packages or services
+	A GitHub monorepo
 	<br />
 	<a href="https://github.com/Duncan3142/mono"><strong>Explore the docs</strong></a>
 </p>
@@ -74,10 +71,8 @@
 			<ul>
 				<li><a href="#prerequisites">Prerequisites</a></li>
 				<li><a href="#installation">Installation</a></li>
-				<li><a href="#environment">Environment</a></li>
 			</ul>
 		</li>
-		<li><a href="#usage">Usage</a></li>
 		<li><a href="#license">License</a></li>
 		<li><a href="#contact">Contact</a></li>
 
@@ -89,13 +84,13 @@
 
 ## About The Project
 
-A typescript template repository
+A GitHub monorepo
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 ### Built With
 
-- [Turborepo](https://turborepo.org/)
+- [GitHub](https://github.com/)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -105,36 +100,15 @@ A typescript template repository
 
 ### Prerequisites
 
-- [Node.js](https://nodejs.org/)
-- [npm](https://www.npmjs.com/)
+- [Volta](https://volta.sh/)
 
 ### Installation
 
-Install packages
+Install git hooks
 
 ```sh
 npm ci
 ```
-
-### Environment
-
-See [example.env](./example.env) for details on available environment variables
-
-<p align="right">(<a href="#top">back to top</a>)</p>
-
-<!-- USAGE EXAMPLES -->
-
-## Usage
-
-To build the package and run all tests, run the following command
-
-```sh
-npm test
-```
-
-For use with an IDE, select the Typescript version found in `./node_modules/typescript/lib`
-
-<p align="right">(<a href="#top">back to top</a>)</p>
 
 <!-- LICENSE -->
 

@@ -4,7 +4,6 @@
 		"lib": ["ES2022"],
 		"module": "Node16",
 		"target": "ES2022",
-		"noEmit": true,
 		"noEmitOnError": true,
 		"emitDeclarationOnly": true,
 		"esModuleInterop": false,
@@ -45,5 +44,6 @@
 		"verbatimModuleSyntax": true,
 		"noErrorTruncation": true,
 		"useDefineForClassFields": true
-	}
+	},
+	"include": []
 }

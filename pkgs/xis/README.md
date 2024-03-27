@@ -29,7 +29,7 @@
 <h3 align="center">ESLint Config</h3>
 
 <p align="center">
-	A Typescript template repository for packages or services
+	A TypeScript template repository for packages or services
 	<br />
 	<a href="https://github.com/Duncan3142/mono"><strong>Explore the docs</strong></a>
 </p>
@@ -66,7 +66,7 @@
 
 ## About The Project
 
-A typescript template repository
+A TypeScript template repository
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -109,7 +109,7 @@ To build the package and run all tests, run the following command
 npm test
 ```
 
-For use with an IDE, select the Typescript version found in `./node_modules/typescript/lib`
+For use with an IDE, select the TypeScript version found in `./node_modules/typescript/lib`
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
