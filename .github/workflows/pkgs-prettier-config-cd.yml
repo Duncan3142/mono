@@ -13,6 +13,7 @@ concurrency:
 
 permissions:
   packages: write
+  contents: read
 
 env:
   GHA_TOKEN: ${{ secrets.GHA_PAT }}
