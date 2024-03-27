@@ -1,0 +1,55 @@
+name: Debug Workflow
+
+on:
+  push:
+    branches: debug-workflow
+
+concurrency:
+  group: ${{ github.workflow_ref }}
+  cancel-in-progress: true
+
+env:
+  GHA_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  GH_PKG_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  MONO_WORK_DIR: ${{ vars.PRETTIER_CONFIG_DIR }}
+  MONO_LOG_LEVEL: debug
+  EVENT_BRANCH: ${{ github.head_ref }}
+
+jobs:
+  cd:
+    name: Debug
+    runs-on: ubuntu-22.04
+    steps:
+
+      - name: Env vars
+        uses: Duncan3142/mono/actions/common-env@main
+      - name: Bash scripts
+        uses: Duncan3142/mono/shell/bash@main
+      - name: Git scripts
+        uses: Duncan3142/mono/shell/git@main
+
+      - name: Debug
+        run: |
+          set -ueC
+
+          export GIT_REMOTE=${GIT_REMOTE:-origin}
+
+          git-init --checkout "${EVENT_BRANCH}"
+
+          cd "${MONO_WORK_DIR}"
+
+          echo ls -la
+          ls -la
+
+          tree --version
+
+          tree --help
+
+          echo tree -a --gitignore
+          tree -a --gitignore
+
+          echo tree -a
+          tree -a
+
+          echo tree
+          tree
