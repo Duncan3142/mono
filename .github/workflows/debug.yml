@@ -32,21 +32,9 @@ jobs:
         run: |
           set -ueC
 
-          timber info 'tree --version'
-          tree --version
-
-          sudo apt update
-          sudo apt --only-upgrade install tree
-
-          timber info 'tree --version'
-          tree --version
-
           git-init --checkout "${EVENT_BRANCH}"
 
           cd "${MONO_WORK_DIR}"
-
-          timber info 'tree --help'
-          tree --help
 
           timber info 'tree -a --gitignore'
           tree -a --gitignore
