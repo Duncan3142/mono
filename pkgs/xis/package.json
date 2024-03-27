@@ -5,7 +5,7 @@
 		"registry": "https://npm.pkg.github.com",
 		"access": "restricted"
 	},
-	"description": "Typescript Object Validation and Transformation",
+	"description": "TypeScript Object Validation and Transformation",
 	"keywords": [],
 	"version": "0.0.0",
 	"author": "Duncan Giles",

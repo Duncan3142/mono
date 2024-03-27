@@ -29,7 +29,7 @@
 <h3 align="center">Plop Pkg</h3>
 
 <p align="center">
-	Plop Typescript Package Template
+	Plop TypeScript Package Template
 	<br />
 	<a href="https://github.com/Duncan3142/mono/tree/main/pkgs/plop-pkg"><strong>Explore the docs</strong></a>
 </p>
@@ -56,7 +56,7 @@
 
 ## About The Project
 
-Plop Typescript Package Template
+Plop TypeScript Package Template
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 

@@ -1,11 +1,14 @@
 {
 	"name": "@duncan3142/tsc-config",
-	"repository": "https://github.com/Duncan3142/mono",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/Duncan3142/mono.git"
+	},
 	"publishConfig": {
 		"registry": "https://npm.pkg.github.com",
 		"access": "restricted"
 	},
-	"description": "Typescript config",
+	"description": "TypeScript config",
 	"keywords": [],
 	"version": "0.0.0",
 	"author": "Duncan Giles",
@@ -16,7 +19,7 @@
 		"npm": ">=10"
 	},
 	"exports": {
-		"./tsconfig.json": "./tsconfig.json"
+		".": "./tsconfig.json"
 	},
 	"files": [
 		"tsconfig.json"
@@ -31,7 +34,11 @@
 		"typescript": "^5.1.6"
 	},
 	"devDependencies": {
-		"@duncan3142/prettier-config": "^0.1.2",
+		"@duncan3142/prettier-config": "^0.0.0",
 		"prettier": "^3.2.5"
+	},
+	"volta": {
+		"node": "20.12.0",
+		"npm": "10.5.0"
 	}
 }

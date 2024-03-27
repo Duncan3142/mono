@@ -1,0 +1,32 @@
+name: TypeScript Config CI
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, labeled]
+    branches: main
+    paths:
+      - '.github/workflows/pkgs-tsc-config-ci.yml'
+      - 'pkgs/tsc-config/**'
+      - '!pkgs/tsc-config/.changeset/*'
+      - '!pkgs/tsc-config/CHANGELOG.md'
+
+concurrency:
+  group: ${{ github.workflow_ref }}
+  cancel-in-progress: true
+
+env:
+  GHA_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  GH_PKG_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  MONO_WORK_DIR: ${{ vars.TSC_CONFIG_DIR }}
+  MONO_LOG_LEVEL: debug
+  EVENT_BRANCH: ${{ github.head_ref }}
+
+jobs:
+  test:
+    if: github.event.pull_request.state == 'open' && github.event.pull_request.draft == false
+    name: Test
+    runs-on: ubuntu-22.04
+    steps:
+
+      - name: CI
+        uses: Duncan3142/mono/actions/npm-ci@main

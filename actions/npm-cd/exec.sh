@@ -4,6 +4,8 @@ set -ueC
 
 export GIT_REMOTE=${GIT_REMOTE:-origin}
 
+export SEMVER_BRANCH=${SEMVER_BRANCH_PREFIX}/${MONO_WORK_DIR}
+
 git-init --checkout "${EVENT_BRANCH}" -b "${SEMVER_BRANCH}"
 
 cd "${MONO_WORK_DIR}"

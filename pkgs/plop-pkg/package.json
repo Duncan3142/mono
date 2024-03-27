@@ -5,7 +5,7 @@
 		"registry": "https://npm.pkg.github.com",
 		"access": "restricted"
 	},
-	"description": "Plop Typescript Package Template",
+	"description": "Plop TypeScript Package Template",
 	"keywords": [],
 	"version": "0.0.0",
 	"author": "Duncan Giles",
