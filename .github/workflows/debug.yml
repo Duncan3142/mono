@@ -13,7 +13,7 @@ env:
   GH_PKG_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   MONO_WORK_DIR: ${{ vars.PRETTIER_CONFIG_DIR }}
   MONO_LOG_LEVEL: debug
-  EVENT_BRANCH: ${{ github.head_ref }}
+  EVENT_BRANCH: ${{ github.ref_name }}
 
 jobs:
   cd:
