@@ -32,24 +32,24 @@ jobs:
         run: |
           set -ueC
 
-          export GIT_REMOTE=${GIT_REMOTE:-origin}
+          timber info 'tree --version'
+          tree --version
+
+          apt update
+          apt --only-upgrade install tree
+
+          timber info 'tree --version'
+          tree --version
 
           git-init --checkout "${EVENT_BRANCH}"
 
           cd "${MONO_WORK_DIR}"
 
-          echo ls -la
-          ls -la
-
-          tree --version
-
+          timber info 'tree --help'
           tree --help
 
-          echo tree -a --gitignore
+          timber info 'tree -a --gitignore'
           tree -a --gitignore
 
-          echo tree -a
+          timber info 'tree -a'
           tree -a
-
-          echo tree
-          tree
