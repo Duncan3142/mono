@@ -5,6 +5,8 @@ set -ueC
 releaseTag=$1
 releaseFiles=$2
 
+timber info "Creating release..."
+
 if gh release view "${releaseTag}"; then
 	timber warn "Release ${releaseTag} already exists"
 else

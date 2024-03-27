@@ -4,6 +4,8 @@ set -euC
 
 pkgName=$1
 
+timber info "Committing SemVer changes..."
+
 headBranch=$(git rev-parse --abbrev-ref HEAD)
 if [ "$headBranch" != "${SEMVER_BRANCH}" ]; then
 	timber error "HEAD is not on ${SEMVER_BRANCH}"

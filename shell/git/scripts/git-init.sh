@@ -38,7 +38,7 @@ mkdir -p "${GIT_WORKSPACE}"
 
 cd "${GIT_WORKSPACE}"
 
-timber debug "Init repo:"
+timber info "Init repo:"
 git init
 
 # authHeaderConfigKey="http.${GIT_SERVER_URL}/.extraheader"
@@ -59,7 +59,7 @@ if [[ ${#branches[@]} -gt 0 ]]; then
 	git-fetch "${branches[@]}" || true
 fi
 
-timber debug "Checkout ${checkoutBranch}:"
+timber info "Checkout ${checkoutBranch}:"
 git checkout --progress "${checkoutBranch}"
 
 if timber -l debug; then

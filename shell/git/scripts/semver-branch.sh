@@ -2,6 +2,8 @@
 
 set -euC
 
+timber info "Checkout SemVer branch..."
+
 if timber -l debug; then
 	timber debug "Refs pre checkout"
 	git-refs
