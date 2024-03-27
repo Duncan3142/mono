@@ -35,8 +35,8 @@ jobs:
           timber info 'tree --version'
           tree --version
 
-          apt update
-          apt --only-upgrade install tree
+          sudo apt update
+          sudo apt --only-upgrade install tree
 
           timber info 'tree --version'
           tree --version
