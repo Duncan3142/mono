@@ -75,5 +75,5 @@ if timber -l debug; then
 	pwd
 
 	timber debug "Work dir files:"
-	tree -a --gitignore
+	tree -a
 fi

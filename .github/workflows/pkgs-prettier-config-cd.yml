@@ -30,4 +30,4 @@ jobs:
     steps:
 
       - name: CD
-        uses: Duncan3142/mono/actions/npm-cd@main
+        uses: Duncan3142/mono/actions/npm-pkg-cd@main
