@@ -1,10 +1,19 @@
 name: "NPM CD"
 description: "NPM CD"
 
+inputs:
+  token:
+    description: "GitHub Token"
+    required: true
+
 runs:
   using: "composite"
 
   steps:
+    - name: CLI Auth
+      uses: Duncan3142/mono/actions/cli-auth@main
+      with:
+        token: ${{ inputs.token }}
     - name: Env vars
       uses: Duncan3142/mono/actions/common-env@main
     - name: Bash scripts

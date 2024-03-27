@@ -16,7 +16,6 @@ permissions:
   contents: read
 
 env:
-  GHA_TOKEN: ${{ secrets.GHA_PAT }}
   GH_PKG_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   MONO_WORK_DIR: ${{ vars.PRETTIER_CONFIG_DIR }}
   SEMVER_BRANCH_PREFIX: ${{ vars.SEMVER_BRANCH_PREFIX }}
@@ -31,3 +30,5 @@ jobs:
 
       - name: CD
         uses: Duncan3142/mono/actions/npm-pkg-cd@main
+        with:
+          token: ${{ secrets.GHA_PAT }}

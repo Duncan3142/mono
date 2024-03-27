@@ -15,7 +15,6 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  GHA_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   GH_PKG_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   MONO_WORK_DIR: ${{ vars.PRETTIER_CONFIG_DIR }}
   MONO_LOG_LEVEL: debug
@@ -30,3 +29,5 @@ jobs:
 
       - name: CI
         uses: Duncan3142/mono/actions/npm-ci@main
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
