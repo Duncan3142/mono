@@ -2,7 +2,7 @@ name: Prettier Config CI
 
 on:
   pull_request:
-    types: [opened, synchronize, reopened, labeled]
+    types: [opened, synchronize, reopened]
     branches: main
     paths:
       - '.github/workflows/pkgs-prettier-config-ci.yml'
@@ -15,18 +15,19 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  GHA_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   GH_PKG_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   MONO_WORK_DIR: ${{ vars.PRETTIER_CONFIG_DIR }}
   MONO_LOG_LEVEL: debug
   EVENT_BRANCH: ${{ github.head_ref }}
 
 jobs:
-  test:
+  ci:
     if: github.event.pull_request.state == 'open' && github.event.pull_request.draft == false
-    name: Test
+    name: CI
     runs-on: ubuntu-22.04
     steps:
 
       - name: CI
         uses: Duncan3142/mono/actions/npm-ci@main
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}

@@ -26,9 +26,6 @@ while (( "$#" )); do
 	esac
 done
 
-gh auth login --with-token <<< "${GHA_TOKEN}"
-gh auth setup-git
-
 git config --global user.name "${GIT_ACTOR}"
 git config --global user.email "${GIT_ACTOR}@users.noreply.github.com"
 git config --global --add safe.directory "${GIT_WORKSPACE}"

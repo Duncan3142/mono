@@ -1,0 +1,22 @@
+# Node
+node_modules
+
+# Hidden
+.*
+
+# VS Code
+!.vscode
+
+# Git
+!.gitignore
+
+# NPM
+!.npmrc
+!.npmignore
+
+# Prettier
+!.prettierignore
+!.prettierrc.mjs
+
+# Changesets
+!.changeset

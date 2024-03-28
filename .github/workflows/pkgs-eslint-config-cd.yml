@@ -1,11 +1,11 @@
-name: Prettier Config CD
+name: ESLint Config CD
 
 on:
   push:
     branches: main
     paths:
-     - '.github/workflows/pkgs-prettier-config-cd.yml'
-     - 'pkgs/prettier-config/**'
+     - '.github/workflows/pkgs-eslint-config-cd.yml'
+     - 'pkgs/eslint-config/**'
 
 concurrency:
   group: ${{ github.workflow }}
@@ -17,7 +17,7 @@ permissions:
 
 env:
   GH_PKG_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  MONO_WORK_DIR: ${{ vars.PRETTIER_CONFIG_DIR }}
+  MONO_WORK_DIR: ${{ vars.ESLINT_CONFIG_DIR }}
   SEMVER_BRANCH_PREFIX: ${{ vars.SEMVER_BRANCH_PREFIX }}
   MONO_LOG_LEVEL: debug
   EVENT_BRANCH: ${{ github.ref_name }}

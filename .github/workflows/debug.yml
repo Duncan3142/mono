@@ -9,7 +9,6 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  GHA_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   GH_PKG_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   MONO_WORK_DIR: ${{ vars.PRETTIER_CONFIG_DIR }}
   MONO_LOG_LEVEL: debug
@@ -21,6 +20,10 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
 
+      - name: CLI Auth
+        uses: Duncan3142/mono/actions/cli-auth@main
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
       - name: Env vars
         uses: Duncan3142/mono/actions/common-env@main
       - name: Bash scripts

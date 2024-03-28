@@ -1,14 +1,14 @@
-name: TypeScript Config CI
+name: ESLint Config CI
 
 on:
   pull_request:
     types: [opened, synchronize, reopened]
     branches: main
     paths:
-      - '.github/workflows/pkgs-tsc-config-ci.yml'
-      - 'pkgs/tsc-config/**'
-      - '!pkgs/tsc-config/.changeset/*'
-      - '!pkgs/tsc-config/CHANGELOG.md'
+      - '.github/workflows/pkgs-eslint-config-ci.yml'
+      - 'pkgs/eslint-config/**'
+      - '!pkgs/eslint-config/.changeset/*'
+      - '!pkgs/eslint-config/CHANGELOG.md'
 
 concurrency:
   group: ${{ github.workflow_ref }}
@@ -16,14 +16,14 @@ concurrency:
 
 env:
   GH_PKG_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  MONO_WORK_DIR: ${{ vars.TSC_CONFIG_DIR }}
+  MONO_WORK_DIR: ${{ vars.ESLINT_CONFIG_DIR }}
   MONO_LOG_LEVEL: debug
   EVENT_BRANCH: ${{ github.head_ref }}
 
 jobs:
   ci:
     if: github.event.pull_request.state == 'open' && github.event.pull_request.draft == false
-    name: CI
+    name: Ci
     runs-on: ubuntu-22.04
     steps:
 
