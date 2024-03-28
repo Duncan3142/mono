@@ -4,16 +4,19 @@ node_modules
 # Hidden
 .*
 
-# NPM
-!.npmrc
-package-lock.json
-
-# Changesets
-!.changeset
+# VS Code
+!.vscode
 
 # Git
 !.gitignore
 
+# NPM
+!.npmrc
+!.npmignore
+
 # Prettier
 !.prettierignore
 !.prettierrc.js
+
+# Changesets
+!.changeset

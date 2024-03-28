@@ -2,7 +2,7 @@ name: Prettier Config CI
 
 on:
   pull_request:
-    types: [opened, synchronize, reopened, labeled]
+    types: [opened, synchronize, reopened]
     branches: main
     paths:
       - '.github/workflows/pkgs-prettier-config-ci.yml'
@@ -21,9 +21,9 @@ env:
   EVENT_BRANCH: ${{ github.head_ref }}
 
 jobs:
-  test:
+  ci:
     if: github.event.pull_request.state == 'open' && github.event.pull_request.draft == false
-    name: Test
+    name: CI
     runs-on: ubuntu-22.04
     steps:
 

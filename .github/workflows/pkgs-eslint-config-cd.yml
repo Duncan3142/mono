@@ -1,0 +1,34 @@
+name: ESLint Config CD
+
+on:
+  push:
+    branches: main
+    paths:
+     - '.github/workflows/pkgs-eslint-config-cd.yml'
+     - 'pkgs/eslint-config/**'
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: false
+
+permissions:
+  packages: write
+  contents: read
+
+env:
+  GH_PKG_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  MONO_WORK_DIR: ${{ vars.ESLINT_CONFIG_DIR }}
+  SEMVER_BRANCH_PREFIX: ${{ vars.SEMVER_BRANCH_PREFIX }}
+  MONO_LOG_LEVEL: debug
+  EVENT_BRANCH: ${{ github.ref_name }}
+
+jobs:
+  cd:
+    name: CD
+    runs-on: ubuntu-22.04
+    steps:
+
+      - name: CD
+        uses: Duncan3142/mono/actions/npm-pkg-cd@main
+        with:
+          token: ${{ secrets.GHA_PAT }}
