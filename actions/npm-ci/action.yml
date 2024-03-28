@@ -20,6 +20,8 @@ runs:
       uses: Duncan3142/mono/shell/bash@main
     - name: Git scripts
       uses: Duncan3142/mono/shell/git@main
+    - name: NPM scripts
+      uses: Duncan3142/mono/shell/npm@main
     - name: Volta setup
       uses: Duncan3142/mono/actions/volta@main
     - name: NPM CI
