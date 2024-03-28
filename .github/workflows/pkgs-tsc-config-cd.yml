@@ -31,4 +31,4 @@ jobs:
       - name: CD
         uses: Duncan3142/mono/actions/npm-pkg-cd@main
         with:
-          GHA_TOKEN: ${{ secrets.GHA_PAT }}
+          token: ${{ secrets.GHA_PAT }}

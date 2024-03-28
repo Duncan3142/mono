@@ -88,7 +88,6 @@ ESLint configuration
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
-
 ## Usage
 
 To build the package and run all tests, run the following command
