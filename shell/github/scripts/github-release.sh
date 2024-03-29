@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 set -ueC
+set -o pipefail
 
 releaseTag=$1
 releaseFiles=$2

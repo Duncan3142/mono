@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 set -ueC
+set -o pipefail
 
 echo Installing github scripts...
 cd scripts

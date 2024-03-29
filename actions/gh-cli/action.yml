@@ -1,5 +1,5 @@
-name: "GitHub CLI Auth"
-description: "GitHub CLI Auth"
+name: "GitHub CLI Setup"
+description: "GitHub CLI Setup"
 
 inputs:
   token:
@@ -13,6 +13,10 @@ runs:
     - name: Login
       shell: bash
       run: |
+
+        set -ueC
+        set -o pipefail
+
         gh auth login --with-token <<< "${AUTH_TOKEN}"
         gh auth setup-git
       env:

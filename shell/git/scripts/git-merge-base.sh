@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 set -ueC
+set -o pipefail
 
 baseRef=$1
 headRef=$2

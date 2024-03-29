@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 set -ueC
+set -o pipefail
 
 export SEMVER_BRANCH=${SEMVER_BRANCH_PREFIX}/${MONO_WORK_DIR}
 

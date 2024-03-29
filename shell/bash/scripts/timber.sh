@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 set -ueC
+set -o pipefail
 
 MONO_LOG_LEVEL=${MONO_LOG_LEVEL:-info}
 

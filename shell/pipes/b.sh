@@ -1,13 +1,11 @@
 #!/usr/bin/env bash
 
 set -ueC
+set -o pipefail
 
-sleep 1s
+outFile="$1"
 
-echo "B Layin' pipe..." > "$1" &
-epid=$!
-sleep 2s
-wait $epid
-echo "B Layin' pipe... done"
+echo Running b.sh
 
-exit 0
+echo "Meow" > "$outFile"
+echo "Woof" > "$outFile"

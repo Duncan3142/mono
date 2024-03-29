@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 set -ueC
+set -o pipefail
 
 echo Installing chalk...
 cp -r "chalk" "$LLIB/chalk"

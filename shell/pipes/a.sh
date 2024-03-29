@@ -1,22 +1,16 @@
 #!/usr/bin/env bash
 
 set -ueC
+set -o pipefail
 
-rm -f /tmp/layin-pipe
+exec {outFD}>& 1
 
-mkfifo /tmp/layin-pipe
-
-./b.sh /tmp/layin-pipe &
-bpid=$!
-if ! timeout 4s cat /tmp/layin-pipe; then
-	echo "B Layin' pipe... timeout"
-	exit 1
-fi
-if wait $bpid; then
-	echo "A Layin' pipe... done"
-else
-	echo "B Layin' pipe... failed"
-fi
-
-rm -f /tmp/layin-pipe
-wait $bpid
+(
+	exec {dataFDb}>& 1;
+	./b.sh "/dev/fd/$dataFDb" >& $outFD;
+) | (
+	exec {dataFDc}>& 1;
+	./c.sh /dev/stdin "/dev/fd/$dataFDc" >& $outFD;
+) | (
+	./d.sh /dev/stdin
+)

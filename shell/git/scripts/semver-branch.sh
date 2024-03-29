@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 set -euC
+set -o pipefail
 
 timber info "Checkout SemVer branch..."
 
