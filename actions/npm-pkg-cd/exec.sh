@@ -26,11 +26,11 @@ else
 	pkgTag=${pkgName}@${pkgVersion}
 	tagExitCode=0
 	git-tag "${pkgTag}" || tagExitCode=$?
-	if [[ $tagExitCode -eq 8 ]]; then
-		exit 0
-	elif [[ $tagExitCode -ne 0 ]]; then
-		exit 1
-	fi
+	case "${tagExitCode}" in
+		8) exit 0 ;;
+		0) ;;
+		*) exit 1 ;;
+	esac
 	releaseFiles="$(mktemp)"
 	timber info "Run build..."
 	./shell/build.sh "${releaseFiles}"

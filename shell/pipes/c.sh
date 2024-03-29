@@ -6,8 +6,16 @@ set -o pipefail
 inFile="$1"
 outFile="$2"
 
-input=$(cat "$inFile")
+tempFile=$(mktemp)
+
+function return () {
+	rm -f "${tempFile}"
+}
+
+trap "return" EXIT
+
+cp "$inFile" "$tempFile"
 
 echo Running c.sh
 
-echo -E "$input" | grep "o" > "$outFile"
+grep "o" < "$tempFile" > "$outFile"

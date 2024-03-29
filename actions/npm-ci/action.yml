@@ -27,4 +27,7 @@ runs:
     - name: NPM CI
       shell: bash
       run: |
+        set -ueC
+        set -o pipefail
+
         '${{ github.action_path }}/exec.sh'

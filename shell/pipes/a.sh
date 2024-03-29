@@ -3,14 +3,10 @@
 set -ueC
 set -o pipefail
 
-exec {outFD}>& 1
+exec {stdOutFD}>& 1
 
-(
-	exec {dataFDb}>& 1;
-	./b.sh "/dev/fd/$dataFDb" >& $outFD;
-) | (
-	exec {dataFDc}>& 1;
-	./c.sh /dev/stdin "/dev/fd/$dataFDc" >& $outFD;
-) | (
-	./d.sh /dev/stdin
-)
+echo Running a.sh
+
+( exec {outFD}>& 1 && ./b.sh "/dev/fd/$outFD" >& $stdOutFD ) |
+( exec {outFD}>& 1 && ./c.sh /dev/stdin "/dev/fd/$outFD" >& $stdOutFD ) |
+./d.sh /dev/stdin

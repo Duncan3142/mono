@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+set -ueC
+set -o pipefail
+
+tagExitCode=2
+
+case "${tagExitCode}" in
+	8) echo 8; exit 0 ;;
+	0) echo 0 ;;
+	*) echo other; exit 1 ;;
+esac

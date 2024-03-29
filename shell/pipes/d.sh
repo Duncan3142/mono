@@ -5,8 +5,16 @@ set -o pipefail
 
 inFile="$1"
 
-input=$(cat "$inFile")
+tempFile=$(mktemp)
+
+function return () {
+	rm -f "${tempFile}"
+}
+
+trap "return" EXIT
+
+cp "$inFile" "$tempFile"
 
 echo Running d.sh
 
-echo -E "$input" | grep "Me"
+grep "Me" < "$tempFile"
