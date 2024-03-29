@@ -3,6 +3,12 @@
 set -ueC
 set -o pipefail
 
+function return () {
+	rm -f "${changesFile}" "${releaseFiles}"
+}
+
+trap "return" EXIT
+
 export SEMVER_BRANCH=${SEMVER_BRANCH_PREFIX}/${MONO_WORK_DIR}
 
 git-init --checkout "${EVENT_BRANCH}" -b "${SEMVER_BRANCH}"
@@ -24,10 +30,9 @@ if [[ $(jq '.changes | length' "${changesFile}") -gt 0 ]]; then
 else
 	pkgVersion=$(jq -r '.version' package.json)
 	pkgTag=${pkgName}@${pkgVersion}
-	tagExitCode=0
-	git-tag "${pkgTag}" || tagExitCode=$?
-	case "${tagExitCode}" in
-		8) exit 0 ;;
+	{ git-tag "${pkgTag}"; tagCode=$?; } || true
+	case "${tagCode}" in
+		64) exit 0 ;;
 		0) ;;
 		*) exit 1 ;;
 	esac

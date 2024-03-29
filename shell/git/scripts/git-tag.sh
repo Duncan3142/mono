@@ -5,6 +5,16 @@ set -o pipefail
 
 pkgTag=$1
 
+function return () {
+	case $? in
+		0) ;;
+		64) ;;
+		*) exit 1
+	esac
+}
+
+trap "return" EXIT
+
 timber info "Tagging ${pkgTag}..."
 
 if git-fetch -t "${pkgTag}"; then
@@ -13,9 +23,9 @@ if git-fetch -t "${pkgTag}"; then
 	headSha=$(git rev-parse HEAD)
 	if [[ "${tagSha}" != "${headSha}" ]]; then
 		timber warn "Tag ${pkgTag} (${tagSha}) does not reference ${EVENT_BRANCH} HEAD (${headSha})"
-		exit 8
+		exit 64
 	fi
 else
-	git tag "${pkgTag}" || exit 1
-	git push "${GIT_REMOTE}" "${pkgTag}" || exit 1
+	git tag "${pkgTag}"
+	git push "${GIT_REMOTE}" "${pkgTag}"
 fi

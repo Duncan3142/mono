@@ -11,6 +11,6 @@ if ! prUrl=$(gh pr create --base "${EVENT_BRANCH}" --head "${SEMVER_BRANCH}" --t
 	prUrl=$(gh pr list --base "${EVENT_BRANCH}" --head "${SEMVER_BRANCH}" --json url --jq '.[].url')
 	if [ -z "${prUrl}" ]; then
 		timber error "Failed to find existing SemVer PR with base \"${EVENT_BRANCH}\" and head \"${SEMVER_BRANCH}\""
-		exit 8
+		exit 1
 	fi
 fi

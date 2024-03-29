@@ -19,7 +19,7 @@ changeCount=${array[1]}
 
 if [ "$releaseCount" -eq 0 ] && [ "$changeCount" -gt 0 ]; then
 	timber error "Empty changeset"
-	exit 8
+	exit 1
 fi
 
 if [ "$changeCount" -eq 0 ]; then
