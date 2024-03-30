@@ -8,6 +8,10 @@ runs:
     - name: Environment
       shell: bash
       run: |
+
+        set -ueC
+        set -o pipefail
+
         LBIN=/home/runner/.local/bin
         mkdir -p "$LBIN"
         LLIB=/home/runner/.local/mono

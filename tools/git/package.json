@@ -1,0 +1,26 @@
+{
+	"name": "@duncan3142/git-tools",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/Duncan3142/mono.git"
+	},
+	"publishConfig": {
+		"registry": "https://npm.pkg.github.com",
+		"access": "restricted"
+	},
+	"description": "Git tools",
+	"keywords": [],
+	"version": "0.0.0",
+	"author": "Duncan Giles",
+	"type": "module",
+	"license": "MIT",
+	"bin": {
+		"git-fetch": "./shell/git-fetch.sh",
+		"git-init": "./shell/git-init.sh",
+		"git-merge-base": "./shell/git-merge-base.sh",
+		"git-refs": "./shell/git-refs.sh",
+		"git-tag": "./shell/git-tag.sh",
+		"semver-branch": "./shell/semver-branch.sh",
+		"semver-commit": "./shell/semver-commit.sh"
+	}
+}

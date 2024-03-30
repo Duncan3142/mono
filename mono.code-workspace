@@ -5,28 +5,72 @@
 			"name": "/",
 		},
 		{
+			"path": ".github/workflows",
+			"name": "workflows",
+		},
+		{
+			"path": "actions/cli-auth",
+			"name": "actions/cli-auth",
+		},
+		{
+			"path": "actions/common-env",
+			"name": "actions/common-env",
+		},
+		{
+			"path": "actions/npm-ci",
+			"name": "actions/npm-ci",
+		},
+		{
+			"path": "actions/npm-pkg-cd",
+			"name": "actions/npm-pkg-cd",
+		},
+		{
+			"path": "actions/volta",
+			"name": "actions/volta",
+		},
+		{
+			"path": "tools/bash",
+			"name": "tools/bash",
+		},
+		{
+			"path": "tools/git",
+			"name": "tools/git",
+		},
+		{
+			"path": "tools/github",
+			"name": "tools/github",
+		},
+		{
+			"path": "tools/npm",
+			"name": "tools/npm",
+		},
+		{
+			"path": "tools/changes-cli",
+			"name": "tools/changes-cli",
+		},
+		{
 			"path": "pkgs/eslint-config",
-			"name": "eslint-config",
+			"name": "pkgs/eslint-config",
 		},
 		{
 			"path": "pkgs/prettier-config",
-			"name": "prettier-config",
+			"name": "pkgs/prettier-config",
 		},
 		{
 			"path": "pkgs/tsc-config",
-			"name": "tsc-config",
+			"name": "pkgs/tsc-config",
 		},
 		{
 			"path": "pkgs/xis",
-			"name": "xis",
+			"name": "pkgs/xis",
 		},
 		{
 			"path": "pkgs/plop-pkg",
-			"name": "plop-pkg",
+			"name": "pkgs/plop-pkg",
 		},
 		{
 			"path": "pkgs/xstate",
-			"name": "xstate",
+			"name": "pkgs/xstate",
 		},
 	],
 	"settings": {
@@ -37,12 +81,18 @@
 			"**/CVS": true,
 			"**/.DS_Store": true,
 			"**/Thumbs.db": true,
-			"pkgs": false,
-			".prettier": false,
-			".turbo": false,
-			"node_modules": false,
-			".tsc": false,
-			".eslint": false
+			".github/": false,
+			"actions/": false,
+			"apps/": false,
+			"infra/": false,
+			"libs/": false,
+			"pkgs/": false,
+			"shell": false,
+			"tools/": false,
+			".prettier/": false,
+			"node_modules/": false,
+			".tsc/": false,
+			".eslint/": false
 		},
 		"explorerExclude.backup": {},
 		"editor.insertSpaces": false,

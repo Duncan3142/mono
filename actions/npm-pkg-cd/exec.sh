@@ -1,6 +1,13 @@
 #!/usr/bin/env bash
 
 set -ueC
+set -o pipefail
+
+function return () {
+	rm -f "${changesFile}" "${releaseFiles}"
+}
+
+trap "return" EXIT
 
 export SEMVER_BRANCH=${SEMVER_BRANCH_PREFIX}/${MONO_WORK_DIR}
 
@@ -23,13 +30,12 @@ if [[ $(jq '.changes | length' "${changesFile}") -gt 0 ]]; then
 else
 	pkgVersion=$(jq -r '.version' package.json)
 	pkgTag=${pkgName}@${pkgVersion}
-	tagExitCode=0
-	git-tag "${pkgTag}" || tagExitCode=$?
-	if [[ $tagExitCode -eq 8 ]]; then
-		exit 0
-	elif [[ $tagExitCode -ne 0 ]]; then
-		exit 1
-	fi
+	{ git-tag "${pkgTag}"; tagCode=$?; } || true
+	case "${tagCode}" in
+		64) exit 0 ;;
+		0) ;;
+		*) exit 1 ;;
+	esac
 	releaseFiles="$(mktemp)"
 	timber info "Run build..."
 	./shell/build.sh "${releaseFiles}"

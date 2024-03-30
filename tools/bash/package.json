@@ -1,0 +1,22 @@
+{
+	"name": "@duncan3142/bash-tools",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/Duncan3142/mono.git"
+	},
+	"publishConfig": {
+		"registry": "https://npm.pkg.github.com",
+		"access": "restricted"
+	},
+	"description": "Bash tools",
+	"keywords": [],
+	"version": "0.0.0",
+	"author": "Duncan Giles",
+	"type": "module",
+	"license": "MIT",
+	"bin": {
+		"mkpipe": "./shell/mkpipe.sh",
+		"print-env": "./shell/print-env.sh",
+		"timber": "./shell/timber.sh"
+	}
+}

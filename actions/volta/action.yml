@@ -7,6 +7,10 @@ runs:
     - name: Environment
       shell: bash
       run: |
+
+        set -ueC
+        set -o pipefail
+
         VOLTA_HOME="$HOME/.volta"
         NPM_CACHE="$HOME/.npm"
         echo "VOLTA_HOME=$VOLTA_HOME" >> "$GITHUB_ENV"
@@ -22,8 +26,12 @@ runs:
     - name: Download
       shell: bash
       run: |
-        if which volta 2> /dev/null; then
-          volta setup
-        else
-          curl https://get.volta.sh | bash
-        fi
+        set -ueC
+        set -o pipefail
+
+        cp .npmrc "$HOME/.npmrc"
+
+        curl https://get.volta.sh | bash
+        volta setup
+        volta install node@20
+      working-directory: ${{ github.action_path }}

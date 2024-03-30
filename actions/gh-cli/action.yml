@@ -1,0 +1,23 @@
+name: "GitHub CLI Setup"
+description: "GitHub CLI Setup"
+
+inputs:
+  token:
+    description: "GitHub Token"
+    required: true
+
+runs:
+  using: "composite"
+
+  steps:
+    - name: Login
+      shell: bash
+      run: |
+
+        set -ueC
+        set -o pipefail
+
+        gh auth login --with-token <<< "${AUTH_TOKEN}"
+        gh auth setup-git
+      env:
+        AUTH_TOKEN: ${{ inputs.token }}
