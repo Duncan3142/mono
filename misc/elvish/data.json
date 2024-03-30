@@ -1,0 +1,18 @@
+{
+	"alpha": "a",
+	"beta": "b",
+	"true": true,
+	"false": false,
+	"zero": 0,
+	"one": 1,
+	"null": null,
+	"nested": {
+		"alpha": "a",
+		"beta": "b",
+		"true": true,
+		"false": false,
+		"zero": 0,
+		"one": 1,
+		"null": null
+	}
+}
