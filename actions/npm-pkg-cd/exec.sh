@@ -3,8 +3,10 @@
 set -ueC
 set -o pipefail
 
+tempFiles=()
+
 function return () {
-	rm -f "${changesFile}" "${releaseFiles}"
+	rm -f "${tempFiles[@]}"
 }
 
 trap "return" EXIT
@@ -19,6 +21,7 @@ pkgName=$(jq -r '.name' package.json)
 npm-install
 
 changesFile="$(mktemp)"
+tempFiles+=("${changesFile}")
 npm-changes "${changesFile}"
 
 if [[ $(jq '.changes | length' "${changesFile}") -gt 0 ]]; then
@@ -37,6 +40,7 @@ else
 		*) exit 1 ;;
 	esac
 	releaseFiles="$(mktemp)"
+	tempFiles+=("${releaseFiles}")
 	timber info "Run build..."
 	./shell/build.sh "${releaseFiles}"
 	parallel ::: "npm-publish '${pkgTag}' 2>&1" "github-release '${pkgTag}' '${releaseFiles}' 2>&1"
