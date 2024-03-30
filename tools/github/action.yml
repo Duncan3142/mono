@@ -1,5 +1,5 @@
-name: "GitHub scripts"
-description: "Install GitHub utility scripts"
+name: "GitHub tools"
+description: "Install GitHub tools"
 
 runs:
   using: "composite"

@@ -29,8 +29,9 @@ runs:
         set -ueC
         set -o pipefail
 
-        if which volta 2> /dev/null; then
-          volta setup
-        else
-          curl https://get.volta.sh | bash
-        fi
+        cp .npmrc "$HOME/.npmrc"
+
+        curl https://get.volta.sh | bash
+        volta setup
+        volta install node@20
+      working-directory: ${{ github.action_path }}

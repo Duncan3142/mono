@@ -1,5 +1,5 @@
-name: "NPM scripts"
-description: "Install NPM utility scripts"
+name: "NPM tools"
+description: "Install NPM tools"
 
 runs:
   using: "composite"

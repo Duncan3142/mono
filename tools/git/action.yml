@@ -1,5 +1,5 @@
-name: "Git scripts"
-description: "Install git utility scripts"
+name: "Git tools"
+description: "Install Git tools"
 
 runs:
   using: "composite"

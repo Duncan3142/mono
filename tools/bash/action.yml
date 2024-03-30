@@ -1,5 +1,5 @@
-name: "Bash scripts"
-description: "Install bash utility scripts"
+name: "Bash tools"
+description: "Install bash tools"
 
 runs:
   using: "composite"

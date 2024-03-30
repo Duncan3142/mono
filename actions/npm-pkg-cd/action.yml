@@ -10,22 +10,22 @@ runs:
   using: "composite"
 
   steps:
-    - name: CLI Auth
-      uses: Duncan3142/mono/actions/cli-auth@main
+    - name: GitHub CLI
+      uses: Duncan3142/mono/actions/gh-cli@main
       with:
         token: ${{ inputs.token }}
     - name: Env vars
       uses: Duncan3142/mono/actions/common-env@main
-    - name: Bash scripts
-      uses: Duncan3142/mono/shell/bash@main
-    - name: Git scripts
-      uses: Duncan3142/mono/shell/git@main
-    - name: GitHub scripts
-      uses: Duncan3142/mono/shell/github@main
-    - name: NPM scripts
-      uses: Duncan3142/mono/shell/npm@main
     - name: Volta setup
       uses: Duncan3142/mono/actions/volta@main
+    - name: Bash scripts
+      uses: Duncan3142/mono/tools/bash@main
+    - name: Git scripts
+      uses: Duncan3142/mono/tools/git@main
+    - name: GitHub scripts
+      uses: Duncan3142/mono/tools/github@main
+    - name: NPM scripts
+      uses: Duncan3142/mono/tools/npm@main
     - name: NPM CD
       shell: bash
       run: |
