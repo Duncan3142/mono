@@ -30,11 +30,21 @@ var has-cmd = { |cmd|
 # echo $json[true]
 
 # var fn = { |x y &meow=woof|
-# 	put [ $x, $y, $meow ]
+# 	put [ $x $y $meow ]
 # }
 
 # echo ($fn 1 2 &meow=raar)[2]
 
 echo ($has-cmd bash)
+
+var arr = []
+
+var lines = [(cat './lines.txt' | from-lines )]
+
+each { |x|
+		set arr = [$@arr $x]
+} $lines
+
+echo &sep="\n" (count $arr) $arr
 
 echo done
