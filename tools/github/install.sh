@@ -3,4 +3,6 @@
 set -ueC
 set -o pipefail
 
-npm i -g .
+mkdir -p .package
+npm pack . --pack-destination .package
+npm i -g .package/*.tgz

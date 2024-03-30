@@ -29,20 +29,20 @@
 			"name": "actions/volta",
 		},
 		{
-			"path": "shell/bash",
-			"name": "shell/bash",
+			"path": "tools/bash",
+			"name": "tools/bash",
 		},
 		{
-			"path": "shell/git",
-			"name": "shell/git",
+			"path": "tools/git",
+			"name": "tools/git",
 		},
 		{
-			"path": "shell/github",
-			"name": "shell/github",
+			"path": "tools/github",
+			"name": "tools/github",
 		},
 		{
-			"path": "shell/npm",
-			"name": "shell/npm",
+			"path": "tools/npm",
+			"name": "tools/npm",
 		},
 		{
 			"path": "tools/changes-cli",

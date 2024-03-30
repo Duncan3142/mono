@@ -1,0 +1,24 @@
+{
+	"name": "@duncan3142/npm-tools",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/Duncan3142/mono.git"
+	},
+	"publishConfig": {
+		"registry": "https://npm.pkg.github.com",
+		"access": "restricted"
+	},
+	"description": "NPM tools",
+	"keywords": [],
+	"version": "0.0.0",
+	"author": "Duncan Giles",
+	"type": "module",
+	"license": "MIT",
+	"bin": {
+		"npm-changes": "./shell/npm-changes.sh",
+		"npm-install": "./shell/npm-install.sh",
+		"npm-publish": "./shell/npm-publish.sh",
+		"npm-remote": "./shell/npm-remote.sh",
+		"npm-semver": "./shell/npm-semver.sh"
+	}
+}
