@@ -1,10 +1,10 @@
 #!/usr/bin/env elvish
 
+use str
+
 var title = 'Hello Elves!'
 
 echo $title
-
-# var json = ( cat './data.json' | from-json )
 
 var has-cmd = { |cmd|
 	try {
@@ -15,36 +15,44 @@ var has-cmd = { |cmd|
 	}
 }
 
-# if ( $has-cmd elvish ) {
-# 	echo 'Elvish is installed'
-# } else {
-# 	echo 'Elvish is not installed'
-# }
+if ( $has-cmd elvish ) {
+	echo 'Elvish is installed'
+} else {
+	echo 'Elvish is not installed'
+}
 
-# if ( $has-cmd fish ) {
-# 	echo 'Fish is installed'
-# } else {
-# 	echo 'Fish is not installed'
-# }
+if ( $has-cmd fish ) {
+	echo 'Fish is installed'
+} else {
+	echo 'Fish is not installed'
+}
 
-# echo $json[true]
+var json = ( cat './data.json' | from-json )
 
-# var fn = { |x y &meow=woof|
-# 	put [ $x $y $meow ]
-# }
+echo $json[booleans]
 
-# echo ($fn 1 2 &meow=raar)[2]
+var fn = { |x y &meow=woof|
+	put [ $x $y $meow ]
+}
 
-echo ($has-cmd bash)
+echo ($fn 1 2 &meow=raar)[2]
 
-var arr = []
+echo ( $has-cmd bash )
 
-var lines = [(cat './lines.txt' | from-lines )]
+var lines = [ ( cat './lines.txt' | from-lines ) ]
 
-each { |x|
-		set arr = [$@arr $x]
-} $lines
+echo lines (count $lines) $lines
 
-echo &sep="\n" (count $arr) $arr
+var upperLines = [ ( each { |x| str:to-upper $x } $lines ) ]
+
+echo upperLines (count $upperLines) $upperLines
+
+var linesCopy = []
+
+for x $lines {
+	set linesCopy = [$@linesCopy $x]
+}
+
+echo linesCopy (count $linesCopy) $linesCopy
 
 echo done
