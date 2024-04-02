@@ -1,27 +1,19 @@
 #!/usr/bin/env elvish
 
 use str
+use ./lib meow
 
 var title = 'Hello Elves!'
 
 echo $title
 
-var has-cmd = { |cmd|
-	try {
-		which $cmd >/dev/null 2>&1
-		put $true
-	} catch {
-		put $false
-	}
-}
-
-if ( $has-cmd elvish ) {
+if ( $meow:has-cmd elvish ) {
 	echo 'Elvish is installed'
 } else {
 	echo 'Elvish is not installed'
 }
 
-if ( $has-cmd fish ) {
+if ( $meow:has-cmd fish ) {
 	echo 'Fish is installed'
 } else {
 	echo 'Fish is not installed'
@@ -29,15 +21,15 @@ if ( $has-cmd fish ) {
 
 var json = ( cat './data.json' | from-json )
 
-echo $json[booleans]
+echo $json[object]
 
 var fn = { |x y &meow=woof|
 	put [ $x $y $meow ]
 }
 
-echo ($fn 1 2 &meow=raar)[2]
+echo ($fn 1 2 &meow=raar)
 
-echo ( $has-cmd bash )
+echo ( $meow:has-cmd bash )
 
 var lines = [ ( cat './lines.txt' | from-lines ) ]
 
