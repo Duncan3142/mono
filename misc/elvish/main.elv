@@ -1,7 +1,7 @@
 #!/usr/bin/env elvish
 
 use str
-use ./lib meow
+use ./lib/cmd meow
 
 var title = 'Hello Elves!'
 
