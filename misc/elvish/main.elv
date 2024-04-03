@@ -1,35 +1,29 @@
 #!/usr/bin/env elvish
 
 use str
-use ./lib/cmd meow
+# use epm
+# epm:install github.com/Duncan3142/mono
+
+use ./cmd/v1 cmdV1
+use ./cmd/v2 cmdV2
 
 var title = 'Hello Elves!'
 
 echo $title
 
-if ( $meow:has-cmd elvish ) {
-	echo 'Elvish is installed'
-} else {
-	echo 'Elvish is not installed'
+var printInstalled = { |check name|
+	if ( $check $name ) {
+		echo $name' is installed'
+	} else {
+		echo $name' is not installed'
+	}
 }
 
-if ( $meow:has-cmd fish ) {
-	echo 'Fish is installed'
-} else {
-	echo 'Fish is not installed'
-}
+$printInstalled $cmdV1:has elvish
+$printInstalled $cmdV1:has fish
 
-var json = ( cat './data.json' | from-json )
-
-echo $json[object]
-
-var fn = { |x y &meow=woof|
-	put [ $x $y $meow ]
-}
-
-echo ($fn 1 2 &meow=raar)
-
-echo ( $meow:has-cmd bash )
+$printInstalled $cmdV2:has elvish
+$printInstalled $cmdV2:has fish
 
 var lines = [ ( cat './lines.txt' | from-lines ) ]
 
