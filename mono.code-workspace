@@ -29,6 +29,10 @@
 			"name": "actions/volta",
 		},
 		{
+			"path": "misc/elvish",
+			"name": "elvish",
+		},
+		{
 			"path": "tools/bash",
 			"name": "tools/bash",
 		},
