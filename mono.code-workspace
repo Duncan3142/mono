@@ -9,8 +9,8 @@
 			"name": "workflows",
 		},
 		{
-			"path": "actions/cli-auth",
-			"name": "actions/cli-auth",
+			"path": "actions/gh-cli",
+			"name": "actions/gh-cli",
 		},
 		{
 			"path": "actions/common-env",
@@ -27,10 +27,6 @@
 		{
 			"path": "actions/volta",
 			"name": "actions/volta",
-		},
-		{
-			"path": "misc/elvish",
-			"name": "elvish",
 		},
 		{
 			"path": "tools/bash",
@@ -71,10 +67,6 @@
 		{
 			"path": "pkgs/plop-pkg",
 			"name": "pkgs/plop-pkg",
-		},
-		{
-			"path": "pkgs/xstate",
-			"name": "pkgs/xstate",
 		},
 	],
 	"settings": {

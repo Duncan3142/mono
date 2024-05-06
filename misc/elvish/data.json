@@ -1,9 +1,0 @@
-{
-	"object" : {
-		"alpha": "Hello",
-		"beta": "Elves"
-	},
-	"booleans": [true, false],
-	"numbers": [0, 1],
-	"null": null
-}
