@@ -1,9 +1,0 @@
-#cloud-config
-#vim:syntax=yaml
-users:
-# A user by the name 'ec2-user' is created in the image by default.
-- default
-- name: ec2-user
-  ssh-authorized-keys:
-    - [public key]
-# In the above line, replace ssh key with the content of your ssh public key.
