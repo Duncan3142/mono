@@ -63,11 +63,7 @@
 		{
 			"path": "pkgs/xis",
 			"name": "pkgs/xis",
-		},
-		{
-			"path": "pkgs/plop-pkg",
-			"name": "pkgs/plop-pkg",
-		},
+		}
 	],
 	"settings": {
 		"files.exclude": {
