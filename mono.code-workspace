@@ -45,10 +45,6 @@
 			"name": "tools/npm",
 		},
 		{
-			"path": "tools/changes-cli",
-			"name": "tools/changes-cli",
-		},
-		{
 			"path": "pkgs/eslint-config",
 			"name": "pkgs/eslint-config",
 		},
@@ -99,7 +95,7 @@
 				"type": "node",
 				"runtimeArgs": ["--test"],
 				"request": "launch",
-				"name": "Test",
+				"name": "Node Test",
 				"autoAttachChildProcesses": true,
 				"skipFiles": ["<node_internals>/**", "**/node_modules/**"],
 				"smartStep": true,
