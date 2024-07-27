@@ -43,7 +43,8 @@
 		"exactOptionalPropertyTypes": true,
 		"verbatimModuleSyntax": true,
 		"noErrorTruncation": true,
-		"useDefineForClassFields": true
+		"useDefineForClassFields": true,
+		"isolatedDeclarations": true
 	},
 	"include": []
 }
