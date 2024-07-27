@@ -11,6 +11,8 @@ concurrency:
   group: ${{ github.workflow }}
   cancel-in-progress: false
 
+
+
 permissions:
   packages: write
   contents: read
@@ -25,6 +27,7 @@ env:
 jobs:
   cd:
     name: CD
+    environment: GitHub
     runs-on: ubuntu-22.04
     steps:
 
