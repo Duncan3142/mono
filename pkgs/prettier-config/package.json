@@ -15,7 +15,7 @@
 	"type": "module",
 	"license": "MIT",
 	"engines": {
-		"node": ">=20",
+		"node": ">=22",
 		"npm": ">=10"
 	},
 	"exports": {
@@ -37,6 +37,6 @@
 		"prettier": "^3.2.5"
 	},
 	"volta": {
-		"node": "20.12.0"
+		"node": "22.12.0"
 	}
 }
