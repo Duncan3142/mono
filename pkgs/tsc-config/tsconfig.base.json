@@ -1,15 +1,15 @@
 {
 	"$schema": "https://json.schemastore.org/tsconfig",
 	"compilerOptions": {
-		"lib": ["ES2022"],
-		"module": "Node16",
+		"lib": ["ES2023"],
+		"module": "NodeNext",
 		"target": "ES2022",
 		"noEmitOnError": true,
 		"emitDeclarationOnly": true,
 		"esModuleInterop": false,
 		"allowSyntheticDefaultImports": false,
 		"composite": true,
-		"moduleResolution": "Node16",
+		"moduleResolution": "nodenext",
 		"resolveJsonModule": true,
 		"incremental": true,
 		"sourceMap": true,
@@ -26,6 +26,8 @@
 		"strictFunctionTypes": true,
 		"strictNullChecks": true,
 		"strictPropertyInitialization": true,
+		"noUncheckedSideEffectImports": true,
+		"strictBuiltinIteratorReturn": true,
 		"useUnknownInCatchVariables": true,
 		"forceConsistentCasingInFileNames": true,
 		"noImplicitReturns": true,
@@ -44,7 +46,9 @@
 		"verbatimModuleSyntax": true,
 		"noErrorTruncation": true,
 		"useDefineForClassFields": true,
-		"isolatedDeclarations": true
+		"isolatedDeclarations": true,
+		"allowImportingTsExtensions": true,
+		"rewriteRelativeImportExtensions": true
 	},
 	"include": []
 }
