@@ -21,11 +21,11 @@
 		"format:fix": "prettier --write --cache --cache-location='.prettier/cache' --cache-strategy content ."
 	},
 	"devDependencies": {
-		"@commitlint/cli": "^19.0.3",
-		"@commitlint/config-conventional": "^19.0.3",
-		"@duncan3142/prettier-config": "^0.1.2",
-		"husky": "^9.0.11",
-		"prettier": "^3.2.5"
+		"@commitlint/cli": "^19.6.1",
+		"@commitlint/config-conventional": "^19.6.0",
+		"@duncan3142/prettier-config": "^0.0.1",
+		"husky": "^9.1.7",
+		"prettier": "^3.4.2"
 	},
 	"volta": {
 		"node": "22.12.0"
