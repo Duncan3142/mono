@@ -1,5 +1,11 @@
 # @duncan3142/tsc-config
 
+## 0.0.4
+
+### Patch Changes
+
+- 9e14d3d: allow js config
+
 ## 0.0.3
 
 ### Patch Changes
