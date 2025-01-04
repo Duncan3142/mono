@@ -1,5 +1,11 @@
 # @duncan3142/tsc-config
 
+## 0.1.0
+
+### Minor Changes
+
+- 9ffefb4: config synthetic imports
+
 ## 0.0.4
 
 ### Patch Changes
