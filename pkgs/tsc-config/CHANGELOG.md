@@ -1,5 +1,11 @@
 # @duncan3142/tsc-config
 
+## 0.1.1
+
+### Patch Changes
+
+- 6e95f29: ecmascript version
+
 ## 0.1.0
 
 ### Minor Changes
