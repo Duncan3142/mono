@@ -4,8 +4,15 @@ node_modules
 # Hidden
 .*
 
+# Directories
+*/
+
 # Husky
-!.husky/_
+!.husky/
+.husky/_
+
+# Actions
+!actions
 
 # VS Code
 !.vscode

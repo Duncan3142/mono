@@ -51,8 +51,8 @@
 		"format:fix": "prettier --write --cache --cache-location='.prettier/cache' --cache-strategy content .",
 		"assets": "tsc --build",
 		"assets:watch": "tsc --build --watch",
-		"test:eslint": "eslint --max-warnings 0 --cache --cache-location '.eslint/cache' --cache-strategy content .",
-		"test:eslint:fix": "eslint --fix --max-warnings 0 --cache --cache-location '.eslint/cache' --cache-strategy content .",
+		"test:eslint": "eslint --max-warnings 0 .",
+		"test:eslint:fix": "eslint --fix --max-warnings 0 .",
 		"test:node": "node --test .tsc/test/"
 	},
 	"peerDependencies": {
