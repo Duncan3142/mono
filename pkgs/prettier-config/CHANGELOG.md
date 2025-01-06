@@ -1,5 +1,11 @@
 # @duncan3142/prettier-config
 
+## 0.1.1
+
+### Patch Changes
+
+- 6e95f29: fix dts export
+
 ## 0.1.0
 
 ### Minor Changes
