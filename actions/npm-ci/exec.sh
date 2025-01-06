@@ -10,4 +10,4 @@ cd "${MONO_WORK_DIR}"
 npm-install
 
 timber info "Run tests..."
-./shell/test.sh
+./cicd/test.sh
