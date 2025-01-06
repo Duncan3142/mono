@@ -15,7 +15,7 @@
 	"type": "module",
 	"license": "MIT",
 	"bin": {
-		"github-release": "./shell/github-release.sh",
-		"semver-pr": "./shell/semver-pr.sh"
+		"github-release": "./bin/github-release.sh",
+		"semver-pr": "./bin/semver-pr.sh"
 	}
 }

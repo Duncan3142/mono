@@ -42,6 +42,6 @@ else
 	releaseFiles="$(mktemp)"
 	tempFiles+=("${releaseFiles}")
 	timber info "Run build..."
-	./shell/build.sh "${releaseFiles}"
+	./cicd/build.sh "${releaseFiles}"
 	parallel ::: "npm-publish '${pkgTag}' 2>&1" "github-release '${pkgTag}' '${releaseFiles}' 2>&1"
 fi

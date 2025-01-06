@@ -34,4 +34,5 @@ runs:
         curl https://get.volta.sh | bash
         volta setup
         volta install node@22
+        volta install npm@11
       working-directory: ${{ github.action_path }}

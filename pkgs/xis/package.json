@@ -12,8 +12,8 @@
 	"type": "module",
 	"license": "MIT",
 	"engines": {
-		"node": ">=20",
-		"npm": ">=10"
+		"node": ">=22",
+		"npm": ">=11"
 	},
 	"imports": {
 		"#core/*.js": {
@@ -51,8 +51,8 @@
 		"format:fix": "prettier --write --cache --cache-location='.prettier/cache' --cache-strategy content .",
 		"assets": "tsc --build",
 		"assets:watch": "tsc --build --watch",
-		"test:eslint": "eslint --max-warnings 0 --cache --cache-location '.eslint/cache' --cache-strategy content .",
-		"test:eslint:fix": "eslint --fix --max-warnings 0 --cache --cache-location '.eslint/cache' --cache-strategy content .",
+		"test:eslint": "eslint --max-warnings 0 .",
+		"test:eslint:fix": "eslint --fix .",
 		"test:node": "node --test .tsc/test/"
 	},
 	"peerDependencies": {
@@ -66,7 +66,7 @@
 		"@duncan3142/prettier-config": "^0.1.2",
 		"@duncan3142/tsc-config": "workspace:*",
 		"@types/eslint": "^8.56.4",
-		"@types/node": "^20.11.22",
+		"@types/node": "^22.10.2",
 		"@typescript-eslint/eslint-plugin": "^7.1.0",
 		"@typescript-eslint/parser": "^7.1.0",
 		"eslint": "^8.57.0",
@@ -77,5 +77,9 @@
 		"expect": "^29.7.0",
 		"prettier": "^3.2.5",
 		"typescript": "^5.3.3"
+	},
+	"volta": {
+		"node": "22.12.0",
+		"npm": "11.0.0"
 	}
 }

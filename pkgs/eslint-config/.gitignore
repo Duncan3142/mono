@@ -16,7 +16,7 @@ node_modules
 
 # Prettier
 !.prettierignore
-!.prettierrc.mjs
+!.prettierrc.js
 
 # Changesets
 !.changeset
