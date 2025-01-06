@@ -15,10 +15,10 @@
 	"type": "module",
 	"license": "MIT",
 	"bin": {
-		"npm-changes": "./shell/npm-changes.sh",
-		"npm-install": "./shell/npm-install.sh",
-		"npm-publish": "./shell/npm-publish.sh",
-		"npm-remote": "./shell/npm-remote.sh",
-		"npm-semver": "./shell/npm-semver.sh"
+		"npm-changes": "./bin/npm-changes.sh",
+		"npm-install": "./bin/npm-install.sh",
+		"npm-publish": "./bin/npm-publish.sh",
+		"npm-remote": "./bin/npm-remote.sh",
+		"npm-semver": "./bin/npm-semver.sh"
 	}
 }

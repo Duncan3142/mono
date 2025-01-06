@@ -15,8 +15,8 @@
 	"type": "module",
 	"license": "MIT",
 	"bin": {
-		"mkpipe": "./shell/mkpipe.sh",
-		"print-env": "./shell/print-env.sh",
-		"timber": "./shell/timber.sh"
+		"mkpipe": "./bin/mkpipe.sh",
+		"print-env": "./bin/print-env.sh",
+		"timber": "./bin/timber.sh"
 	}
 }
