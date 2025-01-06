@@ -52,7 +52,7 @@
 		"assets": "tsc --build",
 		"assets:watch": "tsc --build --watch",
 		"test:eslint": "eslint --max-warnings 0 .",
-		"test:eslint:fix": "eslint --fix --max-warnings 0 .",
+		"test:eslint:fix": "eslint --fix .",
 		"test:node": "node --test .tsc/test/"
 	},
 	"peerDependencies": {

@@ -35,6 +35,7 @@
 		"format:fix": "prettier --write --cache --cache-location='.prettier/cache' --cache-strategy content .",
 		"test:tsc": "tsc --build --noEmit",
 		"test:eslint": "NODE_OPTIONS='--experimental-strip-types' eslint --max-warnings 0 --config src/eslint.config.ts .",
+		"test:eslint:fix": "NODE_OPTIONS='--experimental-strip-types' eslint --fix --config src/eslint.config.ts .",
 		"inspect:eslint": "NODE_OPTIONS='--experimental-strip-types' eslint --inspect-config --config src/eslint.config.ts ."
 	},
 	"peerDependencies": {
