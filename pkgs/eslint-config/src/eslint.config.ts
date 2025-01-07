@@ -7,7 +7,7 @@ import prettier from "eslint-config-prettier"
 import comments from "@eslint-community/eslint-plugin-eslint-comments"
 import tseslint from "typescript-eslint"
 import type { FlatConfig } from "@typescript-eslint/utils/ts-eslint"
-import * as resolver from "eslint-import-resolver-typescript"
+// import * as resolver from "eslint-import-resolver-typescript"
 // @ts-expect-error
 import imports from "eslint-plugin-import"
 // @ts-expect-error

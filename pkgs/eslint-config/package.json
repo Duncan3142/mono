@@ -36,9 +36,9 @@
 		"assets": "tsc --build",
 		"assets:watch": "tsc --build --watch",
 		"test:tsc": "tsc --build --noEmit",
-		"test:eslint": "NODE_OPTIONS='--experimental-strip-types' eslint --max-warnings 0 --config .dist/eslint.config.ts .",
-		"test:eslint:fix": "NODE_OPTIONS='--experimental-strip-types' eslint --fix --config .dist/eslint.config.ts .",
-		"inspect:eslint": "NODE_OPTIONS='--experimental-strip-types' eslint --inspect-config --config .dist/eslint.config.ts ."
+		"test:eslint": "eslint --max-warnings 0 --config .tsc/dist/eslint.config.js .",
+		"test:eslint:fix": "eslint --fix --config .tsc/dist/eslint.config.js .",
+		"inspect:eslint": "eslint --inspect-config --config .tsc/dist/eslint.config.js ."
 	},
 	"peerDependencies": {
 		"@types/eslint": "^9.6.1",
