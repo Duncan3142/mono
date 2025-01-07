@@ -1,0 +1,1 @@
+./.tsc/dist/eslint.config.js
