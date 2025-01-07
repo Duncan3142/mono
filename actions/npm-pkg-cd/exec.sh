@@ -31,7 +31,7 @@ if [[ $(jq '.changes | length' "${changesFile}") -gt 0 ]]; then
 		semver-pr "${pkgName}"
 	fi
 else
-	pkgVersion=$(jq -r '.version' package.json)
+	pkgVersion=$(npm-get-version)
 	pkgTag=${pkgName}@${pkgVersion}
 	{ git-tag "${pkgTag}"; tagCode=$?; } || true
 	case "${tagCode}" in
