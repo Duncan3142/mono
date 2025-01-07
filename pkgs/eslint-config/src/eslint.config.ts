@@ -3,43 +3,33 @@ import type { ESLint } from "eslint"
 import { includeIgnoreFile } from "@eslint/compat"
 import { resolve } from "node:path"
 import prettier from "eslint-config-prettier"
-// @ts-expect-error
-import comments from "@eslint-community/eslint-plugin-eslint-comments"
+// @ts-expect-error - module does not have types
+import comments from "@eslint-community/eslint-plugin-eslint-comments/configs"
 import tseslint from "typescript-eslint"
 import type { FlatConfig } from "@typescript-eslint/utils/ts-eslint"
-// import * as resolver from "eslint-import-resolver-typescript"
-// @ts-expect-error
+// @ts-expect-error - module does not have types
 import imports from "eslint-plugin-import"
-// @ts-expect-error
+// @ts-expect-error - module does not have types
 import promise from "eslint-plugin-promise"
 import jsdoc from "eslint-plugin-jsdoc"
-import nosecrets from "eslint-plugin-no-secrets"
+import noSecrets from "eslint-plugin-no-secrets"
 
 type Config = FlatConfig.Config
 type Plugin = FlatConfig.Plugin | ESLint.Plugin
 
-type RequiredPick<T, K extends keyof T> = Required<Pick<T, K>>
-
 const plugins: Record<string, Plugin> = {
-	"@typescript-eslint": tseslint.plugin,
-	"eslint-comments": comments,
-	import: imports,
-	promise: promise,
-	jsdoc,
-	"no-secrets": nosecrets,
+	// "@typescript-eslint": tseslint.plugin,
+	// promise,
+	// jsdoc,
+	"no-secrets": noSecrets,
 }
 
-const base: RequiredPick<
-	Config,
-	| "name"
-	| "languageOptions"
-	| "files"
-	| "rules"
-	| "linterOptions"
-	| "plugins"
-	| "settings"
-	| "rules"
-> = {
+export type Pattern = string
+
+export const jstsExtensions: Pattern = "?(m|c)@(j|t)s"
+export const jstsFiles: Array<Pattern> = [`**/*.${jstsExtensions}`]
+
+const base: Config = {
 	name: "@duncan3142/eslint-config/base",
 	languageOptions: {
 		sourceType: "module",
@@ -47,26 +37,14 @@ const base: RequiredPick<
 		parser: tseslint.parser,
 		parserOptions: {
 			projectService: true,
-			tsconfigRootDir: import.meta.dirname,
 		},
 	},
-
 	linterOptions: {
 		reportUnusedDisableDirectives: "error",
 		noInlineConfig: false,
 	},
-	files: ["**/*.*(mc)ts", "**/*.*(mc)js"],
+	files: [...jstsFiles],
 	plugins,
-	settings: {
-		"import/parsers": {
-			"@typescript-eslint/parser": [".ts"],
-		},
-		"import/resolver": {
-			typescript: {
-				alwaysTryTypes: true,
-			},
-		},
-	},
 	rules: {
 		"default-case": "off",
 		"prefer-destructuring": "error",
@@ -98,9 +76,10 @@ const base: RequiredPick<
 		],
 		"import/prefer-default-export": "off",
 		"import/no-default-export": "off",
-		"import/no-unresolved": "error",
 		"import/extensions": "off",
 		"import/no-cycle": "error",
+		"import/no-unused-modules": "error",
+		"import/no-deprecated": "error",
 		"import/no-extraneous-dependencies": [
 			"error",
 			{
@@ -121,10 +100,10 @@ const base: RequiredPick<
 		"@typescript-eslint/explicit-function-return-type": "off",
 		"@typescript-eslint/no-explicit-any": "off",
 		"@typescript-eslint/no-use-before-define": ["error"],
-		"@typescript-eslint/no-empty-interface": [
+		"@typescript-eslint/no-empty-object-type": [
 			"error",
 			{
-				allowSingleExtends: true,
+				allowInterfaces: "with-single-extends",
 			},
 		],
 		"@typescript-eslint/no-unused-vars": [
@@ -132,88 +111,86 @@ const base: RequiredPick<
 			{ argsIgnorePattern: "^_", varsIgnorePattern: "^_" },
 		],
 		"promise/no-return-wrap": ["error", { allowReject: true }],
+		"no-secrets/no-secrets": "error",
 	},
-} satisfies Config
+}
 
-const js: RequiredPick<Config, "name" | "files" | "rules"> = {
-	name: "@duncan3142/eslint-config/js" as const,
-	files: ["*.js", "*.cjs", "*.mjs"],
-	rules: {
-		"@typescript-eslint/explicit-module-boundary-types": "off",
-		"@typescript-eslint/no-unsafe-call": "off",
-		"@typescript-eslint/no-unsafe-assignment": "off",
-		"@typescript-eslint/no-unsafe-argument": "off",
-		"@typescript-eslint/no-unsafe-member-access": "off",
-		"@typescript-eslint/no-unsafe-return": "off",
-	},
-} satisfies Config
+const js: Config = {
+	...tseslint.configs.disableTypeChecked,
+	name: "@duncan3142/eslint-config/js",
+	files: ["**/*.?(mc)js"],
+}
 
-const cjs: RequiredPick<Config, "name" | "files" | "rules"> = {
+const cjs: Config = {
 	name: "@duncan3142/eslint-config/cjs",
-	files: ["*.cjs"],
+	files: ["**/*.cjs"],
 	rules: {
 		// Allow `require()`
 		"@typescript-eslint/no-var-requires": "off",
 	},
-} satisfies Config
+}
 
-const test: RequiredPick<Config, "name" | "files" | "rules"> = {
+const test: Config = {
 	name: "@duncan3142/eslint-config/test",
-	files: ["*.spec.*"],
+	files: [`**/*.spec.${jstsExtensions}`],
 	rules: {
 		// Allow build / test files to load dev deps
 		"import/no-extraneous-dependencies": "off",
 	},
-} satisfies Config
+}
 
-const cnfg: RequiredPick<Config, "name" | "files" | "rules"> = {
+const cnfg: Config = {
 	name: "@duncan3142/eslint-config/cnfg",
-	files: ["*.config.*"],
+	files: [`**/*.config.${jstsExtensions}`],
 	rules: {
 		// Allow build / test files to load dev deps
 		"import/no-extraneous-dependencies": "off",
 	},
-} satisfies Config
+}
 
 type Configs = {
-	base: typeof base
-	js: typeof js
-	cjs: typeof cjs
-	test: typeof test
-	cnfg: typeof cnfg
+	base: Config
+	js: Config
+	cjs: Config
+	test: Config
+	cnfg: Config
 }
 
 export const configs: Configs = { base, js, cjs, test, cnfg }
 
 export type Path = string
+export type Qualifiers = string
 
 export type ConfigsArrOpts = {
-	ignoreFiles?: Path[]
+	ignoreFiles?: Array<Path>
+	tsConfig?: Array<Qualifiers>
 }
 
 const GIT_IGNORE = ".gitignore"
 const PRETTIER_IGNORE = ".prettierignore"
 
-export const configsArrFactory = (opts: ConfigsArrOpts = {}): Config[] => {
+export const configsArrFactory = (opts: ConfigsArrOpts = {}): Array<Config> => {
 	const { ignoreFiles = [GIT_IGNORE, PRETTIER_IGNORE] } = opts
+
 	return [
 		...ignoreFiles.map((path) => includeIgnoreFile(resolve(path))),
 		eslintjs.configs.recommended,
-		comments.configs.recommended,
-		imports.flatConfigs.recommended,
-		imports.configs.typescript,
-		promise.configs["flat/recommended"],
-		tseslint.configs.strictTypeChecked,
-		tseslint.configs.stylisticTypeChecked,
+		comments.recommended as Config,
+		...tseslint.configs.strictTypeChecked,
+		...tseslint.configs.stylisticTypeChecked,
+		imports.flatConfigs.recommended as Config,
+		imports.flatConfigs.typescript as Config,
+		promise.configs["flat/recommended"] as Config,
+		jsdoc.configs["flat/recommended-typescript-error"],
 		base,
-		js,
-		cjs,
 		test,
 		cnfg,
+		js,
+		cjs,
 		prettier,
 	]
 }
 
-const configsArr: Config[] = configsArrFactory()
+const configsArr: Array<Config> = configsArrFactory()
 
 export default configsArr
