@@ -90,18 +90,18 @@ ESLint configuration
 
 ## Usage
 
-To build the package and run all tests, run the following command
+To install the package, run
 
 ```sh
 npm add -D @duncan3142/eslint-config
 ```
 
-Then reference the package in your `.eslintrc.cjs`
+Then reference the package in your `eslint.config.js`
 
 ```js
-module.exports = {
-	extends: ["@duncan3142"],
-}
+import config from "@duncan3142/eslint-config"
+
+export default config
 ```
 
 <p align="right">(<a href="#top">back to top</a>)</p>

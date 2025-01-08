@@ -17,17 +17,20 @@ import noSecrets from "eslint-plugin-no-secrets"
 type Config = FlatConfig.Config
 type Plugin = FlatConfig.Plugin | ESLint.Plugin
 
-const plugins: Record<string, Plugin> = {
-	// "@typescript-eslint": tseslint.plugin,
-	// promise,
-	// jsdoc,
-	"no-secrets": noSecrets,
-}
+const plugins: Record<string, Plugin> = { "no-secrets": noSecrets }
 
 export type Pattern = string
 
-export const jstsExtensions: Pattern = "?(m|c)@(j|t)s"
-export const jstsFiles: Array<Pattern> = [`**/*.${jstsExtensions}`]
+export const mcModuleQualifier: Pattern = "?(m|c)"
+export const jsExtensions: Pattern = `${mcModuleQualifier}js`
+export const tsExtensions: Pattern = `${mcModuleQualifier}ts`
+export const jstsExtensions: Pattern = `${mcModuleQualifier}@(j|t)s`
+export const filesArrayFactory = (...extensionPatterns: Array<Pattern>): Array<Pattern> =>
+	extensionPatterns.map((pattern) => `**/*.${pattern}`)
+
+export const jsFiles: Array<Pattern> = filesArrayFactory(jsExtensions)
+export const tsFiles: Array<Pattern> = filesArrayFactory(tsExtensions)
+export const jstsFiles: Array<Pattern> = filesArrayFactory(jstsExtensions)
 
 const base: Config = {
 	name: "@duncan3142/eslint-config/base",
@@ -43,7 +46,7 @@ const base: Config = {
 		reportUnusedDisableDirectives: "error",
 		noInlineConfig: false,
 	},
-	files: [...jstsFiles],
+	files: jstsFiles,
 	plugins,
 	rules: {
 		"default-case": "off",
@@ -80,6 +83,7 @@ const base: Config = {
 		"import/no-cycle": "error",
 		"import/no-unused-modules": "error",
 		"import/no-deprecated": "error",
+		"import/no-unresolved": "off",
 		"import/no-extraneous-dependencies": [
 			"error",
 			{
@@ -115,15 +119,23 @@ const base: Config = {
 	},
 }
 
+const ts: Config = {
+	rules: {
+		"import/no-unresolved": "off",
+	},
+	name: "@duncan3142/eslint-config/ts",
+	files: tsFiles,
+}
+
 const js: Config = {
 	...tseslint.configs.disableTypeChecked,
 	name: "@duncan3142/eslint-config/js",
-	files: ["**/*.?(mc)js"],
+	files: jsFiles,
 }
 
 const cjs: Config = {
 	name: "@duncan3142/eslint-config/cjs",
-	files: ["**/*.cjs"],
+	files: filesArrayFactory("cjs"),
 	rules: {
 		// Allow `require()`
 		"@typescript-eslint/no-var-requires": "off",
@@ -132,7 +144,7 @@ const cjs: Config = {
 
 const test: Config = {
 	name: "@duncan3142/eslint-config/test",
-	files: [`**/*.spec.${jstsExtensions}`],
+	files: filesArrayFactory(`spec.${jstsExtensions}`),
 	rules: {
 		// Allow build / test files to load dev deps
 		"import/no-extraneous-dependencies": "off",
@@ -141,22 +153,12 @@ const test: Config = {
 
 const cnfg: Config = {
 	name: "@duncan3142/eslint-config/cnfg",
-	files: [`**/*.config.${jstsExtensions}`],
+	files: filesArrayFactory(`config.${jstsExtensions}`),
 	rules: {
 		// Allow build / test files to load dev deps
 		"import/no-extraneous-dependencies": "off",
 	},
 }
-
-type Configs = {
-	base: Config
-	js: Config
-	cjs: Config
-	test: Config
-	cnfg: Config
-}
-
-export const configs: Configs = { base, js, cjs, test, cnfg }
 
 export type Path = string
 export type Qualifiers = string
@@ -191,6 +193,7 @@ export const configsArrFactory = (opts: ConfigsArrOpts = {}): Array<Config> => {
 		cnfg,
 		js,
 		cjs,
+		ts,
 		prettier,
 	]
 }

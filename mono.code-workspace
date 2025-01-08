@@ -79,8 +79,7 @@
 			"tools/": false,
 			".prettier/": false,
 			"node_modules/": false,
-			".tsc/": false,
-			".eslint/": false
+			".tsc/": false
 		},
 		"explorerExclude.backup": {},
 		"editor.insertSpaces": false,

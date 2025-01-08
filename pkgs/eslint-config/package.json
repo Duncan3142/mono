@@ -18,27 +18,28 @@
 		"node": ">=22",
 		"npm": ">=11"
 	},
-	"main": "./eslint.config.js",
+	"main": "./tsc/dist/eslint.config.js",
 	"exports": {
 		".": {
-			"import": "./eslint.config.js",
-			"types": "./eslint.config.d.ts"
+			"import": "./tsc/dist/eslint.config.js",
+			"types": "./tsc/dist/eslint.config.d.ts"
 		}
 	},
 	"files": [
-		"eslint.config.js",
-		"eslint.config.d.ts"
+		".tsc/dist/**/*.js",
+		".tsc/dist/**/*.ts",
+		".tsc/dist/**/*.map"
 	],
 	"scripts": {
-		"clean": "rm -rf .prettier .package .tsc .eslint",
+		"clean": "rm -rf .prettier .package .tsc",
 		"format": "prettier --check --cache --cache-location='.prettier/cache' --cache-strategy content .",
 		"format:fix": "prettier --write --cache --cache-location='.prettier/cache' --cache-strategy content .",
 		"assets": "tsc --build",
 		"assets:watch": "tsc --build --watch",
 		"test:tsc": "tsc --build --noEmit",
-		"test:eslint": "eslint --max-warnings 0 --config .tsc/dist/eslint.config.js .",
-		"test:eslint:fix": "eslint --fix --config .tsc/dist/eslint.config.js .",
-		"inspect:eslint": "eslint --inspect-config --config .tsc/dist/eslint.config.js ."
+		"test:eslint": "eslint --max-warnings 0 .",
+		"test:eslint:fix": "eslint --fix .",
+		"inspect:eslint": "eslint --inspect-config ."
 	},
 	"peerDependencies": {
 		"@types/eslint": "^9.6.1",
@@ -59,7 +60,7 @@
 		"@changesets/cli": "^2.27.11",
 		"@duncan3142/prettier-config": "^0.1.1",
 		"@duncan3142/tsc-config": "^0.1.1",
-		"@eslint/config-inspector": "^0.7.0",
+		"@eslint/config-inspector": "^0.7.1",
 		"@types/eslint": "^9.6.1",
 		"@types/eslint-config-prettier": "6.11.3",
 		"eslint": "^9.17.0",
