@@ -18,27 +18,62 @@ import comments from "@eslint-community/eslint-plugin-eslint-comments/configs"
 type Config = FlatConfig.Config
 type Plugin = FlatConfig.Plugin | ESLint.Plugin
 
+/**
+ * Manually loaded ESLint plugins
+ */
 const plugins: Record<string, Plugin> = { "no-secrets": noSecrets }
 
+/**
+ * File path pattern
+ */
 export type Pattern = string
 
+/**
+ * Pattern for explicit ESM / CommonJS file extension qualifier
+ */
 export const mcModuleQualifier: Pattern = "?(m|c)"
-export const jsExtensions: Pattern = `${mcModuleQualifier}js`
-export const tsExtensions: Pattern = `${mcModuleQualifier}ts`
-export const jstsExtensions: Pattern = `${mcModuleQualifier}@(j|t)s`
 
 /**
- *
+ * JavaScript file extension pattern
+ */
+export const jsExtensions: Pattern = `${mcModuleQualifier}js`
+
+/**
+ * TypeScript file extension pattern
+ */
+const tsExtensions: Pattern = `${mcModuleQualifier}ts`
+
+/**
+ * JavaScript / TypeScript file extension pattern
+ */
+const jstsExtensions: Pattern = `${mcModuleQualifier}@(j|t)s`
+
+/**
+ * Factory function for creating file patterns array
  * @param extensionPatterns Array of file extension patterns
  * @returns Array of file patterns
  */
-export const filesArrayFactory = (...extensionPatterns: Array<Pattern>): Array<Pattern> =>
+const filesArrayFactory = (...extensionPatterns: Array<Pattern>): Array<Pattern> =>
 	extensionPatterns.map((pattern) => `**/*.${pattern}`)
 
+/**
+ * JavaScript file patterns array
+ */
 export const jsFiles: Array<Pattern> = filesArrayFactory(jsExtensions)
+
+/**
+ * TypeScript file patterns array
+ */
 export const tsFiles: Array<Pattern> = filesArrayFactory(tsExtensions)
+
+/**
+ * JavaScript / TypeScript file patterns array
+ */
 export const jstsFiles: Array<Pattern> = filesArrayFactory(jstsExtensions)
 
+/**
+ * Base config
+ */
 const base: Config = {
 	name: "@duncan3142/eslint-config/base",
 	languageOptions: {
@@ -137,12 +172,15 @@ const base: Config = {
 					FunctionExpression: true,
 					MethodDefinition: true,
 				},
-				// contexts: ["ExportNamedDeclaration", "ExportDefaultDeclaration"],
+				contexts: ["ExportNamedDeclaration"],
 			},
 		],
 	},
 }
 
+/**
+ * TypeScript only config
+ */
 const ts: Config = {
 	rules: {
 		"import/no-unresolved": "off",
@@ -151,12 +189,18 @@ const ts: Config = {
 	files: tsFiles,
 }
 
+/**
+ * JavaScript only config
+ */
 const js: Config = {
 	...tseslint.configs.disableTypeChecked,
 	name: "@duncan3142/eslint-config/js",
 	files: jsFiles,
 }
 
+/**
+ * CommonJS only config
+ */
 const cjs: Config = {
 	name: "@duncan3142/eslint-config/cjs",
 	files: filesArrayFactory("cjs"),
@@ -166,6 +210,9 @@ const cjs: Config = {
 	},
 }
 
+/**
+ * Test file config
+ */
 const test: Config = {
 	name: "@duncan3142/eslint-config/test",
 	files: filesArrayFactory(`spec.${jstsExtensions}`),
@@ -175,6 +222,9 @@ const test: Config = {
 	},
 }
 
+/**
+ * Cnfg file config
+ */
 const cnfg: Config = {
 	name: "@duncan3142/eslint-config/cnfg",
 	files: filesArrayFactory(`config.${jstsExtensions}`),
@@ -184,49 +234,61 @@ const cnfg: Config = {
 	},
 }
 
+/**
+ * File path
+ */
 export type Path = string
-export type Qualifiers = string
 
+/**
+ * Config array factory options
+ */
 export type ConfigsArrOpts = {
 	ignoreFiles?: Array<Path>
 }
 
+/**
+ * Git ignore file name
+ */
 const GIT_IGNORE = ".gitignore"
+/**
+ * Prettier ignore file name
+ */
 const PRETTIER_IGNORE = ".prettierignore"
 
 /**
- *
+ * Config array factory
  * @param opts Config options
- * @param opts.ignoreFiles Array of paths to ignore files
+ * @param opts.ignoreFiles Array of paths to ignore files, e.g. `.gitignore`
  * @returns Array of ESLint configs
  */
-export const configsArrFactory = (opts: ConfigsArrOpts = {}): Array<Config> => {
-	const { ignoreFiles = [GIT_IGNORE, PRETTIER_IGNORE] } = opts
+export const configsArrFactory = ({
+	ignoreFiles = [GIT_IGNORE, PRETTIER_IGNORE],
+}: ConfigsArrOpts = {}): Array<Config> => [
+	...ignoreFiles.map((path) => includeIgnoreFile(resolve(path))),
+	eslintjs.configs.recommended,
+	// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+	comments.recommended as Config,
+	...tseslint.configs.strictTypeChecked,
+	...tseslint.configs.stylisticTypeChecked,
+	// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+	imports.flatConfigs.recommended as Config,
+	// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+	imports.flatConfigs.typescript as Config,
+	// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+	promise.configs["flat/recommended"] as Config,
+	jsdoc.configs["flat/recommended-typescript-error"],
+	base,
+	test,
+	cnfg,
+	js,
+	cjs,
+	ts,
+	prettier,
+]
 
-	return [
-		...ignoreFiles.map((path) => includeIgnoreFile(resolve(path))),
-		eslintjs.configs.recommended,
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-		comments.recommended as Config,
-		...tseslint.configs.strictTypeChecked,
-		...tseslint.configs.stylisticTypeChecked,
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-		imports.flatConfigs.recommended as Config,
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-		imports.flatConfigs.typescript as Config,
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-		promise.configs["flat/recommended"] as Config,
-		jsdoc.configs["flat/recommended-typescript-error"],
-		base,
-		test,
-		cnfg,
-		js,
-		cjs,
-		ts,
-		prettier,
-	]
-}
-
+/**
+ * Default configs array
+ */
 const configsArr: Array<Config> = configsArrFactory()
 
 export default configsArr
