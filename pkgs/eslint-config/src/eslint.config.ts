@@ -3,16 +3,17 @@ import type { ESLint } from "eslint"
 import { includeIgnoreFile } from "@eslint/compat"
 import { resolve } from "node:path"
 import prettier from "eslint-config-prettier"
-// @ts-expect-error - module does not have types
-import comments from "@eslint-community/eslint-plugin-eslint-comments/configs"
+import jsdoc from "eslint-plugin-jsdoc"
+import noSecrets from "eslint-plugin-no-secrets"
 import tseslint from "typescript-eslint"
 import type { FlatConfig } from "@typescript-eslint/utils/ts-eslint"
+
 // @ts-expect-error - module does not have types
 import imports from "eslint-plugin-import"
 // @ts-expect-error - module does not have types
 import promise from "eslint-plugin-promise"
-import jsdoc from "eslint-plugin-jsdoc"
-import noSecrets from "eslint-plugin-no-secrets"
+// @ts-expect-error - module does not have types
+import comments from "@eslint-community/eslint-plugin-eslint-comments/configs"
 
 type Config = FlatConfig.Config
 type Plugin = FlatConfig.Plugin | ESLint.Plugin
@@ -25,6 +26,12 @@ export const mcModuleQualifier: Pattern = "?(m|c)"
 export const jsExtensions: Pattern = `${mcModuleQualifier}js`
 export const tsExtensions: Pattern = `${mcModuleQualifier}ts`
 export const jstsExtensions: Pattern = `${mcModuleQualifier}@(j|t)s`
+
+/**
+ *
+ * @param extensionPatterns Array of file extension patterns
+ * @returns Array of file patterns
+ */
 export const filesArrayFactory = (...extensionPatterns: Array<Pattern>): Array<Pattern> =>
 	extensionPatterns.map((pattern) => `**/*.${pattern}`)
 
@@ -77,6 +84,10 @@ const base: Config = {
 					"`with` is disallowed in strict mode because it makes code impossible to predict and optimize.",
 			},
 		],
+		"import/named": "off",
+		"import/namespace": "off",
+		"import/default": "off",
+		"import/no-named-as-default-member": "off",
 		"import/prefer-default-export": "off",
 		"import/no-default-export": "off",
 		"import/extensions": "off",
@@ -116,6 +127,19 @@ const base: Config = {
 		],
 		"promise/no-return-wrap": ["error", { allowReject: true }],
 		"no-secrets/no-secrets": "error",
+		"jsdoc/require-jsdoc": [
+			"error",
+			{
+				require: {
+					ArrowFunctionExpression: true,
+					ClassDeclaration: true,
+					FunctionDeclaration: true,
+					FunctionExpression: true,
+					MethodDefinition: true,
+				},
+				// contexts: ["ExportNamedDeclaration", "ExportDefaultDeclaration"],
+			},
+		],
 	},
 }
 
@@ -165,12 +189,17 @@ export type Qualifiers = string
 
 export type ConfigsArrOpts = {
 	ignoreFiles?: Array<Path>
-	tsConfig?: Array<Qualifiers>
 }
 
 const GIT_IGNORE = ".gitignore"
 const PRETTIER_IGNORE = ".prettierignore"
 
+/**
+ *
+ * @param opts Config options
+ * @param opts.ignoreFiles Array of paths to ignore files
+ * @returns Array of ESLint configs
+ */
 export const configsArrFactory = (opts: ConfigsArrOpts = {}): Array<Config> => {
 	const { ignoreFiles = [GIT_IGNORE, PRETTIER_IGNORE] } = opts
 
