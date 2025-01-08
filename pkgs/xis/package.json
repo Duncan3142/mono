@@ -46,7 +46,7 @@
 		".tsc/dist/lib/**/*.map"
 	],
 	"scripts": {
-		"clean": "rm -rf .eslint .prettier .tsc .coverage .package",
+		"clean": "rm -rf .prettier .tsc .coverage .package",
 		"format": "prettier --check --cache --cache-location='.prettier/cache' --cache-strategy content .",
 		"format:fix": "prettier --write --cache --cache-location='.prettier/cache' --cache-strategy content .",
 		"assets": "tsc --build",
