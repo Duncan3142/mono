@@ -1,3 +1,3 @@
-import config from "./.tsc/dist/eslint.config.js"
+import config from "#config"
 
 export default config
