@@ -23,7 +23,7 @@ env:
 jobs:
   ci:
     if: github.event.pull_request.state == 'open' && github.event.pull_request.draft == false
-    name: Ci
+    name: CI
     runs-on: ubuntu-22.04
     steps:
 
