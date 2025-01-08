@@ -49,7 +49,7 @@
 <h3 align="center">ESLint Config</h3>
 
 <p align="center">
-	ESLint config
+	ESLint flat config
 	<br />
 	<a href="https://github.com/Duncan3142/mono"><strong>Explore the docs</strong></a>
 </p>
