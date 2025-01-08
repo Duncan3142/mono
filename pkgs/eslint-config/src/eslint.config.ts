@@ -175,11 +175,15 @@ export const configsArrFactory = (opts: ConfigsArrOpts = {}): Array<Config> => {
 	return [
 		...ignoreFiles.map((path) => includeIgnoreFile(resolve(path))),
 		eslintjs.configs.recommended,
+		// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
 		comments.recommended as Config,
 		...tseslint.configs.strictTypeChecked,
 		...tseslint.configs.stylisticTypeChecked,
+		// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
 		imports.flatConfigs.recommended as Config,
+		// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
 		imports.flatConfigs.typescript as Config,
+		// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
 		promise.configs["flat/recommended"] as Config,
 		jsdoc.configs["flat/recommended-typescript-error"],
 		base,
