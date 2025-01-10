@@ -123,10 +123,12 @@ const base: Config = {
 		"import/namespace": "off",
 		"import/default": "off",
 		"import/no-named-as-default": "error",
-		"import/no-named-as-default-member": "error",
-		"import/prefer-default-export": "off",
+		"import/no-named-as-default-member": "off",
+		"import/prefer-default-export": "error",
 		"import/no-empty-named-blocks": "error",
 		"import/no-default-export": "off",
+		"import/no-unassigned-import": "error",
+		"import/no-anonymous-default-export": "error",
 		"import/extensions": "off",
 		"import/no-cycle": "error",
 		"import/no-unused-modules": "error",
@@ -143,6 +145,8 @@ const base: Config = {
 		"import/no-internal-modules": "error",
 		"import/no-absolute-path": "error",
 		"import/no-useless-path-segments": "error",
+		"import/group-exports": "error",
+		"import/no-mutable-exports": "error",
 		"import/no-extraneous-dependencies": [
 			"error",
 			{
@@ -271,12 +275,12 @@ const PRETTIER_IGNORE = ".prettierignore"
 /**
  * File path
  */
-export type Path = string
+type Path = string
 
 /**
  * Config array factory options
  */
-export type ConfigsArrOpts = {
+type ConfigsArrOpts = {
 	ignoreFiles?: Array<Path>
 }
 
@@ -286,7 +290,7 @@ export type ConfigsArrOpts = {
  * @param opts.ignoreFiles Array of paths to ignore files, e.g. `.gitignore`
  * @returns Array of ESLint configs
  */
-export const configsArrFactory = ({
+const configsArrFactory = ({
 	ignoreFiles = [GIT_IGNORE, PRETTIER_IGNORE],
 }: ConfigsArrOpts = {}): Array<Config> => [
 	...ignoreFiles.map((path) => includeIgnoreFile(resolve(path))),
@@ -314,6 +318,7 @@ export const configsArrFactory = ({
 /**
  * Default configs array
  */
-export const configsArr: Array<Config> = configsArrFactory()
+const configsArr: Array<Config> = configsArrFactory()
 
+export { configsArr, configsArrFactory, type Path, type ConfigsArrOpts }
 export default configsArr
