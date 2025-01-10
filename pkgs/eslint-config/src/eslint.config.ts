@@ -130,6 +130,17 @@ const base: Config = {
 		"import/no-unused-modules": "error",
 		"import/no-deprecated": "error",
 		"import/no-unresolved": "off",
+		"import/no-self-import": "error",
+		"import/no-commonjs": "error",
+		"import/order": "error",
+		"import/first": "error",
+		"import/exports-last": "error",
+		"import/newline-after-import": "error",
+		"import/no-duplicates": "error",
+		"import/no-relative-parent-imports": "error",
+		"import/no-internal-modules": "error",
+		"import/no-absolute-path": "error",
+		"import/no-useless-path-segments": "error",
 		"import/no-extraneous-dependencies": [
 			"error",
 			{
