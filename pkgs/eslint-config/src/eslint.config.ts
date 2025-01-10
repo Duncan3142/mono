@@ -13,7 +13,8 @@ import imports from "eslint-plugin-import"
 // @ts-expect-error - module does not have types
 import promise from "eslint-plugin-promise"
 // @ts-expect-error - module does not have types
-import { configs as comments } from "@eslint-community/eslint-plugin-eslint-comments"
+// eslint-disable-next-line import/no-internal-modules -- Plugin not exported correctly
+import comments from "@eslint-community/eslint-plugin-eslint-comments/configs"
 
 type Config = FlatConfig.Config
 type Plugin = FlatConfig.Plugin | ESLint.Plugin
@@ -122,7 +123,8 @@ const base: Config = {
 		"import/named": "off",
 		"import/namespace": "off",
 		"import/default": "off",
-		"import/no-named-as-default-member": "off",
+		"import/no-named-as-default": "error",
+		"import/no-named-as-default-member": "error",
 		"import/prefer-default-export": "off",
 		"import/no-empty-named-blocks": "error",
 		"import/no-default-export": "off",
@@ -151,16 +153,13 @@ const base: Config = {
 				bundledDependencies: false,
 			},
 		],
+		"@eslint-community/eslint-comments/require-description": "error",
 		"@typescript-eslint/consistent-type-definitions": "off",
 		"@typescript-eslint/no-non-null-assertion": "off",
-		"@typescript-eslint/no-unsafe-declaration-merging": "off",
-		"@typescript-eslint/no-invalid-void-type": "off",
-		"@typescript-eslint/explicit-module-boundary-types": "off",
-		"@typescript-eslint/prefer-for-of": "off",
+		"@typescript-eslint/explicit-module-boundary-types": "error",
 		"@typescript-eslint/switch-exhaustiveness-check": "error",
 		"@typescript-eslint/array-type": ["error", { default: "generic" }],
 		"@typescript-eslint/explicit-function-return-type": "off",
-		"@typescript-eslint/no-explicit-any": "off",
 		"@typescript-eslint/no-use-before-define": ["error"],
 		"@typescript-eslint/no-empty-object-type": [
 			"error",
@@ -279,15 +278,15 @@ export const configsArrFactory = ({
 }: ConfigsArrOpts = {}): Array<Config> => [
 	...ignoreFiles.map((path) => includeIgnoreFile(resolve(path))),
 	eslintjs.configs.recommended,
-	// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+	// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- module lacks types
 	comments.recommended as Config,
 	...tseslint.configs.strictTypeChecked,
 	...tseslint.configs.stylisticTypeChecked,
-	// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+	// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- module lacks types
 	imports.flatConfigs.recommended as Config,
-	// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+	// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- module lacks types
 	imports.flatConfigs.typescript as Config,
-	// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+	// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- module lacks types
 	promise.configs["flat/recommended"] as Config,
 	jsdoc.configs["flat/recommended-typescript-error"],
 	base,
