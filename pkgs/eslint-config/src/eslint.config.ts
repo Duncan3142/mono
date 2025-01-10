@@ -27,27 +27,27 @@ const plugins: Record<string, Plugin> = { "no-secrets": noSecrets }
 /**
  * File path pattern
  */
-export type Pattern = string
+type Pattern = string
 
 /**
  * Pattern for explicit ESM / CommonJS file extension qualifier
  */
-export const mcModuleQualifier: Pattern = "?(m|c)"
+const mcModuleQualifier: Pattern = "?(m|c)"
 
 /**
  * JavaScript file extension pattern
  */
-export const jsExtensions: Pattern = `${mcModuleQualifier}js`
+const jsExtensions: Pattern = `${mcModuleQualifier}js`
 
 /**
  * TypeScript file extension pattern
  */
-export const tsExtensions: Pattern = `${mcModuleQualifier}ts`
+const tsExtensions: Pattern = `${mcModuleQualifier}ts`
 
 /**
  * JavaScript / TypeScript file extension pattern
  */
-export const jstsExtensions: Pattern = `${mcModuleQualifier}@(j|t)s`
+const jstsExtensions: Pattern = `${mcModuleQualifier}@(j|t)s`
 
 /**
  * Factory function for creating file patterns array
@@ -60,17 +60,17 @@ const filesArrayFactory = (...extensionPatterns: Array<Pattern>): Array<Pattern>
 /**
  * JavaScript file patterns array
  */
-export const jsFiles: Array<Pattern> = filesArrayFactory(jsExtensions)
+const jsFiles: Array<Pattern> = filesArrayFactory(jsExtensions)
 
 /**
  * TypeScript file patterns array
  */
-export const tsFiles: Array<Pattern> = filesArrayFactory(tsExtensions)
+const tsFiles: Array<Pattern> = filesArrayFactory(tsExtensions)
 
 /**
  * JavaScript / TypeScript file patterns array
  */
-export const jstsFiles: Array<Pattern> = filesArrayFactory(jstsExtensions)
+const jstsFiles: Array<Pattern> = filesArrayFactory(jstsExtensions)
 
 /**
  * Base config
@@ -136,7 +136,7 @@ const base: Config = {
 		"import/no-commonjs": "error",
 		"import/order": "error",
 		"import/first": "error",
-		// "import/exports-last": "error",
+		"import/exports-last": "error",
 		"import/newline-after-import": "error",
 		"import/no-duplicates": "error",
 		"import/no-relative-parent-imports": "error",
@@ -200,7 +200,6 @@ const base: Config = {
 					FunctionExpression: true,
 					MethodDefinition: true,
 				},
-				contexts: ["ExportNamedDeclaration"],
 			},
 		],
 	},
@@ -210,9 +209,7 @@ const base: Config = {
  * TypeScript only config
  */
 const ts: Config = {
-	rules: {
-		"import/no-unresolved": "off",
-	},
+	rules: {},
 	name: "@duncan3142/eslint-config/ts",
 	files: tsFiles,
 }
@@ -263,6 +260,15 @@ const cnfg: Config = {
 }
 
 /**
+ * Git ignore file name
+ */
+const GIT_IGNORE = ".gitignore"
+/**
+ * Prettier ignore file name
+ */
+const PRETTIER_IGNORE = ".prettierignore"
+
+/**
  * File path
  */
 export type Path = string
@@ -273,15 +279,6 @@ export type Path = string
 export type ConfigsArrOpts = {
 	ignoreFiles?: Array<Path>
 }
-
-/**
- * Git ignore file name
- */
-const GIT_IGNORE = ".gitignore"
-/**
- * Prettier ignore file name
- */
-const PRETTIER_IGNORE = ".prettierignore"
 
 /**
  * Config array factory
@@ -317,6 +314,6 @@ export const configsArrFactory = ({
 /**
  * Default configs array
  */
-const configsArr: Array<Config> = configsArrFactory()
+export const configsArr: Array<Config> = configsArrFactory()
 
 export default configsArr
