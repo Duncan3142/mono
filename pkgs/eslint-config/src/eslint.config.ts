@@ -200,6 +200,7 @@ const base: Config = {
 				require: {
 					ArrowFunctionExpression: true,
 					ClassDeclaration: true,
+					ClassExpression: true,
 					FunctionDeclaration: true,
 					FunctionExpression: true,
 					MethodDefinition: true,
