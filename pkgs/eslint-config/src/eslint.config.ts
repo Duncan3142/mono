@@ -176,7 +176,6 @@ const base: Config = {
 		"@typescript-eslint/promise-function-async": "error",
 		"@typescript-eslint/require-array-sort-compare": "error",
 		"@typescript-eslint/strict-boolean-expressions": "error",
-
 		"@typescript-eslint/no-useless-empty-export": "error",
 		"@typescript-eslint/no-empty-object-type": [
 			"error",
@@ -319,10 +318,5 @@ export const configsArrFactory = ({
  * Default configs array
  */
 const configsArr: Array<Config> = configsArrFactory()
-
-/**
- *
- */
-export { configsArr }
 
 export default configsArr
