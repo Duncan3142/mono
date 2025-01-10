@@ -1,7 +1,7 @@
+import { resolve } from "node:path"
 import eslintjs from "@eslint/js"
 import type { ESLint } from "eslint"
 import { includeIgnoreFile } from "@eslint/compat"
-import { resolve } from "node:path"
 import prettier from "eslint-config-prettier"
 import jsdoc from "eslint-plugin-jsdoc"
 import noSecrets from "eslint-plugin-no-secrets"
@@ -13,7 +13,7 @@ import imports from "eslint-plugin-import"
 // @ts-expect-error - module does not have types
 import promise from "eslint-plugin-promise"
 // @ts-expect-error - module does not have types
-import comments from "@eslint-community/eslint-plugin-eslint-comments/configs"
+import { configs as comments } from "@eslint-community/eslint-plugin-eslint-comments"
 
 type Config = FlatConfig.Config
 type Plugin = FlatConfig.Plugin | ESLint.Plugin
@@ -41,12 +41,12 @@ export const jsExtensions: Pattern = `${mcModuleQualifier}js`
 /**
  * TypeScript file extension pattern
  */
-const tsExtensions: Pattern = `${mcModuleQualifier}ts`
+export const tsExtensions: Pattern = `${mcModuleQualifier}ts`
 
 /**
  * JavaScript / TypeScript file extension pattern
  */
-const jstsExtensions: Pattern = `${mcModuleQualifier}@(j|t)s`
+export const jstsExtensions: Pattern = `${mcModuleQualifier}@(j|t)s`
 
 /**
  * Factory function for creating file patterns array
@@ -124,6 +124,7 @@ const base: Config = {
 		"import/default": "off",
 		"import/no-named-as-default-member": "off",
 		"import/prefer-default-export": "off",
+		"import/no-empty-named-blocks": "error",
 		"import/no-default-export": "off",
 		"import/extensions": "off",
 		"import/no-cycle": "error",
@@ -134,7 +135,7 @@ const base: Config = {
 		"import/no-commonjs": "error",
 		"import/order": "error",
 		"import/first": "error",
-		"import/exports-last": "error",
+		// "import/exports-last": "error",
 		"import/newline-after-import": "error",
 		"import/no-duplicates": "error",
 		"import/no-relative-parent-imports": "error",
@@ -176,6 +177,7 @@ const base: Config = {
 		"jsdoc/require-jsdoc": [
 			"error",
 			{
+				publicOnly: true,
 				require: {
 					ArrowFunctionExpression: true,
 					ClassDeclaration: true,
@@ -301,5 +303,10 @@ export const configsArrFactory = ({
  * Default configs array
  */
 const configsArr: Array<Config> = configsArrFactory()
+
+/**
+ *
+ */
+export { configsArr }
 
 export default configsArr
