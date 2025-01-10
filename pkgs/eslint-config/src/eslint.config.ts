@@ -93,7 +93,6 @@ const base: Config = {
 	plugins,
 	rules: {
 		"default-case": "off",
-		"prefer-destructuring": "error",
 		"object-shorthand": ["error", "always"],
 		"consistent-return": "off",
 		"arrow-body-style": ["error", "as-needed", { requireReturnForObjectLiteral: true }],
@@ -158,13 +157,27 @@ const base: Config = {
 		"@typescript-eslint/consistent-return": "error",
 		"@typescript-eslint/consistent-type-imports": "error",
 		"@typescript-eslint/consistent-type-exports": "error",
+		"@typescript-eslint/explicit-member-accessibility": "error",
+		"@typescript-eslint/prefer-destructuring": "error",
+		"@typescript-eslint/init-declarations": ["error", "always"],
 		"@typescript-eslint/default-param-last": "error",
 		"@typescript-eslint/no-non-null-assertion": "off",
 		"@typescript-eslint/explicit-module-boundary-types": "error",
 		"@typescript-eslint/switch-exhaustiveness-check": "error",
 		"@typescript-eslint/array-type": ["error", { default: "generic" }],
-		"@typescript-eslint/explicit-function-return-type": "off",
 		"@typescript-eslint/no-use-before-define": ["error"],
+		"@typescript-eslint/no-import-type-side-effects": "error",
+		"@typescript-eslint/no-loop-func": "error",
+		"@typescript-eslint/no-magic-numbers": "error",
+		"@typescript-eslint/no-shadow": "error",
+		"@typescript-eslint/prefer-readonly": "error",
+		"@typescript-eslint/no-unsafe-type-assertion": "error",
+		"@typescript-eslint/prefer-ts-expect-error": "error",
+		"@typescript-eslint/promise-function-async": "error",
+		"@typescript-eslint/require-array-sort-compare": "error",
+		"@typescript-eslint/strict-boolean-expressions": "error",
+
+		"@typescript-eslint/no-useless-empty-export": "error",
 		"@typescript-eslint/no-empty-object-type": [
 			"error",
 			{
@@ -282,15 +295,15 @@ export const configsArrFactory = ({
 }: ConfigsArrOpts = {}): Array<Config> => [
 	...ignoreFiles.map((path) => includeIgnoreFile(resolve(path))),
 	eslintjs.configs.recommended,
-	// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- module lacks types
-	comments.recommended as Config,
+	// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-type-assertion -- module lacks types
+	comments.recommended as unknown as Config,
 	...tseslint.configs.strictTypeChecked,
 	...tseslint.configs.stylisticTypeChecked,
-	// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- module lacks types
+	// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-type-assertion -- module lacks types
 	imports.flatConfigs.recommended as Config,
-	// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- module lacks types
+	// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-type-assertion -- module lacks types
 	imports.flatConfigs.typescript as Config,
-	// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- module lacks types
+	// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-type-assertion -- module lacks types
 	promise.configs["flat/recommended"] as Config,
 	jsdoc.configs["flat/recommended-typescript-error"],
 	base,
