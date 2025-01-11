@@ -6,14 +6,17 @@ import prettier from "eslint-config-prettier"
 import jsdoc from "eslint-plugin-jsdoc"
 import noSecrets from "eslint-plugin-no-secrets"
 import tseslint from "typescript-eslint"
+// eslint-disable-next-line import/no-internal-modules -- Package lacks sufficient exports
 import type { FlatConfig } from "@typescript-eslint/utils/ts-eslint"
+// @ts-expect-error -- Package lacks types
+import boundaries from "eslint-plugin-boundaries"
 
-// @ts-expect-error - module does not have types
+// @ts-expect-error -- Package lacks types
 import imports from "eslint-plugin-import"
-// @ts-expect-error - module does not have types
+// @ts-expect-error -- Package lacks types
 import promise from "eslint-plugin-promise"
-// @ts-expect-error - module does not have types
-// eslint-disable-next-line import/no-internal-modules -- Plugin not exported correctly
+// @ts-expect-error -- Package lacks types
+// eslint-disable-next-line import/no-internal-modules -- Package lacks sufficient exports
 import comments from "@eslint-community/eslint-plugin-eslint-comments/configs"
 
 type Config = FlatConfig.Config
@@ -22,7 +25,11 @@ type Plugin = FlatConfig.Plugin | ESLint.Plugin
 /**
  * Manually loaded ESLint plugins
  */
-const plugins: Record<string, Plugin> = { "no-secrets": noSecrets }
+const plugins: Record<string, Plugin> = {
+	"no-secrets": noSecrets,
+	// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Package lacks types
+	boundaries,
+}
 
 /**
  * File path pattern
@@ -77,6 +84,14 @@ const jstsFiles: Array<Pattern> = filesArrayFactory(jstsExtensions)
  */
 const base: Config = {
 	name: "@duncan3142/eslint-config/base",
+	settings: {
+		"import/resolver": {
+			typescript: {
+				alwaysTryTypes: true,
+				project: ["tsconfig.json", "tsconfig.*.json"],
+			},
+		},
+	},
 	languageOptions: {
 		sourceType: "module",
 		ecmaVersion: 2024,
@@ -93,6 +108,8 @@ const base: Config = {
 	plugins,
 	rules: {
 		"default-case": "off",
+		radix: "error",
+		eqeqeq: "error",
 		"object-shorthand": ["error", "always"],
 		"consistent-return": "off",
 		"arrow-body-style": ["error", "as-needed", { requireReturnForObjectLiteral: true }],
@@ -176,7 +193,10 @@ const base: Config = {
 		"@typescript-eslint/no-shadow": "error",
 		"@typescript-eslint/prefer-readonly": "error",
 		"@typescript-eslint/no-unsafe-type-assertion": "error",
-		"@typescript-eslint/prefer-ts-expect-error": "error",
+		"@typescript-eslint/ban-ts-comment": [
+			"error",
+			{ "ts-expect-error": "allow-with-description", "ts-nocheck": "allow-with-description" },
+		],
 		"@typescript-eslint/promise-function-async": "error",
 		"@typescript-eslint/require-array-sort-compare": "error",
 		"@typescript-eslint/strict-boolean-expressions": "error",
@@ -257,7 +277,7 @@ const test: Config = {
  */
 const cnfg: Config = {
 	name: "@duncan3142/eslint-config/cnfg",
-	files: filesArrayFactory(`config.${jstsExtensions}`),
+	files: [...filesArrayFactory(`config.${jstsExtensions}`), ".prettierrc.js"],
 	rules: {
 		// Allow build / test files to load dev deps
 		"import/no-extraneous-dependencies": "off",
@@ -293,28 +313,31 @@ type ConfigsArrOpts = {
  */
 const configsArrFactory = ({
 	ignoreFiles = [GIT_IGNORE, PRETTIER_IGNORE],
-}: ConfigsArrOpts = {}): Array<Config> => [
-	...ignoreFiles.map((path) => includeIgnoreFile(resolve(path))),
-	eslintjs.configs.recommended,
-	// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-type-assertion -- module lacks types
-	comments.recommended as unknown as Config,
-	...tseslint.configs.strictTypeChecked,
-	...tseslint.configs.stylisticTypeChecked,
-	// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-type-assertion -- module lacks types
-	imports.flatConfigs.recommended as Config,
-	// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-type-assertion -- module lacks types
-	imports.flatConfigs.typescript as Config,
-	// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-type-assertion -- module lacks types
-	promise.configs["flat/recommended"] as Config,
-	jsdoc.configs["flat/recommended-typescript-error"],
-	base,
-	test,
-	cnfg,
-	js,
-	cjs,
-	ts,
-	prettier,
-]
+}: ConfigsArrOpts = {}): Array<Config> =>
+	tseslint.config([
+		...ignoreFiles.map((path) => includeIgnoreFile(resolve(path))),
+		eslintjs.configs.recommended,
+		// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Package lacks types
+		comments.recommended,
+		...tseslint.configs.strictTypeChecked,
+		...tseslint.configs.stylisticTypeChecked,
+		// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Package lacks types
+		imports.flatConfigs.recommended,
+		// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Package lacks types
+		imports.flatConfigs.typescript,
+		// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Package lacks types
+		promise.configs["flat/recommended"],
+		// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Package lacks types
+		boundaries.configs.recommended,
+		jsdoc.configs["flat/recommended-typescript-error"],
+		base,
+		test,
+		cnfg,
+		js,
+		cjs,
+		ts,
+		prettier,
+	])
 
 /**
  * Default configs array
