@@ -1,4 +1,5 @@
 import { resolve } from "node:path"
+import { fileURLToPath } from "url"
 import eslintjs from "@eslint/js"
 import type { ESLint } from "eslint"
 import { includeIgnoreFile } from "@eslint/compat"
@@ -79,6 +80,8 @@ const tsFiles: Array<Pattern> = filesArrayFactory(tsExtensions)
  */
 const jstsFiles: Array<Pattern> = filesArrayFactory(jstsExtensions)
 
+const resolverPath = fileURLToPath(import.meta.resolve("eslint-import-resolver-typescript"))
+
 /**
  * Base config
  */
@@ -86,10 +89,11 @@ const base: Config = {
 	name: "@duncan3142/eslint-config/base",
 	settings: {
 		"import/resolver": {
-			typescript: {
+			[resolverPath]: {
 				alwaysTryTypes: true,
 				project: ["tsconfig.json", "tsconfig.*.json"],
 			},
+			node: true,
 		},
 	},
 	languageOptions: {
