@@ -1,3 +1,16 @@
-import config from "#config"
+import { configsArrFactory } from "#config"
 
-export default config
+export default configsArrFactory({
+	boundaries: {
+		elements: [
+			{ type: "src", pattern: "src/**" },
+			{ type: "cnfg", pattern: "./*" },
+		],
+		rules: [
+			{
+				from: "cnfg",
+				allow: ["src"],
+			},
+		],
+	},
+})
