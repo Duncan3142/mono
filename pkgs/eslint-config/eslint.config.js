@@ -1,10 +1,10 @@
-import { configsArrFactory } from "#config"
+import { configsArrFactory, ElementMode } from "#config"
 
 export default configsArrFactory({
 	boundaries: {
 		elements: [
 			{ type: "src", pattern: "src/**" },
-			{ type: "cnfg", pattern: "./*" },
+			{ type: "cnfg", pattern: [".prettierrc.js", "*.config.js"], mode: ElementMode.File },
 		],
 		rules: [
 			{

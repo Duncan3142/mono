@@ -1,29 +1,37 @@
 type ElementType = string
-type ElementPattern = string
+type Pattern = string | Array<string>
 
-const folder = "folder"
-const file = "file"
-const full = "full"
+const Folder = "folder"
+const File = "file"
+const Full = "full"
 
-type ElementMode = {
-	folder: typeof folder
-	file: typeof file
-	full: typeof full
+type ElementModes = {
+	Folder: typeof Folder
+	File: typeof File
+	Full: typeof Full
 }
 
-const ElementMode: ElementMode = {
-	folder,
-	file,
-	full,
+const ElementMode: ElementModes = {
+	Folder,
+	File,
+	Full,
 }
+
+/**
+ * Element mode
+ */
+type ElementMode = ElementModes[keyof ElementModes]
 
 /**
  * Element
  */
 type Element = {
 	type: ElementType
-	pattern: ElementPattern
-	basePattern?: ElementPattern
+	pattern: Pattern
+	basePattern?: Pattern
+	mode?: ElementMode
+	capture?: Pattern
+	baseCapture?: Pattern
 }
 
 /**
@@ -43,16 +51,16 @@ type Rule = {
 
 type Rules = Array<Rule>
 
+/**
+ * Boundary options
+ */
 type Options = {
 	/**
-	 * Boundary elements
+	 * Elements
 	 */
 	elements: Elements
-	/**
-	 * Boundary rules
-	 */
 	rules: Rules
 }
 
 export { ElementMode }
-export type { Element, Elements, Rules, Options }
+export type { Options }

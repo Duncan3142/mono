@@ -20,7 +20,7 @@ import promise from "eslint-plugin-promise"
 // @ts-expect-error -- Package lacks types
 // eslint-disable-next-line import/no-internal-modules -- Package lacks sufficient exports
 import comments from "@eslint-community/eslint-plugin-eslint-comments/configs"
-import type { Options as BoundariesOpts } from "./boundaries.js"
+import { type Options as BoundariesOpts, ElementMode } from "./boundaries.js"
 
 type Config = FlatConfig.Config
 type Plugin = FlatConfig.Plugin | ESLint.Plugin
@@ -61,7 +61,7 @@ const jstsExtensions: Pattern = `${mcModuleQualifier}@(j|t)s`
 
 /**
  * Factory function for creating file patterns array
- * @param extensionPatterns Array of file extension patterns
+ * @param extensionPatterns - Array of file extension patterns
  * @returns Array of file patterns
  */
 const filesArrayFactory = (...extensionPatterns: Array<Pattern>): Array<Pattern> =>
@@ -101,12 +101,12 @@ type BaseOpts = Pick<ConfigsArrOpts, "boundaries">
 
 /**
  * Base config
+ * @param opts - Base options
+ * @param opts.boundaries - Boundaries settings
  * @returns ESLint config
  */
-const base = (opts: BaseOpts): Config => {
-	const {
-		boundaries: { elements, rules },
-	} = opts
+const base = ({ boundaries: boundaryOpts }: BaseOpts): Config => {
+	const { elements: boundaryElements, rules: boundaryRules } = boundaryOpts
 	return {
 		name: "@duncan3142/eslint-config/base",
 		settings: {
@@ -117,7 +117,7 @@ const base = (opts: BaseOpts): Config => {
 				},
 				node: true,
 			},
-			"boundaries/elements": elements,
+			"boundaries/elements": boundaryElements,
 		},
 		languageOptions: {
 			sourceType: "module",
@@ -255,13 +255,28 @@ const base = (opts: BaseOpts): Config => {
 						FunctionExpression: true,
 						MethodDefinition: true,
 					},
+					contexts: [
+						// eslint-disable-next-line no-secrets/no-secrets -- ESQuery expression
+						"VariableDeclaration > VariableDeclarator[init.type!=/^(ArrowFunctionExpression|ClassExpression|FunctionExpression)$/]",
+						"TSInterfaceDeclaration",
+						"TSTypeAliasDeclaration",
+					],
 				},
 			],
+			"jsdoc/no-blank-blocks": ["error", { enableFixer: false }],
+			"jsdoc/require-asterisk-prefix": "error",
+			"jsdoc/require-description": "error",
+			"jsdoc/sort-tags": "error",
+			"jsdoc/require-hyphen-before-param-description": "error",
+			"jsdoc/no-blank-block-descriptions": "error",
+			"jsdoc/no-bad-blocks": "error",
+			"jsdoc/check-line-alignment": "error",
+			"jsdoc/check-indentation": "error",
 			"boundaries/element-types": [
 				"error",
 				{
 					default: "disallow",
-					rules,
+					rules: boundaryRules,
 				},
 			],
 			"boundaries/no-private": ["error", { allowUncles: false }],
@@ -334,9 +349,9 @@ const PRETTIER_IGNORE = ".prettierignore"
 
 /**
  * Config array factory
- * @param opts Config options
- * @param opts.ignoreFiles Array of paths to ignore files, e.g. `.gitignore`
- * @param opts.boundaries Boundaries settings
+ * @param opts - Config options
+ * @param opts.ignoreFiles - Array of paths to ignore files, e.g. `.gitignore`
+ * @param opts.boundaries - Boundaries settings
  * @returns Array of ESLint configs
  */
 const configsArrFactory = ({
@@ -357,8 +372,6 @@ const configsArrFactory = ({
 		// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Package lacks types
 		promise.configs["flat/recommended"],
 		// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Package lacks types
-		boundaries.configs.recommended,
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Package lacks types
 		boundaries.configs.strict,
 		jsdoc.configs["flat/recommended-typescript-error"],
 		base({ boundaries: boundaryOpts }),
@@ -370,6 +383,6 @@ const configsArrFactory = ({
 		prettier,
 	])
 
-export { configsArrFactory }
+export { configsArrFactory, ElementMode }
 
 export type { Path, ConfigsArrOpts, BoundariesOpts }
