@@ -1,5 +1,5 @@
 import { resolve } from "node:path"
-import { fileURLToPath } from "url"
+import { fileURLToPath } from "node:url"
 import eslintjs from "@eslint/js"
 import type { ESLint } from "eslint"
 import { includeIgnoreFile } from "@eslint/compat"
@@ -102,11 +102,25 @@ type BaseOpts = Pick<ConfigsArrOpts, "boundaries">
 /**
  * Base config
  * @param opts - Base options
- * @param opts.boundaries - Boundaries settings
+ * @param opts.boundaries - Boundaries opts
+ * @param opts.boundaries.settings - Boundaries settings
+ * @param opts.boundaries.settings.elements - Boundaries elements settings
+ * @param opts.boundaries.rules - Boundaries rules
+ * @param opts.boundaries.rules.elements - Boundaries elements rules
+ * @param opts.boundaries.rules.entry - Boundaries entry rules
+ * @param opts.boundaries.rules.external - Boundaries external rules
  * @returns ESLint config
  */
-const base = ({ boundaries: boundaryOpts }: BaseOpts): Config => {
-	const { elements: boundaryElements, rules: boundaryRules } = boundaryOpts
+const base = ({
+	boundaries: {
+		settings: { elements: boundaryElementsSettings },
+		rules: {
+			elements: boundaryElementsRules,
+			entry: boundaryEntryRules,
+			external: boundaryExternalRules,
+		},
+	},
+}: BaseOpts): Config => {
 	return {
 		name: "@duncan3142/eslint-config/base",
 		settings: {
@@ -117,7 +131,8 @@ const base = ({ boundaries: boundaryOpts }: BaseOpts): Config => {
 				},
 				node: true,
 			},
-			"boundaries/elements": boundaryElements,
+			"boundaries/elements": boundaryElementsSettings,
+			"boundaries/dependency-nodes": ["import", "dynamic-import", "require", "export"],
 		},
 		languageOptions: {
 			sourceType: "module",
@@ -276,10 +291,12 @@ const base = ({ boundaries: boundaryOpts }: BaseOpts): Config => {
 				"error",
 				{
 					default: "disallow",
-					rules: boundaryRules,
+					rules: boundaryElementsRules,
 				},
 			],
 			"boundaries/no-private": ["error", { allowUncles: false }],
+			"boundaries/entry-point": ["error", { default: "disallow", rules: boundaryEntryRules }],
+			"boundaries/external": ["error", { default: "disallow", rules: boundaryExternalRules }],
 		},
 	}
 }
@@ -338,13 +355,7 @@ const cnfg: Config = {
 	},
 }
 
-/**
- * Git ignore file name
- */
 const GIT_IGNORE = ".gitignore"
-/**
- * Prettier ignore file name
- */
 const PRETTIER_IGNORE = ".prettierignore"
 
 /**

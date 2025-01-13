@@ -1,5 +1,12 @@
+type Pattern = string
+type Patterns = Array<string>
+
+/* -------------------------------------------------------------------------- */
+/*                                  Elements                                  */
+/* -------------------------------------------------------------------------- */
+
 type ElementType = string
-type Pattern = string | Array<string>
+type Capture = Array<string>
 
 const Folder = "folder"
 const File = "file"
@@ -17,8 +24,6 @@ const ElementMode: ElementModes = {
 	Full,
 }
 
-type Capture = Array<string>
-
 /**
  * Element mode
  */
@@ -29,8 +34,8 @@ type ElementMode = ElementModes[keyof ElementModes]
  */
 type Element = {
 	type: ElementType
-	pattern: Pattern
-	basePattern?: Pattern[number]
+	pattern: Patterns
+	basePattern?: Patterns
 	mode?: ElementMode
 	capture?: Capture
 	baseCapture?: Capture
@@ -41,17 +46,23 @@ type Element = {
  */
 type Elements = Array<Element>
 
+/* -------------------------------------------------------------------------- */
+/*                                    Rules                                   */
+/* -------------------------------------------------------------------------- */
+
+type Matcher = Array<Pattern | [Pattern, Record<Pattern, Pattern>]>
 type ImportKindString = "value" | "type" | "typeof"
-type ImportKind = ImportKindString | Array<ImportKindString>
+type ImportKind = Array<ImportKindString>
 
-type Rule = {
-	from: ElementType
-	allow?: Array<ElementType>
-	disallow?: Array<ElementType>
+type OneOrBoth<A, B> = A | B | (A & B)
+type RuleKind = "from" | "target"
+type Rule<Kind extends RuleKind = "from"> = (Kind extends "from"
+	? { from: Matcher }
+	: { target: Matcher }) & {
 	importKind?: ImportKind
-}
+} & OneOrBoth<{ allow: Matcher }, { disallow: Matcher }>
 
-type Rules = Array<Rule>
+type Rules<Kind extends RuleKind = "from"> = Array<Rule<Kind>>
 
 /**
  * Boundary options
@@ -60,8 +71,8 @@ type Options = {
 	/**
 	 * Elements
 	 */
-	elements: Elements
-	rules: Rules
+	settings: { elements: Elements }
+	rules: { elements: Rules; entry: Rules<"target">; external: Rules }
 }
 
 export { ElementMode }
