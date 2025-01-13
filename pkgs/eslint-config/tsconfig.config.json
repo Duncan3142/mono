@@ -1,10 +1,5 @@
 {
 	"$schema": "https://json.schemastore.org/tsconfig",
-	"extends": "@duncan3142/tsc-config/config",
-	"compilerOptions": {
-		"paths": {
-			"#config": ["./src/eslint.config.ts"]
-		}
-	},
+	"extends": ["./tsconfig.base.json", "@duncan3142/tsc-config/config"],
 	"references": [{ "path": "./tsconfig.build.json" }]
 }

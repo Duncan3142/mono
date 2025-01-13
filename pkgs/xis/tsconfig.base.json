@@ -5,7 +5,7 @@
 		"paths": {
 			"#core/*": ["./src/lib/core/*"],
 			"#util/*": ["./src/lib/util/*"],
-			"#check/*": ["./src/lib/check*"]
+			"#check/*": ["./src/lib/check/*"]
 		}
 	},
 	"include": []
