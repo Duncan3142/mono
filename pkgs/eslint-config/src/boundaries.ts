@@ -17,6 +17,8 @@ const ElementMode: ElementModes = {
 	Full,
 }
 
+type Capture = Array<string>
+
 /**
  * Element mode
  */
@@ -28,10 +30,10 @@ type ElementMode = ElementModes[keyof ElementModes]
 type Element = {
 	type: ElementType
 	pattern: Pattern
-	basePattern?: Pattern
+	basePattern?: Pattern[number]
 	mode?: ElementMode
-	capture?: Pattern
-	baseCapture?: Pattern
+	capture?: Capture
+	baseCapture?: Capture
 }
 
 /**
