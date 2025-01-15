@@ -1,5 +1,11 @@
 # @duncan3142/eslint-config
 
+## 0.1.2
+
+### Patch Changes
+
+- 17f87ed: no-undefined
+
 ## 0.1.1
 
 ### Patch Changes
