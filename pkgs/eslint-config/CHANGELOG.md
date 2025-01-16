@@ -1,5 +1,11 @@
 # @duncan3142/eslint-config
 
+## 0.1.4
+
+### Patch Changes
+
+- 4a1b20c: parsers
+
 ## 0.1.3
 
 ### Patch Changes
