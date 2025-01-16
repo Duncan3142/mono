@@ -423,7 +423,7 @@ const configsArrFactory = ({
 		prettier,
 	])
 
-const configBuilder: (...configs: InfiniteDepthConfigWithExtends[]) => Config[] =
+const configBuilder: (...configs: Array<InfiniteDepthConfigWithExtends>) => Array<Config> =
 	tseslint.config
 
 export { configsArrFactory, ElementMode, parsers, plugins, configBuilder }
