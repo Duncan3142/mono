@@ -36,16 +36,17 @@
 		"prettier-plugin-svelte": "^3.3.3",
 		"svelte": "^5.18.0",
 		"svelte-check": "^4.1.4",
+		"svelte-eslint-parser": "^0.43.0",
 		"typescript": "^5.7.3",
 		"vite": "^6.0.7",
-		"vitest": "^3.0.0"
+		"vitest": "^3.0.1"
 	},
 	"dependencies": {
 		"@inlang/paraglide-sveltekit": "^0.15.5",
 		"@node-rs/argon2": "^2.0.2",
 		"@oslojs/crypto": "^1.0.1",
 		"@oslojs/encoding": "^1.1.0",
-		"drizzle-orm": "^0.38.3",
+		"drizzle-orm": "^0.38.4",
 		"postgres": "^3.4.5"
 	}
 }
