@@ -117,6 +117,7 @@ type BaseOpts = Required<Pick<ConfigsArrOpts, "boundaries" | "tsConfigs">>
  * @param opts.boundaries.rules.elements - Boundaries elements rules
  * @param opts.boundaries.rules.entry - Boundaries entry rules
  * @param opts.boundaries.rules.external - Boundaries external rules
+ * @param opts.tsConfigs - TypeScript config paths
  * @returns ESLint config
  */
 const base = ({
@@ -374,6 +375,7 @@ const TS_CONFIGS = ["tsconfig.json", "tsconfig.*.json"]
  * @param opts - Config options
  * @param opts.ignoreFiles - Array of paths to ignore files, e.g. `.gitignore`
  * @param opts.boundaries - Boundaries settings
+ * @param opts.tsConfigs - TypeScript config paths
  * @returns Array of ESLint configs
  */
 const configsArrFactory = ({
