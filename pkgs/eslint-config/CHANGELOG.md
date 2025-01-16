@@ -1,5 +1,11 @@
 # @duncan3142/eslint-config
 
+## 0.1.3
+
+### Patch Changes
+
+- 2503c2b: export parsers
+
 ## 0.1.2
 
 ### Patch Changes
