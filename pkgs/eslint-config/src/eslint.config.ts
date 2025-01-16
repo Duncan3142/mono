@@ -9,7 +9,7 @@ import noSecrets from "eslint-plugin-no-secrets"
 import tseslint from "typescript-eslint"
 
 // eslint-disable-next-line import/no-internal-modules -- Package lacks sufficient exports
-import type { FlatConfig } from "@typescript-eslint/utils/ts-eslint"
+import type { FlatConfig, Parser } from "@typescript-eslint/utils/ts-eslint"
 // @ts-expect-error -- Package lacks types
 import boundaries from "eslint-plugin-boundaries"
 
@@ -32,6 +32,12 @@ const plugins: Record<string, Plugin> = {
 	"no-secrets": noSecrets,
 	// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Package lacks types
 	boundaries,
+}
+
+type Parsers = Parser.LooseParserModule
+
+const parsers: Record<string, Parsers> = {
+	typescript: tseslint.parser,
 }
 
 /**
@@ -93,11 +99,11 @@ type Path = string
  * Config array factory options
  */
 type ConfigsArrOpts = {
-	boundaries: BoundariesOpts
+	boundaries?: BoundariesOpts
 	ignoreFiles?: Array<Path>
 }
 
-type BaseOpts = Pick<ConfigsArrOpts, "boundaries">
+type BaseOpts = Required<Pick<ConfigsArrOpts, "boundaries">>
 
 /**
  * Base config
@@ -367,7 +373,29 @@ const PRETTIER_IGNORE = ".prettierignore"
  * @returns Array of ESLint configs
  */
 const configsArrFactory = ({
-	boundaries: boundaryOpts,
+	boundaries: boundaryOpts = {
+		settings: {
+			elements: [
+				{ type: "cnfg", pattern: [".*", "*"], mode: ElementMode.Full },
+				{ type: "src", pattern: ["src"], mode: ElementMode.Folder },
+			],
+		},
+		rules: {
+			elements: [
+				{
+					from: ["src"],
+					allow: ["src"],
+				},
+			],
+			entry: [
+				{
+					target: ["src"],
+					allow: ["index.ts"],
+				},
+			],
+			external: [{ from: ["*"], allow: ["node:*"] }],
+		},
+	},
 	ignoreFiles = [GIT_IGNORE, PRETTIER_IGNORE],
 }: ConfigsArrOpts): Array<Config> =>
 	tseslint.config([
@@ -395,6 +423,6 @@ const configsArrFactory = ({
 		prettier,
 	])
 
-export { configsArrFactory, ElementMode }
+export { configsArrFactory, ElementMode, parsers }
 
 export type { Path, ConfigsArrOpts, BoundariesOpts }
