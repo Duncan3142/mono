@@ -6,13 +6,12 @@ import { includeIgnoreFile } from "@eslint/compat"
 import prettier from "eslint-config-prettier"
 import jsdoc from "eslint-plugin-jsdoc"
 import noSecrets from "eslint-plugin-no-secrets"
-import tseslint from "typescript-eslint"
+import tseslint, {type InfiniteDepthConfigWithExtends} from "typescript-eslint"
 
 // eslint-disable-next-line import/no-internal-modules -- Package lacks sufficient exports
 import type { FlatConfig, Parser } from "@typescript-eslint/utils/ts-eslint"
 // @ts-expect-error -- Package lacks types
 import boundaries from "eslint-plugin-boundaries"
-
 // @ts-expect-error -- Package lacks types
 import imports from "eslint-plugin-import"
 // @ts-expect-error -- Package lacks types
@@ -20,6 +19,7 @@ import promise from "eslint-plugin-promise"
 // @ts-expect-error -- Package lacks types
 // eslint-disable-next-line import/no-internal-modules -- Package lacks sufficient exports
 import comments from "@eslint-community/eslint-plugin-eslint-comments/configs"
+
 import { type Options as BoundariesOpts, ElementMode } from "./boundaries.js"
 
 type Config = FlatConfig.Config
@@ -397,7 +397,7 @@ const configsArrFactory = ({
 		},
 	},
 	ignoreFiles = [GIT_IGNORE, PRETTIER_IGNORE],
-}: ConfigsArrOpts): Array<Config> =>
+}: ConfigsArrOpts = {}): Array<Config> =>
 	tseslint.config([
 		...ignoreFiles.map((path) => includeIgnoreFile(resolve(path))),
 		eslintjs.configs.recommended,
@@ -423,6 +423,8 @@ const configsArrFactory = ({
 		prettier,
 	])
 
-export { configsArrFactory, ElementMode, parsers }
+const configBuilder: (...configs: InfiniteDepthConfigWithExtends[]) => Config[] =	tseslint.config
+
+export { configsArrFactory, ElementMode, parsers, plugins, configBuilder }
 
 export type { Path, ConfigsArrOpts, BoundariesOpts }
