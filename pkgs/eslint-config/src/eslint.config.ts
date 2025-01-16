@@ -6,7 +6,7 @@ import { includeIgnoreFile } from "@eslint/compat"
 import prettier from "eslint-config-prettier"
 import jsdoc from "eslint-plugin-jsdoc"
 import noSecrets from "eslint-plugin-no-secrets"
-import tseslint, {type InfiniteDepthConfigWithExtends} from "typescript-eslint"
+import tseslint, { type InfiniteDepthConfigWithExtends } from "typescript-eslint"
 
 // eslint-disable-next-line import/no-internal-modules -- Package lacks sufficient exports
 import type { FlatConfig, Parser } from "@typescript-eslint/utils/ts-eslint"
@@ -423,7 +423,8 @@ const configsArrFactory = ({
 		prettier,
 	])
 
-const configBuilder: (...configs: InfiniteDepthConfigWithExtends[]) => Config[] =	tseslint.config
+const configBuilder: (...configs: InfiniteDepthConfigWithExtends[]) => Config[] =
+	tseslint.config
 
 export { configsArrFactory, ElementMode, parsers, plugins, configBuilder }
 
