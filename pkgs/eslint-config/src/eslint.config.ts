@@ -94,6 +94,7 @@ const resolverPath = fileURLToPath(import.meta.resolve("eslint-import-resolver-t
  * File path
  */
 type Path = string
+type Paths = Array<Path>
 
 /**
  * Config array factory options
@@ -101,9 +102,10 @@ type Path = string
 type ConfigsArrOpts = {
 	boundaries?: BoundariesOpts
 	ignoreFiles?: Array<Path>
+	tsConfigs?: Paths
 }
 
-type BaseOpts = Required<Pick<ConfigsArrOpts, "boundaries">>
+type BaseOpts = Required<Pick<ConfigsArrOpts, "boundaries" | "tsConfigs">>
 
 /**
  * Base config
@@ -126,6 +128,7 @@ const base = ({
 			external: boundaryExternalRules,
 		},
 	},
+	tsConfigs,
 }: BaseOpts): Config => {
 	return {
 		name: "@duncan3142/eslint-config/base",
@@ -133,7 +136,7 @@ const base = ({
 			"import/resolver": {
 				[resolverPath]: {
 					alwaysTryTypes: true,
-					project: ["tsconfig.json", "tsconfig.*.json"],
+					project: tsConfigs,
 				},
 				node: true,
 			},
@@ -364,6 +367,7 @@ const cnfg: Config = {
 
 const GIT_IGNORE = ".gitignore"
 const PRETTIER_IGNORE = ".prettierignore"
+const TS_CONFIGS = ["tsconfig.json", "tsconfig.*.json"]
 
 /**
  * Config array factory
@@ -397,6 +401,7 @@ const configsArrFactory = ({
 		},
 	},
 	ignoreFiles = [GIT_IGNORE, PRETTIER_IGNORE],
+	tsConfigs = TS_CONFIGS,
 }: ConfigsArrOpts = {}): Array<Config> =>
 	tseslint.config([
 		...ignoreFiles.map((path) => includeIgnoreFile(resolve(path))),
@@ -414,7 +419,7 @@ const configsArrFactory = ({
 		// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Package lacks types
 		boundaries.configs.strict,
 		jsdoc.configs["flat/recommended-typescript-error"],
-		base({ boundaries: boundaryOpts }),
+		base({ boundaries: boundaryOpts, tsConfigs }),
 		test,
 		cnfg,
 		js,
