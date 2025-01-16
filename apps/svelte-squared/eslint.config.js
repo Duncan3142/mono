@@ -1,11 +1,10 @@
-import { configsArrFactory } from "@duncan3142/eslint-config"
+import { configsArrFactory, parsers } from "@duncan3142/eslint-config"
 import svelte from "eslint-plugin-svelte"
 import globals from "globals"
-import ts from "typescript-eslint"
 
 export default ts.config(
+	...configsArrFactory(),
 	...svelte.configs["flat/recommended"],
-
 	...svelte.configs["flat/prettier"],
 	{
 		languageOptions: {
@@ -20,7 +19,7 @@ export default ts.config(
 
 		languageOptions: {
 			parserOptions: {
-				parser: ts.parser,
+				parser: parsers.typescript,
 			},
 		},
 	}
