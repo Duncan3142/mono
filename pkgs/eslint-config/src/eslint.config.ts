@@ -6,13 +6,12 @@ import { includeIgnoreFile } from "@eslint/compat"
 import prettier from "eslint-config-prettier"
 import jsdoc from "eslint-plugin-jsdoc"
 import noSecrets from "eslint-plugin-no-secrets"
-import tseslint from "typescript-eslint"
+import tseslint, { type InfiniteDepthConfigWithExtends } from "typescript-eslint"
 
 // eslint-disable-next-line import/no-internal-modules -- Package lacks sufficient exports
 import type { FlatConfig, Parser } from "@typescript-eslint/utils/ts-eslint"
 // @ts-expect-error -- Package lacks types
 import boundaries from "eslint-plugin-boundaries"
-
 // @ts-expect-error -- Package lacks types
 import imports from "eslint-plugin-import"
 // @ts-expect-error -- Package lacks types
@@ -20,6 +19,7 @@ import promise from "eslint-plugin-promise"
 // @ts-expect-error -- Package lacks types
 // eslint-disable-next-line import/no-internal-modules -- Package lacks sufficient exports
 import comments from "@eslint-community/eslint-plugin-eslint-comments/configs"
+
 import { type Options as BoundariesOpts, ElementMode } from "./boundaries.js"
 
 type Config = FlatConfig.Config
@@ -94,6 +94,7 @@ const resolverPath = fileURLToPath(import.meta.resolve("eslint-import-resolver-t
  * File path
  */
 type Path = string
+type Paths = Array<Path>
 
 /**
  * Config array factory options
@@ -101,9 +102,10 @@ type Path = string
 type ConfigsArrOpts = {
 	boundaries?: BoundariesOpts
 	ignoreFiles?: Array<Path>
+	tsConfigs?: Paths
 }
 
-type BaseOpts = Required<Pick<ConfigsArrOpts, "boundaries">>
+type BaseOpts = Required<Pick<ConfigsArrOpts, "boundaries" | "tsConfigs">>
 
 /**
  * Base config
@@ -115,6 +117,7 @@ type BaseOpts = Required<Pick<ConfigsArrOpts, "boundaries">>
  * @param opts.boundaries.rules.elements - Boundaries elements rules
  * @param opts.boundaries.rules.entry - Boundaries entry rules
  * @param opts.boundaries.rules.external - Boundaries external rules
+ * @param opts.tsConfigs - TypeScript config paths
  * @returns ESLint config
  */
 const base = ({
@@ -126,6 +129,7 @@ const base = ({
 			external: boundaryExternalRules,
 		},
 	},
+	tsConfigs,
 }: BaseOpts): Config => {
 	return {
 		name: "@duncan3142/eslint-config/base",
@@ -133,7 +137,7 @@ const base = ({
 			"import/resolver": {
 				[resolverPath]: {
 					alwaysTryTypes: true,
-					project: ["tsconfig.json", "tsconfig.*.json"],
+					project: tsConfigs,
 				},
 				node: true,
 			},
@@ -364,12 +368,14 @@ const cnfg: Config = {
 
 const GIT_IGNORE = ".gitignore"
 const PRETTIER_IGNORE = ".prettierignore"
+const TS_CONFIGS = ["tsconfig.json", "tsconfig.*.json"]
 
 /**
  * Config array factory
  * @param opts - Config options
  * @param opts.ignoreFiles - Array of paths to ignore files, e.g. `.gitignore`
  * @param opts.boundaries - Boundaries settings
+ * @param opts.tsConfigs - TypeScript config paths
  * @returns Array of ESLint configs
  */
 const configsArrFactory = ({
@@ -397,7 +403,8 @@ const configsArrFactory = ({
 		},
 	},
 	ignoreFiles = [GIT_IGNORE, PRETTIER_IGNORE],
-}: ConfigsArrOpts): Array<Config> =>
+	tsConfigs = TS_CONFIGS,
+}: ConfigsArrOpts = {}): Array<Config> =>
 	tseslint.config([
 		...ignoreFiles.map((path) => includeIgnoreFile(resolve(path))),
 		eslintjs.configs.recommended,
@@ -414,7 +421,7 @@ const configsArrFactory = ({
 		// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Package lacks types
 		boundaries.configs.strict,
 		jsdoc.configs["flat/recommended-typescript-error"],
-		base({ boundaries: boundaryOpts }),
+		base({ boundaries: boundaryOpts, tsConfigs }),
 		test,
 		cnfg,
 		js,
@@ -423,6 +430,9 @@ const configsArrFactory = ({
 		prettier,
 	])
 
-export { configsArrFactory, ElementMode, parsers }
+const configBuilder: (...configs: Array<InfiniteDepthConfigWithExtends>) => Array<Config> =
+	tseslint.config
+
+export { configsArrFactory, ElementMode, parsers, plugins, configBuilder }
 
 export type { Path, ConfigsArrOpts, BoundariesOpts }
