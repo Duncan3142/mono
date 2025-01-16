@@ -1,31 +1,31 @@
 # Node
-node_modules
+/node_modules
 
 # Hidden
-.*
+/.*
 
 # Husky
-!.husky
+!/.husky
 
 # VS Code
-!.vscode
+!/.vscode
 
 # ESLint
-!.eslintrc.cjs
+!/.eslintrc.cjs
 
 # Git
-!.gitignore
+!/.gitignore
 
 # GitHub
-!.github
+!/.github
 
 # NPM
-!.npmrc
-!.npmignore
+!/.npmrc
+!/.npmignore
 
 # Prettier
-!.prettierignore
-!.prettierrc.js
+!/.prettierignore
+!/.prettierrc.js
 
 # Changesets
-!.changeset
+!/.changeset
