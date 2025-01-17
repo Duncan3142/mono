@@ -68,8 +68,16 @@ const jstsExtensions: Pattern = `${mcModuleQualifier}@(j|t)s`
 const filePatterns = (...extensionPatterns: Patterns): Patterns =>
 	extensionPatterns.map((pattern) => `**/*.${pattern}`)
 
-const composeConfigs: (...configs: Array<InfiniteDepthConfigWithExtends>) => Array<Config> =
-	tseslint.config
+const compose: (...configs: Array<InfiniteDepthConfigWithExtends>) => Configs = tseslint.config
+
+const core: Config = {
+	name: "@duncan3142/eslint-config/core",
+	linterOptions: {
+		reportUnusedDisableDirectives: "error",
+		noInlineConfig: false,
+	},
+}
 
 export type { Path, Paths, Pattern, Patterns, Config, Configs, Plugin, Parser }
-export { composeConfigs, filePatterns, jstsExtensions, jsExtensions, tsExtensions }
+export { compose, filePatterns, jstsExtensions, jsExtensions, tsExtensions }
+export default core

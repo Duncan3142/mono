@@ -1,8 +1,8 @@
 // @ts-expect-error -- Package lacks types
 import promise from "eslint-plugin-promise"
-import { composeConfigs, type Configs } from "./core.js"
+import { compose, type Configs } from "./core.js"
 
-const configs: Configs = composeConfigs([
+const configs: Configs = compose([
 	// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Package lacks types
 	promise.configs["flat/recommended"],
 	{

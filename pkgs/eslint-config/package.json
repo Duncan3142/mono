@@ -20,12 +20,12 @@
 	},
 	"main": "./.tsc/dist/eslint.config.js",
 	"imports": {
-		"#config": "./.tsc/dist/eslint.config.js"
+		"#*": "./.tsc/dist/*.js"
 	},
 	"exports": {
-		".": {
-			"import": "./.tsc/dist/eslint.config.js",
-			"types": "./.tsc/dist/eslint.config.d.ts"
+		"./*": {
+			"import": "./.tsc/dist/*.js",
+			"types": "./.tsc/dist/*.d.ts"
 		}
 	},
 	"files": [

@@ -1,7 +1,22 @@
-import { configsArrFactory, ElementMode } from "#config"
+import boundaries, { devDependencies, defaultOptions, ElementMode } from "#boundaries"
+import base from "#base"
+import jsdoc from "#jsdoc"
+import secrets from "#secrets"
+import promise from "#promise"
+import typescript, { untyped } from "#typescript"
+import { ignored } from "#ignored"
+import prettier from "#prettier"
+import comments from "#comments"
+import core, { compose } from "#core"
 
-export default configsArrFactory({
-	boundaries: {
+const configs = compose(
+	core,
+	ignored(),
+	base,
+	comments,
+	typescript,
+	untyped(),
+	boundaries({
 		settings: {
 			elements: [
 				{ type: "cnfg", pattern: [".*", "*"], mode: ElementMode.Full },
@@ -45,5 +60,13 @@ export default configsArrFactory({
 				},
 			],
 		},
-	},
-})
+		tsConfigs: defaultOptions.tsConfigs,
+	}),
+	devDependencies,
+	promise,
+	jsdoc,
+	secrets,
+	prettier
+)
+
+export default configs

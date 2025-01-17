@@ -1,7 +1,7 @@
 import eslintjs from "@eslint/js"
-import { composeConfigs, type Configs } from "./core.js"
+import { compose, type Configs } from "./core.ts"
 
-const base: Configs = composeConfigs(eslintjs.configs.recommended, {
+const base: Configs = compose(eslintjs.configs.recommended, {
 	name: "@duncan3142/eslint-config/base",
 	rules: {
 		"default-case": "off",
