@@ -25,5 +25,9 @@ node_modules
 # Changesets
 !.changeset
 
+# Paraglide
+project.inlang/cache/
+src/lib/paraglide/
+
 # Vite
 vite.config.*.timestamp-*
