@@ -138,12 +138,12 @@ const configs = ({
 	rules: { elements: elementsRules, entry: entryRules, external: externalRules },
 	tsConfigs,
 }: Options = defaultOptions): Configs =>
-	compose([
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Package lacks types
+	compose(
+		// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-argument -- Package lacks types
 		imports.flatConfigs.recommended,
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Package lacks types
+		// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-argument -- Package lacks types
 		imports.flatConfigs.typescript,
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Package lacks types
+		// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-argument -- Package lacks types
 		boundaries.configs.strict,
 		{
 			name: "@duncan3142/eslint-config/boundaries",
@@ -211,8 +211,8 @@ const configs = ({
 				"boundaries/entry-point": ["error", { default: "disallow", rules: entryRules }],
 				"boundaries/external": ["error", { default: "disallow", rules: externalRules }],
 			},
-		},
-	])
+		}
+	)
 
 const devDependencies: Config = {
 	name: "@duncan3142/eslint-config/boundaries/dev-dependencies",
