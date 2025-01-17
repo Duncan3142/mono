@@ -15,6 +15,8 @@ import svelte from "eslint-plugin-svelte"
 import svelteParser from "svelte-eslint-parser"
 import globals from "globals"
 
+const tsConfigs = ["tsconfig.json", ".svelte-kit/tsconfig.json"]
+
 const boundaryOptions = {
 	settings: {
 		elements: [
@@ -37,7 +39,12 @@ const boundaryOptions = {
 		],
 		external: [{ from: ["*"], allow: ["node:*"] }],
 	},
-	tsConfigs: ["tsconfig.json", ".svelte-kit/tsconfig.json"],
+	tsConfigs,
+}
+
+const parserOptions = {
+	project: tsConfigs,
+	extraFileExtensions: [".svelte"],
 }
 
 export default compose(
@@ -46,19 +53,17 @@ export default compose(
 	base,
 	comments,
 	typescript({
-		parserOptions: {
-			project: ["tsconfig.json", ".svelte-kit/tsconfig.json"],
-			extraFileExtensions: [".svelte"],
-		},
+		parserOptions,
 	}),
 	untyped({ files: filePatterns(jsExtensions, "svelte") }),
-	// boundaries(boundaryOptions),
-	// devDependencies,
+	boundaries(boundaryOptions),
+	devDependencies,
 	promise,
 	jsdoc,
 	secrets,
 	svelte.configs["flat/recommended"],
 	{
+		name: "@duncan3142/svelte-squared/options",
 		files: ["**/*.svelte"],
 		languageOptions: {
 			ecmaVersion: 2024,
@@ -67,10 +72,7 @@ export default compose(
 			parser: svelteParser,
 			parserOptions: {
 				parser,
-				parserOptions: {
-					project: ["tsconfig.json", ".svelte-kit/tsconfig.json"],
-					extraFileExtensions: [".svelte"],
-				},
+				parserOptions,
 			},
 		},
 	},
