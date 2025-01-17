@@ -37,7 +37,7 @@ const configs = compose(
 			entry: [
 				{
 					target: ["src"],
-					allow: ["eslint.config.ts"],
+					allow: ["*"],
 				},
 			],
 			external: [
