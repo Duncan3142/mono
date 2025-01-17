@@ -18,7 +18,7 @@
 		"node": ">=22",
 		"npm": ">=11"
 	},
-	"main": "./.tsc/dist/eslint.config.js",
+	"main": "./.tsc/dist/core.js",
 	"imports": {
 		"#*": "./.tsc/dist/*.js"
 	},

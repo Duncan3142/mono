@@ -1,5 +1,5 @@
 import jsdoc from "eslint-plugin-jsdoc"
-import type { Configs } from "./core.js"
+import type { Configs } from "./core.ts"
 
 const configs: Configs = [
 	jsdoc.configs["flat/recommended-typescript-error"],

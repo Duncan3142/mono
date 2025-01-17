@@ -1,6 +1,6 @@
 import { resolve } from "node:path"
 import { includeIgnoreFile } from "@eslint/compat"
-import type { Configs, Paths } from "./core.js"
+import type { Configs, Paths } from "./core.ts"
 
 const GIT_IGNORE = ".gitignore"
 const PRETTIER_IGNORE = ".prettierignore"

@@ -122,14 +122,16 @@ const defaultOptions: Options = {
 const resolverPath = fileURLToPath(import.meta.resolve("eslint-import-resolver-typescript"))
 
 /**
- * @param opts
- * @param opts.settings
- * @param opts.settings.elements
- * @param opts.rules
- * @param opts.rules.elements
- * @param opts.rules.entry
- * @param opts.rules.external
- * @param opts.tsConfigs
+ * Boundaries config
+ * @param opts - options
+ * @param opts.settings - settings
+ * @param opts.settings.elements -element settings
+ * @param opts.rules - rules
+ * @param opts.rules.elements - element rules
+ * @param opts.rules.entry - entry rules
+ * @param opts.rules.external - external rules
+ * @param opts.tsConfigs - tsconfig paths
+ * @returns ESLint configs
  */
 const configs = ({
 	settings: { elements: elementsSettings },

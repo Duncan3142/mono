@@ -1,7 +1,7 @@
 import type { ESLint } from "eslint"
 import tseslint, { type InfiniteDepthConfigWithExtends } from "typescript-eslint"
 
-// x eslint-disable-next-line import/no-internal-modules -- Package lacks sufficient exports
+// eslint-disable-next-line import/no-internal-modules -- Package lacks sufficient exports
 import type { FlatConfig, Parser as TSParser } from "@typescript-eslint/utils/ts-eslint"
 
 /**
@@ -38,6 +38,10 @@ type Parser = TSParser.LooseParserModule
  * File path pattern
  */
 type Pattern = string
+
+/**
+ * Patterns array
+ */
 type Patterns = Array<Pattern>
 
 /**

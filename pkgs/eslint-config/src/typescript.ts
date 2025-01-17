@@ -7,7 +7,7 @@ import {
 	type Configs,
 	type Parser,
 	type Paths,
-} from "./core.js"
+} from "./core.ts"
 
 const TS_CONFIGS_DEFAULT: Paths = ["tsconfig.json", "tsconfig.*.json"]
 
