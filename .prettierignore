@@ -1,38 +1,22 @@
-# Node
-node_modules
-
-# Hidden
-.*
-
 # Directories
 */
+
+# GitHub
+!.github/
 
 # Husky
 !.husky/
 .husky/_
 
-# Actions
-!actions
-
 # VS Code
-!.vscode
+!.vscode/
+
+# Actions
+!actions/
 
 # Git
 !.gitignore
 
-# GitHub
-!.github
-
 # NPM
 !.npmrc
 package-lock.json
-
-# Prettier
-!.prettierignore
-!.prettierrc.js
-
-# Changesets
-!.changeset
-
-# Packages
-pkgs

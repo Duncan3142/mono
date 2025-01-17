@@ -18,14 +18,14 @@
 		"node": ">=22",
 		"npm": ">=11"
 	},
-	"main": "./.tsc/dist/eslint.config.js",
+	"main": "./.tsc/dist/core.js",
 	"imports": {
-		"#config": "./.tsc/dist/eslint.config.js"
+		"#*": "./.tsc/dist/*.js"
 	},
 	"exports": {
-		".": {
-			"import": "./.tsc/dist/eslint.config.js",
-			"types": "./.tsc/dist/eslint.config.d.ts"
+		"./*": {
+			"import": "./.tsc/dist/*.js",
+			"types": "./.tsc/dist/*.d.ts"
 		}
 	},
 	"files": [
@@ -39,9 +39,9 @@
 		"format:fix": "prettier --write --cache --cache-location='.prettier/cache' --cache-strategy content .",
 		"assets": "tsc --build",
 		"assets:watch": "tsc --build --watch",
-		"test:tsc": "tsc --build --noEmit",
-		"test:eslint": "eslint --max-warnings 0 .",
-		"test:eslint:fix": "eslint --fix .",
+		"check:tsc": "tsc --build --noEmit",
+		"lint:eslint": "eslint --max-warnings 0 .",
+		"lint:eslint:fix": "eslint --fix .",
 		"inspect:eslint": "eslint --inspect-config ."
 	},
 	"peerDependencies": {
@@ -56,7 +56,7 @@
 		"eslint-import-resolver-typescript": "^3.7.0",
 		"eslint-plugin-boundaries": "^5.0.1",
 		"eslint-plugin-import": "^2.31.0",
-		"eslint-plugin-jsdoc": "^50.6.1",
+		"eslint-plugin-jsdoc": "^50.6.2",
 		"eslint-plugin-no-secrets": "^2.1.1",
 		"eslint-plugin-promise": "^7.2.1",
 		"typescript-eslint": "^8.20.0"
