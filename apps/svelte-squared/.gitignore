@@ -2,14 +2,14 @@
 .*
 
 # Node
-node_modules
+node_modules/
 
 # Env
 !.env.example
 !.env.test
 
 # VS Code
-!.vscode
+!.vscode/
 
 # Git
 !.gitignore
@@ -23,7 +23,7 @@ node_modules
 !.prettierrc.js
 
 # Changesets
-!.changeset
+!.changeset/
 
 # Paraglide
 project.inlang/cache/
