@@ -36,28 +36,22 @@ export default configBuilder(
 				external: [{ from: ["*"], allow: ["node:*"] }],
 			},
 		},
+		tsConfigs: ["tsconfig.json", ".svelte-kit/tsconfig.json"],
 	}),
 	...svelte.configs["flat/recommended"],
 	...svelte.configs["flat/prettier"],
 	{
-		languageOptions: {
-			globals: {
-				...globals.browser,
-				...globals.node,
-			},
-		},
-	},
-	{
-		files: ["**/*.svelte"],
+		// files: ["**/*.svelte"],
 		plugins,
-
 		languageOptions: {
+			ecmaVersion: 2024,
+			sourceType: "module",
+			globals: { ...globals.node, ...globals.browser },
 			parser: svelteParser,
 			parserOptions: {
 				parser: parsers.typescript,
 				parserOptions: {
-					// project: './path/to/your/tsconfig.json',
-					projectService: true,
+					project: ["tsconfig.json", ".svelte-kit/tsconfig.json"],
 					extraFileExtensions: [".svelte"],
 				},
 			},
