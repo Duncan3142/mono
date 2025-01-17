@@ -4,15 +4,8 @@ node_modules
 # Hidden
 .*
 
-# GitHub
-!.github/
-
-# Husky
-!.husky/
-.husky/_
-
 # VS Code
-!.vscode/
+!.vscode
 
 # Git
 !.gitignore
@@ -24,3 +17,6 @@ node_modules
 # Prettier
 !.prettierignore
 !.prettierrc.js
+
+# Changesets
+!.changeset

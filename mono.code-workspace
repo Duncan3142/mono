@@ -1,68 +1,68 @@
 {
 	"folders": [
 		{
-			"path": ".",
 			"name": "/",
+			"path": "."
 		},
 		{
-			"path": ".github/workflows",
 			"name": "workflows",
+			"path": ".github/workflows"
 		},
 		{
-			"path": "actions/gh-cli",
 			"name": "actions/gh-cli",
+			"path": "actions/gh-cli"
 		},
 		{
-			"path": "actions/common-env",
 			"name": "actions/common-env",
+			"path": "actions/common-env"
 		},
 		{
-			"path": "actions/npm-ci",
 			"name": "actions/npm-ci",
+			"path": "actions/npm-ci"
 		},
 		{
-			"path": "actions/npm-pkg-cd",
 			"name": "actions/npm-pkg-cd",
+			"path": "actions/npm-pkg-cd"
 		},
 		{
-			"path": "actions/volta",
 			"name": "actions/volta",
+			"path": "actions/volta"
 		},
 		{
-			"path": "tools/bash",
 			"name": "tools/bash",
+			"path": "tools/bash"
 		},
 		{
-			"path": "tools/git",
 			"name": "tools/git",
+			"path": "tools/git"
 		},
 		{
-			"path": "tools/github",
 			"name": "tools/github",
+			"path": "tools/github"
 		},
 		{
-			"path": "tools/npm",
 			"name": "tools/npm",
+			"path": "tools/npm",
 		},
 		{
-			"path": "apps/svelte-squared",
 			"name": "apps/svelte-squared",
+			"path": "apps/svelte-squared",
 		},
 		{
-			"path": "pkgs/eslint-config",
 			"name": "pkgs/eslint-config",
+			"path": "pkgs/eslint-config"
 		},
 		{
-			"path": "pkgs/prettier-config",
 			"name": "pkgs/prettier-config",
+			"path": "pkgs/prettier-config"
 		},
 		{
-			"path": "pkgs/tsc-config",
 			"name": "pkgs/tsc-config",
+			"path": "pkgs/tsc-config"
 		},
 		{
-			"path": "pkgs/xis",
 			"name": "pkgs/xis",
+			"path": "pkgs/xis"
 		}
 	],
 	"settings": {
