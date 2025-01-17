@@ -1,15 +1,10 @@
-import { resolve } from "node:path"
 import { fileURLToPath } from "node:url"
 import eslintjs from "@eslint/js"
-import type { ESLint } from "eslint"
-import { includeIgnoreFile } from "@eslint/compat"
-import prettier from "eslint-config-prettier"
-import jsdoc from "eslint-plugin-jsdoc"
-import noSecrets from "eslint-plugin-no-secrets"
-import tseslint, { type InfiniteDepthConfigWithExtends } from "typescript-eslint"
+import jsdoc from "./jsdoc.js"
+import secrets from "./secrets.js"
 
-// eslint-disable-next-line import/no-internal-modules -- Package lacks sufficient exports
-import type { FlatConfig, Parser } from "@typescript-eslint/utils/ts-eslint"
+import tseslint from "typescript-eslint"
+
 // @ts-expect-error -- Package lacks types
 import boundaries from "eslint-plugin-boundaries"
 // @ts-expect-error -- Package lacks types
@@ -21,87 +16,39 @@ import promise from "eslint-plugin-promise"
 import comments from "@eslint-community/eslint-plugin-eslint-comments/configs"
 
 import { type Options as BoundariesOpts, ElementMode } from "./boundaries.js"
-
-type Config = FlatConfig.Config
-type Plugin = FlatConfig.Plugin | ESLint.Plugin
+import { IGNORE_FILES_DEFAULT, ignored } from "./ignored.js"
+import prettier from "./prettier.js"
+import {
+	composeConfigs,
+	filePatterns,
+	jsExtensions,
+	jstsExtensions,
+	type Config,
+	type Parser,
+	type Paths,
+	type Plugin,
+} from "./core.js"
 
 /**
  * Manually loaded ESLint plugins
  */
 const plugins: Record<string, Plugin> = {
-	"no-secrets": noSecrets,
 	// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Package lacks types
 	boundaries,
 }
 
-type Parsers = Parser.LooseParserModule
-
-const parsers: Record<string, Parsers> = {
+const parsers: Record<string, Parser> = {
 	typescript: tseslint.parser,
 }
 
-/**
- * File path pattern
- */
-type Pattern = string
-
-/**
- * Pattern for explicit ESM / CommonJS file extension qualifier
- */
-const mcModuleQualifier: Pattern = "?(m|c)"
-
-/**
- * JavaScript file extension pattern
- */
-const jsExtensions: Pattern = `${mcModuleQualifier}js`
-
-/**
- * TypeScript file extension pattern
- */
-const tsExtensions: Pattern = `${mcModuleQualifier}ts`
-
-/**
- * JavaScript / TypeScript file extension pattern
- */
-const jstsExtensions: Pattern = `${mcModuleQualifier}@(j|t)s`
-
-/**
- * Factory function for creating file patterns array
- * @param extensionPatterns - Array of file extension patterns
- * @returns Array of file patterns
- */
-const filesArrayFactory = (...extensionPatterns: Array<Pattern>): Array<Pattern> =>
-	extensionPatterns.map((pattern) => `**/*.${pattern}`)
-
-/**
- * JavaScript file patterns array
- */
-const jsFiles: Array<Pattern> = filesArrayFactory(jsExtensions)
-
-/**
- * TypeScript file patterns array
- */
-const tsFiles: Array<Pattern> = filesArrayFactory(tsExtensions)
-
-/**
- * JavaScript / TypeScript file patterns array
- */
-const jstsFiles: Array<Pattern> = filesArrayFactory(jstsExtensions)
-
 const resolverPath = fileURLToPath(import.meta.resolve("eslint-import-resolver-typescript"))
-
-/**
- * File path
- */
-type Path = string
-type Paths = Array<Path>
 
 /**
  * Config array factory options
  */
 type ConfigsArrOpts = {
 	boundaries?: BoundariesOpts
-	ignoreFiles?: Array<Path>
+	ignoreFiles?: Paths
 	tsConfigs?: Paths
 }
 
@@ -156,7 +103,7 @@ const base = ({
 			reportUnusedDisableDirectives: "error",
 			noInlineConfig: false,
 		},
-		files: jstsFiles,
+		files: filePatterns(jstsExtensions),
 		plugins,
 		rules: {
 			"default-case": "off",
@@ -269,35 +216,7 @@ const base = ({
 			],
 			"promise/no-return-wrap": ["error", { allowReject: true }],
 			"no-secrets/no-secrets": "error",
-			"jsdoc/require-jsdoc": [
-				"error",
-				{
-					publicOnly: true,
-					require: {
-						ArrowFunctionExpression: true,
-						ClassDeclaration: true,
-						ClassExpression: true,
-						FunctionDeclaration: true,
-						FunctionExpression: true,
-						MethodDefinition: true,
-					},
-					contexts: [
-						// eslint-disable-next-line no-secrets/no-secrets -- ESQuery expression
-						"VariableDeclaration > VariableDeclarator[init.type!=/^(ArrowFunctionExpression|ClassExpression|FunctionExpression)$/]",
-						"TSInterfaceDeclaration",
-						"TSTypeAliasDeclaration",
-					],
-				},
-			],
-			"jsdoc/no-blank-blocks": ["error", { enableFixer: false }],
-			"jsdoc/require-asterisk-prefix": "error",
-			"jsdoc/require-description": "error",
-			"jsdoc/sort-tags": "error",
-			"jsdoc/require-hyphen-before-param-description": "error",
-			"jsdoc/no-blank-block-descriptions": "error",
-			"jsdoc/no-bad-blocks": "error",
-			"jsdoc/check-line-alignment": "error",
-			"jsdoc/check-indentation": "error",
+
 			"boundaries/element-types": [
 				"error",
 				{
@@ -313,33 +232,12 @@ const base = ({
 }
 
 /**
- * TypeScript only config
- */
-const ts: Config = {
-	rules: {},
-	name: "@duncan3142/eslint-config/ts",
-	files: tsFiles,
-}
-
-/**
  * JavaScript only config
  */
 const js: Config = {
 	...tseslint.configs.disableTypeChecked,
 	name: "@duncan3142/eslint-config/js",
-	files: jsFiles,
-}
-
-/**
- * CommonJS only config
- */
-const cjs: Config = {
-	name: "@duncan3142/eslint-config/cjs",
-	files: filesArrayFactory("cjs"),
-	rules: {
-		// Allow `require()`
-		"@typescript-eslint/no-var-requires": "off",
-	},
+	files: filePatterns(jsExtensions),
 }
 
 /**
@@ -347,7 +245,7 @@ const cjs: Config = {
  */
 const test: Config = {
 	name: "@duncan3142/eslint-config/test",
-	files: filesArrayFactory(`spec.${jstsExtensions}`),
+	files: filePatterns(`spec.${jstsExtensions}`),
 	rules: {
 		// Allow build / test files to load dev deps
 		"import/no-extraneous-dependencies": "off",
@@ -359,15 +257,13 @@ const test: Config = {
  */
 const cnfg: Config = {
 	name: "@duncan3142/eslint-config/cnfg",
-	files: [...filesArrayFactory(`config.${jstsExtensions}`), ".prettierrc.js"],
+	files: [...filePatterns(`config.${jstsExtensions}`), ".prettierrc.js"],
 	rules: {
 		// Allow build / test files to load dev deps
 		"import/no-extraneous-dependencies": "off",
 	},
 }
 
-const GIT_IGNORE = ".gitignore"
-const PRETTIER_IGNORE = ".prettierignore"
 const TS_CONFIGS = ["tsconfig.json", "tsconfig.*.json"]
 
 /**
@@ -402,16 +298,16 @@ const configsArrFactory = ({
 			external: [{ from: ["*"], allow: ["node:*"] }],
 		},
 	},
-	ignoreFiles = [GIT_IGNORE, PRETTIER_IGNORE],
+	ignoreFiles = IGNORE_FILES_DEFAULT,
 	tsConfigs = TS_CONFIGS,
 }: ConfigsArrOpts = {}): Array<Config> =>
-	tseslint.config([
-		...ignoreFiles.map((path) => includeIgnoreFile(resolve(path))),
+	composeConfigs(
+		ignored({ files: ignoreFiles }),
 		eslintjs.configs.recommended,
 		// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Package lacks types
 		comments.recommended,
-		...tseslint.configs.strictTypeChecked,
-		...tseslint.configs.stylisticTypeChecked,
+		tseslint.configs.strictTypeChecked,
+		tseslint.configs.stylisticTypeChecked,
 		// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Package lacks types
 		imports.flatConfigs.recommended,
 		// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Package lacks types
@@ -420,19 +316,15 @@ const configsArrFactory = ({
 		promise.configs["flat/recommended"],
 		// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Package lacks types
 		boundaries.configs.strict,
-		jsdoc.configs["flat/recommended-typescript-error"],
+		jsdoc,
+		secrets,
 		base({ boundaries: boundaryOpts, tsConfigs }),
 		test,
 		cnfg,
 		js,
-		cjs,
-		ts,
-		prettier,
-	])
+		prettier
+	)
 
-const configBuilder: (...configs: Array<InfiniteDepthConfigWithExtends>) => Array<Config> =
-	tseslint.config
+export { configsArrFactory, ElementMode, parsers, plugins }
 
-export { configsArrFactory, ElementMode, parsers, plugins, configBuilder }
-
-export type { Path, ConfigsArrOpts, BoundariesOpts }
+export type { ConfigsArrOpts, BoundariesOpts }

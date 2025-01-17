@@ -1,5 +1,4 @@
-type Pattern = string
-type Patterns = Array<string>
+import type { Pattern, Patterns } from "./core.js"
 
 /* -------------------------------------------------------------------------- */
 /*                                  Elements                                  */
