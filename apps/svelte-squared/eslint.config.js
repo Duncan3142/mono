@@ -37,7 +37,7 @@ const boundaryOptions = {
 				allow: ["index.ts"],
 			},
 		],
-		external: [{ from: ["*"], allow: ["node:*"] }],
+		external: [{ from: ["*"], allow: ["*"] }],
 	},
 	tsConfigs,
 }
