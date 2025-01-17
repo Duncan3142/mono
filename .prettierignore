@@ -14,9 +14,5 @@
 # Actions
 !actions/
 
-# Git
-!.gitignore
-
 # NPM
-!.npmrc
 package-lock.json
