@@ -45,24 +45,19 @@ type Pattern = string
 type Patterns = Array<Pattern>
 
 /**
- * Pattern for explicit ESM / CommonJS file extension qualifier
- */
-const mcModuleQualifier: Pattern = "?(m|c)"
-
-/**
  * JavaScript file extension pattern
  */
-const jsExtensions: Pattern = `${mcModuleQualifier}js`
+const jsExtensions: Pattern = `js`
 
 /**
  * TypeScript file extension pattern
  */
-const tsExtensions: Pattern = `${mcModuleQualifier}ts`
+const tsExtensions: Pattern = `ts`
 
 /**
  * JavaScript / TypeScript file extension pattern
  */
-const jstsExtensions: Pattern = `${mcModuleQualifier}@(j|t)s`
+const jstsExtensions: Pattern = `@(j|t)s`
 
 /**
  * Factory function for creating file patterns array

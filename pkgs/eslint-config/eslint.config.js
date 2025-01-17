@@ -61,7 +61,7 @@ const configs = compose(
 	ignored(),
 	base,
 	comments,
-	typescript,
+	typescript(),
 	untyped(),
 	boundaries(boundaryOptions),
 	devDependencies,

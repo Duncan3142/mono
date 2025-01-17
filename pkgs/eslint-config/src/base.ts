@@ -3,6 +3,10 @@ import { compose, type Configs } from "./core.ts"
 
 const base: Configs = compose(eslintjs.configs.recommended, {
 	name: "@duncan3142/eslint-config/base",
+	languageOptions: {
+		sourceType: "module",
+		ecmaVersion: 2024,
+	},
 	rules: {
 		"default-case": "off",
 		radix: "error",

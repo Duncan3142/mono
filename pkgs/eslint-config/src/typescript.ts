@@ -4,6 +4,7 @@ import {
 	filePatterns,
 	jsExtensions,
 	jstsExtensions,
+	type Config,
 	type Configs,
 	type Parser,
 	type Paths,
@@ -13,18 +14,30 @@ const TS_CONFIGS_DEFAULT: Paths = ["tsconfig.json", "tsconfig.*.json"]
 
 const parser: Parser = tseslint.parser
 
-const configs: Configs = compose(
-	tseslint.configs.strictTypeChecked,
-	tseslint.configs.stylisticTypeChecked,
-	{
+type Options = {
+	parserOptions: Exclude<Required<Config>["languageOptions"]["parserOptions"], undefined>
+}
+
+const defaultOptions: Options = {
+	parserOptions: {
+		projectService: true,
+	},
+}
+
+/**
+ * TypeScript ESLint config
+ * @param opts - Options
+ * @param opts.parserOptions - Parser options
+ * @returns ESLint config
+ */
+const configs = ({ parserOptions }: Options = defaultOptions): Configs =>
+	compose(tseslint.configs.strictTypeChecked, tseslint.configs.stylisticTypeChecked, {
 		name: "@duncan3142/eslint-config/typescipt",
 		languageOptions: {
 			sourceType: "module",
 			ecmaVersion: 2024,
 			parser,
-			parserOptions: {
-				projectService: true,
-			},
+			parserOptions,
 		},
 		files: filePatterns(jstsExtensions),
 		rules: {
@@ -69,8 +82,7 @@ const configs: Configs = compose(
 				{ argsIgnorePattern: "^_", varsIgnorePattern: "^_" },
 			],
 		},
-	}
-)
+	})
 
 type UntypedOptions = {
 	files: Paths
@@ -86,9 +98,10 @@ const defaultUntypedOptions: UntypedOptions = { files: filePatterns(jsExtensions
  */
 const untyped = ({ files }: UntypedOptions = defaultUntypedOptions): Configs =>
 	compose({
+		name: "@duncan3142/eslint-config/typescipt/untyped",
 		files,
 		extends: [tseslint.configs.disableTypeChecked],
 	})
 
-export { TS_CONFIGS_DEFAULT, parser, untyped, defaultUntypedOptions }
+export { TS_CONFIGS_DEFAULT, defaultOptions, parser, untyped, defaultUntypedOptions }
 export default configs
