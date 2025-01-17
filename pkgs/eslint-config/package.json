@@ -39,9 +39,9 @@
 		"format:fix": "prettier --write --cache --cache-location='.prettier/cache' --cache-strategy content .",
 		"assets": "tsc --build",
 		"assets:watch": "tsc --build --watch",
-		"test:tsc": "tsc --build --noEmit",
-		"test:eslint": "eslint --max-warnings 0 .",
-		"test:eslint:fix": "eslint --fix .",
+		"check:tsc": "tsc --build --noEmit",
+		"lint:eslint": "eslint --max-warnings 0 .",
+		"lint:eslint:fix": "eslint --fix .",
 		"inspect:eslint": "eslint --inspect-config ."
 	},
 	"peerDependencies": {
