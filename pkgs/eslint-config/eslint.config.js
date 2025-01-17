@@ -9,6 +9,53 @@ import prettier from "#prettier"
 import comments from "#comments"
 import core, { compose } from "#core"
 
+const boundaryOptions = {
+	settings: {
+		elements: [
+			{ type: "cnfg", pattern: [".*", "*"], mode: ElementMode.Full },
+			{ type: "src", pattern: ["src"], mode: ElementMode.Folder },
+		],
+	},
+	rules: {
+		elements: [
+			{
+				from: ["cnfg"],
+				allow: ["src"],
+			},
+			{
+				from: ["src"],
+				allow: ["src"],
+			},
+		],
+		entry: [
+			{
+				target: ["src"],
+				allow: ["*"],
+			},
+		],
+		external: [
+			{ from: ["*"], allow: ["node:*"] },
+			{
+				from: ["cnfg"],
+				allow: ["@duncan3142/prettier-config"],
+			},
+			{
+				from: ["src"],
+				allow: [
+					"eslint",
+					"@eslint/*",
+					"eslint-config-*",
+					"eslint-plugin-*",
+					"typescript-eslint",
+					"@typescript-eslint/*",
+					"@eslint-community/*",
+				],
+			},
+		],
+	},
+	tsConfigs: defaultOptions.tsConfigs,
+}
+
 const configs = compose(
 	core,
 	ignored(),
@@ -16,52 +63,7 @@ const configs = compose(
 	comments,
 	typescript,
 	untyped(),
-	boundaries({
-		settings: {
-			elements: [
-				{ type: "cnfg", pattern: [".*", "*"], mode: ElementMode.Full },
-				{ type: "src", pattern: ["src"], mode: ElementMode.Folder },
-			],
-		},
-		rules: {
-			elements: [
-				{
-					from: ["cnfg"],
-					allow: ["src"],
-				},
-				{
-					from: ["src"],
-					allow: ["src"],
-				},
-			],
-			entry: [
-				{
-					target: ["src"],
-					allow: ["*"],
-				},
-			],
-			external: [
-				{ from: ["*"], allow: ["node:*"] },
-				{
-					from: ["cnfg"],
-					allow: ["@duncan3142/prettier-config"],
-				},
-				{
-					from: ["src"],
-					allow: [
-						"eslint",
-						"@eslint/*",
-						"eslint-config-*",
-						"eslint-plugin-*",
-						"typescript-eslint",
-						"@typescript-eslint/*",
-						"@eslint-community/*",
-					],
-				},
-			],
-		},
-		tsConfigs: defaultOptions.tsConfigs,
-	}),
+	boundaries(boundaryOptions),
 	devDependencies,
 	promise,
 	jsdoc,
