@@ -11,13 +11,10 @@ import boundaries from "eslint-plugin-boundaries"
 // @ts-expect-error -- Package lacks types
 import imports from "eslint-plugin-import"
 
-// @ts-expect-error -- Package lacks types
-// eslint-disable-next-line import/no-internal-modules -- Package lacks sufficient exports
-import comments from "@eslint-community/eslint-plugin-eslint-comments/configs"
-
 import { type Options as BoundariesOpts, ElementMode } from "./boundaries.js"
 import { IGNORE_FILES_DEFAULT, ignored } from "./ignored.js"
 import prettier from "./prettier.js"
+import comments from "./comments.js"
 import {
 	composeConfigs,
 	filePatterns,
@@ -173,7 +170,7 @@ const base = ({
 					bundledDependencies: false,
 				},
 			],
-			"@eslint-community/eslint-comments/require-description": "error",
+
 			"@typescript-eslint/consistent-type-definitions": "off",
 			"@typescript-eslint/consistent-return": "error",
 			"@typescript-eslint/consistent-type-imports": "error",
@@ -302,8 +299,8 @@ const configsArrFactory = ({
 	composeConfigs(
 		ignored({ files: ignoreFiles }),
 		eslintjs.configs.recommended,
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Package lacks types
-		comments.recommended,
+
+		comments,
 		tseslint.configs.strictTypeChecked,
 		tseslint.configs.stylisticTypeChecked,
 		// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Package lacks types
