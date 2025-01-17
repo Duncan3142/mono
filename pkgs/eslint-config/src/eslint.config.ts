@@ -2,6 +2,7 @@ import { fileURLToPath } from "node:url"
 import eslintjs from "@eslint/js"
 import jsdoc from "./jsdoc.js"
 import secrets from "./secrets.js"
+import promise from "./promise.js"
 
 import tseslint from "typescript-eslint"
 
@@ -9,8 +10,7 @@ import tseslint from "typescript-eslint"
 import boundaries from "eslint-plugin-boundaries"
 // @ts-expect-error -- Package lacks types
 import imports from "eslint-plugin-import"
-// @ts-expect-error -- Package lacks types
-import promise from "eslint-plugin-promise"
+
 // @ts-expect-error -- Package lacks types
 // eslint-disable-next-line import/no-internal-modules -- Package lacks sufficient exports
 import comments from "@eslint-community/eslint-plugin-eslint-comments/configs"
@@ -214,8 +214,6 @@ const base = ({
 				"error",
 				{ argsIgnorePattern: "^_", varsIgnorePattern: "^_" },
 			],
-			"promise/no-return-wrap": ["error", { allowReject: true }],
-			"no-secrets/no-secrets": "error",
 
 			"boundaries/element-types": [
 				"error",
@@ -312,8 +310,7 @@ const configsArrFactory = ({
 		imports.flatConfigs.recommended,
 		// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Package lacks types
 		imports.flatConfigs.typescript,
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Package lacks types
-		promise.configs["flat/recommended"],
+		promise,
 		// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Package lacks types
 		boundaries.configs.strict,
 		jsdoc,
