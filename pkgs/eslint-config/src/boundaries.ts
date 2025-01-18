@@ -6,16 +6,7 @@ import imports from "eslint-plugin-import"
 
 import { TS_CONFIGS_DEFAULT } from "./typescript.ts"
 
-import {
-	compose,
-	filePatterns,
-	jstsExtensions,
-	type Config,
-	type Configs,
-	type Paths,
-	type Pattern,
-	type Patterns,
-} from "./core.ts"
+import { compose, type Configs, type Paths, type Pattern, type Patterns } from "./core.ts"
 
 /* -------------------------------------------------------------------------- */
 /*                                  Elements                                  */
