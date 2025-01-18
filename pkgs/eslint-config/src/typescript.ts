@@ -101,6 +101,9 @@ const untyped = ({ files }: UntypedOptions = defaultUntypedOptions): Configs =>
 		name: "@duncan3142/eslint-config/typescipt/untyped",
 		files,
 		extends: [tseslint.configs.disableTypeChecked],
+		rules: {
+			"@typescript-eslint/explicit-module-boundary-types": "off",
+		},
 	})
 
 export { TS_CONFIGS_DEFAULT, defaultOptions, parser, untyped, defaultUntypedOptions }
