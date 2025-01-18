@@ -72,10 +72,10 @@ export default compose(
 		name: "@duncan3142/svelte-squared/parser",
 		files: ["**/*.svelte"],
 		languageOptions: {
+			parser: svelteParser,
 			ecmaVersion: 2024,
 			sourceType: "module",
 			globals: { ...globals.node, ...globals.browser },
-			parser: svelteParser,
 			parserOptions: {
 				parser,
 				parserOptions,
