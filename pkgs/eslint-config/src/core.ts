@@ -1,7 +1,5 @@
 import type { ESLint } from "eslint"
 import tseslint, { type InfiniteDepthConfigWithExtends } from "typescript-eslint"
-
-// eslint-disable-next-line import/no-internal-modules -- Package lacks sufficient exports
 import type { FlatConfig, Parser as TSParser } from "@typescript-eslint/utils/ts-eslint"
 
 /**
