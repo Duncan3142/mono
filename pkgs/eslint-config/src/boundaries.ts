@@ -6,7 +6,14 @@ import imports from "eslint-plugin-import"
 
 import { TS_CONFIGS_DEFAULT } from "./typescript.ts"
 
-import { compose, type Configs, type Paths, type Pattern, type Patterns } from "./core.ts"
+import {
+	compose,
+	type Configs,
+	type Path,
+	type Paths,
+	type Pattern,
+	type Patterns,
+} from "./core.ts"
 
 /* -------------------------------------------------------------------------- */
 /*                                  Elements                                  */
@@ -75,11 +82,21 @@ type Rules<Kind extends RuleKind = "from"> = Array<Rule<Kind>>
 /*                                   Configs                                  */
 /* -------------------------------------------------------------------------- */
 
+type Alias = string
+type Extension = string
+type Extensions = Array<Extension>
+
 /**
  * Config array factory options
  */
 type Options = {
-	settings: { elements: Elements }
+	settings: {
+		elements: Elements
+		customAlias?: {
+			alias: Record<Alias, Path>
+			extensions: Extensions
+		}
+	}
 	rules: { elements: Rules; entry: Rules<"target">; external: Rules }
 	tsConfigs: Paths
 }
@@ -87,7 +104,7 @@ type Options = {
 const defaultOptions: Options = {
 	settings: {
 		elements: [
-			{ type: "cnfg", pattern: [".*", "*"], mode: ElementMode.Full },
+			{ type: "cnfg", pattern: [".prettierrc.js", "eslint.config.js"], mode: ElementMode.Full },
 			{ type: "src", pattern: ["src"], mode: ElementMode.Folder },
 		],
 	},
@@ -110,7 +127,10 @@ const defaultOptions: Options = {
 	tsConfigs: TS_CONFIGS_DEFAULT,
 }
 
-const resolverPath = fileURLToPath(import.meta.resolve("eslint-import-resolver-typescript"))
+const tsResolverPath = fileURLToPath(import.meta.resolve("eslint-import-resolver-typescript"))
+const customResolverPath = fileURLToPath(
+	import.meta.resolve("eslint-import-resolver-custom-alias")
+)
 
 /**
  * Boundaries config
@@ -125,7 +145,7 @@ const resolverPath = fileURLToPath(import.meta.resolve("eslint-import-resolver-t
  * @returns ESLint configs
  */
 const configs = ({
-	settings: { elements: elementsSettings },
+	settings: { elements: elementsSettings, customAlias },
 	rules: { elements: elementsRules, entry: entryRules, external: externalRules },
 	tsConfigs,
 }: Options = defaultOptions): Configs =>
@@ -140,10 +160,11 @@ const configs = ({
 			name: "@duncan3142/eslint-config/boundaries",
 			settings: {
 				"import/resolver": {
-					[resolverPath]: {
+					[tsResolverPath]: {
 						alwaysTryTypes: true,
 						project: tsConfigs,
 					},
+					[customResolverPath]: typeof customAlias === "undefined" ? {} : customAlias,
 					node: true,
 				},
 				"boundaries/elements": elementsSettings,

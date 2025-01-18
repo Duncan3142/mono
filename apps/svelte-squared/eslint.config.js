@@ -20,7 +20,18 @@ const tsConfigs = ["tsconfig.json", ".svelte-kit/tsconfig.json"]
 const boundaryOptions = {
 	settings: {
 		elements: [
-			{ type: "cnfg", pattern: [".*", "*"], mode: ElementMode.Full },
+			{
+				type: "cnfg",
+				pattern: [
+					".prettierrc.js",
+					"playwright.config.ts",
+					"drizzle.config.ts",
+					"vite.config.ts",
+					"eslint.config.js",
+					"svelte.config.js",
+				],
+				mode: ElementMode.Full,
+			},
 			{ type: "src", pattern: ["src"], mode: ElementMode.Folder },
 			{ type: "e2e", pattern: ["e2e"], mode: ElementMode.Folder },
 			{ type: "out", pattern: [".svelte-kit"], mode: ElementMode.Folder },
@@ -35,8 +46,8 @@ const boundaryOptions = {
 		],
 		entry: [
 			{
-				target: ["src"],
-				allow: ["index.ts"],
+				target: ["src", "cnfg", "out", "e2e"],
+				allow: ["**"],
 			},
 		],
 		external: [{ from: ["src", "cnfg", "out", "e2e"], allow: ["**"] }],
@@ -68,7 +79,17 @@ export default compose(
 	devDependencies,
 	{
 		settings: {
-			"boundaries/ignore": ["!.svelte-kit/types/src/**"],
+			"import/resolver": {
+				"eslint-import-resolver-custom-alias": {
+					alias: {
+						// $lib: "src/lib",
+						$app: "node_modules/@sveltejs/kit/src/runtime/app",
+						$env: "node_modules/@sveltejs/kit/src/runtime/env",
+						// "@sveltejs/kit": "node_modules/@sveltejs/kit/src/exports/index.js",
+					},
+					extensions: [".js", ".ts"],
+				},
+			},
 		},
 		rules: {
 			"import/no-internal-modules": "off",
