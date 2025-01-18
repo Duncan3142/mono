@@ -16,6 +16,35 @@ const config = {
 		adapter: adapter({
 			out: ".build",
 		}),
+		typescript: {
+			config: (tsconfig) => {
+				const { compilerOptions, include, exclude } = tsconfig
+				const { paths, rootDirs } = compilerOptions
+				const CONFIG_DIR = "${configDir}"
+				const PARENT_DIR = ".."
+
+				compilerOptions.baseUrl = "./"
+				const insertConfigDir = (path, container, index) => {
+					if (path.startsWith(PARENT_DIR)) {
+						container[index] = `${CONFIG_DIR}${path.slice(PARENT_DIR.length)}`
+					}
+				}
+
+				const insertConfigDirs = (array) => {
+					array.forEach((path, index) => {
+						insertConfigDir(path, array, index)
+					})
+				}
+
+				Object.values(paths).forEach(insertConfigDirs)
+				insertConfigDirs(rootDirs)
+				insertConfigDirs(include)
+				include.push(`${CONFIG_DIR}/*.config.js`)
+				include.push(`${CONFIG_DIR}/*.config.ts`)
+				include.push(`${CONFIG_DIR}/e2e/**/*.ts`)
+				insertConfigDirs(exclude)
+			},
+		},
 	},
 
 	extensions: [".svelte", ".svx"],

@@ -22,13 +22,15 @@ const boundaryOptions = {
 		elements: [
 			{ type: "cnfg", pattern: [".*", "*"], mode: ElementMode.Full },
 			{ type: "src", pattern: ["src"], mode: ElementMode.Folder },
+			{ type: "e2e", pattern: ["e2e"], mode: ElementMode.Folder },
+			{ type: "out", pattern: [".svelte-kit"], mode: ElementMode.Folder },
 		],
 	},
 	rules: {
 		elements: [
 			{
 				from: ["src"],
-				allow: ["src"],
+				allow: ["src", "out"],
 			},
 		],
 		entry: [
@@ -37,13 +39,13 @@ const boundaryOptions = {
 				allow: ["index.ts"],
 			},
 		],
-		external: [{ from: ["src", "cnfg"], allow: ["**"] }],
+		external: [{ from: ["src", "cnfg", "out", "e2e"], allow: ["**"] }],
 	},
 	tsConfigs,
 }
 
 const parserOptions = {
-	project: tsConfigs,
+	projectService: true,
 	extraFileExtensions: [".svelte"],
 }
 
@@ -62,6 +64,7 @@ export default compose(
 		rules: {
 			"import/no-internal-modules": "off",
 			"import/no-extraneous-dependencies": "off",
+			"import/no-relative-parent-imports": "off",
 		},
 	},
 	promise,
