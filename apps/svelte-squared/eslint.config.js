@@ -37,7 +37,7 @@ const boundaryOptions = {
 				allow: ["index.ts"],
 			},
 		],
-		external: [{ from: ["*"], allow: ["*"] }],
+		external: [{ from: ["src", "cnfg"], allow: ["**"] }],
 	},
 	tsConfigs,
 }
@@ -58,6 +58,12 @@ export default compose(
 	untyped({ files: filePatterns(jsExtensions, "svelte") }),
 	boundaries(boundaryOptions),
 	devDependencies,
+	{
+		rules: {
+			"import/no-internal-modules": "off",
+			"import/no-extraneous-dependencies": "off",
+		},
+	},
 	promise,
 	jsdoc,
 	secrets,
