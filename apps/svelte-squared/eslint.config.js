@@ -58,9 +58,18 @@ export default compose(
 		parserOptions,
 	}),
 	untyped({ files: filePatterns(jsExtensions, "svelte") }),
+	{
+		files: ["*.js"],
+		rules: {
+			"@typescript-eslint/explicit-module-boundary-types": "off",
+		},
+	},
 	boundaries(boundaryOptions),
 	devDependencies,
 	{
+		settings: {
+			"boundaries/ignore": ["!.svelte-kit/types/src/**"],
+		},
 		rules: {
 			"import/no-internal-modules": "off",
 			"import/no-extraneous-dependencies": "off",
