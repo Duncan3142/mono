@@ -1,4 +1,4 @@
-import boundaries, { devDependencies, defaultOptions, ElementMode } from "#boundaries"
+import boundaries, { defaultOptions, ElementMode } from "#boundaries"
 import base from "#base"
 import jsdoc from "#jsdoc"
 import secrets from "#secrets"
@@ -64,7 +64,6 @@ const configs = compose(
 	typescript(),
 	untyped(),
 	boundaries(boundaryOptions),
-	devDependencies,
 	promise,
 	jsdoc,
 	secrets,

@@ -69,7 +69,7 @@ export default compose(
 	secrets,
 	svelte.configs["flat/recommended"],
 	{
-		name: "@duncan3142/svelte-squared/options",
+		name: "@duncan3142/svelte-squared/parser",
 		files: ["**/*.svelte"],
 		languageOptions: {
 			ecmaVersion: 2024,

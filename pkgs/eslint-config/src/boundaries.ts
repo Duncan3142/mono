@@ -206,18 +206,6 @@ const configs = ({
 		}
 	)
 
-const devDependencies: Config = {
-	name: "@duncan3142/eslint-config/boundaries/dev-dependencies",
-	files: [
-		...filePatterns(`spec.${jstsExtensions}`, `config.${jstsExtensions}`),
-		".prettierrc.js",
-	],
-	rules: {
-		// Allow build / test files to load dev deps
-		"import/no-extraneous-dependencies": "off",
-	},
-}
-
-export { ElementMode, defaultOptions, devDependencies }
+export { ElementMode, defaultOptions }
 export default configs
 export type { Options }
