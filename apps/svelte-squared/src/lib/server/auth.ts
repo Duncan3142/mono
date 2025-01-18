@@ -15,12 +15,23 @@ const DAYS_30 = 30
 
 const sessionCookieName = "auth-session"
 
+/**
+ * Generate a session token
+ * @returns A base64url encoded session token
+ */
 function generateSessionToken() {
-	const bytes = crypto.getRandomValues(new Uint8Array(18))
+	const BUFFER_BYTE_LENGTH = 18
+	const bytes = crypto.getRandomValues(new Uint8Array(BUFFER_BYTE_LENGTH))
 	const token = encodeBase64url(bytes)
 	return token
 }
 
+/**
+ * Create a session
+ * @param token - session token
+ * @param userId - user id
+ * @returns Session details
+ */
 async function createSession(token: string, userId: string) {
 	const sessionId = encodeHexLowerCase(sha256(new TextEncoder().encode(token)))
 	const session: table.Session = {
@@ -32,6 +43,11 @@ async function createSession(token: string, userId: string) {
 	return session
 }
 
+/**
+ * Validate session token
+ * @param token - session token
+ * @returns Session details
+ */
 async function validateSessionToken(token: string) {
 	const sessionId = encodeHexLowerCase(sha256(new TextEncoder().encode(token)))
 	const [result] = await db
@@ -67,12 +83,24 @@ async function validateSessionToken(token: string) {
 	return { session, user }
 }
 
+/**
+ * Session validation result
+ */
 type SessionValidationResult = Awaited<ReturnType<typeof validateSessionToken>>
 
+/**
+ * @param sessionId
+ */
 async function invalidateSession(sessionId: string) {
 	await db.delete(table.session).where(eq(table.session.id, sessionId))
 }
 
+/**
+ * Set session token cookie
+ * @param event - request event
+ * @param token - session token
+ * @param expiresAt - session expiration date
+ */
 function setSessionTokenCookie(event: RequestEvent, token: string, expiresAt: Date) {
 	event.cookies.set(sessionCookieName, token, {
 		expires: expiresAt,
@@ -80,6 +108,10 @@ function setSessionTokenCookie(event: RequestEvent, token: string, expiresAt: Da
 	})
 }
 
+/**
+ * Delete session token cookie
+ * @param event - delete session event
+ */
 function deleteSessionTokenCookie(event: RequestEvent) {
 	event.cookies.delete(sessionCookieName, {
 		path: "/",
