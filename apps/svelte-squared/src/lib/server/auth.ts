@@ -19,11 +19,22 @@ const sessionCookieName = "auth-session"
  * Generate a session token
  * @returns A base64url encoded session token
  */
-function generateSessionToken() {
+function generateSessionToken(): string {
 	const BUFFER_BYTE_LENGTH = 18
 	const bytes = crypto.getRandomValues(new Uint8Array(BUFFER_BYTE_LENGTH))
 	const token = encodeBase64url(bytes)
 	return token
+}
+
+type Session = {
+	id: string
+	userId: string
+	expiresAt: Date
+}
+
+type User = {
+	id: string
+	username: string
 }
 
 /**
@@ -32,7 +43,7 @@ function generateSessionToken() {
  * @param userId - user id
  * @returns Session details
  */
-async function createSession(token: string, userId: string) {
+async function createSession(token: string, userId: string): Promise<Session> {
 	const sessionId = encodeHexLowerCase(sha256(new TextEncoder().encode(token)))
 	const session: table.Session = {
 		id: sessionId,
@@ -44,11 +55,24 @@ async function createSession(token: string, userId: string) {
 }
 
 /**
+ * Session validation result
+ */
+type SessionValidationResult =
+	| {
+			session: Session
+			user: User
+	  }
+	| {
+			session: null
+			user: null
+	  }
+
+/**
  * Validate session token
  * @param token - session token
  * @returns Session details
  */
-async function validateSessionToken(token: string) {
+async function validateSessionToken(token: string): Promise<SessionValidationResult> {
 	const sessionId = encodeHexLowerCase(sha256(new TextEncoder().encode(token)))
 	const [result] = await db
 		.select({
@@ -60,7 +84,7 @@ async function validateSessionToken(token: string) {
 		.innerJoin(table.user, eq(table.session.userId, table.user.id))
 		.where(eq(table.session.id, sessionId))
 
-	if (!result) {
+	if (typeof result === "undefined") {
 		return { session: null, user: null }
 	}
 	const { session, user } = result
@@ -84,14 +108,10 @@ async function validateSessionToken(token: string) {
 }
 
 /**
- * Session validation result
+ * Invalidate session
+ * @param sessionId - session id
  */
-type SessionValidationResult = Awaited<ReturnType<typeof validateSessionToken>>
-
-/**
- * @param sessionId
- */
-async function invalidateSession(sessionId: string) {
+async function invalidateSession(sessionId: string): Promise<void> {
 	await db.delete(table.session).where(eq(table.session.id, sessionId))
 }
 
@@ -101,7 +121,7 @@ async function invalidateSession(sessionId: string) {
  * @param token - session token
  * @param expiresAt - session expiration date
  */
-function setSessionTokenCookie(event: RequestEvent, token: string, expiresAt: Date) {
+function setSessionTokenCookie(event: RequestEvent, token: string, expiresAt: Date): void {
 	event.cookies.set(sessionCookieName, token, {
 		expires: expiresAt,
 		path: "/",
@@ -112,7 +132,7 @@ function setSessionTokenCookie(event: RequestEvent, token: string, expiresAt: Da
  * Delete session token cookie
  * @param event - delete session event
  */
-function deleteSessionTokenCookie(event: RequestEvent) {
+function deleteSessionTokenCookie(event: RequestEvent): void {
 	event.cookies.delete(sessionCookieName, {
 		path: "/",
 	})
