@@ -1,7 +1,7 @@
-import config from "@duncan3142/prettier-config"
+import base from "@duncan3142/prettier-config"
 
-export default {
-	...config,
+const config = {
+	...base,
 	plugins: ["prettier-plugin-svelte"],
 	overrides: [
 		{
@@ -12,3 +12,5 @@ export default {
 		},
 	],
 }
+
+export default config
