@@ -1,13 +1,13 @@
-import { pgTable, serial, text, integer, timestamp } from "drizzle-orm/pg-core"
+import { pgTable, text, integer, timestamp } from "drizzle-orm/pg-core"
 
-export const user = pgTable("user", {
+const user = pgTable("user", {
 	id: text("id").primaryKey(),
 	age: integer("age"),
 	username: text("username").notNull().unique(),
 	passwordHash: text("password_hash").notNull(),
 })
 
-export const session = pgTable("session", {
+const session = pgTable("session", {
 	id: text("id").primaryKey(),
 	userId: text("user_id")
 		.notNull()
@@ -15,6 +15,15 @@ export const session = pgTable("session", {
 	expiresAt: timestamp("expires_at", { withTimezone: true, mode: "date" }).notNull(),
 })
 
-export type Session = typeof session.$inferSelect
+/**
+ * Session
+ */
+type Session = typeof session.$inferSelect
 
-export type User = typeof user.$inferSelect
+/**
+ * User
+ */
+type User = typeof user.$inferSelect
+
+export type { User, Session }
+export { user, session }

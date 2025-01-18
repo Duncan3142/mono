@@ -1,22 +1,31 @@
-import * as auth from "$lib/server/auth"
 import { fail, redirect } from "@sveltejs/kit"
 import type { Actions, PageServerLoad } from "./$types"
+import * as auth from "$lib/server/auth"
+import { STATUS_302, STATUS_401 } from "$lib/http"
 
-export const load: PageServerLoad = async (event) => {
-	if (!event.locals.user) {
-		return redirect(302, "/demo/lucia/login")
+/**
+ * Load event handler
+ * @param event - Load event
+ * @param event.locals - Event locals
+ * @returns Redirect when user is not logged in, otherwise user object
+ */
+const load: PageServerLoad = ({ locals }) => {
+	if (!locals.user) {
+		return redirect(STATUS_302, "/demo/lucia/login")
 	}
-	return { user: event.locals.user }
+	return { user: locals.user }
 }
 
-export const actions: Actions = {
+const actions: Actions = {
 	logout: async (event) => {
 		if (!event.locals.session) {
-			return fail(401)
+			return fail(STATUS_401)
 		}
 		await auth.invalidateSession(event.locals.session.id)
 		auth.deleteSessionTokenCookie(event)
 
-		return redirect(302, "/demo/lucia/login")
+		return redirect(STATUS_302, "/demo/lucia/login")
 	},
 }
+
+export { load, actions }
