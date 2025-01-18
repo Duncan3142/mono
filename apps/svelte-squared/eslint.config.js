@@ -34,7 +34,11 @@ const boundaryOptions = {
 			},
 			{ type: "src", pattern: ["src"], mode: ElementMode.Folder },
 			{ type: "e2e", pattern: ["e2e"], mode: ElementMode.Folder },
-			{ type: "out", pattern: [".svelte-kit"], mode: ElementMode.Folder },
+			{
+				type: "out",
+				pattern: [".svelte-kit"],
+				mode: ElementMode.Folder,
+			},
 		],
 	},
 	rules: {
@@ -78,19 +82,6 @@ export default compose(
 	boundaries(boundaryOptions),
 	devDependencies,
 	{
-		settings: {
-			"import/resolver": {
-				"eslint-import-resolver-custom-alias": {
-					alias: {
-						// $lib: "src/lib",
-						$app: "node_modules/@sveltejs/kit/src/runtime/app",
-						$env: "node_modules/@sveltejs/kit/src/runtime/env",
-						// "@sveltejs/kit": "node_modules/@sveltejs/kit/src/exports/index.js",
-					},
-					extensions: [".js", ".ts"],
-				},
-			},
-		},
 		rules: {
 			"import/no-internal-modules": "off",
 			"import/no-extraneous-dependencies": "off",

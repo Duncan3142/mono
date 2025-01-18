@@ -55,6 +55,9 @@ const config = {
 				/* eslint-enable jsdoc/check-tag-names -- Required in JS */
 
 				Object.values(paths).forEach(insertConfigDirs)
+
+				paths["$app/*"] = [`${CONFIG_DIR}/node_modules/@sveltejs/kit/src/runtime/app/*`]
+				paths["$env/*"] = [`${CONFIG_DIR}/node_modules/@sveltejs/kit/src/runtime/env/*`]
 				insertConfigDirs(rootDirs)
 				insertConfigDirs(include)
 				include.push(`${CONFIG_DIR}/*.config.js`)
