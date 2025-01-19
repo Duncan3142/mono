@@ -11,9 +11,9 @@ import prettier from "@duncan3142/eslint-config/prettier"
 import comments from "@duncan3142/eslint-config/comments"
 import core, { compose, filePatterns, jsExtensions } from "@duncan3142/eslint-config/core"
 
-import svelte from "eslint-plugin-svelte"
-import svelteParser from "svelte-eslint-parser"
-import globals from "globals"
+import * as svelte from "eslint-plugin-svelte"
+import * as svelteParser from "svelte-eslint-parser"
+import * as globals from "globals"
 
 /** @import { Config } from '@duncan3142/eslint-config/core' */
 
@@ -90,6 +90,7 @@ export default compose(
 	}),
 	untyped({ files: filePatterns(jsExtensions, "svelte") }),
 	boundaries(boundaryOptions),
+	{ rules: { "import/no-unresolved": "error" } },
 	promise,
 	jsdoc,
 	secrets,
