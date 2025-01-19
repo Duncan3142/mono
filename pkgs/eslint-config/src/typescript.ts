@@ -69,7 +69,19 @@ const configs = ({ parserOptions }: Options = defaultOptions): Configs =>
 			],
 			"@typescript-eslint/promise-function-async": "error",
 			"@typescript-eslint/require-array-sort-compare": "error",
-			"@typescript-eslint/strict-boolean-expressions": "error",
+			"@typescript-eslint/strict-boolean-expressions": [
+				"error",
+				{
+					allowAny: false,
+					allowNullableBoolean: false,
+					allowNullableEnum: false,
+					allowNullableNumber: false,
+					allowNullableObject: false,
+					allowNullableString: false,
+					allowNumber: false,
+					allowString: false,
+				},
+			],
 			"@typescript-eslint/no-useless-empty-export": "error",
 			"@typescript-eslint/no-empty-object-type": [
 				"error",

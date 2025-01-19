@@ -94,7 +94,6 @@ export default compose(
 	promise,
 	jsdoc,
 	secrets,
-
 	svelte.configs["flat/recommended"],
 	prettier,
 	svelte.configs["flat/prettier"]

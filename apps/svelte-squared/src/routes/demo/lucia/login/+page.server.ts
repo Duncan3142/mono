@@ -13,10 +13,11 @@ import { STATUS_302, STATUS_400, STATUS_500 } from "$lib/http"
  * Page load handler
  * @param event - Load event
  * @param event.locals - Event locals
+ * @param event.locals.user - User details
  * @returns Page load redirect
  */
-const load: PageServerLoad = ({ locals }) => {
-	if (locals.user) {
+const load: PageServerLoad = ({ locals: { user } }) => {
+	if (user !== null) {
 		return redirect(STATUS_302, "/demo/lucia")
 	}
 	return {}
@@ -77,8 +78,10 @@ const actions: Actions = {
 
 		const FIRST = 0
 
+		if (Math.random() < FIRST) console.log("random")
+
 		const existingUser = results.at(FIRST)
-		if (!existingUser) {
+		if (typeof existingUser === "undefined") {
 			return fail(STATUS_400, { message: "Incorrect username or password" })
 		}
 
