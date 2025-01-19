@@ -12,8 +12,8 @@ import core, { compose } from "#core"
 const boundaryOptions = {
 	settings: {
 		elements: [
-			{ type: "cnfg", pattern: [".prettierrc.js", "eslint.config.js"], mode: ElementMode.Full },
-			{ type: "src", pattern: ["src"], mode: ElementMode.Folder },
+			{ type: "cnfg", pattern: [".*.js", "*.config.js"], mode: ElementMode.Full },
+			{ type: "src", pattern: ["src/*"], mode: ElementMode.Full },
 		],
 	},
 	rules: {

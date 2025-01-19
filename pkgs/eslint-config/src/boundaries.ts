@@ -42,7 +42,7 @@ type ElementMode = ElementModes[keyof ElementModes]
 type Element = {
 	type: ElementType
 	pattern: Patterns
-	basePattern?: Patterns
+	basePattern?: Pattern
 	mode?: ElementMode
 	capture?: Capture
 	baseCapture?: Capture
@@ -89,8 +89,8 @@ type Options = {
 const defaultOptions: Options = {
 	settings: {
 		elements: [
-			{ type: "cnfg", pattern: [".prettierrc.js", "eslint.config.js"], mode: ElementMode.Full },
-			{ type: "src", pattern: ["src"], mode: ElementMode.Folder },
+			{ type: "cnfg", pattern: [".*.js", "*.config.js"], mode: ElementMode.Full },
+			{ type: "src", pattern: ["src/*"], mode: ElementMode.Full },
 		],
 	},
 	rules: {
@@ -103,7 +103,7 @@ const defaultOptions: Options = {
 		entry: [
 			{
 				target: ["src"],
-				allow: ["index.ts"],
+				allow: ["*"],
 			},
 		],
 		external: [{ from: ["*"], allow: ["node:*"] }],
