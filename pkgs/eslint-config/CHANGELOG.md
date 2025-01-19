@@ -1,5 +1,11 @@
 # @duncan3142/eslint-config
 
+## 0.1.6
+
+### Patch Changes
+
+- ab4a52c: reorder rules
+
 ## 0.1.5
 
 ### Patch Changes
