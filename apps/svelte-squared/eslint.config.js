@@ -1,6 +1,6 @@
 // @ts-check
 
-import boundaries, { devDependencies, ElementMode } from "@duncan3142/eslint-config/boundaries"
+import boundaries, { ElementMode } from "@duncan3142/eslint-config/boundaries"
 import base from "@duncan3142/eslint-config/base"
 import jsdoc from "@duncan3142/eslint-config/jsdoc"
 import secrets from "@duncan3142/eslint-config/secrets"
@@ -11,9 +11,13 @@ import prettier from "@duncan3142/eslint-config/prettier"
 import comments from "@duncan3142/eslint-config/comments"
 import core, { compose, filePatterns, jsExtensions } from "@duncan3142/eslint-config/core"
 
-import svelte from "eslint-plugin-svelte"
-import svelteParser from "svelte-eslint-parser"
-import globals from "globals"
+import * as svelte from "eslint-plugin-svelte"
+import * as svelteParser from "svelte-eslint-parser"
+import * as globals from "globals"
+
+/** @import { Config } from '@duncan3142/eslint-config/core' */
+
+/* eslint-disable jsdoc/check-tag-names -- Type required in JS */
 
 const tsConfigs = ["tsconfig.json", ".svelte-kit/tsconfig.json"]
 
@@ -22,22 +26,15 @@ const boundaryOptions = {
 		elements: [
 			{
 				type: "cnfg",
-				pattern: [
-					".prettierrc.js",
-					"playwright.config.ts",
-					"drizzle.config.ts",
-					"vite.config.ts",
-					"eslint.config.js",
-					"svelte.config.js",
-				],
+				pattern: [".prettierrc.js", "*.config.ts", "*.config.js"],
 				mode: ElementMode.Full,
 			},
 			{ type: "src", pattern: ["src"], mode: ElementMode.Folder },
 			{ type: "e2e", pattern: ["e2e"], mode: ElementMode.Folder },
 			{
 				type: "out",
-				pattern: [".svelte-kit"],
-				mode: ElementMode.Folder,
+				pattern: [".svelte-kit/types/**"],
+				mode: ElementMode.Full,
 			},
 		],
 	},
@@ -64,48 +61,40 @@ const parserOptions = {
 	extraFileExtensions: [".svelte"],
 }
 
+/** @type {Config} */
+const svelteParserConfig = {
+	name: "@duncan3142/svelte-squared/parser",
+	files: ["**/*.svelte"],
+	languageOptions: {
+		parser: svelteParser,
+		ecmaVersion: 2024,
+		sourceType: "module",
+		globals: { ...globals.node, ...globals.browser },
+		parserOptions: {
+			parser,
+			parserOptions,
+		},
+	},
+}
+
+/* eslint-enable jsdoc/check-tag-names -- Type required in JS */
+
 export default compose(
 	core,
 	ignored(),
 	base,
 	comments,
+	svelteParserConfig,
 	typescript({
 		parserOptions,
 	}),
 	untyped({ files: filePatterns(jsExtensions, "svelte") }),
-	{
-		files: ["*.js"],
-		rules: {
-			"@typescript-eslint/explicit-module-boundary-types": "off",
-		},
-	},
 	boundaries(boundaryOptions),
-	devDependencies,
-	{
-		rules: {
-			"import/no-internal-modules": "off",
-			"import/no-extraneous-dependencies": "off",
-			"import/no-relative-parent-imports": "off",
-		},
-	},
+	{ rules: { "import/no-unresolved": "error" } },
 	promise,
 	jsdoc,
 	secrets,
 	svelte.configs["flat/recommended"],
-	{
-		name: "@duncan3142/svelte-squared/parser",
-		files: ["**/*.svelte"],
-		languageOptions: {
-			parser: svelteParser,
-			ecmaVersion: 2024,
-			sourceType: "module",
-			globals: { ...globals.node, ...globals.browser },
-			parserOptions: {
-				parser,
-				parserOptions,
-			},
-		},
-	},
 	prettier,
 	svelte.configs["flat/prettier"]
 )

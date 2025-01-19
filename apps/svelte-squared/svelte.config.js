@@ -7,7 +7,34 @@ import { vitePreprocess } from "@sveltejs/vite-plugin-svelte"
  * @import { Config as SvelteConfig } from "@sveltejs/kit"
  */
 
-// eslint-disable-next-line jsdoc/check-tag-names -- Required in JS
+/* eslint-disable jsdoc/check-tag-names -- Type required in JS */
+
+const CONFIG_DIR = "${configDir}"
+const PARENT_DIR = ".."
+
+/**
+ * Insert the config directory in paths
+ * @type {(container: Array<string>) => void}
+ */
+const insertConfigDir = (array) => {
+	array.forEach((path, index) => {
+		if (path.startsWith(PARENT_DIR)) {
+			array[index] = `${CONFIG_DIR}${path.slice(PARENT_DIR.length)}`
+		}
+	})
+}
+
+/**
+ * Set config property
+ * @type {(obj: Record<string, unknown>, key: string, value: unknown) => void}
+ */
+const setProp = (obj, key, value) => {
+	if (typeof obj[key] !== "undefined") {
+		throw new Error(`'${key}' already set`)
+	}
+	obj[key] = value
+}
+
 /** @type { SvelteConfig } */
 const config = {
 	// Consult https://svelte.dev/docs/kit/integrations
@@ -24,51 +51,38 @@ const config = {
 		typescript: {
 			config: (tsconfig) => {
 				const { compilerOptions, include, exclude } = tsconfig
+
+				setProp(tsconfig, "$schema", "https://json.schemastore.org/tsconfig")
+				setProp(tsconfig, "extends", ["@duncan3142/tsc-config/base"])
+
 				const { paths, rootDirs } = compilerOptions
-				const CONFIG_DIR = "${configDir}"
-				const PARENT_DIR = ".."
 
-				compilerOptions.baseUrl = "./"
+				setProp(compilerOptions, "baseUrl", "./")
+				setProp(compilerOptions, "rootDir", "${configDir}")
+				setProp(compilerOptions, "outDir", "${configDir}/.tsc")
+				setProp(compilerOptions, "tsBuildInfoFile", "${configDir}/.tsc/tsconfig.tsbuildinfo")
+				setProp(compilerOptions, "isolatedDeclarations", false)
+				setProp(compilerOptions, "allowJs", true)
+				setProp(compilerOptions, "checkJs", true)
+				setProp(compilerOptions, "skipLibCheck", true)
 
-				/* eslint-disable jsdoc/check-tag-names -- Required in JS */
+				Object.values(paths).forEach(insertConfigDir)
 
-				/**
-				 * Insert the config directory in the path
-				 * @type {(path: string, container: Array<string>, index: number) => void}
-				 */
-				const insertConfigDir = (path, container, index) => {
-					if (path.startsWith(PARENT_DIR)) {
-						container[index] = `${CONFIG_DIR}${path.slice(PARENT_DIR.length)}`
-					}
-				}
-
-				/**
-				 * Insert the config directory in paths
-				 * @type {(container: Array<string>) => void}
-				 */
-				const insertConfigDirs = (array) => {
-					array.forEach((path, index) => {
-						insertConfigDir(path, array, index)
-					})
-				}
-
-				/* eslint-enable jsdoc/check-tag-names -- Required in JS */
-
-				Object.values(paths).forEach(insertConfigDirs)
-
-				paths["$app/*"] = [`${CONFIG_DIR}/node_modules/@sveltejs/kit/src/runtime/app/*`]
-				paths["$env/*"] = [`${CONFIG_DIR}/node_modules/@sveltejs/kit/src/runtime/env/*`]
-				insertConfigDirs(rootDirs)
-				insertConfigDirs(include)
+				setProp(paths, "$app/*", ["${configDir}/node_modules/@sveltejs/kit/src/runtime/app/*"])
+				setProp(paths, "$env/*", ["${configDir}/node_modules/@sveltejs/kit/src/runtime/env/*"])
+				insertConfigDir(rootDirs)
+				insertConfigDir(include)
 				include.push(`${CONFIG_DIR}/*.config.js`)
 				include.push(`${CONFIG_DIR}/*.config.ts`)
 				include.push(`${CONFIG_DIR}/e2e/**/*.ts`)
-				insertConfigDirs(exclude)
+				insertConfigDir(exclude)
 			},
 		},
 	},
 
 	extensions: [".svelte", ".svx"],
 }
+
+/* eslint-enable jsdoc/check-tag-names -- Type required in JS */
 
 export default config
