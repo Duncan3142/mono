@@ -8,6 +8,30 @@ import { vitePreprocess } from "@sveltejs/vite-plugin-svelte"
  */
 
 /* eslint-disable jsdoc/check-tag-names -- Type required in JS */
+
+const CONFIG_DIR = "${configDir}"
+const PARENT_DIR = ".."
+
+/**
+ * Insert the config directory in the path
+ * @type {(path: string, container: Array<string>, index: number) => void}
+ */
+const insertConfigDir = (path, container, index) => {
+	if (path.startsWith(PARENT_DIR)) {
+		container[index] = `${CONFIG_DIR}${path.slice(PARENT_DIR.length)}`
+	}
+}
+
+/**
+ * Insert the config directory in paths
+ * @type {(container: Array<string>) => void}
+ */
+const insertConfigDirs = (array) => {
+	array.forEach((path, index) => {
+		insertConfigDir(path, array, index)
+	})
+}
+
 /** @type { SvelteConfig } */
 const config = {
 	// Consult https://svelte.dev/docs/kit/integrations
@@ -22,33 +46,10 @@ const config = {
 			out: ".build",
 		}),
 		typescript: {
-			config: (tsconfig) => {
-				const { compilerOptions, include, exclude } = tsconfig
+			config: ({ compilerOptions, include, exclude }) => {
 				const { paths, rootDirs } = compilerOptions
-				const CONFIG_DIR = "${configDir}"
-				const PARENT_DIR = ".."
 
 				compilerOptions.baseUrl = "./"
-
-				/**
-				 * Insert the config directory in the path
-				 * @type {(path: string, container: Array<string>, index: number) => void}
-				 */
-				const insertConfigDir = (path, container, index) => {
-					if (path.startsWith(PARENT_DIR)) {
-						container[index] = `${CONFIG_DIR}${path.slice(PARENT_DIR.length)}`
-					}
-				}
-
-				/**
-				 * Insert the config directory in paths
-				 * @type {(container: Array<string>) => void}
-				 */
-				const insertConfigDirs = (array) => {
-					array.forEach((path, index) => {
-						insertConfigDir(path, array, index)
-					})
-				}
 
 				Object.values(paths).forEach(insertConfigDirs)
 

@@ -84,6 +84,7 @@ export default compose(
 	ignored(),
 	base,
 	comments,
+	svelteParserConfig,
 	typescript({
 		parserOptions,
 	}),
@@ -92,7 +93,7 @@ export default compose(
 	promise,
 	jsdoc,
 	secrets,
-	svelteParserConfig,
+
 	svelte.configs["flat/recommended"],
 	prettier,
 	svelte.configs["flat/prettier"]
