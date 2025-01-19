@@ -1,5 +1,11 @@
 # @duncan3142/eslint-config
 
+## 0.1.7
+
+### Patch Changes
+
+- d0b19f4: strict boolean expressions
+
 ## 0.1.6
 
 ### Patch Changes
