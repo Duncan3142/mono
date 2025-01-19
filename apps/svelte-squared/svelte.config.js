@@ -65,6 +65,8 @@ const config = {
 				setProp(compilerOptions, "allowJs", true)
 				setProp(compilerOptions, "checkJs", true)
 				setProp(compilerOptions, "skipLibCheck", true)
+				setProp(compilerOptions, "esModuleInterop", true)
+				setProp(compilerOptions, "allowSyntheticDefaultImports", true)
 
 				Object.values(paths).forEach(insertConfigDir)
 

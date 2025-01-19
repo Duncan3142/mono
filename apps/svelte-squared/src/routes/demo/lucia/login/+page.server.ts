@@ -74,13 +74,11 @@ const actions: Actions = {
 			return fail(STATUS_400, { message: "Invalid password (min 6, max 255 characters)" })
 		}
 
-		const results = await db.select().from(table.user).where(eq(table.user.username, username))
+		const [existingUser] = await db
+			.select()
+			.from(table.user)
+			.where(eq(table.user.username, username))
 
-		const FIRST = 0
-
-		if (Math.random() < FIRST) console.log("random")
-
-		const existingUser = results.at(FIRST)
 		if (typeof existingUser === "undefined") {
 			return fail(STATUS_400, { message: "Incorrect username or password" })
 		}
