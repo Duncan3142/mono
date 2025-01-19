@@ -7,7 +7,7 @@ import { vitePreprocess } from "@sveltejs/vite-plugin-svelte"
  * @import { Config as SvelteConfig } from "@sveltejs/kit"
  */
 
-// eslint-disable-next-line jsdoc/check-tag-names -- Required in JS
+/* eslint-disable jsdoc/check-tag-names -- Type required in JS */
 /** @type { SvelteConfig } */
 const config = {
 	// Consult https://svelte.dev/docs/kit/integrations
@@ -30,8 +30,6 @@ const config = {
 
 				compilerOptions.baseUrl = "./"
 
-				/* eslint-disable jsdoc/check-tag-names -- Required in JS */
-
 				/**
 				 * Insert the config directory in the path
 				 * @type {(path: string, container: Array<string>, index: number) => void}
@@ -52,8 +50,6 @@ const config = {
 					})
 				}
 
-				/* eslint-enable jsdoc/check-tag-names -- Required in JS */
-
 				Object.values(paths).forEach(insertConfigDirs)
 
 				paths["$app/*"] = [`${CONFIG_DIR}/node_modules/@sveltejs/kit/src/runtime/app/*`]
@@ -70,5 +66,7 @@ const config = {
 
 	extensions: [".svelte", ".svx"],
 }
+
+/* eslint-enable jsdoc/check-tag-names -- Type required in JS */
 
 export default config
