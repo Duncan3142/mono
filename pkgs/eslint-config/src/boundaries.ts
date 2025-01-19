@@ -6,16 +6,7 @@ import imports from "eslint-plugin-import"
 
 import { TS_CONFIGS_DEFAULT } from "./typescript.ts"
 
-import {
-	compose,
-	filePatterns,
-	jstsExtensions,
-	type Config,
-	type Configs,
-	type Paths,
-	type Pattern,
-	type Patterns,
-} from "./core.ts"
+import { compose, type Configs, type Paths, type Pattern, type Patterns } from "./core.ts"
 
 /* -------------------------------------------------------------------------- */
 /*                                  Elements                                  */
@@ -51,7 +42,7 @@ type ElementMode = ElementModes[keyof ElementModes]
 type Element = {
 	type: ElementType
 	pattern: Patterns
-	basePattern?: Patterns
+	basePattern?: Pattern
 	mode?: ElementMode
 	capture?: Capture
 	baseCapture?: Capture
@@ -88,7 +79,9 @@ type Rules<Kind extends RuleKind = "from"> = Array<Rule<Kind>>
  * Config array factory options
  */
 type Options = {
-	settings: { elements: Elements }
+	settings: {
+		elements: Elements
+	}
 	rules: { elements: Rules; entry: Rules<"target">; external: Rules }
 	tsConfigs: Paths
 }
@@ -96,8 +89,8 @@ type Options = {
 const defaultOptions: Options = {
 	settings: {
 		elements: [
-			{ type: "cnfg", pattern: [".*", "*"], mode: ElementMode.Full },
-			{ type: "src", pattern: ["src"], mode: ElementMode.Folder },
+			{ type: "cnfg", pattern: [".*.js", "*.config.js"], mode: ElementMode.Full },
+			{ type: "src", pattern: ["src/*"], mode: ElementMode.Full },
 		],
 	},
 	rules: {
@@ -110,7 +103,7 @@ const defaultOptions: Options = {
 		entry: [
 			{
 				target: ["src"],
-				allow: ["index.ts"],
+				allow: ["*"],
 			},
 		],
 		external: [{ from: ["*"], allow: ["node:*"] }],
@@ -119,7 +112,7 @@ const defaultOptions: Options = {
 	tsConfigs: TS_CONFIGS_DEFAULT,
 }
 
-const resolverPath = fileURLToPath(import.meta.resolve("eslint-import-resolver-typescript"))
+const tsResolverPath = fileURLToPath(import.meta.resolve("eslint-import-resolver-typescript"))
 
 /**
  * Boundaries config
@@ -149,7 +142,7 @@ const configs = ({
 			name: "@duncan3142/eslint-config/boundaries",
 			settings: {
 				"import/resolver": {
-					[resolverPath]: {
+					[tsResolverPath]: {
 						alwaysTryTypes: true,
 						project: tsConfigs,
 					},
@@ -166,18 +159,21 @@ const configs = ({
 				"import/named": "off",
 				"import/namespace": "off",
 				"import/default": "off",
-				"import/no-named-as-default": "error",
+				"import/no-internal-modules": "off",
+				"import/no-extraneous-dependencies": "off",
 				"import/no-named-as-default-member": "off",
+				"import/no-default-export": "off",
+				"import/extensions": "off",
+				"import/no-unresolved": "off",
+				"import/no-relative-parent-imports": "off",
+				"import/no-named-as-default": "error",
 				"import/prefer-default-export": "error",
 				"import/no-empty-named-blocks": "error",
-				"import/no-default-export": "off",
 				"import/no-unassigned-import": "error",
 				"import/no-anonymous-default-export": "error",
-				"import/extensions": "off",
 				"import/no-cycle": "error",
 				"import/no-unused-modules": "error",
 				"import/no-deprecated": "error",
-				"import/no-unresolved": "off",
 				"import/no-self-import": "error",
 				"import/no-commonjs": "error",
 				"import/order": "error",
@@ -185,21 +181,10 @@ const configs = ({
 				"import/exports-last": "error",
 				"import/newline-after-import": "error",
 				"import/no-duplicates": "error",
-				"import/no-relative-parent-imports": "error",
-				"import/no-internal-modules": "error",
 				"import/no-absolute-path": "error",
 				"import/no-useless-path-segments": "error",
 				"import/group-exports": "error",
 				"import/no-mutable-exports": "error",
-				"import/no-extraneous-dependencies": [
-					"error",
-					{
-						devDependencies: false,
-						optionalDependencies: false,
-						peerDependencies: true,
-						bundledDependencies: false,
-					},
-				],
 				"boundaries/element-types": [
 					"error",
 					{
@@ -214,18 +199,6 @@ const configs = ({
 		}
 	)
 
-const devDependencies: Config = {
-	name: "@duncan3142/eslint-config/boundaries/dev-dependencies",
-	files: [
-		...filePatterns(`spec.${jstsExtensions}`, `config.${jstsExtensions}`),
-		".prettierrc.js",
-	],
-	rules: {
-		// Allow build / test files to load dev deps
-		"import/no-extraneous-dependencies": "off",
-	},
-}
-
-export { ElementMode, defaultOptions, devDependencies }
+export { ElementMode, defaultOptions }
 export default configs
 export type { Options }

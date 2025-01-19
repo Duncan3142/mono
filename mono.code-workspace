@@ -42,7 +42,11 @@
 		},
 		{
 			"name": "tools/npm",
-			"path": "tools/npm"
+			"path": "tools/npm",
+		},
+		{
+			"name": "apps/svelte-squared",
+			"path": "apps/svelte-squared",
 		},
 		{
 			"name": "pkgs/eslint-config",

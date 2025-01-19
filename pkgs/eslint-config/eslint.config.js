@@ -1,4 +1,4 @@
-import boundaries, { devDependencies, defaultOptions, ElementMode } from "#boundaries"
+import boundaries, { defaultOptions, ElementMode } from "#boundaries"
 import base from "#base"
 import jsdoc from "#jsdoc"
 import secrets from "#secrets"
@@ -12,8 +12,8 @@ import core, { compose } from "#core"
 const boundaryOptions = {
 	settings: {
 		elements: [
-			{ type: "cnfg", pattern: [".*", "*"], mode: ElementMode.Full },
-			{ type: "src", pattern: ["src"], mode: ElementMode.Folder },
+			{ type: "cnfg", pattern: [".*.js", "*.config.js"], mode: ElementMode.Full },
+			{ type: "src", pattern: ["src/*"], mode: ElementMode.Full },
 		],
 	},
 	rules: {
@@ -64,7 +64,6 @@ const configs = compose(
 	typescript(),
 	untyped(),
 	boundaries(boundaryOptions),
-	devDependencies,
 	promise,
 	jsdoc,
 	secrets,

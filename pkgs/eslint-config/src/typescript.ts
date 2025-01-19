@@ -42,6 +42,7 @@ const configs = ({ parserOptions }: Options = defaultOptions): Configs =>
 		files: filePatterns(jstsExtensions),
 		rules: {
 			"@typescript-eslint/consistent-type-definitions": "off",
+			"@typescript-eslint/no-non-null-assertion": "off",
 			"@typescript-eslint/consistent-return": "error",
 			"@typescript-eslint/consistent-type-imports": "error",
 			"@typescript-eslint/consistent-type-exports": [
@@ -52,7 +53,6 @@ const configs = ({ parserOptions }: Options = defaultOptions): Configs =>
 			"@typescript-eslint/prefer-destructuring": "error",
 			"@typescript-eslint/init-declarations": ["error", "always"],
 			"@typescript-eslint/default-param-last": "error",
-			"@typescript-eslint/no-non-null-assertion": "off",
 			"@typescript-eslint/explicit-module-boundary-types": "error",
 			"@typescript-eslint/switch-exhaustiveness-check": "error",
 			"@typescript-eslint/array-type": ["error", { default: "generic" }],
@@ -101,6 +101,9 @@ const untyped = ({ files }: UntypedOptions = defaultUntypedOptions): Configs =>
 		name: "@duncan3142/eslint-config/typescipt/untyped",
 		files,
 		extends: [tseslint.configs.disableTypeChecked],
+		rules: {
+			"@typescript-eslint/explicit-module-boundary-types": "off",
+		},
 	})
 
 export { TS_CONFIGS_DEFAULT, defaultOptions, parser, untyped, defaultUntypedOptions }

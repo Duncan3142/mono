@@ -9,17 +9,17 @@ const base: Configs = compose(eslintjs.configs.recommended, {
 	},
 	rules: {
 		"default-case": "off",
+		"consistent-return": "off",
+		"no-underscore-dangle": "off",
+		"no-continue": "off",
+		"no-nested-ternary": "off",
 		radix: "error",
 		eqeqeq: "error",
 		"no-undefined": "error",
 		"object-shorthand": ["error", "always"],
-		"consistent-return": "off",
 		"arrow-body-style": ["error", "as-needed", { requireReturnForObjectLiteral: true }],
 		"prefer-arrow-callback": "error",
-		"no-underscore-dangle": "off",
 		"no-await-in-loop": "error",
-		"no-continue": "off",
-		"no-nested-ternary": "off",
 		"no-restricted-syntax": [
 			"error",
 			{
