@@ -6,5 +6,12 @@
 </script>
 
 <ParaglideJS {i18n}>
+	Svelte <sup>2</sup>
 	{@render children()}
 </ParaglideJS>
+
+<style>
+	:global(body) {
+		font-family: "Teko", sans-serif;
+	}
+</style>

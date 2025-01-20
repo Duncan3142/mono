@@ -13,7 +13,6 @@ import { ignored } from "@duncan3142/eslint-config/ignored"
 import prettier from "@duncan3142/eslint-config/prettier"
 import comments from "@duncan3142/eslint-config/comments"
 import core, { compose, filePatterns, jsExtensions } from "@duncan3142/eslint-config/core"
-
 import * as svelte from "eslint-plugin-svelte"
 import * as svelteParser from "svelte-eslint-parser"
 import globals from "globals"
