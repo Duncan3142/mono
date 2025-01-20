@@ -1,6 +1,9 @@
 // @ts-check
 
-import boundaries, { ElementMode, defaultOptions } from "@duncan3142/eslint-config/boundaries"
+import boundaries, {
+	ElementMode,
+	defaultOptions as boundaryDefaults,
+} from "@duncan3142/eslint-config/boundaries"
 import base from "@duncan3142/eslint-config/base"
 import jsdoc from "@duncan3142/eslint-config/jsdoc"
 import secrets from "@duncan3142/eslint-config/secrets"
@@ -20,6 +23,7 @@ import globals from "globals"
 /* eslint-disable jsdoc/check-tag-names -- Type required in JS */
 
 const boundaryOptions = {
+	...boundaryDefaults,
 	settings: {
 		elements: [
 			{
@@ -51,7 +55,6 @@ const boundaryOptions = {
 		],
 		external: [{ from: ["src", "cnfg", "out", "e2e"], allow: ["**"] }],
 	},
-	tsConfigs: defaultOptions.tsConfigs,
 }
 
 const parserOptions = {
