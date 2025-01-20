@@ -1,6 +1,6 @@
 // @ts-check
 
-import boundaries, { ElementMode } from "@duncan3142/eslint-config/boundaries"
+import boundaries, { ElementMode, defaultOptions } from "@duncan3142/eslint-config/boundaries"
 import base from "@duncan3142/eslint-config/base"
 import jsdoc from "@duncan3142/eslint-config/jsdoc"
 import secrets from "@duncan3142/eslint-config/secrets"
@@ -13,13 +13,11 @@ import core, { compose, filePatterns, jsExtensions } from "@duncan3142/eslint-co
 
 import * as svelte from "eslint-plugin-svelte"
 import * as svelteParser from "svelte-eslint-parser"
-import * as globals from "globals"
+import globals from "globals"
 
 /** @import { Config } from '@duncan3142/eslint-config/core' */
 
 /* eslint-disable jsdoc/check-tag-names -- Type required in JS */
-
-const tsConfigs = ["tsconfig.json", ".svelte-kit/tsconfig.json"]
 
 const boundaryOptions = {
 	settings: {
@@ -53,7 +51,7 @@ const boundaryOptions = {
 		],
 		external: [{ from: ["src", "cnfg", "out", "e2e"], allow: ["**"] }],
 	},
-	tsConfigs,
+	tsConfigs: defaultOptions.tsConfigs,
 }
 
 const parserOptions = {
