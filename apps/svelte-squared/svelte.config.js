@@ -66,6 +66,7 @@ const config = {
 				setProp(compilerOptions, "checkJs", true)
 				setProp(compilerOptions, "skipLibCheck", true)
 				setProp(compilerOptions, "esModuleInterop", true)
+				// eslint-disable-next-line no-secrets/no-secrets -- TSConfig value
 				setProp(compilerOptions, "allowSyntheticDefaultImports", true)
 
 				Object.values(paths).forEach(insertConfigDir)

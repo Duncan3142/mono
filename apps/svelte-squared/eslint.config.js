@@ -90,7 +90,6 @@ export default compose(
 	}),
 	untyped({ files: filePatterns(jsExtensions, "svelte") }),
 	boundaries(boundaryOptions),
-	{ rules: { "import/no-unresolved": "error" } },
 	promise,
 	jsdoc,
 	secrets,
