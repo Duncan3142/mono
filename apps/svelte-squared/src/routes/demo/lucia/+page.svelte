@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { enhance } from "$app/forms"
-	// eslint-disable-next-line boundaries/no-ignored -- Unable to resolved
+	// eslint-disable-next-line boundaries/no-ignored -- Unable to resolve
 	import type { PageServerData } from "./$types"
 
 	let { data }: { data: PageServerData } = $props()

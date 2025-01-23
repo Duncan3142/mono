@@ -1,5 +1,5 @@
 import { fail, redirect } from "@sveltejs/kit"
-// eslint-disable-next-line boundaries/no-ignored -- Unable to resolved
+// eslint-disable-next-line boundaries/no-ignored -- Unable to resolve
 import type { Actions, PageServerLoad } from "./$types"
 import * as auth from "$lib/server/auth"
 import { STATUS_302, STATUS_401 } from "$lib/http"
