@@ -50,8 +50,6 @@
 		"@oslojs/crypto": "^1.0.1",
 		"@oslojs/encoding": "^1.1.0",
 		"drizzle-orm": "^0.38.4",
-		"postgres": "^3.4.5",
-		"rxdb": "^16.2.0",
-		"rxjs": "^7.8.1"
+		"postgres": "^3.4.5"
 	}
 }
