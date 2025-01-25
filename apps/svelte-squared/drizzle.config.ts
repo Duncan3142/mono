@@ -1,18 +1,42 @@
+import { env } from "process"
 import { defineConfig } from "drizzle-kit"
 
-const { DATABASE_URL } = process.env
+const { POSTGRES_PORT, POSTGRES_USER, POSTGRES_PASSWORD, POSTGRES_DATABASE, POSTGRES_HOST } =
+	env
 
-if (typeof DATABASE_URL === "undefined" || DATABASE_URL === "") {
-	throw new Error("DATABASE_URL is not set")
+const [port, user, password, database, host] = [
+	Number.parseInt(POSTGRES_PORT ?? "", 10),
+	POSTGRES_USER ?? "",
+	POSTGRES_PASSWORD ?? "",
+	POSTGRES_DATABASE ?? "",
+	POSTGRES_HOST ?? "",
+]
+
+if (Number.isNaN(port)) {
+	throw new Error("POSTGRES_PORT is not set")
+}
+if (user === "") {
+	throw new Error("POSTGRES_USER is not set")
+}
+if (password === "") {
+	throw new Error("POSTGRES_PASSWORD is not set")
+}
+if (database === "") {
+	throw new Error("POSTGRES_DATABASE is not set")
+}
+if (host === "") {
+	throw new Error("POSTGRES_HOST is not set")
 }
 
 export default defineConfig({
 	schema: "./src/lib/server/db/schema.ts",
-
 	dbCredentials: {
-		url: DATABASE_URL,
+		port,
+		user,
+		password,
+		database,
+		host,
 	},
-
 	verbose: true,
 	strict: true,
 	dialect: "postgresql",

@@ -2,12 +2,39 @@ import { drizzle } from "drizzle-orm/postgres-js"
 import postgres from "postgres"
 import { env } from "$env/dynamic/private"
 
-const { DATABASE_URL } = env
+const { POSTGRES_PORT, POSTGRES_USER, POSTGRES_PASSWORD, POSTGRES_DATABASE, POSTGRES_HOST } =
+	env
 
-if (typeof DATABASE_URL === "undefined" && DATABASE_URL === "") {
-	throw new Error("DATABASE_URL is not set")
+const [port, user, password, database, host] = [
+	Number.parseInt(POSTGRES_PORT ?? "", 10),
+	POSTGRES_USER ?? "",
+	POSTGRES_PASSWORD ?? "",
+	POSTGRES_DATABASE ?? "",
+	POSTGRES_HOST ?? "",
+]
+
+if (Number.isNaN(port)) {
+	throw new Error("POSTGRES_PORT is not set")
 }
-const client = postgres(DATABASE_URL)
+if (user === "") {
+	throw new Error("POSTGRES_USER is not set")
+}
+if (password === "") {
+	throw new Error("POSTGRES_PASSWORD is not set")
+}
+if (database === "") {
+	throw new Error("POSTGRES_DATABASE is not set")
+}
+if (host === "") {
+	throw new Error("POSTGRES_HOST is not set")
+}
+const client = postgres({
+	port,
+	user,
+	password,
+	database,
+	host,
+})
 const db = drizzle(client)
 
 export { db }
