@@ -11,6 +11,7 @@
 		<a href="/">Home</a>
 		<a href="/demo/lucia">Lucia</a>
 		<a href="/demo/paraglide">Paraglide</a>
+		<a href="/chat">Chat</a>
 	</h2>
 	{@render children()}
 </ParaglideJS>

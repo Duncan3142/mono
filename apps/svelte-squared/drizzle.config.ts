@@ -1,14 +1,13 @@
 import { env } from "process"
 import { defineConfig } from "drizzle-kit"
 
-const { POSTGRES_PORT, POSTGRES_USER, POSTGRES_PASSWORD, POSTGRES_DATABASE, POSTGRES_HOST } =
-	env
+const { POSTGRES_PORT, POSTGRES_USER, POSTGRES_PASSWORD, POSTGRES_DB, POSTGRES_HOST } = env
 
 const [port, user, password, database, host] = [
 	Number.parseInt(POSTGRES_PORT ?? "", 10),
 	POSTGRES_USER ?? "",
 	POSTGRES_PASSWORD ?? "",
-	POSTGRES_DATABASE ?? "",
+	POSTGRES_DB ?? "",
 	POSTGRES_HOST ?? "",
 ]
 
@@ -22,7 +21,7 @@ if (password === "") {
 	throw new Error("POSTGRES_PASSWORD is not set")
 }
 if (database === "") {
-	throw new Error("POSTGRES_DATABASE is not set")
+	throw new Error("POSTGRES_DB is not set")
 }
 if (host === "") {
 	throw new Error("POSTGRES_HOST is not set")
