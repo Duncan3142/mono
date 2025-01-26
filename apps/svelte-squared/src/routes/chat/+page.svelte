@@ -56,8 +56,8 @@
 	<div class={["conversation"]}>
 		{#each parsedConversation as { contents, role, timestamp } (timestamp)}
 			<div class={["message", role]}>
-				{#each contents as { type, content } (content)}
-					<div class={[type]}>{@html content}</div>
+				{#each contents as { type, content } (type)}
+					<span class={[type]}>{@html content}</span>
 				{/each}
 			</div>
 		{/each}
