@@ -1,71 +1,18 @@
 <script lang="ts">
 	import { enhance } from "$app/forms"
-	import { marked } from "marked"
+	import Conversation from "$lib/components/conversation.svelte"
+
 	// eslint-disable-next-line boundaries/no-ignored -- Unable to resolve
 	// import type { PageProps } from "./$types"
 	// const { form }: PageProps = $props()
 	type Message = { content: string; role: string; timestamp: number }
 	let conversation = $state<Array<Message>>([])
-	const parser = new DOMParser()
-	const parsedConversation = $derived.by(() =>
-		conversation.map(({ content, role, timestamp }) => {
-			const parsedContent = parser.parseFromString(content, "text/html")
-			const body = parsedContent.querySelector("body")
-			const contents: Array<{ type: "text" | "think"; content: string }> = []
-			body?.childNodes.forEach((node) => {
-				if (node.childNodes.length > 1) {
-					throw new Error(
-						`Expected leaf node, got ${node.childNodes.length} children on ${node.nodeName}`
-					)
-				}
-				if (node.textContent === null) {
-					return
-				}
-				const textContent = node.textContent.trim()
-				if (textContent === "") {
-					return
-				}
-				const content = marked.parse(textContent, {
-					async: false,
-				})
-				switch (node.nodeName) {
-					case "#text":
-						contents.push({ type: "text", content })
-						return
-					case "THINK": {
-						contents.push({ type: "think", content })
-						return
-					}
-					default:
-						throw new Error(`Unknown node type: ${node.nodeName}`)
-				}
-			})
 
-			return {
-				contents,
-				role,
-				timestamp,
-			}
-		})
-	)
-	$inspect(parsedConversation)
 	let thinking = $state(false)
 </script>
 
 <div class={["chat"]}>
-	<div class={["conversation"]}>
-		{#each parsedConversation as { contents, role, timestamp } (timestamp)}
-			<div class={["message", role]}>
-				{#each contents as { type, content } (type)}
-					<span class={[type]}>{@html content}</span>
-				{/each}
-			</div>
-		{/each}
-
-		{#if thinking}
-			<div class={["message", "assistant"]}>Thinking...</div>
-		{/if}
-	</div>
+	<Conversation {conversation} {thinking} />
 
 	<form
 		class={["question"]}
@@ -90,7 +37,7 @@
 			}
 		}}
 	>
-		<div class="question-text">
+		<div class="content">
 			<label for="message"> Message </label>
 			<textarea id="message" contenteditable name="message"></textarea>
 		</div>
@@ -104,39 +51,12 @@
 		flex-direction: column;
 		height: 100%;
 
-		.conversation {
-			flex: 1 1 auto;
-			display: flex;
-			flex-direction: column;
-			overflow: hidden;
-
-			.message {
-				padding: 0.5rem;
-				margin: 0.5rem;
-				border-radius: 0.5rem;
-
-				+ .user {
-					background-color: #00ffee;
-				}
-				+ .assistant {
-					color: #0099ff;
-					text-align: right;
-					:global(think) {
-						font-style: italic;
-						color: bisque;
-						display: block;
-					}
-					margin-top: 0.5rem;
-				}
-			}
-		}
-
-		.question {
+		& .question {
 			display: flex;
 			flex: 1 1 auto;
 			align-items: flex-end;
 			justify-content: end;
-			& .question-text {
+			& .content {
 				flex: 2 1 auto;
 				display: flex;
 				flex-direction: column;
