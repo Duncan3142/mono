@@ -91,7 +91,8 @@
 			}
 			& textarea {
 				height: 3rem;
-				width: 100%;
+				box-sizing: border-box;
+				width: 99%;
 				margin: 0.2rem;
 			}
 		}
