@@ -27,6 +27,8 @@ const ask = async ({ messages }: AskOptions): Promise<ChatResponse> => {
 		model: MODEL,
 		messages,
 		stream: false,
+
+		// format: "json",
 	})
 }
 
