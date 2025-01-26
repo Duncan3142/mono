@@ -2,9 +2,6 @@
 	import { enhance } from "$app/forms"
 	import Conversation from "$lib/components/conversation.svelte"
 
-	// eslint-disable-next-line boundaries/no-ignored -- Unable to resolve
-	// import type { PageProps } from "./$types"
-	// const { form }: PageProps = $props()
 	type Message = { content: string; role: string; timestamp: number }
 	let conversation = $state<Array<Message>>([])
 
