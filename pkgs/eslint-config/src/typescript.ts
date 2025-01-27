@@ -67,7 +67,6 @@ const configs = ({ parserOptions }: Options = defaultOptions): Configs =>
 				"error",
 				{ "ts-expect-error": "allow-with-description", "ts-nocheck": "allow-with-description" },
 			],
-			"@typescript-eslint/promise-function-async": "error",
 			"@typescript-eslint/require-array-sort-compare": "error",
 			"@typescript-eslint/strict-boolean-expressions": [
 				"error",
