@@ -141,7 +141,7 @@ class Chat {
 	}
 
 	#logError(error: Error) {
-		this.#log.push({ role: "assistant", fetched: false, error, timestamp: Date.now() })
+		this.#log.push({ role: ASSISTANT, fetched: false, error, timestamp: Date.now() })
 	}
 
 	#logUserMessage(content: string): void {
@@ -168,26 +168,20 @@ class Chat {
 		try {
 			this.#logUserMessage(content)
 
-			await EitherAsync<Error, unknown>(() =>
+			await EitherAsync<Error, Response>(() =>
 				fetch("/api/chat", {
 					body: JSON.stringify(this.#rawLog),
 					method: "POST",
-				}).then((data) => data.json())
+				})
 			)
-				.chain((data) =>
-					EitherAsync.liftEither(string.decode(data).mapLeft((e) => new Error(e)))
-				)
-
+				.chain(async (data) => string.decode(await data.json()).mapLeft((e) => new Error(e)))
+				.ifRight((data) => {
+					this.#logBotMessage(data)
+				})
+				.ifLeft((e) => {
+					this.#logError(e)
+				})
 				.run()
-				.then((result) =>
-					result
-						.ifRight((data) => {
-							this.#logBotMessage(data)
-						})
-						.ifLeft((e) => {
-							this.#logError(e)
-						})
-				)
 		} finally {
 			this.#thinking = false
 		}

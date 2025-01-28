@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { enhance } from "$app/forms"
-	import Conversation from "$lib/components/conversation.svelte"
+	import Conversation from "$lib/chat/conversation.svelte"
 
 	type Message = { content: string; role: string; timestamp: number }
 	let conversation = $state<Array<Message>>([])
@@ -14,6 +14,7 @@
 	<form
 		class={["question"]}
 		method="POST"
+		on:submit={() => }
 		use:enhance={({ formData, formElement }) => {
 			thinking = true
 			formElement.reset()

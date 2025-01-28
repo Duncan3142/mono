@@ -1,38 +1,37 @@
 import { fail, type Actions } from "@sveltejs/kit"
-import { Left, Right } from "purify-ts/Either"
 import { EitherAsync } from "purify-ts/EitherAsync"
-import type { AskOptions } from "$lib/server/ollama"
-import { HTTPError } from "$lib/http"
+import type { AskOptions } from "$lib/chat/ai"
+import { HTTPError, STATUS_400, STATUS_500 } from "$lib/http"
+import { string } from "purify-ts/Codec"
 
 /**
  * Actions
  */
 const actions = {
-	default: async ({ request, fetch }) =>
-		EitherAsync.fromPromise<HTTPError, FormData>(async () =>
-			request
-				.formData()
-				.then((data) => Right(data))
-				.catch((e) => Left(new HTTPError(400, "Invalid form data", e)))
-		)
-			.chain(async (data) => {
-				const conversationData = data.get("conversation")
-				return fetch("/api/chat", {
-					body: conversationData,
-					method: "POST",
-				})
-					.then(async (data) => Right(await data.json()))
-					.catch((e) => Left(new HTTPError(400, "Invalid form data", e)))
+	default: async ({ request, fetch }) => {
+		const response = await EitherAsync<Error, FormData>(() => request.formData())
+			.mapLeft((e: unknown) => new HTTPError(STATUS_400, "Invalid form data", e))
+			.chain((formData) => {
+				const conversationData = formData.get("conversation")
+				return EitherAsync(() =>
+					fetch("/api/chat", {
+						body: conversationData,
+						method: "POST",
+					})
+				)
+					.chain(async (message) => string.decode(await message.json()))
+					.ifLeft((e) => {
+						console.error(e)
+					})
+					.mapLeft((e: unknown) => new HTTPError(STATUS_500, "Unable to generate message", e))
 			})
+			.mapLeft(({ code, message }) => fail(code, { message }))
 			.run()
-			.then((result) =>
-				result.mapLeft(({ code, message }) => fail(code, { message })).extract()
-			),
+		return response.extract()
+	},
 } satisfies Actions
 
 const ssr = false
 
 export { actions, ssr }
 export type { AskOptions }
-
-// export default actions

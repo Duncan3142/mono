@@ -1,18 +1,9 @@
 import { error, json } from "@sveltejs/kit"
 import type { RequestHandler } from "./$types"
-import ask from "$lib/server/ollama"
+import ask from "$lib/chat/ai"
 import { EitherAsync } from "purify-ts/EitherAsync"
-import { Left, Right } from "purify-ts/Either"
-import { Codec, exactly, nonEmptyList, number, oneOf, string } from "purify-ts/Codec"
-import { HTTPError } from "$lib/http"
-
-const messagesCodec = nonEmptyList(
-	Codec.interface({
-		content: string,
-		role: oneOf([exactly("user"), exactly("assistant")]),
-		timestamp: number,
-	})
-)
+import { HTTPError, STATUS_400, STATUS_500 } from "$lib/http"
+import { messagesCodec } from "$lib/chat/message.codec"
 
 /**
  * Ask bot
@@ -21,32 +12,32 @@ const messagesCodec = nonEmptyList(
  * @returns Response
  */
 const POST: RequestHandler = async ({ request }) => {
-	return EitherAsync.fromPromise<HTTPError, unknown>(async () =>
-		request
-			.json()
-			.then((data) => Right(data))
-			.catch((e) => Left(new HTTPError(400, "Invalid form data", e)))
-	)
-		.chain(async (data) => {
-			return EitherAsync.liftEither(
-				messagesCodec.decode(data).mapLeft((error) => new HTTPError(400, error))
-			).chain((messages) => {
-				return ask({
+	const either = await EitherAsync<Error, unknown>(() => request.json())
+		.mapLeft((e: unknown) => new HTTPError(STATUS_400, "Invalid body json", e))
+		.chain((data) =>
+			EitherAsync.liftEither(
+				messagesCodec.decode(data).mapLeft((message) => new HTTPError(STATUS_400, message))
+			)
+		)
+		.chain((messages) =>
+			EitherAsync(() =>
+				ask({
 					messages,
 				})
-					.then(({ message: { content, role } }) =>
-						Right([...messages, { content, role, timestamp: Date.now() }])
-					)
-					.catch((e) => Left(new HTTPError(500, "Failed to get response", e)))
-			})
-		})
-		.run()
-		.then((result) =>
-			result
-				.mapLeft(({ code, message }) => error(code, message))
-				.map((result) => json(result))
-				.extract()
+			)
+				.ifLeft((e) => {
+					console.error(e)
+				})
+				.mapLeft((e: unknown) => new HTTPError(STATUS_500, "Unable to generate message", e))
 		)
-}
+		.map(({ message: { content } }) => json(content))
+		.run()
 
+	const response = either.extract()
+	if (response instanceof Error) {
+		const { code, message } = response
+		error(code, message)
+	}
+	return response
+}
 export { POST }

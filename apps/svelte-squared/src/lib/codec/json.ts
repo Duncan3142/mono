@@ -1,22 +1,5 @@
-import { Codec } from "purify-ts/Codec"
-import type { Either } from "purify-ts/Either"
-import { Left, Right } from "purify-ts/Either"
-
-/**
- * Parse JSON string
- * @param input - Input string to parse
- * @returns Parsed JSON Either
- */
-const jsonParse = (input: unknown): Either<string, unknown> => {
-	if (typeof input === "string") {
-		try {
-			return Right<unknown>(JSON.parse(input))
-		} catch {
-			return Left("Invalid JSON string")
-		}
-	}
-	return Left("Expected string for parsing")
-}
+import { Codec, string } from "purify-ts/Codec"
+import { Either } from "purify-ts/Either"
 
 /**
  * JSON string codec wrapper
@@ -25,7 +8,13 @@ const jsonParse = (input: unknown): Either<string, unknown> => {
  */
 const jsonString = <T>(codec: Codec<T>): Codec<T> =>
 	Codec.custom<T>({
-		decode: (input) => jsonParse(input).chain((value) => codec.decode(value)),
+		decode: (input) =>
+			string
+				.decode(input)
+				.chain((s) =>
+					Either.encase<Error, unknown>(() => JSON.parse(s)).mapLeft((e) => e.message)
+				)
+				.chain((value) => codec.decode(value)),
 		encode: (input) => JSON.stringify(codec.encode(input)),
 		schema: () => codec.schema(),
 	})
