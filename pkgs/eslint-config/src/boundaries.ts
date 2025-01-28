@@ -1,75 +1,74 @@
-import { fileURLToPath } from "node:url"
-// @ts-expect-error -- Package lacks types
-import boundaries from "eslint-plugin-boundaries"
-// @ts-expect-error -- Package lacks types
-import imports from "eslint-plugin-import"
+// // @ts-expect-error -- Package lacks types
+// import boundaries from "eslint-plugin-boundaries"
+import importX from "eslint-plugin-import-x"
+import { createTypeScriptImportResolver } from "eslint-import-resolver-typescript"
 
 import { TS_CONFIGS_DEFAULT } from "./typescript.ts"
+import { compose, type Configs, type Paths } from "./core.ts"
+// import { compose, type Configs, type Paths, type Pattern, type Patterns } from "./core.ts"
 
-import { compose, type Configs, type Paths, type Pattern, type Patterns } from "./core.ts"
+// /* -------------------------------------------------------------------------- */
+// /*                                  Elements                                  */
+// /* -------------------------------------------------------------------------- */
 
-/* -------------------------------------------------------------------------- */
-/*                                  Elements                                  */
-/* -------------------------------------------------------------------------- */
+// type ElementType = string
+// type Capture = Array<string>
 
-type ElementType = string
-type Capture = Array<string>
+// const Folder = "folder"
+// const File = "file"
+// const Full = "full"
 
-const Folder = "folder"
-const File = "file"
-const Full = "full"
+// type ElementModes = {
+// 	Folder: typeof Folder
+// 	File: typeof File
+// 	Full: typeof Full
+// }
 
-type ElementModes = {
-	Folder: typeof Folder
-	File: typeof File
-	Full: typeof Full
-}
+// const ElementMode: ElementModes = {
+// 	Folder,
+// 	File,
+// 	Full,
+// }
 
-const ElementMode: ElementModes = {
-	Folder,
-	File,
-	Full,
-}
+// /**
+//  * Element mode
+//  */
+// type ElementMode = ElementModes[keyof ElementModes]
 
-/**
- * Element mode
- */
-type ElementMode = ElementModes[keyof ElementModes]
+// /**
+//  * Element
+//  */
+// type Element = {
+// 	type: ElementType
+// 	pattern: Patterns
+// 	basePattern?: Pattern
+// 	mode?: ElementMode
+// 	capture?: Capture
+// 	baseCapture?: Capture
+// }
 
-/**
- * Element
- */
-type Element = {
-	type: ElementType
-	pattern: Patterns
-	basePattern?: Pattern
-	mode?: ElementMode
-	capture?: Capture
-	baseCapture?: Capture
-}
+// /**
+//  * Element array
+//  */
+// type Elements = Array<Element>
 
-/**
- * Element array
- */
-type Elements = Array<Element>
+// /* -------------------------------------------------------------------------- */
+// /*                                    Rules                                   */
+// /* -------------------------------------------------------------------------- */
 
-/* -------------------------------------------------------------------------- */
-/*                                    Rules                                   */
-/* -------------------------------------------------------------------------- */
+// type Matcher = Array<Pattern | [Pattern, Record<Pattern, Pattern>]>
+// type ImportKindString = "value" | "type" | "typeof"
+// type ImportKind = Array<ImportKindString>
 
-type Matcher = Array<Pattern | [Pattern, Record<Pattern, Pattern>]>
-type ImportKindString = "value" | "type" | "typeof"
-type ImportKind = Array<ImportKindString>
+// type OneOrBoth<A, B> = A | B | (A & B)
+// type RuleKind = "from" | "target"
+// type Rule<Kind extends RuleKind = "from"> = (Kind extends "from"
+// 	? { from: Matcher }
+// 	: { target: Matcher }) & {
+// 	importKind?: ImportKind
+// } & OneOrBoth<{ allow: Matcher }, { disallow: Matcher }>
 
-type OneOrBoth<A, B> = A | B | (A & B)
-type RuleKind = "from" | "target"
-type Rule<Kind extends RuleKind = "from"> = (Kind extends "from"
-	? { from: Matcher }
-	: { target: Matcher }) & {
-	importKind?: ImportKind
-} & OneOrBoth<{ allow: Matcher }, { disallow: Matcher }>
-
-type Rules<Kind extends RuleKind = "from"> = Array<Rule<Kind>>
+// type Rules<Kind extends RuleKind = "from"> = Array<Rule<Kind>>
 
 /* -------------------------------------------------------------------------- */
 /*                                   Configs                                  */
@@ -79,126 +78,114 @@ type Rules<Kind extends RuleKind = "from"> = Array<Rule<Kind>>
  * Config array factory options
  */
 type Options = {
-	settings: {
-		elements: Elements
-	}
-	rules: { elements: Rules; entry: Rules<"target">; external: Rules }
+	// settings: {
+	// 	elements: Elements
+	// }
+	// rules: { elements: Rules; entry: Rules<"target">; external: Rules }
 	tsConfigs: Paths
 }
 
 const defaultOptions: Options = {
-	settings: {
-		elements: [
-			{ type: "cnfg", pattern: [".*.js", "*.config.js"], mode: ElementMode.Full },
-			{ type: "src", pattern: ["src/*"], mode: ElementMode.Full },
-		],
-	},
-	rules: {
-		elements: [
-			{
-				from: ["src"],
-				allow: ["src"],
-			},
-		],
-		entry: [
-			{
-				target: ["src"],
-				allow: ["*"],
-			},
-		],
-		external: [{ from: ["*"], allow: ["node:*"] }],
-	},
+	// settings: {
+	// 	elements: [
+	// 		{ type: "cnfg", pattern: [".*.js", "*.config.js"], mode: ElementMode.Full },
+	// 		{ type: "src", pattern: ["src/*"], mode: ElementMode.Full },
+	// 	],
+	// },
+	// rules: {
+	// 	elements: [
+	// 		{
+	// 			from: ["src"],
+	// 			allow: ["src"],
+	// 		},
+	// 	],
+	// 	entry: [
+	// 		{
+	// 			target: ["src"],
+	// 			allow: ["*"],
+	// 		},
+	// 	],
+	// 	external: [{ from: ["*"], allow: ["node:*"] }],
+	// },
 
 	tsConfigs: TS_CONFIGS_DEFAULT,
 }
 
-const tsResolverPath = fileURLToPath(import.meta.resolve("eslint-import-resolver-typescript"))
-
 /**
  * Boundaries config
  * @param opts - options
- * @param opts.settings - settings
- * @param opts.settings.elements -element settings
- * @param opts.rules - rules
- * @param opts.rules.elements - element rules
- * @param opts.rules.entry - entry rules
- * @param opts.rules.external - external rules
  * @param opts.tsConfigs - tsconfig paths
  * @returns ESLint configs
  */
 const configs = ({
-	settings: { elements: elementsSettings },
-	rules: { elements: elementsRules, entry: entryRules, external: externalRules },
+	// settings: { elements: elementsSettings },
+	// rules: { elements: elementsRules, entry: entryRules, external: externalRules },
 	tsConfigs,
 }: Options = defaultOptions): Configs =>
 	compose(
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-argument -- Package lacks types
-		imports.flatConfigs.recommended,
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-argument -- Package lacks types
-		imports.flatConfigs.typescript,
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-argument -- Package lacks types
-		boundaries.configs.strict,
+		importX.flatConfigs.recommended,
+
+		importX.flatConfigs.typescript,
+		// // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-argument -- Package lacks types
+		// boundaries.configs.strict,
 		{
 			name: "@duncan3142/eslint-config/boundaries",
 			settings: {
-				"import/resolver": {
-					[tsResolverPath]: {
-						alwaysTryTypes: true,
-						project: tsConfigs,
-					},
-					node: true,
-				},
-				"boundaries/elements": elementsSettings,
-				"boundaries/dependency-nodes": ["import", "dynamic-import", "require", "export"],
-			},
-			plugins: {
-				// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Package lacks types
-				boundaries,
-			},
-			rules: {
-				"import/named": "off",
-				"import/namespace": "off",
-				"import/default": "off",
-				"import/no-internal-modules": "off",
-				"import/no-extraneous-dependencies": "off",
-				"import/no-named-as-default-member": "off",
-				"import/no-default-export": "off",
-				"import/extensions": "off",
-				"import/no-unresolved": "off",
-				"import/no-relative-parent-imports": "off",
-				"import/no-named-as-default": "error",
-				"import/prefer-default-export": "error",
-				"import/no-empty-named-blocks": "error",
-				"import/no-unassigned-import": "error",
-				"import/no-anonymous-default-export": "error",
-				"import/no-cycle": "error",
-				"import/no-unused-modules": "error",
-				"import/no-deprecated": "error",
-				"import/no-self-import": "error",
-				"import/no-commonjs": "error",
-				"import/order": "error",
-				"import/first": "error",
-				"import/exports-last": "error",
-				"import/newline-after-import": "error",
-				"import/no-duplicates": "error",
-				"import/no-absolute-path": "error",
-				"import/no-useless-path-segments": "error",
-				"import/group-exports": "error",
-				"import/no-mutable-exports": "error",
-				"boundaries/element-types": [
-					"error",
-					{
-						default: "disallow",
-						rules: elementsRules,
-					},
+				"import/resolver-next": [
+					createTypeScriptImportResolver({ alwaysTryTypes: true, project: tsConfigs }),
+					{ node: true },
 				],
-				"boundaries/no-private": ["error", { allowUncles: false }],
-				"boundaries/entry-point": ["error", { default: "disallow", rules: entryRules }],
-				"boundaries/external": ["error", { default: "disallow", rules: externalRules }],
+				// "boundaries/elements": elementsSettings,
+				// "boundaries/dependency-nodes": ["import", "dynamic-import", "require", "export"],
+			},
+			// plugins: {
+			// 	// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Package lacks types
+			// 	boundaries,
+			// },
+			rules: {
+				"import-x/named": "off", // Covered by Typescript
+				"import-x/namespace": "off", // Covered by Typescript
+				"import-x/default": "off", // Covered by Typescript
+				"import-x/no-named-as-default-member": "off", // Covered by Typescript
+				"import-x/no-unresolved": "off", // Covered by Typescript
+				"import-x/extensions": "off", // Covered by Typescript
+				"import-x/no-default-export": "off",
+				"import-x/no-relative-parent-imports": "off", // Investigate further
+				"import-x/no-internal-modules": "off", // Investigate further
+				"import-x/no-extraneous-dependencies": "off", // Investigate further
+				"import-x/no-named-as-default": "error",
+				"import-x/prefer-default-export": "error",
+				"import-x/no-empty-named-blocks": "error",
+				"import-x/no-unassigned-import": "error",
+				"import-x/no-anonymous-default-export": "error",
+				"import-x/no-cycle": "error",
+				"import-x/no-unused-modules": "error",
+				"import-x/no-deprecated": "error",
+				"import-x/no-self-import": "error",
+				"import-x/no-commonjs": "error",
+				"import-x/order": "error",
+				"import-x/first": "error",
+				"import-x/exports-last": "error",
+				"import-x/newline-after-import": "error",
+				"import-x/no-duplicates": "error",
+				"import-x/no-absolute-path": "error",
+				"import-x/no-useless-path-segments": "error",
+				"import-x/group-exports": "error",
+				"import-x/no-mutable-exports": "error",
+				// "boundaries/element-types": [
+				// 	"error",
+				// 	{
+				// 		default: "disallow",
+				// 		rules: elementsRules,
+				// 	},
+				// ],
+				// "boundaries/no-private": ["error", { allowUncles: false }],
+				// "boundaries/entry-point": ["error", { default: "disallow", rules: entryRules }],
+				// "boundaries/external": ["error", { default: "disallow", rules: externalRules }],
 			},
 		}
 	)
 
-export { ElementMode, defaultOptions }
+export { defaultOptions }
 export default configs
 export type { Options }

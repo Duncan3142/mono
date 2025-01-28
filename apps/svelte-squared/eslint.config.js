@@ -1,6 +1,9 @@
 // @ts-check
 
-import boundaries, { ElementMode } from "@duncan3142/eslint-config/boundaries"
+// import boundaries, {
+// 	ElementMode,
+// 	defaultOptions as boundaryDefaults,
+// } from "@duncan3142/eslint-config/boundaries"
 import base from "@duncan3142/eslint-config/base"
 import jsdoc from "@duncan3142/eslint-config/jsdoc"
 import secrets from "@duncan3142/eslint-config/secrets"
@@ -10,51 +13,48 @@ import { ignored } from "@duncan3142/eslint-config/ignored"
 import prettier from "@duncan3142/eslint-config/prettier"
 import comments from "@duncan3142/eslint-config/comments"
 import core, { compose, filePatterns, jsExtensions } from "@duncan3142/eslint-config/core"
-
 import * as svelte from "eslint-plugin-svelte"
 import * as svelteParser from "svelte-eslint-parser"
-import * as globals from "globals"
+import globals from "globals"
 
 /** @import { Config } from '@duncan3142/eslint-config/core' */
 
 /* eslint-disable jsdoc/check-tag-names -- Type required in JS */
 
-const tsConfigs = ["tsconfig.json", ".svelte-kit/tsconfig.json"]
-
-const boundaryOptions = {
-	settings: {
-		elements: [
-			{
-				type: "cnfg",
-				pattern: [".prettierrc.js", "*.config.ts", "*.config.js"],
-				mode: ElementMode.Full,
-			},
-			{ type: "src", pattern: ["src"], mode: ElementMode.Folder },
-			{ type: "e2e", pattern: ["e2e"], mode: ElementMode.Folder },
-			{
-				type: "out",
-				pattern: [".svelte-kit/types/**"],
-				mode: ElementMode.Full,
-			},
-		],
-	},
-	rules: {
-		elements: [
-			{
-				from: ["src"],
-				allow: ["src", "out"],
-			},
-		],
-		entry: [
-			{
-				target: ["src", "cnfg", "out", "e2e"],
-				allow: ["**"],
-			},
-		],
-		external: [{ from: ["src", "cnfg", "out", "e2e"], allow: ["**"] }],
-	},
-	tsConfigs,
-}
+// const boundaryOptions = {
+// 	...boundaryDefaults,
+// 	settings: {
+// 		elements: [
+// 			{
+// 				type: "cnfg",
+// 				pattern: [".prettierrc.js", "*.config.ts", "*.config.js"],
+// 				mode: ElementMode.Full,
+// 			},
+// 			{ type: "src", pattern: ["src"], mode: ElementMode.Folder },
+// 			{ type: "e2e", pattern: ["e2e"], mode: ElementMode.Folder },
+// 			{
+// 				type: "out",
+// 				pattern: [".svelte-kit/types/**"],
+// 				mode: ElementMode.Full,
+// 			},
+// 		],
+// 	},
+// 	rules: {
+// 		elements: [
+// 			{
+// 				from: ["src"],
+// 				allow: ["src", "out"],
+// 			},
+// 		],
+// 		entry: [
+// 			{
+// 				target: ["src", "cnfg", "out", "e2e"],
+// 				allow: ["**"],
+// 			},
+// 		],
+// 		external: [{ from: ["src", "cnfg", "out", "e2e"], allow: ["**"] }],
+// 	},
+// }
 
 const parserOptions = {
 	projectService: true,
@@ -89,8 +89,25 @@ export default compose(
 		parserOptions,
 	}),
 	untyped({ files: filePatterns(jsExtensions, "svelte") }),
-	boundaries(boundaryOptions),
-	{ rules: { "import/no-unresolved": "error" } },
+	{
+		rules: {
+			"@typescript-eslint/promise-function-async": "off",
+			"@typescript-eslint/no-magic-numbers": [
+				"error",
+				{
+					ignoreNumericLiteralTypes: true,
+				},
+			],
+			"@typescript-eslint/switch-exhaustiveness-check": [
+				"error",
+				{
+					considerDefaultExhaustiveForUnions: true,
+					requireDefaultForNonUnion: true,
+				},
+			],
+		},
+	},
+	// boundaries(),
 	promise,
 	jsdoc,
 	secrets,

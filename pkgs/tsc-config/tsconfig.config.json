@@ -5,7 +5,6 @@
 		"allowJs": true,
 		"checkJs": true,
 		"isolatedDeclarations": false,
-		"allowSyntheticDefaultImports": true,
 		"outDir": "${configDir}/.tsc",
 		"tsBuildInfoFile": "${configDir}/.tsc/tsconfig.config.tsbuildinfo"
 	},

@@ -2,7 +2,7 @@ import { hash, verify } from "@node-rs/argon2"
 import { encodeBase32LowerCase } from "@oslojs/encoding"
 import { fail, redirect } from "@sveltejs/kit"
 import { eq } from "drizzle-orm"
-// eslint-disable-next-line boundaries/no-ignored -- Unable to resolved
+// eslint-disable-next-line boundaries/no-ignored -- Unable to resolve
 import type { Actions, PageServerLoad } from "./$types"
 import * as auth from "$lib/server/auth"
 import { db } from "$lib/server/db"
@@ -74,13 +74,11 @@ const actions: Actions = {
 			return fail(STATUS_400, { message: "Invalid password (min 6, max 255 characters)" })
 		}
 
-		const results = await db.select().from(table.user).where(eq(table.user.username, username))
+		const [existingUser] = await db
+			.select()
+			.from(table.user)
+			.where(eq(table.user.username, username))
 
-		const FIRST = 0
-
-		if (Math.random() < FIRST) console.log("random")
-
-		const existingUser = results.at(FIRST)
 		if (typeof existingUser === "undefined") {
 			return fail(STATUS_400, { message: "Incorrect username or password" })
 		}
