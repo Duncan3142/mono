@@ -1,5 +1,11 @@
 # @duncan3142/eslint-config
 
+## 0.1.8
+
+### Patch Changes
+
+- 124a8a0: disable boundaries
+
 ## 0.1.7
 
 ### Patch Changes
