@@ -35,6 +35,12 @@ const setProp = (obj, key, value) => {
 	obj[key] = value
 }
 
+/**
+ * Set config property
+ * @type {(obj: Record<string, unknown>) => (key: string, value: unknown) => void}
+ */
+const setFactory = (obj) => (key, value) => setProp(obj, key, value)
+
 /** @type { SvelteConfig } */
 const config = {
 	// Consult https://svelte.dev/docs/kit/integrations
@@ -57,22 +63,27 @@ const config = {
 
 				const { paths, rootDirs } = compilerOptions
 
-				setProp(compilerOptions, "baseUrl", "./")
-				setProp(compilerOptions, "rootDir", "${configDir}")
-				setProp(compilerOptions, "outDir", "${configDir}/.tsc")
-				setProp(compilerOptions, "tsBuildInfoFile", "${configDir}/.tsc/tsconfig.tsbuildinfo")
-				setProp(compilerOptions, "isolatedDeclarations", false)
-				setProp(compilerOptions, "allowJs", true)
-				setProp(compilerOptions, "checkJs", true)
-				setProp(compilerOptions, "skipLibCheck", true)
-				setProp(compilerOptions, "esModuleInterop", true)
+				const setOption = setFactory(compilerOptions)
+
+				setOption("baseUrl", "./")
+				setOption("rootDir", "${configDir}")
+				setOption("outDir", "${configDir}/.tsc")
+				setOption("tsBuildInfoFile", "${configDir}/.tsc/tsconfig.tsbuildinfo")
+				setOption("isolatedDeclarations", false)
+				setOption("allowJs", true)
+				setOption("checkJs", true)
+				setOption("skipLibCheck", true) // Set in base, remove
+				setOption("esModuleInterop", true) // Set in base, remove
 				// eslint-disable-next-line no-secrets/no-secrets -- TSConfig value
-				setProp(compilerOptions, "allowSyntheticDefaultImports", true)
+				setOption("allowSyntheticDefaultImports", true) // Set in base, remove
+				setOption("allowArbitraryExtensions", true)
 
 				Object.values(paths).forEach(insertConfigDir)
 
-				setProp(paths, "$app/*", ["${configDir}/node_modules/@sveltejs/kit/src/runtime/app/*"])
-				setProp(paths, "$env/*", ["${configDir}/node_modules/@sveltejs/kit/src/runtime/env/*"])
+				const setPath = setFactory(paths)
+
+				setPath("$app/*", ["${configDir}/node_modules/@sveltejs/kit/src/runtime/app/*"])
+				setPath("$env/*", ["${configDir}/node_modules/@sveltejs/kit/src/runtime/env/*"])
 				insertConfigDir(rootDirs)
 				insertConfigDir(include)
 				include.push(`${CONFIG_DIR}/*.config.js`)

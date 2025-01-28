@@ -14,7 +14,7 @@ class HTTPError extends Error {
 	 * @param message - Error message
 	 * @param cause - Cause of the error
 	 */
-	public constructor(code: number, message: string, cause?: Error) {
+	public constructor(code: number, message: string, cause?: unknown) {
 		super(message)
 		this.code = code
 		this.cause = cause

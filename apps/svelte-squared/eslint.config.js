@@ -1,9 +1,9 @@
 // @ts-check
 
-import boundaries, {
-	ElementMode,
-	defaultOptions as boundaryDefaults,
-} from "@duncan3142/eslint-config/boundaries"
+// import boundaries, {
+// 	ElementMode,
+// 	defaultOptions as boundaryDefaults,
+// } from "@duncan3142/eslint-config/boundaries"
 import base from "@duncan3142/eslint-config/base"
 import jsdoc from "@duncan3142/eslint-config/jsdoc"
 import secrets from "@duncan3142/eslint-config/secrets"
@@ -21,40 +21,40 @@ import globals from "globals"
 
 /* eslint-disable jsdoc/check-tag-names -- Type required in JS */
 
-const boundaryOptions = {
-	...boundaryDefaults,
-	settings: {
-		elements: [
-			{
-				type: "cnfg",
-				pattern: [".prettierrc.js", "*.config.ts", "*.config.js"],
-				mode: ElementMode.Full,
-			},
-			{ type: "src", pattern: ["src"], mode: ElementMode.Folder },
-			{ type: "e2e", pattern: ["e2e"], mode: ElementMode.Folder },
-			{
-				type: "out",
-				pattern: [".svelte-kit/types/**"],
-				mode: ElementMode.Full,
-			},
-		],
-	},
-	rules: {
-		elements: [
-			{
-				from: ["src"],
-				allow: ["src", "out"],
-			},
-		],
-		entry: [
-			{
-				target: ["src", "cnfg", "out", "e2e"],
-				allow: ["**"],
-			},
-		],
-		external: [{ from: ["src", "cnfg", "out", "e2e"], allow: ["**"] }],
-	},
-}
+// const boundaryOptions = {
+// 	...boundaryDefaults,
+// 	settings: {
+// 		elements: [
+// 			{
+// 				type: "cnfg",
+// 				pattern: [".prettierrc.js", "*.config.ts", "*.config.js"],
+// 				mode: ElementMode.Full,
+// 			},
+// 			{ type: "src", pattern: ["src"], mode: ElementMode.Folder },
+// 			{ type: "e2e", pattern: ["e2e"], mode: ElementMode.Folder },
+// 			{
+// 				type: "out",
+// 				pattern: [".svelte-kit/types/**"],
+// 				mode: ElementMode.Full,
+// 			},
+// 		],
+// 	},
+// 	rules: {
+// 		elements: [
+// 			{
+// 				from: ["src"],
+// 				allow: ["src", "out"],
+// 			},
+// 		],
+// 		entry: [
+// 			{
+// 				target: ["src", "cnfg", "out", "e2e"],
+// 				allow: ["**"],
+// 			},
+// 		],
+// 		external: [{ from: ["src", "cnfg", "out", "e2e"], allow: ["**"] }],
+// 	},
+// }
 
 const parserOptions = {
 	projectService: true,
@@ -89,7 +89,25 @@ export default compose(
 		parserOptions,
 	}),
 	untyped({ files: filePatterns(jsExtensions, "svelte") }),
-	boundaries(boundaryOptions),
+	{
+		rules: {
+			"@typescript-eslint/promise-function-async": "off",
+			"@typescript-eslint/no-magic-numbers": [
+				"error",
+				{
+					ignoreNumericLiteralTypes: true,
+				},
+			],
+			"@typescript-eslint/switch-exhaustiveness-check": [
+				"error",
+				{
+					considerDefaultExhaustiveForUnions: true,
+					requireDefaultForNonUnion: true,
+				},
+			],
+		},
+	},
+	// boundaries(),
 	promise,
 	jsdoc,
 	secrets,

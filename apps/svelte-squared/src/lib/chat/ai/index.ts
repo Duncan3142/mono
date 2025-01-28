@@ -1,8 +1,8 @@
 import ollama, { type ChatResponse, type Message } from "ollama"
 
-const MODEL = "deepseek-r1:7b"
+const MODEL = "deepseek-r1:1.5b"
 
-const pull = ollama.pull({
+const load = ollama.pull({
 	model: MODEL,
 	stream: false,
 })
@@ -21,19 +21,16 @@ type AskOptions = {
  * @returns Chat response
  */
 const ask = async ({ messages }: AskOptions): Promise<ChatResponse> => {
-	await pull
+	await load
 
 	return ollama.chat({
 		model: MODEL,
 		messages,
 		stream: false,
-
 		// format: "json",
 	})
 }
 
-export { ask }
+export { load, ask }
 export type { AskOptions }
 export default ask
-
-// ollama pull deepseek-r1:7b

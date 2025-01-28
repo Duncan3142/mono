@@ -4,6 +4,7 @@ import { env } from "$env/dynamic/private"
 
 const { POSTGRES_PORT, POSTGRES_USER, POSTGRES_PASSWORD, POSTGRES_DB, POSTGRES_HOST } = env
 
+/* eslint-disable @typescript-eslint/no-unnecessary-condition -- Vars may not always be set */
 const [port, user, password, database, host] = [
 	Number.parseInt(POSTGRES_PORT ?? "", 10),
 	POSTGRES_USER ?? "",
@@ -11,6 +12,7 @@ const [port, user, password, database, host] = [
 	POSTGRES_DB ?? "",
 	POSTGRES_HOST ?? "",
 ]
+/* eslint-enable @typescript-eslint/no-unnecessary-condition -- Vars may not always be set */
 
 if (Number.isNaN(port)) {
 	throw new Error("POSTGRES_PORT is not set")
