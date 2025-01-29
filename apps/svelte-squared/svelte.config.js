@@ -41,6 +41,47 @@ const setProp = (obj, key, value) => {
  */
 const setFactory = (obj) => (key, value) => setProp(obj, key, value)
 
+/**
+ * Generate tsconfig
+ * @type {(config: Record<string, any>) => Record<string, any> | void}
+ */
+const tsconfigGenerator = (tsconfig) => {
+	const { compilerOptions, include, exclude } = tsconfig
+
+	setProp(tsconfig, "$schema", "https://json.schemastore.org/tsconfig")
+	setProp(tsconfig, "extends", ["@duncan3142/tsc-config/base"])
+
+	const { paths, rootDirs } = compilerOptions
+
+	const setOption = setFactory(compilerOptions)
+
+	setOption("baseUrl", "./")
+	setOption("rootDir", "${configDir}")
+	setOption("outDir", "${configDir}/.tsc")
+	setOption("tsBuildInfoFile", "${configDir}/.tsc/tsconfig.tsbuildinfo")
+	setOption("isolatedDeclarations", false)
+	setOption("allowJs", true)
+	setOption("checkJs", true)
+	setOption("skipLibCheck", true) // Set in base, remove
+	setOption("esModuleInterop", true) // Set in base, remove
+	// eslint-disable-next-line no-secrets/no-secrets -- TSConfig value
+	setOption("allowSyntheticDefaultImports", true) // Set in base, remove
+	setOption("allowArbitraryExtensions", true)
+
+	Object.values(paths).forEach(insertConfigDir)
+
+	const setPath = setFactory(paths)
+
+	setPath("$app/*", ["${configDir}/node_modules/@sveltejs/kit/src/runtime/app/*"])
+	setPath("$env/*", ["${configDir}/node_modules/@sveltejs/kit/src/runtime/env/*"])
+	insertConfigDir(rootDirs)
+	insertConfigDir(include)
+	include.push(`${CONFIG_DIR}/*.config.js`)
+	include.push(`${CONFIG_DIR}/*.config.ts`)
+	include.push(`${CONFIG_DIR}/e2e/**/*.ts`)
+	insertConfigDir(exclude)
+}
+
 /** @type { SvelteConfig } */
 const config = {
 	// Consult https://svelte.dev/docs/kit/integrations
@@ -55,42 +96,7 @@ const config = {
 			out: ".build",
 		}),
 		typescript: {
-			config: (tsconfig) => {
-				const { compilerOptions, include, exclude } = tsconfig
-
-				setProp(tsconfig, "$schema", "https://json.schemastore.org/tsconfig")
-				setProp(tsconfig, "extends", ["@duncan3142/tsc-config/base"])
-
-				const { paths, rootDirs } = compilerOptions
-
-				const setOption = setFactory(compilerOptions)
-
-				setOption("baseUrl", "./")
-				setOption("rootDir", "${configDir}")
-				setOption("outDir", "${configDir}/.tsc")
-				setOption("tsBuildInfoFile", "${configDir}/.tsc/tsconfig.tsbuildinfo")
-				setOption("isolatedDeclarations", false)
-				setOption("allowJs", true)
-				setOption("checkJs", true)
-				setOption("skipLibCheck", true) // Set in base, remove
-				setOption("esModuleInterop", true) // Set in base, remove
-				// eslint-disable-next-line no-secrets/no-secrets -- TSConfig value
-				setOption("allowSyntheticDefaultImports", true) // Set in base, remove
-				setOption("allowArbitraryExtensions", true)
-
-				Object.values(paths).forEach(insertConfigDir)
-
-				const setPath = setFactory(paths)
-
-				setPath("$app/*", ["${configDir}/node_modules/@sveltejs/kit/src/runtime/app/*"])
-				setPath("$env/*", ["${configDir}/node_modules/@sveltejs/kit/src/runtime/env/*"])
-				insertConfigDir(rootDirs)
-				insertConfigDir(include)
-				include.push(`${CONFIG_DIR}/*.config.js`)
-				include.push(`${CONFIG_DIR}/*.config.ts`)
-				include.push(`${CONFIG_DIR}/e2e/**/*.ts`)
-				insertConfigDir(exclude)
-			},
+			config: tsconfigGenerator,
 		},
 	},
 
