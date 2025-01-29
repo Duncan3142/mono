@@ -1,56 +1,38 @@
 <script lang="ts">
-	// import { USER, type Log, type UserMessage } from "./chat.service"
+	import { USER, type Log } from "./chat.service"
 
-	// type Props = {
-	// 	log: Log
-	// 	thinking: boolean
-	// }
+	type Props = {
+		log: Log
+		thinking: boolean
+	}
 
-	// const { log, thinking }: Props = $props()
+	const { log, thinking }: Props = $props()
 </script>
 
-<!--
-{#snippet userMessage(message: UserMessage)}
-	<article class={["message", message.role, message.parsed && "parsed"]}>
-		{#if message.parsed}
-			{@html message.html}
-		{:else}
-			<div class={["error"]}>
-				{message.error}
-			</div>
-			<div class={["content"]}>
-				{message.content}
-			</div>
-		{/if}
-	</article>
-{/snippet}
-
 <main class={["conversation"]}>
-	{#each log as entry (entry.timestamp)}
-		{#if entry.role === USER}
-			{#if entry.parsed}
-				{#each entry.contents as content (content.mode)}
-					{#if content.parsed}
-						<div class={["message", role]}>
-							<span class={["thought"]}>{content.html}</span>
+	{#each log as message (message.timestamp)}
+		{#if message.role === USER}
+			{#if message.hasContent}
+				<article class={["message", "user"]}>
+					{#if message.content.parsed}
+						<span class={["parsed"]}>
+							{@html message.content.html}
+						</span>
+					{:else}
+						<div class={["error"]}>
+							{message.content.error}
+						</div>
+						<div class={["unparsed"]}>
+							{message.content.content}
 						</div>
 					{/if}
-				{/each}
-			{:else if content}
-				<div class={["message", role]}>
-					<span>{@html content}</span>
-				</div>
+				</article>
 			{/if}
-		{:else if entry.fetched}
-			{entry.fetched}
+		{:else if message.fetched}
+			::TODO:: fetched bot message
 		{:else}
-			meow
+			::TODO:: unfetched bot message
 		{/if}
-		<div class={["message", role]}>
-			{#each contents as { mode, html } (mode)}
-				<span class={[mode]}>{@html html}</span>
-			{/each}
-		</div>
 	{/each}
 	{#if thinking}
 		<div class={["message", "assistant", "thinking"]}>Thinking...</div>
@@ -77,10 +59,10 @@
 			color: #0099ff;
 			text-align: right;
 		}
-		& .thought {
+		/* & .thought {
 			font-style: italic;
 			color: #6600ff;
 			display: block;
-		}
+		} */
 	}
-</style> -->
+</style>
