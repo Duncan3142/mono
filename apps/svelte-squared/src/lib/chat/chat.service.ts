@@ -288,20 +288,14 @@ class Chat {
 						const elements = [
 							{ ...parseNodeContent(first), mode: COMMENT },
 						] satisfies ParsedBotContent["elements"]
-						// throw new Error(JSON.stringify(elements))
-						const c: ParsedBotContent = {
+						const c = {
 							parsed: true,
 							elements,
 							get hasContent() {
 								return elements.every((e) => e.hasContent)
 							},
-						}
+						} satisfies ParsedBotContent
 						return c
-						// throw new Error("Unexpected nodes")
-						// return {
-						// 	parsed: true,
-						// 	elements,
-						// } satisfies ParsedBotContent
 					}
 					case isChildNode(first) &&
 						isChildNode(second) &&
