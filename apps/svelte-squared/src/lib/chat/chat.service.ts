@@ -288,14 +288,13 @@ class Chat {
 						const elements = [
 							{ ...parseNodeContent(first), mode: COMMENT },
 						] satisfies ParsedBotContent["elements"]
-						const c = {
+						return {
 							parsed: true,
 							elements,
 							get hasContent() {
 								return elements.every((e) => e.hasContent)
 							},
 						} satisfies ParsedBotContent
-						return c
 					}
 					case isChildNode(first) &&
 						isChildNode(second) &&
