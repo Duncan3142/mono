@@ -45,6 +45,11 @@ export default compose(
 	core,
 	ignored(),
 	base,
+	{
+		rules: {
+			"no-fallthrough": "off",
+		},
+	},
 	comments,
 	svelteParserConfig,
 	typescript({
