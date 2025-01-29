@@ -292,7 +292,7 @@ class Chat {
 							parsed: true,
 							elements,
 							get hasContent() {
-								return elements.some((e) => e.hasContent)
+								return this.elements.some((e) => e.hasContent)
 							},
 						} satisfies ParsedBotContent
 					}
@@ -311,7 +311,7 @@ class Chat {
 							parsed: true,
 							elements,
 							get hasContent() {
-								return elements.some((e) => e.hasContent)
+								return this.elements.some((e) => e.hasContent)
 							},
 						} satisfies ParsedBotContent
 					}
