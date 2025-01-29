@@ -38,5 +38,4 @@ const client = postgres({
 })
 const db = drizzle(client)
 
-export { db }
 export default db

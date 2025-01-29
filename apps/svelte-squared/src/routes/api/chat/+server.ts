@@ -1,7 +1,7 @@
 import { error, json } from "@sveltejs/kit"
+import { EitherAsync } from "purify-ts/EitherAsync"
 import type { RequestHandler } from "./$types"
 import ask from "$lib/chat/ai"
-import { EitherAsync } from "purify-ts/EitherAsync"
 import { HTTPError, STATUS_400, STATUS_500 } from "$lib/http"
 import { messagesCodec } from "$lib/chat/message.codec"
 
@@ -40,4 +40,5 @@ const POST: RequestHandler = async ({ request }) => {
 	}
 	return response
 }
+// eslint-disable-next-line import-x/prefer-default-export -- Support multiple verbs
 export { POST }

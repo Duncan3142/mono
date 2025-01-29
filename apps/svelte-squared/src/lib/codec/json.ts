@@ -19,5 +19,4 @@ const jsonString = <T>(codec: Codec<T>): Codec<T> =>
 		schema: () => codec.schema(),
 	})
 
-export { jsonString }
 export default jsonString

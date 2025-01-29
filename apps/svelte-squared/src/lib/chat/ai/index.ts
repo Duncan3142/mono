@@ -31,6 +31,6 @@ const ask = async ({ messages }: AskOptions): Promise<ChatResponse> => {
 	})
 }
 
-export { load, ask }
-export type { AskOptions }
+export { load }
 export default ask
+export type { AskOptions }

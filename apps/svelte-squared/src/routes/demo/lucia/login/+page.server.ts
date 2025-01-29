@@ -5,7 +5,7 @@ import { eq } from "drizzle-orm"
 
 import type { Actions, PageServerLoad } from "./$types"
 import * as auth from "$lib/auth"
-import { db } from "$lib/db"
+import db from "$lib/db"
 import * as table from "$lib/db/schema"
 import { STATUS_302, STATUS_400, STATUS_500 } from "$lib/http"
 

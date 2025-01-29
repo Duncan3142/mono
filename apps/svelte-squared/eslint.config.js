@@ -45,11 +45,6 @@ export default compose(
 	core,
 	ignored(),
 	base,
-	{
-		rules: {
-			"no-fallthrough": "off",
-		},
-	},
 	comments,
 	svelteParserConfig,
 	typescript({
@@ -61,6 +56,11 @@ export default compose(
 	jsdoc,
 	secrets,
 	svelte.configs["flat/recommended"],
+	{
+		rules: {
+			"no-fallthrough": "off",
+		},
+	},
 	prettier,
 	svelte.configs["flat/prettier"]
 )

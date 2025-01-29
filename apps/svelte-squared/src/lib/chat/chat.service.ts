@@ -405,4 +405,3 @@ class Chat {
 
 export { Chat, USER, ASSISTANT }
 export type { Log, UserMessage }
-export default Chat

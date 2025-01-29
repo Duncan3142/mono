@@ -1,8 +1,8 @@
 import { fail, type Actions } from "@sveltejs/kit"
 import { EitherAsync } from "purify-ts/EitherAsync"
+import { string } from "purify-ts/Codec"
 import type { AskOptions } from "$lib/chat/ai"
 import { HTTPError, STATUS_400, STATUS_500 } from "$lib/http"
-import { string } from "purify-ts/Codec"
 
 /**
  * Actions
