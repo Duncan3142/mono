@@ -1,15 +1,15 @@
 <script lang="ts">
-	import { enhance } from "$app/forms"
-	import Conversation from "$lib/chat/conversation.svelte"
+	// import { enhance } from "$app/forms"
+	// import Conversation from "$lib/chat/conversation.svelte"
 
-	type Message = { content: string; role: string; timestamp: number }
-	let conversation = $state<Array<Message>>([])
+	// type Message = { content: string; role: string; timestamp: number }
+	// let conversation = $state<Array<Message>>([])
 
-	let thinking = $state(false)
+	// let thinking = $state(false)
 </script>
 
 <div class={["chat"]}>
-	<Conversation {conversation} {thinking} />
+	<!-- <Conversation log={conversation} {thinking} />
 
 	<form
 		class={["question"]}
@@ -40,7 +40,7 @@
 			<textarea id="message" contenteditable name="message"></textarea>
 		</div>
 		<button>Send</button>
-	</form>
+	</form> -->
 </div>
 
 <style>
@@ -48,7 +48,7 @@
 		display: flex;
 		flex-direction: column;
 		height: 100%;
-
+		/*
 		& .question {
 			display: flex;
 			flex: 1 1 auto;
@@ -73,7 +73,7 @@
 
 			& button {
 				margin: 0.2rem;
-			}
-		}
+			} */
+		/* } */
 	}
 </style>

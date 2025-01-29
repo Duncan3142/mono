@@ -1,16 +1,51 @@
 <script lang="ts">
-	import type { ParsedLog } from "./chat.service"
+	// import { USER, type Log, type UserMessage } from "./chat.service"
 
-	type Props = {
-		conversation: ParsedLog
-		thinking: boolean
-	}
+	// type Props = {
+	// 	log: Log
+	// 	thinking: boolean
+	// }
 
-	const { conversation, thinking }: Props = $props()
+	// const { log, thinking }: Props = $props()
 </script>
 
-<div class={["conversation"]}>
-	{#each conversation as { contents, role, timestamp } (timestamp)}
+<!--
+{#snippet userMessage(message: UserMessage)}
+	<article class={["message", message.role, message.parsed && "parsed"]}>
+		{#if message.parsed}
+			{@html message.html}
+		{:else}
+			<div class={["error"]}>
+				{message.error}
+			</div>
+			<div class={["content"]}>
+				{message.content}
+			</div>
+		{/if}
+	</article>
+{/snippet}
+
+<main class={["conversation"]}>
+	{#each log as entry (entry.timestamp)}
+		{#if entry.role === USER}
+			{#if entry.parsed}
+				{#each entry.contents as content (content.mode)}
+					{#if content.parsed}
+						<div class={["message", role]}>
+							<span class={["thought"]}>{content.html}</span>
+						</div>
+					{/if}
+				{/each}
+			{:else if content}
+				<div class={["message", role]}>
+					<span>{@html content}</span>
+				</div>
+			{/if}
+		{:else if entry.fetched}
+			{entry.fetched}
+		{:else}
+			meow
+		{/if}
 		<div class={["message", role]}>
 			{#each contents as { mode, html } (mode)}
 				<span class={[mode]}>{@html html}</span>
@@ -20,7 +55,7 @@
 	{#if thinking}
 		<div class={["message", "assistant", "thinking"]}>Thinking...</div>
 	{/if}
-</div>
+</main>
 
 <style>
 	.conversation {
@@ -48,4 +83,4 @@
 			display: block;
 		}
 	}
-</style>
+</style> -->

@@ -5,60 +5,164 @@ import { string } from "purify-ts/Codec"
 import purify from "dompurify"
 
 const USER = "user"
+/**
+ * User role.
+ */
+type USER = typeof USER
 const ASSISTANT = "assistant"
-type Role = typeof USER | typeof ASSISTANT
+/**
+ * Bot role.
+ */
+type ASSISTANT = typeof ASSISTANT
+type Role = USER | ASSISTANT
 
-type RawMessageMeta = { role: Role; timestamp: number }
-type RawMessage = { content: string } & RawMessageMeta
+interface MessageMeta<R extends Role> {
+	readonly role: R
+	readonly timestamp: number
+}
+
+interface RawMessage extends MessageMeta<Role> {
+	readonly content: string
+}
 
 type RawLog = Array<RawMessage>
 
 const COMMENT = "comment"
+type COMMENT = typeof COMMENT
 const THOUGHT = "thought"
+type THOUGHT = typeof THOUGHT
 
 type DialogMode = typeof COMMENT | typeof THOUGHT
 
-type ParsedContentElement = { parsed: true; html: string }
-type UnparsedContentElement = { parsed: false; content: string; error: Error }
+interface HasContent<C extends boolean> {
+	readonly hasContent: C
+}
 
-type BotContentElement<Mode extends DialogMode> = {
-	mode: Mode
-} & (ParsedContentElement | UnparsedContentElement)
+interface Parsed<P extends boolean> {
+	readonly parsed: P
+}
+
+interface ParsedContent extends HasContent<boolean>, Parsed<true> {
+	readonly html: string
+}
+
+interface UnparsedContent extends HasContent<boolean>, Parsed<false> {
+	readonly content: string
+	readonly error: Error
+}
+
+type BaseContentElement = ParsedContent | UnparsedContent
+
+interface UserMessage extends MessageMeta<USER>, HasContent<boolean> {
+	content: BaseContentElement
+}
+
+interface BotContentElementMeta<Mode extends DialogMode> {
+	readonly mode: Mode
+}
+
+interface ParsedBotContentElement<Mode extends DialogMode>
+	extends BotContentElementMeta<Mode>,
+		ParsedContent {}
+
+interface UnparsedBotContentElement<Mode extends DialogMode>
+	extends BotContentElementMeta<Mode>,
+		UnparsedContent {}
+
+type BotContentElement<Mode extends DialogMode> =
+	| ParsedBotContentElement<Mode>
+	| UnparsedBotContentElement<Mode>
 
 type BotContentElements =
-	| [BotContentElement<typeof THOUGHT>, BotContentElement<typeof COMMENT>]
-	| BotContentElement<typeof COMMENT>
+	| [BotContentElement<THOUGHT>, BotContentElement<COMMENT>]
+	| [BotContentElement<COMMENT>]
 
-type ParsedBotContent = {
-	parsed: true
-	elements: BotContentElements
+interface ParsedBotContent extends HasContent<boolean>, Parsed<true> {
+	readonly elements: BotContentElements
 }
-type UnparsedBotContent = { parsed: false; content: string; error: Error }
-type BotContent = ParsedBotContent | UnparsedBotContent
 
-type Message = (
-	| ({
-			role: typeof USER
-	  } & (ParsedContentElement | UnparsedContentElement))
-	| ({ role: typeof ASSISTANT } & (
-			| { fetched: false; error: Error }
-			| ({ fetched: true } & BotContent)
-	  ))
-) & {
-	timestamp: number
+interface UnParsedBotContent extends HasContent<boolean>, UnparsedContent {}
+
+type BotContent = ParsedBotContent | UnParsedBotContent
+
+interface Fetched<F extends boolean> {
+	fetched: F
 }
-/**
- * User message.
- */
-type UserMessage = { role: typeof USER } & Message
-/**
- * Unfetched assistant message.
- */
-type UnfetchedMessage = { role: typeof ASSISTANT; fetched: false } & Message
-/**
- * Fetched assistant message.
- */
-type FetchedMessage = { role: typeof ASSISTANT; fetched: true } & Message
+
+interface ParsedBotMessage extends MessageMeta<ASSISTANT>, Fetched<true>, ParsedBotContent {}
+
+interface UnparsedBotMessage
+	extends MessageMeta<ASSISTANT>,
+		UnParsedBotContent,
+		Fetched<true> {}
+
+interface UnfetchedBotMessage
+	extends MessageMeta<ASSISTANT>,
+		HasContent<false>,
+		Fetched<false> {
+	error: Error
+}
+
+type FetchedBotMessage = ParsedBotMessage | UnparsedBotMessage
+
+type BotMessage = FetchedBotMessage | UnfetchedBotMessage
+
+type Message = UserMessage | BotMessage
+
+// const f = (m: Message) => {
+// 	switch (m.role) {
+// 		case USER: {
+// 			switch (m.content.parsed) {
+// 				case true: {
+// 					return m.hasContent
+// 				}
+// 				case false: {
+// 					return m.hasContent
+// 				}
+// 				default:
+// 					return never()
+// 			}
+// 		}
+// 		case ASSISTANT: {
+// 			switch (m.fetched) {
+// 				case true: {
+// 					switch (m.parsed) {
+// 						case true: {
+// 							return m.contents.map((e) => {
+// 								switch (e.parsed) {
+// 									case true: {
+// 										return m.hasContent && e.hasContent
+// 									}
+// 									case false: {
+// 										return m.hasContent && e.hasContent
+// 									}
+// 									default:
+// 										return never()
+// 								}
+// 							})
+// 						}
+// 						case false: {
+// 							return m.hasContent
+// 						}
+// 					}
+// 				}
+// 				case false: {
+// 					return m.hasContent
+// 				}
+// 				default:
+// 					return never()
+// 			}
+// 		}
+// 	}
+// }
+
+// f({
+// 	role: ASSISTANT,
+// 	fetched: false,
+// 	error: new Error(),
+// 	hasContent: false,
+// 	timestamp: 0,
+// })
 
 /**
  * HTML parsed log.
@@ -71,15 +175,18 @@ type Params = {
 
 const ONLY_CHILD = 1
 const FIRST_CHILD_INDEX = 0
+const ZERO_LENGTH = 0
 const THINK_NODE_NAME = "THINK"
 const TEXT_NODE_NAME = "#text"
-type ThinkNode = ChildNode & { childNodes: [Text] }
+interface ThinkNode extends Omit<ChildNode, "childNodes"> {
+	childNodes: [Text]
+}
 
 const isChildNode = (v: ChildNode | undefined): v is ChildNode => typeof v !== "undefined"
 
 const isTextNode = (node: ChildNode): node is Text => node.nodeName === TEXT_NODE_NAME
 
-const isThoughtNode = (node: ChildNode): node is ThinkNode => {
+const isThoughtNode = (node: ChildNode | ThinkNode): node is ThinkNode => {
 	const [child, ...rest] = node.childNodes
 	return (
 		node.nodeName === THINK_NODE_NAME &&
@@ -89,17 +196,39 @@ const isThoughtNode = (node: ChildNode): node is ThinkNode => {
 	)
 }
 
-const parseContent = (content: string) =>
+const parseContent = (content: string): BaseContentElement =>
 	Either.encase(() =>
 		marked.parse(content, {
 			async: false,
 		})
 	)
 		.map(
-			(html) => ({ parsed: true, html: purify.sanitize(html) }) satisfies ParsedContentElement
+			(html) =>
+				({
+					parsed: true,
+					html: purify.sanitize(html).trim(),
+					get hasContent() {
+						return this.html.length > ZERO_LENGTH
+					},
+				}) satisfies ParsedContent
 		)
-		.mapLeft((e) => ({ parsed: false, content, error: e }) satisfies UnparsedContentElement)
+		.mapLeft(
+			(e) =>
+				({
+					parsed: false,
+					content,
+					error: e,
+					get hasContent() {
+						return this.content.length > ZERO_LENGTH
+					},
+				}) satisfies UnparsedContent
+		)
 		.extract()
+
+const parseNodeContent = (node: Text) => {
+	const content = (node.textContent ?? "").trim()
+	return parseContent(content)
+}
 
 /**
  * Chat
@@ -120,92 +249,118 @@ class Chat {
 	}
 
 	#parseBotContent(content: string): BotContent {
-		return Either.encase(() => this.#parser.parseFromString(content, "text/html"))
-			.mapLeft((e) => ({ parsed: false, content, error: e }) satisfies UnparsedBotContent)
-			.map((parsedContent) => {
-				const body = parsedContent.querySelector("body")
-				if (body === null) {
-					return {
-						parsed: false,
-						content,
-						error: new Error("Body not found"),
-					} satisfies UnparsedBotContent
-				}
-				const [first, second, ...rest] = body.childNodes
-				const EMPTY_ARRAY_LENGTH = 0
-				const unexpectedNodes = () =>
-					({
-						parsed: false,
-						content,
-						error: new Error("Unexpected nodes"),
-					}) satisfies UnparsedBotContent
-
-				switch (true) {
-					case rest.length > EMPTY_ARRAY_LENGTH: {
-						return unexpectedNodes()
-					}
-					case !isChildNode(first):
-						return {
-							parsed: false,
-							content,
-							error: new Error("No nodes found"),
-						} satisfies UnparsedBotContent
-					case !isChildNode(second) && isChildNode(first) && isTextNode(first): {
-						return {
-							parsed: true,
-							elements: { ...parseContent(first.textContent ?? ""), mode: COMMENT },
-						} satisfies ParsedBotContent
-					}
-					case isChildNode(first) &&
-						isChildNode(second) &&
-						isThoughtNode(first) &&
-						isTextNode(second): {
-						return {
-							parsed: true,
-							elements: [
-								{
-									...parseContent(first.childNodes[FIRST_CHILD_INDEX].textContent ?? ""),
-									mode: THOUGHT,
-								},
-								{ ...parseContent(second.textContent ?? ""), mode: COMMENT },
-							],
-						} satisfies ParsedBotContent
-					}
-					default: {
-						return unexpectedNodes()
-					}
-				}
-			})
-			.extract()
+		throw new Error()
+		// 	return Either.encase(() => this.#parser.parseFromString(content, "text/html"))
+		// 		.mapLeft(
+		// 			(e) =>
+		// 				({
+		// 					parsed: false,
+		// 					content,
+		// 					error: e,
+		// 					get hasContent() {
+		// 						return this.content.length > ZERO_LENGTH
+		// 					},
+		// 				}) satisfies UnparsedBotContent
+		// 		)
+		// 		.map((parsedContent) => {
+		// 			const body = parsedContent.querySelector("body")
+		// 			const unparsedNodes = (message: string) =>
+		// 				({
+		// 					parsed: false,
+		// 					content,
+		// 					error: new Error(message),
+		// 					get hasContent() {
+		// 						return this.content.length > ZERO_LENGTH
+		// 					},
+		// 				}) satisfies UnparsedBotContent
+		// 			if (body === null) {
+		// 				return unparsedNodes("Body not found")
+		// 			}
+		// 			const [first, second, ...rest] = body.childNodes
+		// 			const EMPTY_ARRAY_LENGTH = 0
+		// 			switch (true) {
+		// 				case rest.length > EMPTY_ARRAY_LENGTH: {
+		// 					return unparsedNodes("Unexpected nodes")
+		// 				}
+		// 				case !isChildNode(first):
+		// 					return unparsedNodes("No nodes found")
+		// 				case !isChildNode(second) && isChildNode(first) && isTextNode(first): {
+		// 					const elementContent = parseNodeContent(first)
+		// 					return {
+		// 						parsed: true,
+		// 						elements: { ...elementContent, mode: COMMENT },
+		// 					} satisfies ParsedBotContent
+		// 				}
+		// 				case isChildNode(first) &&
+		// 					isChildNode(second) &&
+		// 					isThoughtNode(first) &&
+		// 					isTextNode(second): {
+		// 					const elements = [
+		// 						{
+		// 							...parseNodeContent(first.childNodes[FIRST_CHILD_INDEX]),
+		// 							mode: THOUGHT,
+		// 						},
+		// 						{ ...parseNodeContent(second), mode: COMMENT },
+		// 					] satisfies ParsedBotContent["elements"]
+		// 					return {
+		// 						parsed: true,
+		// 						elements,
+		// 						get hasContent() {
+		// 							return elements.every((e) => e.hasContent)
+		// 						},
+		// 					} satisfies ParsedBotContent
+		// 				}
+		// 				default: {
+		// 					return unparsedNodes("Unexpected nodes")
+		// 				}
+		// 			}
+		// 		})
+		// 		.extract()
 	}
 
-	#logError(error: Error) {
-		this.#log.push({ role: ASSISTANT, fetched: false, error, timestamp: Date.now() })
+	#logFetchError(error: Error) {
+		this.#log.push({
+			role: ASSISTANT,
+			fetched: false,
+			error,
+			timestamp: Date.now(),
+			hasContent: false,
+		})
 	}
 
 	#logUserMessage(content: string): void {
-		const meta = { role: USER, timestamp: Date.now() } satisfies RawMessageMeta
+		const meta = { role: USER, timestamp: Date.now() } satisfies MessageMeta<USER>
 		this.#rawLog.push({ content, ...meta })
-		const contents = parseContent(content)
-		this.#log.push({ ...contents, ...meta })
+		const contentElement = parseContent(content)
+		this.#log.push({
+			...meta,
+			content: contentElement,
+			get hasContent() {
+				return this.content.hasContent
+			},
+		} satisfies UserMessage)
 	}
 
 	#logBotMessage(content: string): void {
-		const meta = { role: ASSISTANT, timestamp: Date.now() } satisfies RawMessageMeta
+		const meta = { role: ASSISTANT, timestamp: Date.now() } satisfies MessageMeta<ASSISTANT>
 		this.#rawLog.push({ content, ...meta })
-		const contents = this.#parseBotContent(content)
-		this.#log.push({ fetched: true, ...contents, ...meta })
+		const botContent = this.#parseBotContent(content)
+		this.#log.push({
+			...meta,
+			...botContent,
+			fetched: true,
+		} satisfies FetchedBotMessage)
 	}
 
 	/**
 	 * Ask a question.
-	 * @param content - Message text
+	 * @param question - Message text
 	 */
-	public async ask(content: string): Promise<void> {
+	public async ask(question: string): Promise<void> {
 		const { fetch } = this.#params
 		this.#thinking = true
 		try {
-			this.#logUserMessage(content)
+			this.#logUserMessage(question.trim())
 
 			await EitherAsync<Error, Response>(() =>
 				fetch("/api/chat", {
@@ -214,11 +369,11 @@ class Chat {
 				})
 			)
 				.chain(async (data) => string.decode(await data.json()).mapLeft((e) => new Error(e)))
-				.ifRight((data) => {
-					this.#logBotMessage(data)
+				.ifRight((content) => {
+					this.#logBotMessage(content.trim())
 				})
 				.ifLeft((e) => {
-					this.#logError(e)
+					this.#logFetchError(e)
 				})
 				.run()
 		} finally {
@@ -244,5 +399,5 @@ class Chat {
 }
 
 export { Chat, USER, ASSISTANT }
-export type { Log, UserMessage, UnfetchedMessage, FetchedMessage }
+export type { Log, UserMessage }
 export default Chat
