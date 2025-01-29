@@ -13,6 +13,7 @@ const base: Configs = compose(eslintjs.configs.recommended, {
 		"no-underscore-dangle": "off",
 		"no-continue": "off",
 		"no-nested-ternary": "off",
+		"no-fallthrough": "off",
 		radix: "error",
 		eqeqeq: "error",
 		"no-undefined": "error",
