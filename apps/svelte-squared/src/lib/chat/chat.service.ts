@@ -281,14 +281,26 @@ class Chat {
 					case rest.length > EMPTY_ARRAY_LENGTH: {
 						return unparsedNodes("Unexpected nodes")
 					}
-					case !isChildNode(first):
+					case !isChildNode(first): {
 						return unparsedNodes("No nodes found")
+					}
 					case !isChildNode(second) && isChildNode(first) && isTextNode(first): {
-						throw new Error("::TODO::") // ::TODO::
-						// const elementContent = parseNodeContent(first)
+						const elements = [
+							{ ...parseNodeContent(first), mode: COMMENT },
+						] satisfies ParsedBotContent["elements"]
+						// throw new Error(JSON.stringify(elements))
+						const c: ParsedBotContent = {
+							parsed: true,
+							elements,
+							get hasContent() {
+								return elements.every((e) => e.hasContent)
+							},
+						}
+						return c
+						// throw new Error("Unexpected nodes")
 						// return {
 						// 	parsed: true,
-						// 	elements: [{ ...elementContent, mode: COMMENT }],
+						// 	elements,
 						// } satisfies ParsedBotContent
 					}
 					case isChildNode(first) &&
