@@ -81,9 +81,9 @@ interface ParsedBotContent extends HasContent<boolean>, Parsed<true> {
 	readonly elements: BotContentElements
 }
 
-interface UnParsedBotContent extends HasContent<boolean>, UnparsedContent {}
+interface UnparsedBotContent extends HasContent<boolean>, UnparsedContent {}
 
-type BotContent = ParsedBotContent | UnParsedBotContent
+type BotContent = ParsedBotContent | UnparsedBotContent
 
 interface Fetched<F extends boolean> {
 	fetched: F
@@ -93,7 +93,7 @@ interface ParsedBotMessage extends MessageMeta<ASSISTANT>, Fetched<true>, Parsed
 
 interface UnparsedBotMessage
 	extends MessageMeta<ASSISTANT>,
-		UnParsedBotContent,
+		UnparsedBotContent,
 		Fetched<true> {}
 
 interface UnfetchedBotMessage
@@ -173,7 +173,7 @@ type Params = {
 	fetch: typeof fetch
 }
 
-const ONLY_CHILD = 1
+const ONLY_CHILD_COUNT = 1
 const FIRST_CHILD_INDEX = 0
 const ZERO_LENGTH = 0
 const THINK_NODE_NAME = "THINK"
@@ -190,7 +190,7 @@ const isThoughtNode = (node: ChildNode | ThinkNode): node is ThinkNode => {
 	const [child, ...rest] = node.childNodes
 	return (
 		node.nodeName === THINK_NODE_NAME &&
-		rest.length === ONLY_CHILD &&
+		rest.length === ONLY_CHILD_COUNT &&
 		isChildNode(child) &&
 		isTextNode(child)
 	)
@@ -249,73 +249,73 @@ class Chat {
 	}
 
 	#parseBotContent(content: string): BotContent {
-		throw new Error()
-		// 	return Either.encase(() => this.#parser.parseFromString(content, "text/html"))
-		// 		.mapLeft(
-		// 			(e) =>
-		// 				({
-		// 					parsed: false,
-		// 					content,
-		// 					error: e,
-		// 					get hasContent() {
-		// 						return this.content.length > ZERO_LENGTH
-		// 					},
-		// 				}) satisfies UnparsedBotContent
-		// 		)
-		// 		.map((parsedContent) => {
-		// 			const body = parsedContent.querySelector("body")
-		// 			const unparsedNodes = (message: string) =>
-		// 				({
-		// 					parsed: false,
-		// 					content,
-		// 					error: new Error(message),
-		// 					get hasContent() {
-		// 						return this.content.length > ZERO_LENGTH
-		// 					},
-		// 				}) satisfies UnparsedBotContent
-		// 			if (body === null) {
-		// 				return unparsedNodes("Body not found")
-		// 			}
-		// 			const [first, second, ...rest] = body.childNodes
-		// 			const EMPTY_ARRAY_LENGTH = 0
-		// 			switch (true) {
-		// 				case rest.length > EMPTY_ARRAY_LENGTH: {
-		// 					return unparsedNodes("Unexpected nodes")
-		// 				}
-		// 				case !isChildNode(first):
-		// 					return unparsedNodes("No nodes found")
-		// 				case !isChildNode(second) && isChildNode(first) && isTextNode(first): {
-		// 					const elementContent = parseNodeContent(first)
-		// 					return {
-		// 						parsed: true,
-		// 						elements: { ...elementContent, mode: COMMENT },
-		// 					} satisfies ParsedBotContent
-		// 				}
-		// 				case isChildNode(first) &&
-		// 					isChildNode(second) &&
-		// 					isThoughtNode(first) &&
-		// 					isTextNode(second): {
-		// 					const elements = [
-		// 						{
-		// 							...parseNodeContent(first.childNodes[FIRST_CHILD_INDEX]),
-		// 							mode: THOUGHT,
-		// 						},
-		// 						{ ...parseNodeContent(second), mode: COMMENT },
-		// 					] satisfies ParsedBotContent["elements"]
-		// 					return {
-		// 						parsed: true,
-		// 						elements,
-		// 						get hasContent() {
-		// 							return elements.every((e) => e.hasContent)
-		// 						},
-		// 					} satisfies ParsedBotContent
-		// 				}
-		// 				default: {
-		// 					return unparsedNodes("Unexpected nodes")
-		// 				}
-		// 			}
-		// 		})
-		// 		.extract()
+		return Either.encase(() => this.#parser.parseFromString(content, "text/html"))
+			.mapLeft(
+				(e) =>
+					({
+						parsed: false,
+						content,
+						error: e,
+						get hasContent() {
+							return this.content.length > ZERO_LENGTH
+						},
+					}) satisfies UnparsedBotContent
+			)
+			.map((parsedContent) => {
+				const body = parsedContent.querySelector("body")
+				const unparsedNodes = (message: string) =>
+					({
+						parsed: false,
+						content,
+						error: new Error(message),
+						get hasContent() {
+							return this.content.length > ZERO_LENGTH
+						},
+					}) satisfies UnparsedBotContent
+				if (body === null) {
+					return unparsedNodes("Body not found")
+				}
+				const [first, second, ...rest] = body.childNodes
+				const EMPTY_ARRAY_LENGTH = 0
+				switch (true) {
+					case rest.length > EMPTY_ARRAY_LENGTH: {
+						return unparsedNodes("Unexpected nodes")
+					}
+					case !isChildNode(first):
+						return unparsedNodes("No nodes found")
+					case !isChildNode(second) && isChildNode(first) && isTextNode(first): {
+						throw new Error("::TODO::") // ::TODO::
+						// const elementContent = parseNodeContent(first)
+						// return {
+						// 	parsed: true,
+						// 	elements: [{ ...elementContent, mode: COMMENT }],
+						// } satisfies ParsedBotContent
+					}
+					case isChildNode(first) &&
+						isChildNode(second) &&
+						isThoughtNode(first) &&
+						isTextNode(second): {
+						const elements = [
+							{
+								...parseNodeContent(first.childNodes[FIRST_CHILD_INDEX]),
+								mode: THOUGHT,
+							},
+							{ ...parseNodeContent(second), mode: COMMENT },
+						] satisfies ParsedBotContent["elements"]
+						return {
+							parsed: true,
+							elements,
+							get hasContent() {
+								return elements.every((e) => e.hasContent)
+							},
+						} satisfies ParsedBotContent
+					}
+					default: {
+						return unparsedNodes("Unexpected nodes")
+					}
+				}
+			})
+			.extract()
 	}
 
 	#logFetchError(error: Error) {

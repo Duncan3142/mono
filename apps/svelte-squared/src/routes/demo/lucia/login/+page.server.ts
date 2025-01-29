@@ -2,11 +2,11 @@ import { hash, verify } from "@node-rs/argon2"
 import { encodeBase32LowerCase } from "@oslojs/encoding"
 import { fail, redirect } from "@sveltejs/kit"
 import { eq } from "drizzle-orm"
-// eslint-disable-next-line boundaries/no-ignored -- Unable to resolve
+
 import type { Actions, PageServerLoad } from "./$types"
-import * as auth from "$lib/server/auth"
-import { db } from "$lib/server/db"
-import * as table from "$lib/server/db/schema"
+import * as auth from "$lib/auth"
+import { db } from "$lib/db"
+import * as table from "$lib/db/schema"
 import { STATUS_302, STATUS_400, STATUS_500 } from "$lib/http"
 
 /**
