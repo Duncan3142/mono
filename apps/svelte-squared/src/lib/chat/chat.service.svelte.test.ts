@@ -1,16 +1,16 @@
-import { describe, it, expect, beforeEach, vi } from "vitest"
+import { describe, it, expect, beforeEach } from "vitest"
 import { mock, mockFn, mockReset } from "vitest-mock-extended"
-import { Chat, USER, ASSISTANT } from "./chat.service"
+import { Chat, USER, ASSISTANT } from "./chat.service.svelte"
+
+/* eslint-disable @typescript-eslint/no-unsafe-assignment -- Allow `any` matchers */
 
 describe("Chat Service", () => {
 	const mockFetch = mockFn<typeof fetch>()
 	let chat = new Chat({ fetch: mockFetch })
-	let askSpy = vi.spyOn(chat, "ask")
 
 	beforeEach(() => {
 		mockReset(mockFetch)
 		chat = new Chat({ fetch: mockFetch })
-		askSpy = vi.spyOn(chat, "ask")
 	})
 
 	describe("Initial State", () => {
@@ -189,9 +189,13 @@ describe("Chat Service", () => {
 			)
 
 			await chat.ask("Test")
-			expect(chat.log[1].elements[0].html).toBe(
-				"<p><strong>Bold</strong> <em>italic</em> <em>underscore</em></p>"
-			)
+			const [, botResponse] = chat.log
+
+			expect(botResponse).toMatchObject({
+				elements: [
+					{ html: "<p><strong>Bold</strong> <em>italic</em> <em>underscore</em></p>" },
+				],
+			})
 		})
 
 		it("should handle code blocks with special chars", async () => {
@@ -202,7 +206,10 @@ describe("Chat Service", () => {
 			)
 
 			await chat.ask("Test")
-			expect(chat.log[1].elements[0].html).toContain("<code>")
+			const [, botResponse] = chat.log
+			expect(botResponse).toMatchObject({
+				elements: [{ html: expect.stringContaining("<code>") }],
+			})
 		})
 	})
 
@@ -216,8 +223,17 @@ describe("Chat Service", () => {
 
 			await chat.ask("   ")
 			const [userMessage, botResponse] = chat.log
-			expect(userMessage.content.hasContent).toBe(false)
-			expect(botResponse.elements[0].hasContent).toBe(false)
+
+			expect(userMessage).toMatchObject({
+				content: {
+					hasContent: false,
+				},
+			})
+			expect(botResponse).toMatchObject({
+				content: {
+					elements: [{ hasContent: false }],
+				},
+			})
 		})
 
 		it("should handle malformed think tags", async () => {
@@ -266,8 +282,20 @@ describe("Chat Service", () => {
 			)
 
 			await chat.ask("Test 🌟")
-			expect(chat.log[0].content.html).toContain("🌟")
-			expect(chat.log[1].elements[0].html).toContain("👋")
+			const [userMessage, botResponse] = chat.log
+
+			expect(userMessage).toMatchObject({
+				content: {
+					html: expect.stringContaining("🌟"),
+				},
+			})
+			expect(botResponse).toMatchObject({
+				elements: [
+					{
+						html: expect.stringContaining("👋"),
+					},
+				],
+			})
 		})
 
 		it("should handle HTML entities", async () => {
@@ -278,7 +306,16 @@ describe("Chat Service", () => {
 			)
 
 			await chat.ask("Test")
-			expect(chat.log[1].elements[0].html).toContain("&lt;script&gt;")
+			const [, botResponse] = chat.log
+			expect(botResponse).toMatchObject({
+				elements: [
+					{
+						html: "&lt;script&gt;",
+					},
+				],
+			})
 		})
 	})
 })
+
+/* eslint-enable @typescript-eslint/no-unsafe-assignment -- Allow `any` matchers */

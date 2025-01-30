@@ -12,6 +12,7 @@ const paraglide: Plugin = paraglideFactory({
 export default defineConfig({
 	plugins: [sveltekit(), paraglide],
 	test: {
+		environment: "jsdom",
 		include: ["src/**/*.{test,spec}.{js,ts}"],
 	},
 })
