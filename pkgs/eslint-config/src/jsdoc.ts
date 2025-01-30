@@ -18,12 +18,7 @@ const configs: Configs = [
 						FunctionExpression: true,
 						MethodDefinition: true,
 					},
-					contexts: [
-						// eslint-disable-next-line no-secrets/no-secrets -- ESQuery expression
-						"VariableDeclaration > VariableDeclarator[init.type!=/^(ArrowFunctionExpression|ClassExpression|FunctionExpression)$/]",
-						"TSInterfaceDeclaration",
-						"TSTypeAliasDeclaration",
-					],
+					contexts: ["TSInterfaceDeclaration", "TSTypeAliasDeclaration"],
 				},
 			],
 			"jsdoc/no-blank-blocks": ["error", { enableFixer: false }],

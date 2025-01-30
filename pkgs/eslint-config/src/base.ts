@@ -10,6 +10,7 @@ const base: Configs = compose(eslintjs.configs.recommended, {
 	rules: {
 		"default-case": "off",
 		"consistent-return": "off",
+		"one-var": ["error", { initialized: "never", uninitialized: "always" }],
 		"no-underscore-dangle": "off",
 		"no-continue": "off",
 		"no-nested-ternary": "off",
