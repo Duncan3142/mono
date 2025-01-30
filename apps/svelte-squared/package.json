@@ -42,15 +42,16 @@
 		"svelte-eslint-parser": "^0.43.0",
 		"typescript": "^5.7.3",
 		"vite": "^6.0.11",
-		"vitest": "^3.0.4"
+		"vitest": "^3.0.4",
+		"vitest-mock-extended": "^2.0.2"
 	},
 	"dependencies": {
 		"@inlang/paraglide-sveltekit": "^0.15.5",
 		"@node-rs/argon2": "^2.0.2",
 		"@oslojs/crypto": "^1.0.1",
 		"@oslojs/encoding": "^1.1.0",
-		"dompurify": "^3.2.3",
-		"drizzle-orm": "^0.39.0",
+		"dompurify": "^3.2.4",
+		"drizzle-orm": "^0.39.1",
 		"marked": "^15.0.6",
 		"minio": "^8.0.4",
 		"ollama": "^0.5.12",
