@@ -76,8 +76,9 @@ describe("Chat Service", () => {
 			)
 
 			await chat.ask("Hello")
+			const [, botResponse] = chat.log
 
-			expect(chat.log[1]).toMatchObject({
+			expect(botResponse).toMatchObject({
 				role: ASSISTANT,
 				fetched: true,
 				parsed: true,
@@ -99,8 +100,9 @@ describe("Chat Service", () => {
 			)
 
 			await chat.ask("Hello")
+			const [, botResponse] = chat.log
 
-			expect(chat.log[1]).toMatchObject({
+			expect(botResponse).toMatchObject({
 				role: ASSISTANT,
 				fetched: true,
 				parsed: true,
@@ -125,8 +127,9 @@ describe("Chat Service", () => {
 			mockFetch.mockRejectedValueOnce(new Error("Network error"))
 
 			await chat.ask("Hello")
+			const [, errorResponse] = chat.log
 
-			expect(chat.log[1]).toMatchObject({
+			expect(errorResponse).toMatchObject({
 				role: ASSISTANT,
 				fetched: false,
 				hasContent: false,
@@ -140,8 +143,9 @@ describe("Chat Service", () => {
 			})
 
 			await chat.ask("Hello")
+			const [, invalidResponse] = chat.log
 
-			expect(chat.log[1]).toMatchObject({
+			expect(invalidResponse).toMatchObject({
 				role: ASSISTANT,
 				fetched: false,
 				hasContent: false,
@@ -209,8 +213,9 @@ describe("Chat Service", () => {
 			)
 
 			await chat.ask("   ")
-			expect(chat.log[0].content.hasContent).toBe(false)
-			expect(chat.log[1].elements[0].hasContent).toBe(false)
+			const [userMessage, botResponse] = chat.log
+			expect(userMessage.content.hasContent).toBe(false)
+			expect(botResponse.elements[0].hasContent).toBe(false)
 		})
 
 		it("should handle malformed think tags", async () => {
@@ -221,7 +226,8 @@ describe("Chat Service", () => {
 			)
 
 			await chat.ask("Test")
-			expect(chat.log[1]).toMatchObject({
+			const [, malformedResponse] = chat.log
+			expect(malformedResponse).toMatchObject({
 				role: ASSISTANT,
 				fetched: true,
 				parsed: false,
