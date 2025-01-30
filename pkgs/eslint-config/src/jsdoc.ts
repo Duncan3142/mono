@@ -36,8 +36,6 @@ const configs: Configs = [
 			"jsdoc/check-line-alignment": "error",
 			"jsdoc/check-indentation": "error",
 			"jsdoc/check-syntax": "error",
-			// "jsdoc/check-tag-names": "error",
-			// "jsdoc/check-types": "error",
 		},
 	},
 ]

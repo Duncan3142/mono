@@ -23,6 +23,10 @@
 		"#*": "./.tsc/dist/*.js"
 	},
 	"exports": {
+		"./boundaries": {
+			"import": "./.tsc/dist/boundaries/index.js",
+			"types": "./.tsc/dist/boundaries/index.d.ts"
+		},
 		"./*": {
 			"import": "./.tsc/dist/*.js",
 			"types": "./.tsc/dist/*.d.ts"
