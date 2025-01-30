@@ -33,9 +33,9 @@ describe("Chat Service", () => {
 
 			await chat.ask("Hello")
 
-			const []
+			const [userMessage] = chat.log
 
-			expect(chat.log[0]).toMatchObject({
+			expect(userMessage).toMatchObject({
 				role: USER,
 				hasContent: true,
 				content: {
