@@ -138,9 +138,11 @@ describe("Chat Service", () => {
 		})
 
 		it("should handle invalid bot response", async () => {
-			mockFetch.mockResolvedValueOnce({
-				json: () => Promise.resolve(null),
-			})
+			mockFetch.mockResolvedValueOnce(
+				mock<Response>({
+					json: () => Promise.resolve(null),
+				})
+			)
 
 			await chat.ask("Hello")
 			const [, invalidResponse] = chat.log
@@ -249,7 +251,8 @@ describe("Chat Service", () => {
 
 			await Promise.all([chat.ask("Q1"), chat.ask("Q2"), chat.ask("Q3")])
 
-			expect(chat.log.length).toBe(6) // 3 questions + 3 responses
+			// eslint-disable-next-line @typescript-eslint/no-magic-numbers -- 3 questions and 3 responses
+			expect(chat.log.length).toBe(6)
 			expect(chat.thinking).toBe(false)
 		})
 	})
