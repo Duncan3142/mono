@@ -27,7 +27,7 @@ describe("Chat Service", () => {
 		it("should add parsed user message to log", async () => {
 			mockFetch.mockResolvedValueOnce(
 				mock<Response>({
-					json: () => Promise.resolve('"Bot response"'),
+					json: () => Promise.resolve("Bot response"),
 				})
 			)
 
@@ -48,7 +48,7 @@ describe("Chat Service", () => {
 		it("should handle markdown in user messages", async () => {
 			mockFetch.mockResolvedValueOnce(
 				mock<Response>({
-					json: () => Promise.resolve('"Bot response"'),
+					json: () => Promise.resolve("Bot response"),
 				})
 			)
 
@@ -71,7 +71,7 @@ describe("Chat Service", () => {
 		it("should handle simple bot response", async () => {
 			mockFetch.mockResolvedValueOnce(
 				mock<Response>({
-					json: () => Promise.resolve('"Simple response"'),
+					json: () => Promise.resolve("Simple response"),
 				})
 			)
 
@@ -86,7 +86,7 @@ describe("Chat Service", () => {
 					{
 						mode: "comment",
 						parsed: true,
-						html: "<p>Simple response</p>",
+						html: '<p>"Simple response"</p>',
 					},
 				],
 			})
@@ -95,7 +95,7 @@ describe("Chat Service", () => {
 		it("should handle bot response with thought", async () => {
 			mockFetch.mockResolvedValueOnce(
 				mock<Response>({
-					json: () => Promise.resolve('"<think>Thinking...</think>Response"'),
+					json: () => Promise.resolve("<think>Thinking...</think>Response"),
 				})
 			)
 
@@ -110,12 +110,12 @@ describe("Chat Service", () => {
 					{
 						mode: "thought",
 						parsed: true,
-						html: "<p>Thinking...</p>",
+						html: '<p>"Thinking..."</p>',
 					},
 					{
 						mode: "comment",
 						parsed: true,
-						html: "<p>Response</p>",
+						html: '<p>"Response"</p>',
 					},
 				],
 			})
@@ -166,7 +166,7 @@ describe("Chat Service", () => {
 						states.push(chat.thinking)
 						resolve(
 							mock<Response>({
-								json: () => Promise.resolve('"Response"'),
+								json: () => Promise.resolve("Response"),
 							})
 						)
 					})
@@ -184,7 +184,7 @@ describe("Chat Service", () => {
 		it("should handle nested markdown and HTML", async () => {
 			mockFetch.mockResolvedValueOnce(
 				mock<Response>({
-					json: () => Promise.resolve('"**Bold** <em>italic</em> _underscore_"'),
+					json: () => Promise.resolve("**Bold** <em>italic</em> _underscore_"),
 				})
 			)
 
@@ -201,7 +201,7 @@ describe("Chat Service", () => {
 		it("should handle code blocks with special chars", async () => {
 			mockFetch.mockResolvedValueOnce(
 				mock<Response>({
-					json: () => Promise.resolve('"`const x = {}<>\\n`"'),
+					json: () => Promise.resolve("`const x = {}<>\\n`"),
 				})
 			)
 
@@ -217,7 +217,7 @@ describe("Chat Service", () => {
 		it("should handle empty messages", async () => {
 			mockFetch.mockResolvedValueOnce(
 				mock<Response>({
-					json: () => Promise.resolve('""'),
+					json: () => Promise.resolve(""),
 				})
 			)
 
@@ -239,7 +239,7 @@ describe("Chat Service", () => {
 		it("should handle malformed think tags", async () => {
 			mockFetch.mockResolvedValueOnce(
 				mock<Response>({
-					json: () => Promise.resolve('"<think>Incomplete"'),
+					json: () => Promise.resolve("<think>Incomplete"),
 				})
 			)
 
@@ -256,7 +256,7 @@ describe("Chat Service", () => {
 
 	describe("Concurrent Behavior", () => {
 		it("should handle multiple rapid asks", async () => {
-			const responses = ['"R1"', '"R2"', '"R3"']
+			const responses = ["R1", "R2", "R3"]
 			responses.forEach((r) =>
 				mockFetch.mockResolvedValueOnce(
 					mock<Response>({
@@ -277,7 +277,7 @@ describe("Chat Service", () => {
 		it("should handle emoji and unicode", async () => {
 			mockFetch.mockResolvedValueOnce(
 				mock<Response>({
-					json: () => Promise.resolve('"Hello 👋 世界"'),
+					json: () => Promise.resolve("Hello 👋 世界"),
 				})
 			)
 
@@ -301,7 +301,7 @@ describe("Chat Service", () => {
 		it("should handle HTML entities", async () => {
 			mockFetch.mockResolvedValueOnce(
 				mock<Response>({
-					json: () => Promise.resolve('"&lt;script&gt;"'),
+					json: () => Promise.resolve("&lt;script&gt;"),
 				})
 			)
 

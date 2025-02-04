@@ -1,4 +1,5 @@
 import ollama, { type ChatResponse, type Message } from "ollama"
+import type { AbortableAsyncIterator } from "ollama/src/utils.js"
 
 const MODEL = "deepseek-r1:1.5b"
 
@@ -20,13 +21,13 @@ type AskOptions = {
  * @param opts.messages - Messages to send
  * @returns Chat response
  */
-const ask = async ({ messages }: AskOptions): Promise<ChatResponse> => {
+const ask = async ({ messages }: AskOptions): Promise<AbortableAsyncIterator<ChatResponse>> => {
 	await load
 
 	return ollama.chat({
 		model: MODEL,
 		messages,
-		stream: false,
+		stream: true,
 		// format: "json",
 	})
 }
