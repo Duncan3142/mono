@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { type Log } from "./chat.service.svelte"
 
-	type Props = {
+	interface Props {
 		log: Log
 		thinking: boolean
 	}

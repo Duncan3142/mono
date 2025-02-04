@@ -79,6 +79,7 @@ const tsconfigGenerator = (tsconfig) => {
 	include.push(`${CONFIG_DIR}/*.config.js`)
 	include.push(`${CONFIG_DIR}/*.config.ts`)
 	include.push(`${CONFIG_DIR}/e2e/**/*.ts`)
+	include.push(`${CONFIG_DIR}/.storybook/**/*.ts`)
 	insertConfigDir(exclude)
 }
 

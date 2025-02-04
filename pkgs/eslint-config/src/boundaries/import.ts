@@ -11,7 +11,7 @@ import { compose, type Configs, type Paths } from "#core"
 /**
  * Config array factory options
  */
-type Options = {
+interface Options {
 	tsConfigs: Paths
 }
 

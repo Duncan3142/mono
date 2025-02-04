@@ -14,7 +14,7 @@ const TS_CONFIGS_DEFAULT: Paths = ["tsconfig.json", "tsconfig.*.json"]
 
 const parser: Parser = tseslint.parser
 
-type Options = {
+interface Options {
 	parserOptions: Exclude<Required<Config>["languageOptions"]["parserOptions"], undefined>
 }
 
@@ -41,7 +41,7 @@ const configs = ({ parserOptions }: Options = defaultOptions): Configs =>
 		},
 		files: filePatterns(jstsExtensions),
 		rules: {
-			"@typescript-eslint/consistent-type-definitions": "off",
+			"@typescript-eslint/consistent-type-definitions": ["error", "interface"],
 			"@typescript-eslint/no-non-null-assertion": "off",
 			"@typescript-eslint/consistent-return": "error",
 			"@typescript-eslint/consistent-type-imports": "error",
@@ -106,7 +106,7 @@ const configs = ({ parserOptions }: Options = defaultOptions): Configs =>
 		},
 	})
 
-type UntypedOptions = {
+interface UntypedOptions {
 	files: Paths
 }
 

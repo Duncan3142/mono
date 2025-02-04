@@ -33,7 +33,6 @@ const POST: RequestHandler = async ({ request }) => {
 				})
 				.mapLeft((e: unknown) => new HTTPError(STATUS_500, "Unable to generate message", e))
 		)
-
 		.run()
 
 	const response = either.extract()
