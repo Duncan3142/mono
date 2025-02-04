@@ -1,6 +1,6 @@
 import { EitherAsync } from "purify-ts/EitherAsync"
-import { string } from "purify-ts/Codec"
-import never from "$never"
+import { Left, Right } from "purify-ts/Either"
+import never from "$lib/never"
 
 const USER = "user"
 /**
@@ -21,7 +21,7 @@ interface MessageMeta<R extends Role> {
 }
 
 interface Content {
-	readonly content: string
+	content: string
 }
 
 interface HasContent<C extends boolean> {
@@ -116,17 +116,30 @@ class Chat {
 		} satisfies UserMessage)
 	}
 
-	#logBotMessage(content: string): void {
-		this.#log.push({
+	async #logBotMessage(body: ReadableStream<Uint8Array>): Promise<void> {
+		const message = {
 			role: ASSISTANT,
 			timestamp: Date.now(),
-			content,
+			content: "",
 			hasError: false,
 			get hasContent() {
 				return hasContent.call(this)
 			},
 			fetched: true,
-		} satisfies FetchedBotMessage)
+		} satisfies FetchedBotMessage
+		this.#log.push(message)
+
+		const decoder = new TextDecoder()
+		await body.pipeTo(
+			new WritableStream({
+				write: (chunk) => {
+					const text = decoder.decode(chunk)
+					message.content += text
+					this.#log.pop()
+					this.#log.push(message)
+				},
+			})
+		)
 	}
 
 	get #logHistory() {
@@ -164,11 +177,18 @@ class Chat {
 					method: "POST",
 				})
 			)
-				.chain(async (data) => string.decode(await data.json()).mapLeft((e) => new Error(e)))
-				.ifRight((content) => {
-					this.#logBotMessage(content.trim())
+				.chain((response) =>
+					EitherAsync.liftEither(
+						response.body === null
+							? Left(new Error("Invalid bot response"))
+							: Right(response.body)
+					)
+				)
+				.ifRight(async (body) => {
+					await this.#logBotMessage(body)
 				})
 				.ifLeft((e) => {
+					console.error(e)
 					this.#logFetchError(e)
 				})
 				.run()

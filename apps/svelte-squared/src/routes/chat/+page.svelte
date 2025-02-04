@@ -1,38 +1,28 @@
 <script lang="ts">
-	// import { enhance } from "$app/forms"
-	// import Conversation from "$lib/chat/conversation.svelte"
+	import { enhance } from "$app/forms"
+	import { Chat } from "$lib/chat/chat.service.svelte"
+	import Conversation from "$lib/chat/conversation.svelte"
 
-	// type Message = { content: string; role: string; timestamp: number }
-	// let conversation = $state<Array<Message>>([])
-
-	// let thinking = $state(false)
+	const chat = new Chat({
+		fetch,
+	})
 </script>
 
 <div class={["chat"]}>
-	<!-- <Conversation log={conversation} {thinking} />
+	<Conversation log={chat.log} thinking={chat.thinking} />
 
 	<form
 		class={["question"]}
 		method="POST"
-		on:submit={() => }
-		use:enhance={({ formData, formElement }) => {
-			thinking = true
-			formElement.reset()
-			const message = formData.get("message")
-			conversation =
-				typeof message === "string"
-					? [...conversation, { content: message, role: "user", timestamp: Date.now() }]
-					: conversation
-			formData.delete("message")
-			formData.set("conversation", JSON.stringify(conversation))
-
-			return async ({ result, update }) => {
-				await update()
-				if (result.type === "success" && Array.isArray(result.data)) {
-					conversation = result.data
-				}
-				thinking = false
-			}
+		use:enhance={({ cancel }) => {
+			cancel()
+		}}
+		on:submit={async (evt) => {
+			const form = evt.currentTarget
+			const message = form.elements.namedItem("message") as HTMLTextAreaElement
+			await chat.ask(message.value)
+			form.reset()
+			evt.preventDefault()
 		}}
 	>
 		<div class="content">
@@ -40,7 +30,7 @@
 			<textarea id="message" contenteditable name="message"></textarea>
 		</div>
 		<button>Send</button>
-	</form> -->
+	</form>
 </div>
 
 <style>
@@ -48,7 +38,7 @@
 		display: flex;
 		flex-direction: column;
 		height: 100%;
-		/*
+
 		& .question {
 			display: flex;
 			flex: 1 1 auto;
@@ -70,10 +60,9 @@
 					margin: 0.2rem;
 				}
 			}
-
 			& button {
 				margin: 0.2rem;
-			} */
-		/* } */
+			}
+		}
 	}
 </style>

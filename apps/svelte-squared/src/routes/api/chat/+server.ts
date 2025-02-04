@@ -1,4 +1,4 @@
-import { error, json } from "@sveltejs/kit"
+import { error } from "@sveltejs/kit"
 import { EitherAsync } from "purify-ts/EitherAsync"
 import type { RequestHandler } from "./$types"
 import ask from "$lib/chat/ai"
@@ -13,6 +13,9 @@ import { messagesCodec } from "$lib/chat/message.codec"
  */
 const POST: RequestHandler = async ({ request }) => {
 	const either = await EitherAsync<Error, unknown>(() => request.json())
+		.ifLeft((e) => {
+			console.error(e)
+		})
 		.mapLeft((e: unknown) => new HTTPError(STATUS_400, "Invalid body json", e))
 		.chain((data) =>
 			EitherAsync.liftEither(
@@ -30,15 +33,29 @@ const POST: RequestHandler = async ({ request }) => {
 				})
 				.mapLeft((e: unknown) => new HTTPError(STATUS_500, "Unable to generate message", e))
 		)
-		.map(({ message: { content } }) => json(content))
+
 		.run()
 
 	const response = either.extract()
+
 	if (response instanceof Error) {
 		const { code, message } = response
 		error(code, message)
 	}
-	return response
+
+	const stream = new ReadableStream({
+		async pull(controller) {
+			for await (const { done, message } of response) {
+				if (done) {
+					controller.close()
+				} else {
+					controller.enqueue(message.content)
+				}
+			}
+		},
+	})
+
+	return new Response(stream)
 }
 // eslint-disable-next-line import-x/prefer-default-export -- Support multiple verbs
 export { POST }
