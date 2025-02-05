@@ -11,11 +11,3 @@
 	<Header />
 	{@render children()}
 </ParaglideJS>
-<!--
-<style>
-	@reference "tailwindcss/theme";
-
-	:global(html) {
-		font-family: "Teko", sans-serif;
-	}
-</style> -->

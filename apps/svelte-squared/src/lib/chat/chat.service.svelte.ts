@@ -13,6 +13,9 @@ const ASSISTANT = "assistant"
  */
 type ASSISTANT = typeof ASSISTANT
 
+/**
+ * Role
+ */
 type Role = USER | ASSISTANT
 
 interface MessageMeta<R extends Role> {
@@ -215,4 +218,4 @@ class Chat {
 }
 
 export { Chat, USER, ASSISTANT }
-export type { Log, UserMessage }
+export type { Log, Role, UserMessage }
