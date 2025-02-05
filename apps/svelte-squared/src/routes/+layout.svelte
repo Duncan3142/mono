@@ -1,24 +1,19 @@
 <script lang="ts">
-	import  "$lib/tailwind.css"
+	import "$lib/tailwind.css"
 	import { ParaglideJS } from "@inlang/paraglide-sveltekit"
 	import { i18n } from "$lib/i18n"
+	import Header from "$lib/header.svelte"
 
 	let { children } = $props()
 </script>
 
 <ParaglideJS {i18n}>
-	<h1>Svelte<sup>2</sup></h1>
-	<h2>
-		<a href="/">Home</a>
-		<a href="/demo/lucia">Lucia</a>
-		<a href="/demo/paraglide">Paraglide</a>
-		<a href="/chat">Chat</a>
-	</h2>
+	<Header />
 	{@render children()}
 </ParaglideJS>
 
 <style>
-	:global(body) {
+	:global(html) {
 		font-family: "Teko", sans-serif;
 	}
 </style>
