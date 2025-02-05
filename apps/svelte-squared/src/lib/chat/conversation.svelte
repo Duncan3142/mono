@@ -25,8 +25,10 @@
 		<div class={["message", "assistant", "thinking"]}>Thinking...</div>
 	{/if}
 </main>
-
+<!--
 <style>
+	@reference "tailwindcss/theme";
+
 	.conversation {
 		flex: 1 1 auto;
 		display: flex;
@@ -56,4 +58,4 @@
 			}
 		}
 	}
-</style>
+</style> -->

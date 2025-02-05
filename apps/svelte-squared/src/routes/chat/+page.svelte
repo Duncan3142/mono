@@ -32,8 +32,10 @@
 		<button>Send</button>
 	</form>
 </div>
-
+<!--
 <style>
+	@reference "tailwindcss/theme";
+
 	.chat {
 		display: flex;
 		flex-direction: column;
@@ -65,4 +67,4 @@
 			}
 		}
 	}
-</style>
+</style> -->

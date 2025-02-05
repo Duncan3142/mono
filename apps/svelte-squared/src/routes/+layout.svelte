@@ -1,5 +1,5 @@
 <script lang="ts">
-	import "$lib/tailwind.css"
+	import "../app.css"
 	import { ParaglideJS } from "@inlang/paraglide-sveltekit"
 	import { i18n } from "$lib/i18n"
 	import Header from "$lib/header.svelte"
@@ -11,9 +11,11 @@
 	<Header />
 	{@render children()}
 </ParaglideJS>
-
+<!--
 <style>
+	@reference "tailwindcss/theme";
+
 	:global(html) {
 		font-family: "Teko", sans-serif;
 	}
-</style>
+</style> -->
