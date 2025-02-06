@@ -1,5 +1,5 @@
 <script lang="ts">
-	// eslint-disable-next-line import-x/no-unassigned-import
+	// eslint-disable-next-line import-x/no-unassigned-import -- Tailwind CSS
 	import "$/app.css"
 	import { ModeWatcher } from "mode-watcher"
 	import { ParaglideJS } from "@inlang/paraglide-sveltekit"

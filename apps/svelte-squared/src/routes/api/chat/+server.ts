@@ -7,16 +7,17 @@ import {
 	INTERNAL_SERVER_ERROR,
 } from "http-errors-enhanced"
 import type { RequestHandler } from "./$types"
-import ask from "$features/chat/io/ollama"
 import { messagesCodec } from "$features/chat/lib/codec/message"
 
 /**
  * Ask bot
  * @param event - Event
  * @param event.request - Request
+ * @param event.locals - Locals
  * @returns Response
  */
-const POST: RequestHandler = async ({ request }) => {
+const POST: RequestHandler = async ({ request, locals }) => {
+	const { ai } = locals
 	const either = await EitherAsync<Error, unknown>(() => request.json())
 		.ifLeft((e) => {
 			console.error(e)
@@ -32,7 +33,7 @@ const POST: RequestHandler = async ({ request }) => {
 		)
 		.chain((messages) =>
 			EitherAsync(() =>
-				ask({
+				ai.ask({
 					messages,
 				})
 			)

@@ -4,7 +4,6 @@
 	import Error from "./error.svelte"
 	import Thinking from "./thinking.svelte"
 
-
 	interface Props {
 		log: Log
 		thinking: boolean

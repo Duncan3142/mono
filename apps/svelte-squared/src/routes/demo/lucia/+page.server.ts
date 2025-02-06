@@ -1,7 +1,7 @@
 import { fail, redirect } from "@sveltejs/kit"
 import { TEMPORARY_REDIRECT, UNAUTHORIZED } from "http-errors-enhanced"
 import type { Actions, PageServerLoad } from "./$types"
-import * as auth from "$lib/auth"
+import { invalidateSession, deleteSessionTokenCookie } from "$lib/auth"
 
 /**
  * Load event handler
@@ -18,15 +18,12 @@ const load: PageServerLoad = ({ locals: { user } }) => {
 }
 
 const actions: Actions = {
-	logout: async (event) => {
-		const {
-			locals: { session },
-		} = event
+	logout: async ({ cookies, locals: { db, session } }) => {
 		if (session === null) {
 			return fail(UNAUTHORIZED)
 		}
-		await auth.invalidateSession(session.id)
-		auth.deleteSessionTokenCookie(event)
+		await invalidateSession(db, session.id)
+		deleteSessionTokenCookie(cookies)
 
 		return redirect(TEMPORARY_REDIRECT, "/demo/lucia/login")
 	},

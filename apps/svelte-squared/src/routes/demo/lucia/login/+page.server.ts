@@ -2,12 +2,9 @@ import { hash, verify } from "@node-rs/argon2"
 import { encodeBase32LowerCase } from "@oslojs/encoding"
 import { fail, redirect } from "@sveltejs/kit"
 import { eq } from "drizzle-orm"
-
 import { TEMPORARY_REDIRECT, BAD_REQUEST, INTERNAL_SERVER_ERROR } from "http-errors-enhanced"
 import type { Actions, PageServerLoad } from "./$types"
 import * as auth from "$lib/auth"
-import db from "$io/pg"
-import * as table from "$io/pg/schema"
 
 /**
  * Page load handler
@@ -60,8 +57,8 @@ const MEM_COST = 19456,
 	PARALLELISM = 1
 
 const actions: Actions = {
-	login: async (event) => {
-		const formData = await event.request.formData()
+	login: async ({ request, cookies, locals: { db } }) => {
+		const formData = await request.formData()
 		const username = formData.get("username")
 		const password = formData.get("password")
 
@@ -74,10 +71,10 @@ const actions: Actions = {
 			return fail(BAD_REQUEST, { message: "Invalid password (min 6, max 255 characters)" })
 		}
 
-		const [existingUser] = await db
+		const [existingUser] = await db.client
 			.select()
-			.from(table.user)
-			.where(eq(table.user.username, username))
+			.from(db.tables.user)
+			.where(eq(db.tables.user.username, username))
 
 		if (typeof existingUser === "undefined") {
 			return fail(BAD_REQUEST, { message: "Incorrect username or password" })
@@ -94,13 +91,13 @@ const actions: Actions = {
 		}
 
 		const sessionToken = auth.generateSessionToken()
-		const session = await auth.createSession(sessionToken, existingUser.id)
-		auth.setSessionTokenCookie(event, sessionToken, session.expiresAt)
+		const session = await auth.createSession(db, sessionToken, existingUser.id)
+		auth.setSessionTokenCookie(cookies, sessionToken, session.expiresAt)
 
 		return redirect(TEMPORARY_REDIRECT, "/demo/lucia")
 	},
-	register: async (event) => {
-		const formData = await event.request.formData()
+	register: async ({ request, cookies, locals: { db } }) => {
+		const formData = await request.formData()
 		const username = formData.get("username")
 		const password = formData.get("password")
 
@@ -121,11 +118,11 @@ const actions: Actions = {
 		})
 
 		try {
-			await db.insert(table.user).values({ id: userId, username, passwordHash })
+			await db.client.insert(db.tables.user).values({ id: userId, username, passwordHash })
 
 			const sessionToken = auth.generateSessionToken()
-			const session = await auth.createSession(sessionToken, userId)
-			auth.setSessionTokenCookie(event, sessionToken, session.expiresAt)
+			const session = await auth.createSession(db, sessionToken, userId)
+			auth.setSessionTokenCookie(cookies, sessionToken, session.expiresAt)
 		} catch {
 			return fail(INTERNAL_SERVER_ERROR, { message: "An error has occurred" })
 		}
