@@ -61,6 +61,7 @@
 		"@oslojs/encoding": "^1.1.0",
 		"dompurify": "^3.2.4",
 		"drizzle-orm": "^0.39.1",
+		"http-errors-enhanced": "^3.0.2",
 		"lucide-svelte": "^0.474.0",
 		"micromark": "^4.0.1",
 		"minio": "^8.0.4",
