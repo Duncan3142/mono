@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { enhance } from "$app/forms"
-	import { Chat } from "$lib/chat/chat.service.svelte"
-	import Conversation from "$lib/chat/conversation.svelte"
+	import { Chat } from "$features/chat/service.svelte"
+	import Conversation from "$features/chat/components/conversation.svelte"
 
 	const chat = new Chat({
 		fetch,

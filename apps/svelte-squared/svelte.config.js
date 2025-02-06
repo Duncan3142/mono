@@ -96,6 +96,12 @@ const config = {
 		adapter: adapter({
 			out: ".build",
 		}),
+		alias: {
+			"$/*": "./src/*",
+			"$components/*": "./src/components/*",
+			"$features/*": "./src/features/*",
+			"$io/*": "./src/io/*",
+		},
 		typescript: {
 			config: tsconfigGenerator,
 		},

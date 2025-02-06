@@ -1,8 +1,3 @@
-const STATUS_302 = 302
-const STATUS_400 = 400
-const STATUS_401 = 401
-const STATUS_500 = 500
-
 /**
  * HTTP Error
  */
@@ -21,4 +16,4 @@ class HTTPError extends Error {
 	}
 }
 
-export { STATUS_302, STATUS_400, STATUS_401, STATUS_500, HTTPError }
+export default HTTPError

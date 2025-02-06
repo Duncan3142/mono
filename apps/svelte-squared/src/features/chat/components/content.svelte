@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { USER, type Role } from "../chat.service.svelte"
+	import { USER, type Role } from "$features/chat/service.svelte"
 	import Element from "./element.svelte"
 
 	interface Props {

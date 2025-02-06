@@ -1,7 +1,9 @@
 <script lang="ts">
-	import { Content, Error, Thinking } from "./conversation"
+	import Content from "./content.svelte"
+	import Error from "./error.svelte"
+	import Thinking from "./thinking.svelte"
 
-	import type { Log } from "./chat.service.svelte"
+	import type { Log } from "../service.svelte"
 
 	interface Props {
 		log: Log

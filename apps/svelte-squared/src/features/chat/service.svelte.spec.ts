@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach } from "vitest"
 import { mock, mockFn, mockReset } from "vitest-mock-extended"
-import { Chat, USER, ASSISTANT } from "./chat.service.svelte"
+import { Chat, USER, ASSISTANT } from "./service.svelte"
 
 /* eslint-disable @typescript-eslint/no-unsafe-assignment -- Allow `any` matchers */
 

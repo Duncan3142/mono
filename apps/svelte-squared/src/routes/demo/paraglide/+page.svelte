@@ -2,7 +2,7 @@
 	import { page } from "$app/state"
 	import { goto } from "$app/navigation"
 	import type { AvailableLanguageTag } from "$lib/paraglide/runtime"
-	import { i18n } from "$lib/i18n"
+	import { i18n } from "$lib/i18n/i18n"
 	import * as m from "$lib/paraglide/messages.js"
 
 	function switchToLanguage(newLanguage: AvailableLanguageTag) {

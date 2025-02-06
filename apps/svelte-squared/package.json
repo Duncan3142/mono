@@ -64,6 +64,7 @@
 		"lucide-svelte": "^0.474.0",
 		"micromark": "^4.0.1",
 		"minio": "^8.0.4",
+		"mode-watcher": "^0.5.1",
 		"ollama": "^0.5.12",
 		"postgres": "^3.4.5",
 		"purify-ts": "^2.1.0"
