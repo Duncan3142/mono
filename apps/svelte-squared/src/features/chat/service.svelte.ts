@@ -1,6 +1,6 @@
 import { EitherAsync } from "purify-ts/EitherAsync"
 import { Left, Right } from "purify-ts/Either"
-import never from "$lib/never"
+import never from "$lib/typescript/never"
 
 const USER = "user"
 /**

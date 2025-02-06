@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { Snippet } from "svelte"
-	import { USER, type Role } from "../chat.service.svelte"
+	import { USER, type Role } from "$features/chat/service.svelte"
 
 	interface Props {
 		role: Role

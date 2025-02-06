@@ -1,9 +1,9 @@
 <script lang="ts">
+	import type { Log } from "../service.svelte"
 	import Content from "./content.svelte"
 	import Error from "./error.svelte"
 	import Thinking from "./thinking.svelte"
 
-	import type { Log } from "../service.svelte"
 
 	interface Props {
 		log: Log

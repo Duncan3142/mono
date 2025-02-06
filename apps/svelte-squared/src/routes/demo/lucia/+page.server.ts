@@ -1,7 +1,7 @@
 import { fail, redirect } from "@sveltejs/kit"
+import { TEMPORARY_REDIRECT, UNAUTHORIZED } from "http-errors-enhanced"
 import type { Actions, PageServerLoad } from "./$types"
 import * as auth from "$lib/auth"
-import { STATUS_302, STATUS_401 } from "$lib/http"
 
 /**
  * Load event handler
@@ -12,7 +12,7 @@ import { STATUS_302, STATUS_401 } from "$lib/http"
  */
 const load: PageServerLoad = ({ locals: { user } }) => {
 	if (user === null) {
-		return redirect(STATUS_302, "/demo/lucia/login")
+		return redirect(TEMPORARY_REDIRECT, "/demo/lucia/login")
 	}
 	return { user }
 }
@@ -23,12 +23,12 @@ const actions: Actions = {
 			locals: { session },
 		} = event
 		if (session === null) {
-			return fail(STATUS_401)
+			return fail(UNAUTHORIZED)
 		}
 		await auth.invalidateSession(session.id)
 		auth.deleteSessionTokenCookie(event)
 
-		return redirect(STATUS_302, "/demo/lucia/login")
+		return redirect(TEMPORARY_REDIRECT, "/demo/lucia/login")
 	},
 }
 

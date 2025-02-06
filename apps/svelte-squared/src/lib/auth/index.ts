@@ -2,8 +2,8 @@ import type { RequestEvent } from "@sveltejs/kit"
 import { eq } from "drizzle-orm"
 import { sha256 } from "@oslojs/crypto/sha2"
 import { encodeBase64url, encodeHexLowerCase } from "@oslojs/encoding"
-import db from "$lib/db"
-import * as table from "$lib/db/schema"
+import db from "$io/pg"
+import * as table from "$io/pg/schema"
 
 const MS_PER_SEC = 1000
 const SEC_PER_MIN = 60

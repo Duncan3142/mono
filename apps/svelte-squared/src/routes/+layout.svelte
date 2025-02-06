@@ -1,8 +1,9 @@
 <script lang="ts">
+	// eslint-disable-next-line import-x/no-unassigned-import
 	import "$/app.css"
 	import { ModeWatcher } from "mode-watcher"
 	import { ParaglideJS } from "@inlang/paraglide-sveltekit"
-	import { i18n } from "$lib/i18n/i18n"
+	import { i18n } from "$lib/i18n"
 	import Header from "$/components/header.svelte"
 
 	let { children } = $props()

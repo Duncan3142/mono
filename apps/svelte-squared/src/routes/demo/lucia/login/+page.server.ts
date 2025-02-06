@@ -3,11 +3,11 @@ import { encodeBase32LowerCase } from "@oslojs/encoding"
 import { fail, redirect } from "@sveltejs/kit"
 import { eq } from "drizzle-orm"
 
+import { TEMPORARY_REDIRECT, BAD_REQUEST, INTERNAL_SERVER_ERROR } from "http-errors-enhanced"
 import type { Actions, PageServerLoad } from "./$types"
 import * as auth from "$lib/auth"
-import db from "$lib/db"
-import * as table from "$lib/db/schema"
-import { STATUS_302, STATUS_400, STATUS_500 } from "$lib/http"
+import db from "$io/pg"
+import * as table from "$io/pg/schema"
 
 /**
  * Page load handler
@@ -18,7 +18,7 @@ import { STATUS_302, STATUS_400, STATUS_500 } from "$lib/http"
  */
 const load: PageServerLoad = ({ locals: { user } }) => {
 	if (user !== null) {
-		return redirect(STATUS_302, "/demo/lucia")
+		return redirect(TEMPORARY_REDIRECT, "/demo/lucia")
 	}
 	return {}
 }
@@ -66,12 +66,12 @@ const actions: Actions = {
 		const password = formData.get("password")
 
 		if (!validateUsername(username)) {
-			return fail(STATUS_400, {
+			return fail(BAD_REQUEST, {
 				message: "Invalid username (min 3, max 31 characters, alphanumeric only)",
 			})
 		}
 		if (!validatePassword(password)) {
-			return fail(STATUS_400, { message: "Invalid password (min 6, max 255 characters)" })
+			return fail(BAD_REQUEST, { message: "Invalid password (min 6, max 255 characters)" })
 		}
 
 		const [existingUser] = await db
@@ -80,7 +80,7 @@ const actions: Actions = {
 			.where(eq(table.user.username, username))
 
 		if (typeof existingUser === "undefined") {
-			return fail(STATUS_400, { message: "Incorrect username or password" })
+			return fail(BAD_REQUEST, { message: "Incorrect username or password" })
 		}
 
 		const validPassword = await verify(existingUser.passwordHash, password, {
@@ -90,14 +90,14 @@ const actions: Actions = {
 			parallelism: PARALLELISM,
 		})
 		if (!validPassword) {
-			return fail(STATUS_400, { message: "Incorrect username or password" })
+			return fail(BAD_REQUEST, { message: "Incorrect username or password" })
 		}
 
 		const sessionToken = auth.generateSessionToken()
 		const session = await auth.createSession(sessionToken, existingUser.id)
 		auth.setSessionTokenCookie(event, sessionToken, session.expiresAt)
 
-		return redirect(STATUS_302, "/demo/lucia")
+		return redirect(TEMPORARY_REDIRECT, "/demo/lucia")
 	},
 	register: async (event) => {
 		const formData = await event.request.formData()
@@ -105,10 +105,10 @@ const actions: Actions = {
 		const password = formData.get("password")
 
 		if (!validateUsername(username)) {
-			return fail(STATUS_400, { message: "Invalid username" })
+			return fail(BAD_REQUEST, { message: "Invalid username" })
 		}
 		if (!validatePassword(password)) {
-			return fail(STATUS_400, { message: "Invalid password" })
+			return fail(BAD_REQUEST, { message: "Invalid password" })
 		}
 
 		const userId = generateUserId()
@@ -127,9 +127,9 @@ const actions: Actions = {
 			const session = await auth.createSession(sessionToken, userId)
 			auth.setSessionTokenCookie(event, sessionToken, session.expiresAt)
 		} catch {
-			return fail(STATUS_500, { message: "An error has occurred" })
+			return fail(INTERNAL_SERVER_ERROR, { message: "An error has occurred" })
 		}
-		return redirect(STATUS_302, "/demo/lucia")
+		return redirect(TEMPORARY_REDIRECT, "/demo/lucia")
 	},
 }
 
