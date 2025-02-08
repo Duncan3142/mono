@@ -1,6 +1,13 @@
 @import "tailwindcss";
 @import "tailwindcss-animated";
 
+@font-face {
+	font-family: "Teko";
+	font-style: normal;
+	font-weight: 500;
+	src: url(/fonts/teko.ttf) format("truetype");
+}
+
 :root {
 	--background: hsl(0 0% 100%);
 	--foreground: hsl(222.2 84% 4.9%);
@@ -63,6 +70,7 @@
 }
 
 @theme {
+	--font-display: "Teko", sans-serif;
 	--color-border: var(--border);
 	--color-input: var(--input);
 	--color-ring: var(--ring);
@@ -140,6 +148,6 @@
 	}
 	body {
 		@apply bg-background text-foreground;
-		font-family: "Teko", sans-serif;
+		@apply font-display;
 	}
 }
