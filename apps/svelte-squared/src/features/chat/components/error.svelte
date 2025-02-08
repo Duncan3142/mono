@@ -11,7 +11,7 @@
 </script>
 
 <Element {role}>
-	<div data-content="error" class={["bg-red-500", "text-amber-500"]}>
+	<div data-content="error" class={["p-1", "bg-red-500", "text-amber-500"]}>
 		{error.message}
 	</div>
 </Element>

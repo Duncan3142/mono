@@ -87,6 +87,7 @@
 		},
 		"explorerExclude.backup": {},
 		"editor.insertSpaces": false,
+
 	},
 	"launch": {
 		// Use IntelliSense to learn about possible attributes.

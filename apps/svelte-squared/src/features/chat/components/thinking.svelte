@@ -3,5 +3,5 @@
 </script>
 
 <Element role="assistant">
-	<div class={["italic", "text-amber-500"]}>Thinking...</div>
+	<div class={["p-1", "italic", "text-amber-500"]}>Thinking...</div>
 </Element>
