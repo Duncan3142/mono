@@ -70,7 +70,8 @@
 }
 
 @theme {
-	--font-display: "Teko", sans-serif;
+	--font-sans: "Teko", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji",
+		"Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 	--color-border: var(--border);
 	--color-input: var(--input);
 	--color-ring: var(--ring);
@@ -148,6 +149,5 @@
 	}
 	body {
 		@apply bg-background text-foreground;
-		@apply font-display;
 	}
 }
