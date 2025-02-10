@@ -19,7 +19,6 @@
 		{ psychedelic: hovered },
 		"flex",
 		"grow",
-		// "self-stretch",
 		"rounded",
 		"items-center",
 		"justify-center",
