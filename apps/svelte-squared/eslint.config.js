@@ -55,7 +55,7 @@ export default compose(
 		parserOptions: tsParserOptions,
 	}),
 	svelteParserConfig,
-	untyped({ files: filePatterns(jsExtensions, "svelte") }),
+	untyped({ files: filePatterns(jsExtensions) }),
 	compose({ files: filePatterns(tsExtensions), extends: [boundaries()] }),
 	promise,
 	jsdoc,

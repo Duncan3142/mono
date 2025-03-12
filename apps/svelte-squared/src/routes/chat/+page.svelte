@@ -3,6 +3,10 @@
 	import { Chat } from "$features/chat/service.svelte"
 	import Conversation from "$features/chat/components/conversation.svelte"
 
+	type FormSubmitEvent = SubmitEvent & {
+		currentTarget: EventTarget & HTMLFormElement
+	}
+
 	const chat = new Chat({
 		fetch,
 	})
@@ -17,7 +21,7 @@
 		use:enhance={({ cancel }) => {
 			cancel()
 		}}
-		on:submit={async (evt) => {
+		on:submit={async (evt: FormSubmitEvent) => {
 			const form = evt.currentTarget
 			const message = form.elements.namedItem("message") as HTMLTextAreaElement
 			const { value } = message

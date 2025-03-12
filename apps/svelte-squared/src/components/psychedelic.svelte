@@ -9,8 +9,8 @@
 		const chroma = (event.offsetY / element.clientHeight) * 0.4
 		const hue = (event.offsetX / element.clientWidth) * 360
 
-		element.style.setProperty("--psychedelic-chroma", `${chroma}`)
-		element.style.setProperty("--psychedelic-hue", `${hue}`)
+		element.style.setProperty("--psychedelic-chroma", chroma.toString(10))
+		element.style.setProperty("--psychedelic-hue", hue.toString(10))
 	}
 </script>
 
