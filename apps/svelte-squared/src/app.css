@@ -1,9 +1,11 @@
 @import "tailwindcss";
 @import "tailwindcss-animated";
+@plugin "daisyui";
 
 @theme {
-	--font-sans: "Teko", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji",
-		"Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+	--font-sans:
+		"Teko", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+		"Segoe UI Symbol", "Noto Color Emoji";
 }
 
 @layer base {
