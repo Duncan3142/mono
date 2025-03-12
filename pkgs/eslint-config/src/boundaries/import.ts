@@ -2,7 +2,14 @@ import importX from "eslint-plugin-import-x"
 import { createTypeScriptImportResolver } from "eslint-import-resolver-typescript"
 
 import { TS_CONFIGS_DEFAULT } from "#typescript"
-import { compose, type Configs, type Paths } from "#core"
+import {
+	compose,
+	filePatterns,
+	jsExtensions,
+	tsExtensions,
+	type Configs,
+	type Paths,
+} from "#core"
 
 /* -------------------------------------------------------------------------- */
 /*                                   Configs                                  */
@@ -28,6 +35,7 @@ const defaultOptions: Options = {
 const configs = ({ tsConfigs }: Options = defaultOptions): Configs =>
 	compose(importX.flatConfigs.recommended, importX.flatConfigs.typescript, {
 		name: "@duncan3142/eslint-config/import",
+		files: filePatterns(tsExtensions, jsExtensions),
 		settings: {
 			"import/resolver-next": [
 				createTypeScriptImportResolver({ alwaysTryTypes: true, project: tsConfigs }),

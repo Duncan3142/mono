@@ -1,5 +1,4 @@
 <script lang="ts">
-	// eslint-disable-next-line import-x/no-unassigned-import -- Tailwind CSS
 	import "$/app.css"
 	import { ModeWatcher } from "mode-watcher"
 	import { ParaglideJS } from "@inlang/paraglide-sveltekit"
@@ -9,7 +8,7 @@
 	let { children } = $props()
 </script>
 
-<ModeWatcher defaultMode={"dark"} />
+<ModeWatcher defaultMode="dark" />
 <ParaglideJS {i18n}>
 	<Header />
 	{@render children()}

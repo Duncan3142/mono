@@ -9,16 +9,21 @@ import typescript, { untyped, parser } from "@duncan3142/eslint-config/typescrip
 import { ignored } from "@duncan3142/eslint-config/ignored"
 import prettier from "@duncan3142/eslint-config/prettier"
 import comments from "@duncan3142/eslint-config/comments"
-import core, { compose, filePatterns, jsExtensions } from "@duncan3142/eslint-config/core"
-import * as svelte from "eslint-plugin-svelte"
-import * as svelteParser from "svelte-eslint-parser"
+import core, {
+	compose,
+	filePatterns,
+	jsExtensions,
+	tsExtensions,
+} from "@duncan3142/eslint-config/core"
+import svelte from "eslint-plugin-svelte"
 import globals from "globals"
+import svelteConfig from "./svelte.config.js"
 
 /* eslint-disable jsdoc/check-tag-names -- Type required in JS */
 
 /** @import { Config } from '@duncan3142/eslint-config/core' */
 
-const parserOptions = {
+const tsParserOptions = {
 	projectService: true,
 	extraFileExtensions: [".svelte"],
 }
@@ -26,15 +31,15 @@ const parserOptions = {
 /** @type {Config} */
 const svelteParserConfig = {
 	name: "@duncan3142/svelte-squared/parser",
-	files: ["**/*.svelte"],
+	files: ["**/*.svelte", "**/*.svelte.ts"],
 	languageOptions: {
-		parser: svelteParser,
 		ecmaVersion: 2024,
 		sourceType: "module",
 		globals: { ...globals.node, ...globals.browser },
 		parserOptions: {
+			...tsParserOptions,
 			parser,
-			parserOptions,
+			svelteConfig,
 		},
 	},
 }
@@ -46,12 +51,12 @@ export default compose(
 	ignored(),
 	base,
 	comments,
-	svelteParserConfig,
 	typescript({
-		parserOptions,
+		parserOptions: tsParserOptions,
 	}),
+	svelteParserConfig,
 	untyped({ files: filePatterns(jsExtensions, "svelte") }),
-	boundaries(),
+	compose({ files: filePatterns(tsExtensions), extends: [boundaries()] }),
 	promise,
 	jsdoc,
 	secrets,
