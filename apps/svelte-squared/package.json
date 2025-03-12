@@ -60,7 +60,6 @@
 		"http-errors-enhanced": "^3.0.2",
 		"micromark": "^4.0.2",
 		"minio": "^8.0.4",
-		"mode-watcher": "^0.5.1",
 		"ollama": "^0.5.14",
 		"postgres": "^3.4.5",
 		"purify-ts": "^2.1.0",
