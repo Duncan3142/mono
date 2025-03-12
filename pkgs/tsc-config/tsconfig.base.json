@@ -16,6 +16,8 @@
 		"declaration": true,
 		"declarationMap": true,
 		"pretty": true,
+		"erasableSyntaxOnly": true,
+		"libReplacement": false,
 		// Types
 		"skipLibCheck": true,
 		"allowJs": false,
