@@ -1,20 +1,36 @@
 <script lang="ts">
+	import Button from "./button.svelte"
 	type Event = MouseEvent & {
 		currentTarget: EventTarget & HTMLElement
 	}
 
 	let hovered = $state(false)
+	let groovyElement: HTMLElement | null = null
 	const onMouseMove = (event: Event) => {
-		const element = event.currentTarget
-		const chroma = (event.offsetY / element.clientHeight) * 0.4
-		const hue = (event.offsetX / element.clientWidth) * 360
+		if (groovyElement === null) {
+			return
+		}
 
-		element.style.setProperty("--psychedelic-chroma", chroma.toString(10))
-		element.style.setProperty("--psychedelic-hue", hue.toString(10))
+		const {
+			left: groovyLeft,
+			top: groovyTop,
+			height: groovyHeight,
+			width: groovyWidth,
+		} = groovyElement.getBoundingClientRect()
+
+		const groovyOffsetX = event.clientX - groovyLeft
+		const groovyOffsetY = event.clientY - groovyTop
+
+		const chroma = (groovyOffsetY / groovyHeight) * 0.4
+		const hue = (groovyOffsetX / groovyWidth) * 360
+
+		groovyElement.style.setProperty("--psychedelic-chroma", chroma.toString(10))
+		groovyElement.style.setProperty("--psychedelic-hue", hue.toString(10))
 	}
 </script>
 
 <div
+	bind:this={groovyElement}
 	class={[
 		{ psychedelic: hovered },
 		"flex",
@@ -24,7 +40,7 @@
 		"justify-center",
 	]}
 	role="presentation"
-	onmousemove={(evt) => {
+	onmousemovecapture={(evt: Event) => {
 		onMouseMove(evt)
 	}}
 	onmouseenter={() => {
@@ -34,7 +50,7 @@
 		hovered = false
 	}}
 >
-	Filler
+	<Button>Click Me!!!</Button>
 </div>
 
 <style>

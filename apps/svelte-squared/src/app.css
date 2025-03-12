@@ -8,6 +8,10 @@
 		"Segoe UI Symbol", "Noto Color Emoji";
 }
 
+@utility btn {
+	@apply btn-outline;
+}
+
 @layer base {
 	@font-face {
 		font-family: "Teko";
