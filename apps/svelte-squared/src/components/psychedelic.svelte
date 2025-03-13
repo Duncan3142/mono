@@ -32,7 +32,7 @@
 <div
 	bind:this={groovyElement}
 	class={[
-		{ psychedelic: hovered },
+		hovered ? "psychedelic" : "plainJane",
 		"flex",
 		"grow",
 		"rounded",
@@ -55,6 +55,30 @@
 
 <style>
 	.psychedelic {
-		background-color: oklch(50% var(--psychedelic-chroma) var(--psychedelic-hue));
+		animation: 400ms linear 0s forwards 1 running groovy;
+	}
+
+	@keyframes groovy {
+		0% {
+			background-color: inherit;
+		}
+
+		100% {
+			background-color: oklch(50% var(--psychedelic-chroma) var(--psychedelic-hue));
+		}
+	}
+
+	.plainJane {
+		animation: 400ms linear 0s forwards 1 running bummer;
+	}
+
+	@keyframes bummer {
+		0% {
+			background-color: oklch(50% var(--psychedelic-chroma) var(--psychedelic-hue));
+		}
+
+		100% {
+			background-color: inherit;
+		}
 	}
 </style>
