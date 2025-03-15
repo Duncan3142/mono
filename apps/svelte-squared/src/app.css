@@ -1,11 +1,25 @@
 @import "tailwindcss";
 @import "tailwindcss-animated";
 @plugin "daisyui";
+@plugin "@tailwindcss/typography";
 
 @theme {
 	--font-sans:
 		"Teko", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
 		"Segoe UI Symbol", "Noto Color Emoji";
+	/* --text-xs: 1rem;
+	--text-sm: 1.1rem;
+	--text-base: 1.3rem;
+	--text-lg: 1.7rem;
+	--text-xl: 2.8rem;
+	--text-2xl: 2.25rem;
+	--text-3xl: 2.5rem;
+	--text-4xl: 2.75rem;
+	--text-5xl: 3rem;
+	--text-6xl: 3.75rem;
+	--text-7xl: 4.5rem;
+	--text-8xl: 6rem;
+	--text-9xl: 8rem; */
 }
 
 @utility btn {
@@ -16,7 +30,7 @@
 	@font-face {
 		font-family: "Teko";
 		font-style: normal;
-		font-weight: 500;
+		font-weight: 300 700;
 		src: url(/fonts/teko.ttf) format("truetype");
 	}
 }
