@@ -9,6 +9,7 @@ import typescript, { untyped, parser } from "@duncan3142/eslint-config/typescrip
 import { ignored } from "@duncan3142/eslint-config/ignored"
 import prettier from "@duncan3142/eslint-config/prettier"
 import comments from "@duncan3142/eslint-config/comments"
+import unocss from '@unocss/eslint-config/flat'
 import core, {
 	compose,
 	filePatterns,
@@ -66,6 +67,7 @@ export default compose(
 			"no-fallthrough": "off",
 		},
 	},
+	unocss,
 	prettier,
 	svelte.configs["flat/prettier"]
 )
