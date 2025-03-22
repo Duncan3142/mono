@@ -1,5 +1,14 @@
 # @duncan3142/eslint-config
 
+## 0.1.9
+
+### Patch Changes
+
+- 030d9c9: update deps
+- 030d9c9: update deps
+- 030d9c9: disable no fallthough
+- 030d9c9: decompose boundaries
+
 ## 0.1.8
 
 ### Patch Changes
