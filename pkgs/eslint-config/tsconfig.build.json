@@ -1,5 +1,4 @@
 {
 	"$schema": "https://json.schemastore.org/tsconfig",
-	"extends": ["./tsconfig.base.json", "@duncan3142/tsc-config/build"],
-	"compilerOptions": { "skipLibCheck": true } // Set in base, remove
+	"extends": ["./tsconfig.base.json", "@duncan3142/tsc-config/build"]
 }
