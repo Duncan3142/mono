@@ -45,17 +45,37 @@ type Patterns = Array<Pattern>
 /**
  * JavaScript file extension pattern
  */
-const jsExtensions: Pattern = `js`
+const jsExtensions: Patterns = [".js", ".jsx"]
 
 /**
  * TypeScript file extension pattern
  */
-const tsExtensions: Pattern = `ts`
+const tsExtensions: Patterns = [".ts", ".tsx"]
+
+/**
+ * Node file extension pattern
+ */
+const nodeExtensions: Patterns = [".node"]
+
+/**
+ * JSON file extension pattern
+ */
+const jsonExtensions: Patterns = [".json", ".jsonc"]
+
+/**
+ * CSS file extension pattern
+ */
+const cssExtensions: Patterns = [".css"]
+
+/**
+ * HTML file extension pattern
+ */
+const htmlExtensions: Patterns = [".html"]
 
 /**
  * JavaScript / TypeScript file extension pattern
  */
-const jstsExtensions: Pattern = `@(j|t)s`
+const jstsExtensions: Patterns = [...jsExtensions, ...tsExtensions]
 
 /**
  * Factory function for creating file patterns array
@@ -63,7 +83,7 @@ const jstsExtensions: Pattern = `@(j|t)s`
  * @returns Array of file patterns
  */
 const filePatterns = (...extensionPatterns: Patterns): Patterns =>
-	extensionPatterns.map((pattern) => `**/*.${pattern}`)
+	extensionPatterns.map((pattern) => `**/*${pattern}`)
 
 const compose: (...configs: Array<InfiniteDepthConfigWithExtends>) => Configs = tseslint.config
 
@@ -76,5 +96,15 @@ const core: Config = {
 }
 
 export type { Path, Paths, Pattern, Patterns, Config, Configs, Plugin, Parser }
-export { compose, filePatterns, jstsExtensions, jsExtensions, tsExtensions }
+export {
+	compose,
+	filePatterns,
+	jstsExtensions,
+	jsExtensions,
+	tsExtensions,
+	nodeExtensions,
+	jsonExtensions,
+	cssExtensions,
+	htmlExtensions,
+}
 export default core

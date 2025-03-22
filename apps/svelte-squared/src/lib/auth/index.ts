@@ -1,9 +1,8 @@
-import type { RequestEvent } from "@sveltejs/kit"
+import type { Cookies } from "@sveltejs/kit"
 import { eq } from "drizzle-orm"
 import { sha256 } from "@oslojs/crypto/sha2"
 import { encodeBase64url, encodeHexLowerCase } from "@oslojs/encoding"
-import { db } from "$lib/db"
-import * as table from "$lib/db/schema"
+import type { DB } from "$io/pg"
 
 const MS_PER_SEC = 1000
 const SEC_PER_MIN = 60
@@ -39,18 +38,25 @@ type User = {
 
 /**
  * Create a session
+ * @param db - database
+ * @param db.client - client
+ * @param db.tables - tables
  * @param token - session token
  * @param userId - user id
  * @returns Session details
  */
-async function createSession(token: string, userId: string): Promise<Session> {
+async function createSession(
+	{ client, tables }: DB,
+	token: string,
+	userId: string
+): Promise<Session> {
 	const sessionId = encodeHexLowerCase(sha256(new TextEncoder().encode(token)))
-	const session: table.Session = {
+	const session: Session = {
 		id: sessionId,
 		userId,
 		expiresAt: new Date(Date.now() + DAY_IN_MS * DAYS_30),
 	}
-	await db.insert(table.session).values(session)
+	await client.insert(tables.session).values(session)
 	return session
 }
 
@@ -69,20 +75,26 @@ type SessionValidationResult =
 
 /**
  * Validate session token
+ * @param db - database
+ * @param db.tables - tables
+ * @param db.client - client
  * @param token - session token
  * @returns Session details
  */
-async function validateSessionToken(token: string): Promise<SessionValidationResult> {
+async function validateSessionToken(
+	{ client, tables }: DB,
+	token: string
+): Promise<SessionValidationResult> {
 	const sessionId = encodeHexLowerCase(sha256(new TextEncoder().encode(token)))
-	const [result] = await db
+	const [result] = await client
 		.select({
 			// Adjust user table here to tweak returned data
-			user: { id: table.user.id, username: table.user.username },
-			session: table.session,
+			user: { id: tables.user.id, username: tables.user.username },
+			session: tables.session,
 		})
-		.from(table.session)
-		.innerJoin(table.user, eq(table.session.userId, table.user.id))
-		.where(eq(table.session.id, sessionId))
+		.from(tables.session)
+		.innerJoin(tables.user, eq(tables.session.userId, tables.user.id))
+		.where(eq(tables.session.id, sessionId))
 
 	if (typeof result === "undefined") {
 		return { session: null, user: null }
@@ -91,17 +103,17 @@ async function validateSessionToken(token: string): Promise<SessionValidationRes
 
 	const sessionExpired = Date.now() >= session.expiresAt.getTime()
 	if (sessionExpired) {
-		await db.delete(table.session).where(eq(table.session.id, session.id))
+		await client.delete(tables.session).where(eq(tables.session.id, session.id))
 		return { session: null, user: null }
 	}
 
 	const renewSession = Date.now() >= session.expiresAt.getTime() - DAY_IN_MS * DAYS_15
 	if (renewSession) {
 		session.expiresAt = new Date(Date.now() + DAY_IN_MS * DAYS_30)
-		await db
-			.update(table.session)
+		await client
+			.update(tables.session)
 			.set({ expiresAt: session.expiresAt })
-			.where(eq(table.session.id, session.id))
+			.where(eq(tables.session.id, session.id))
 	}
 
 	return { session, user }
@@ -109,20 +121,23 @@ async function validateSessionToken(token: string): Promise<SessionValidationRes
 
 /**
  * Invalidate session
+ * @param db - database
+ * @param db.client - client
+ * @param db.tables - tables
  * @param sessionId - session id
  */
-async function invalidateSession(sessionId: string): Promise<void> {
-	await db.delete(table.session).where(eq(table.session.id, sessionId))
+async function invalidateSession({ client, tables }: DB, sessionId: string): Promise<void> {
+	await client.delete(tables.session).where(eq(tables.session.id, sessionId))
 }
 
 /**
  * Set session token cookie
- * @param event - request event
+ * @param cookies - session cookies
  * @param token - session token
  * @param expiresAt - session expiration date
  */
-function setSessionTokenCookie(event: RequestEvent, token: string, expiresAt: Date): void {
-	event.cookies.set(sessionCookieName, token, {
+function setSessionTokenCookie(cookies: Cookies, token: string, expiresAt: Date): void {
+	cookies.set(sessionCookieName, token, {
 		expires: expiresAt,
 		path: "/",
 	})
@@ -130,10 +145,10 @@ function setSessionTokenCookie(event: RequestEvent, token: string, expiresAt: Da
 
 /**
  * Delete session token cookie
- * @param event - delete session event
+ * @param cookies - session cookies
  */
-function deleteSessionTokenCookie(event: RequestEvent): void {
-	event.cookies.delete(sessionCookieName, {
+function deleteSessionTokenCookie(cookies: Cookies): void {
+	cookies.delete(sessionCookieName, {
 		path: "/",
 	})
 }

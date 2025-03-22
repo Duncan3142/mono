@@ -12,6 +12,37 @@ import type {
 export type XisPropBase = [ShapeKeyBase, XisBase]
 export type XisPropsBase = Array<XisPropBase>
 
+const object_meta = Symbol("object meta")
+
+type ObjectBase = Record<PropertyKey, unknown>
+
+interface ObjectMeta<Base extends ObjectBase> {
+	readonly: "all" | "none" | Array<keyof Base>
+	optional: "all" | "none" | Array<keyof Base>
+}
+
+type Shape<Base extends ObjectBase, Meta extends ObjectMeta<Base>> = Base & {
+	[object_meta]: Meta
+}
+
+interface ShapeFactory {
+	<Base extends ObjectBase>(base: Base): Shape<Base, { readonly: "none"; optional: "none" }>
+	<Base extends ObjectBase, Meta extends ObjectMeta<Base>>(
+		base: Base,
+		meta: Meta
+	): Shape<Base, Meta>
+}
+
+const shape: ShapeFactory = <Base extends ObjectBase, Meta extends ObjectMeta<Base>>(
+	base: Base,
+	meta?: Meta
+) => {
+	return {
+		...base,
+		[object_meta]: typeof meta === "undefined" ? { readonly: "none", optional: "none" } : meta,
+	}
+}
+
 export type NativeShape<
 	Props extends [...Array<XisPropBase>],
 	Acc extends object = object,

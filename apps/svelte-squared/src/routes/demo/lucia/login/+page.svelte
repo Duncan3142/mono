@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { enhance } from "$app/forms"
-	// eslint-disable-next-line boundaries/no-ignored -- Unable to resolve
 	import type { ActionData } from "./$types"
 
 	let { form }: { form: ActionData } = $props()

@@ -1,79 +1,44 @@
 <script lang="ts">
 	import { enhance } from "$app/forms"
-	import Conversation from "$lib/chat/conversation.svelte"
+	import { Chat } from "$features/chat/service.svelte"
+	import Conversation from "$features/chat/components/conversation.svelte"
 
-	type Message = { content: string; role: string; timestamp: number }
-	let conversation = $state<Array<Message>>([])
+	type FormSubmitEvent = SubmitEvent & {
+		currentTarget: EventTarget & HTMLFormElement
+	}
 
-	let thinking = $state(false)
+	const chat = new Chat({
+		fetch,
+	})
 </script>
 
-<div class={["chat"]}>
-	<Conversation {conversation} {thinking} />
+<div class={["flex", "flex-col", "h-full"]}>
+	<Conversation log={chat.log} thinking={chat.thinking} />
 
 	<form
-		class={["question"]}
+		class={["flex", "flex-[1_1_auto]", "items-end", "justify-end"]}
 		method="POST"
-		on:submit={() => }
-		use:enhance={({ formData, formElement }) => {
-			thinking = true
-			formElement.reset()
-			const message = formData.get("message")
-			conversation =
-				typeof message === "string"
-					? [...conversation, { content: message, role: "user", timestamp: Date.now() }]
-					: conversation
-			formData.delete("message")
-			formData.set("conversation", JSON.stringify(conversation))
-
-			return async ({ result, update }) => {
-				await update()
-				if (result.type === "success" && Array.isArray(result.data)) {
-					conversation = result.data
-				}
-				thinking = false
-			}
+		use:enhance={({ cancel }) => {
+			cancel()
+		}}
+		on:submit={async (evt: FormSubmitEvent) => {
+			const form = evt.currentTarget
+			const message = form.elements.namedItem("message") as HTMLTextAreaElement
+			const { value } = message
+			form.reset()
+			await chat.ask(value)
+			evt.preventDefault()
 		}}
 	>
-		<div class="content">
-			<label for="message"> Message </label>
-			<textarea id="message" contenteditable name="message"></textarea>
+		<div class={["flex", "flex-[2_1_auto]", "flex-col", "items-start"]}>
+			<label class={["m-1"]} for="message"> Message </label>
+			<textarea
+				class={["resize-none", "h-12", "box-border", "w-99/100", "m-1"]}
+				id="message"
+				contenteditable
+				name="message"
+			></textarea>
 		</div>
-		<button>Send</button>
+		<button class={["m-1"]}>Send</button>
 	</form>
 </div>
-
-<style>
-	.chat {
-		display: flex;
-		flex-direction: column;
-		height: 100%;
-
-		& .question {
-			display: flex;
-			flex: 1 1 auto;
-			align-items: flex-end;
-			justify-content: end;
-			& .content {
-				flex: 2 1 auto;
-				display: flex;
-				flex-direction: column;
-				align-items: flex-start;
-				& label {
-					margin: 0.2rem;
-				}
-				& textarea {
-					resize: none;
-					height: 3rem;
-					box-sizing: border-box;
-					width: 99%;
-					margin: 0.2rem;
-				}
-			}
-
-			& button {
-				margin: 0.2rem;
-			}
-		}
-	}
-</style>

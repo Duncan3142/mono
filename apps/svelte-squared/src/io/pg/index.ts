@@ -1,11 +1,12 @@
 import { drizzle } from "drizzle-orm/postgres-js"
 import postgres from "postgres"
 import { env } from "$env/dynamic/private"
+import { session, user, type Session, type User } from "./schema"
 
 const { POSTGRES_PORT, POSTGRES_USER, POSTGRES_PASSWORD, POSTGRES_DB, POSTGRES_HOST } = env
 
 /* eslint-disable @typescript-eslint/no-unnecessary-condition -- Vars may not always be set */
-const [port, user, password, database, host] = [
+const [port, dbUser, password, database, host] = [
 	Number.parseInt(POSTGRES_PORT ?? "", 10),
 	POSTGRES_USER ?? "",
 	POSTGRES_PASSWORD ?? "",
@@ -17,7 +18,7 @@ const [port, user, password, database, host] = [
 if (Number.isNaN(port)) {
 	throw new Error("POSTGRES_PORT is not set")
 }
-if (user === "") {
+if (dbUser === "") {
 	throw new Error("POSTGRES_USER is not set")
 }
 if (password === "") {
@@ -29,14 +30,28 @@ if (database === "") {
 if (host === "") {
 	throw new Error("POSTGRES_HOST is not set")
 }
-const client = postgres({
+const pg = postgres({
 	port,
-	user,
+	user: dbUser,
 	password,
 	database,
 	host,
 })
-const db = drizzle(client)
+const client = drizzle(pg)
 
-export { db }
+const db = {
+	client,
+	tables: {
+		session,
+		user,
+	},
+}
+
+/**
+ * Database
+ */
+type DB = typeof db
+
+export type { DB, Session, User }
+
 export default db

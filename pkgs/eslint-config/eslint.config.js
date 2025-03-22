@@ -1,10 +1,9 @@
-import boundaries from "#boundaries"
 import base from "#base"
 import jsdoc from "#jsdoc"
 import secrets from "#secrets"
 import promise from "#promise"
-import typescript, { untyped } from "#typescript"
-import { ignored } from "#ignored"
+import typescript from "#typescript"
+import ignored from "#ignored"
 import prettier from "#prettier"
 import comments from "#comments"
 import core, { compose } from "#core"
@@ -62,8 +61,6 @@ const configs = compose(
 	base,
 	comments,
 	typescript(),
-	untyped(),
-	boundaries(),
 	promise,
 	jsdoc,
 	secrets,

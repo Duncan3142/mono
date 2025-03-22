@@ -1,43 +1,76 @@
-import { error, json } from "@sveltejs/kit"
-import type { RequestHandler } from "./$types"
-import ask from "$lib/chat/ai"
+import { error } from "@sveltejs/kit"
 import { EitherAsync } from "purify-ts/EitherAsync"
-import { HTTPError, STATUS_400, STATUS_500 } from "$lib/http"
-import { messagesCodec } from "$lib/chat/message.codec"
+import {
+	HttpError,
+	isHttpError,
+	BAD_REQUEST,
+	INTERNAL_SERVER_ERROR,
+} from "http-errors-enhanced"
+import type { RequestHandler } from "./$types"
+import { messagesCodec } from "$features/chat/lib/codec/message"
 
 /**
  * Ask bot
  * @param event - Event
  * @param event.request - Request
+ * @param event.locals - Locals
  * @returns Response
  */
-const POST: RequestHandler = async ({ request }) => {
+const POST: RequestHandler = async ({ request, locals }) => {
+	const { ai } = locals
 	const either = await EitherAsync<Error, unknown>(() => request.json())
-		.mapLeft((e: unknown) => new HTTPError(STATUS_400, "Invalid body json", e))
+		.ifLeft((e) => {
+			console.error(e)
+		})
+		.mapLeft(
+			(e: unknown) =>
+				new HttpError(BAD_REQUEST, "Invalid body json", e instanceof Error ? e : {})
+		)
 		.chain((data) =>
 			EitherAsync.liftEither(
-				messagesCodec.decode(data).mapLeft((message) => new HTTPError(STATUS_400, message))
+				messagesCodec.decode(data).mapLeft((message) => new HttpError(BAD_REQUEST, message))
 			)
 		)
 		.chain((messages) =>
 			EitherAsync(() =>
-				ask({
+				ai.ask({
 					messages,
 				})
 			)
 				.ifLeft((e) => {
 					console.error(e)
 				})
-				.mapLeft((e: unknown) => new HTTPError(STATUS_500, "Unable to generate message", e))
+				.mapLeft(
+					(e: unknown) =>
+						new HttpError(
+							INTERNAL_SERVER_ERROR,
+							"Unable to generate message",
+							e instanceof Error ? e : {}
+						)
+				)
 		)
-		.map(({ message: { content } }) => json(content))
 		.run()
 
 	const response = either.extract()
-	if (response instanceof Error) {
-		const { code, message } = response
-		error(code, message)
+
+	if (isHttpError(response)) {
+		const { message, statusCode } = response
+		error(statusCode, message)
 	}
-	return response
+
+	const stream = new ReadableStream({
+		async pull(controller) {
+			for await (const { done, message } of response) {
+				if (done) {
+					controller.close()
+				} else {
+					controller.enqueue(message.content)
+				}
+			}
+		},
+	})
+
+	return new Response(stream)
 }
+// eslint-disable-next-line import-x/prefer-default-export -- Support multiple verbs
 export { POST }

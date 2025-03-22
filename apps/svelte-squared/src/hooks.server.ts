@@ -1,9 +1,14 @@
 import { sequence } from "@sveltejs/kit/hooks"
 import type { Handle } from "@sveltejs/kit"
 import { i18n } from "$lib/i18n"
-import * as auth from "$lib/server/auth.js"
+import * as auth from "$lib/auth"
+import ai from "$io/ollama"
+import db from "$io/pg"
 
 const handleAuth: Handle = async ({ event, resolve }) => {
+	const { cookies } = event
+	event.locals.db = db
+	event.locals.ai = ai
 	const sessionToken = event.cookies.get(auth.sessionCookieName)
 	if (sessionToken === "" || typeof sessionToken !== "string") {
 		event.locals.user = null
@@ -11,11 +16,11 @@ const handleAuth: Handle = async ({ event, resolve }) => {
 		return resolve(event)
 	}
 
-	const { session, user } = await auth.validateSessionToken(sessionToken)
+	const { session, user } = await auth.validateSessionToken(db, sessionToken)
 	if (session !== null) {
-		auth.setSessionTokenCookie(event, sessionToken, session.expiresAt)
+		auth.setSessionTokenCookie(cookies, sessionToken, session.expiresAt)
 	} else {
-		auth.deleteSessionTokenCookie(event)
+		auth.deleteSessionTokenCookie(cookies)
 	}
 
 	event.locals.user = user

@@ -1,23 +1,18 @@
 <script lang="ts">
+	import "$/app.css"
 	import { ParaglideJS } from "@inlang/paraglide-sveltekit"
 	import { i18n } from "$lib/i18n"
+	import Header from "$/components/header.svelte"
+	import type { Snippet } from "svelte"
 
-	let { children } = $props()
+	interface $Props {
+		children: Snippet
+	}
+
+	let { children }: $Props = $props()
 </script>
 
 <ParaglideJS {i18n}>
-	<h1>Svelte<sup>2</sup></h1>
-	<h2>
-		<a href="/">Home</a>
-		<a href="/demo/lucia">Lucia</a>
-		<a href="/demo/paraglide">Paraglide</a>
-		<a href="/chat">Chat</a>
-	</h2>
+	<Header />
 	{@render children()}
 </ParaglideJS>
-
-<style>
-	:global(body) {
-		font-family: "Teko", sans-serif;
-	}
-</style>

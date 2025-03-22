@@ -1,8 +1,8 @@
 import eslintjs from "@eslint/js"
-import { compose, type Configs } from "./core.ts"
+import { compose, filePatterns, jstsExtensions, type Config, type Configs } from "./core.ts"
 
-const base: Configs = compose(eslintjs.configs.recommended, {
-	name: "@duncan3142/eslint-config/base",
+const custom: Config = {
+	name: "@duncan3142/eslint-config/base/custom",
 	languageOptions: {
 		sourceType: "module",
 		ecmaVersion: 2024,
@@ -10,9 +10,11 @@ const base: Configs = compose(eslintjs.configs.recommended, {
 	rules: {
 		"default-case": "off",
 		"consistent-return": "off",
+		"one-var": ["error", { initialized: "never", uninitialized: "always" }],
 		"no-underscore-dangle": "off",
 		"no-continue": "off",
 		"no-nested-ternary": "off",
+		"no-fallthrough": "off",
 		radix: "error",
 		eqeqeq: "error",
 		"no-undefined": "error",
@@ -39,6 +41,12 @@ const base: Configs = compose(eslintjs.configs.recommended, {
 			},
 		],
 	},
+}
+
+const base: Configs = compose({
+	name: "@duncan3142/eslint-config/base",
+	files: filePatterns(...jstsExtensions),
+	extends: [eslintjs.configs.recommended, custom],
 })
 
 export default base
