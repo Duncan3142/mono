@@ -1,5 +1,12 @@
 # @duncan3142/tsc-config
 
+## 0.1.5
+
+### Patch Changes
+
+- 030d9c9: update deps
+- 030d9c9: erasable types
+
 ## 0.1.4
 
 ### Patch Changes
