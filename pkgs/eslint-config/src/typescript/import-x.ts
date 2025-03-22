@@ -1,15 +1,8 @@
 import importX from "eslint-plugin-import-x"
 import { createTypeScriptImportResolver } from "eslint-import-resolver-typescript"
 
-import { TS_CONFIGS_DEFAULT } from "#typescript"
-import {
-	compose,
-	filePatterns,
-	jsExtensions,
-	tsExtensions,
-	type Configs,
-	type Paths,
-} from "#core"
+import { TS_CONFIG_DEFAULT } from "./paths.ts"
+import { compose, filePatterns, jstsExtensions, type Configs, type Path } from "#core"
 
 /* -------------------------------------------------------------------------- */
 /*                                   Configs                                  */
@@ -19,27 +12,28 @@ import {
  * Config array factory options
  */
 interface Options {
-	tsConfigs: Paths
+	tsConfig: Path
 }
 
 const defaultOptions: Options = {
-	tsConfigs: TS_CONFIGS_DEFAULT,
+	tsConfig: TS_CONFIG_DEFAULT,
 }
+const { createNodeResolver } = importX
 
 /**
  * Boundaries config
  * @param opts - options
- * @param opts.tsConfigs - tsconfig paths
+ * @param opts.tsConfig - tsconfig paths
  * @returns ESLint configs
  */
-const configs = ({ tsConfigs }: Options = defaultOptions): Configs =>
+const configs = ({ tsConfig }: Options = defaultOptions): Configs =>
 	compose(importX.flatConfigs.recommended, importX.flatConfigs.typescript, {
 		name: "@duncan3142/eslint-config/import",
-		files: filePatterns(tsExtensions, jsExtensions),
+		files: filePatterns(jstsExtensions),
 		settings: {
-			"import/resolver-next": [
-				createTypeScriptImportResolver({ alwaysTryTypes: true, project: tsConfigs }),
-				{ node: true },
+			"import-x/resolver-next": [
+				createTypeScriptImportResolver({ alwaysTryTypes: true, project: tsConfig }),
+				createNodeResolver(),
 			],
 		},
 		rules: {

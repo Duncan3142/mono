@@ -31,4 +31,5 @@ const ignored = ({ ignoreFiles = IGNORE_FILES_DEFAULT }: Options = defaultOption
 		)
 	)
 
-export { ignored, IGNORE_FILES_DEFAULT }
+export { IGNORE_FILES_DEFAULT }
+export default ignored

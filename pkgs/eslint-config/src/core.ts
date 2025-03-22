@@ -45,17 +45,17 @@ type Patterns = Array<Pattern>
 /**
  * JavaScript file extension pattern
  */
-const jsExtensions: Pattern = `js`
+const jsExtensions: Pattern = `js?(x)`
 
 /**
  * TypeScript file extension pattern
  */
-const tsExtensions: Pattern = `ts`
+const tsExtensions: Pattern = `ts?(x)`
 
 /**
  * JavaScript / TypeScript file extension pattern
  */
-const jstsExtensions: Pattern = `@(j|t)s`
+const jstsExtensions: Pattern = `@(j|t)s?(x)`
 
 /**
  * Factory function for creating file patterns array
