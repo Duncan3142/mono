@@ -1,5 +1,11 @@
 # @duncan3142/eslint-config
 
+## 0.1.10
+
+### Patch Changes
+
+- 97562f8: tsconfig extends
+
 ## 0.1.9
 
 ### Patch Changes
