@@ -1,5 +1,11 @@
 # @duncan3142/tsc-config
 
+## 0.1.6
+
+### Patch Changes
+
+- 97562f8: tsconfig extends
+
 ## 0.1.5
 
 ### Patch Changes
