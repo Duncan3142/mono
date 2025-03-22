@@ -5,7 +5,13 @@
 		"paths": {
 			"#typescript": ["./src/typescript/index.ts"],
 			"#*": ["./src/*.ts"]
-		}
+		},
+		"target": "ESNext",
+		"module": "ESNext",
+		"moduleResolution": "bundler",
+		"jsx": "preserve",
+		"jsxImportSource": "solid-js",
+		"types": ["vite/client", "@testing-library/jest-dom"]
 	},
 	"include": []
 }

@@ -1,29 +1,21 @@
 // @ts-check
 
-import boundaries from "@duncan3142/eslint-config/boundaries"
 import base from "@duncan3142/eslint-config/base"
 import jsdoc from "@duncan3142/eslint-config/jsdoc"
 import secrets from "@duncan3142/eslint-config/secrets"
 import promise from "@duncan3142/eslint-config/promise"
 import typescript from "@duncan3142/eslint-config/typescript"
-import { ignored } from "@duncan3142/eslint-config/ignored"
+import ignored from "@duncan3142/eslint-config/ignored"
 import prettier from "@duncan3142/eslint-config/prettier"
 import comments from "@duncan3142/eslint-config/comments"
-import unocss from '@unocss/eslint-config/flat'
-import core, {
-	compose,
-	filePatterns,
-	jsExtensions,
-	tsExtensions,
-} from "@duncan3142/eslint-config/core"
+import unocss from "@unocss/eslint-config/flat"
+import core, { compose } from "@duncan3142/eslint-config/core"
 import solid from "eslint-plugin-solid"
 import globals from "globals"
 
 /* eslint-disable jsdoc/check-tag-names -- Type required in JS */
 
 /** @import { Config } from '@duncan3142/eslint-config/core' */
-
-
 
 /** @type {Config} */
 const globalsConfig = {
@@ -43,9 +35,8 @@ export default compose(
 	base,
 	globalsConfig,
 	comments,
-	solid,
 	typescript(),
-	compose({ files: filePatterns(tsExtensions), extends: [boundaries()] }),
+	solid.configs["flat/typescript"],
 	promise,
 	jsdoc,
 	secrets,
