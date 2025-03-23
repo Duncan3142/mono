@@ -27,8 +27,8 @@
 		"typescript": "^5.8.2"
 	},
 	"dependencies": {
-		"@inlang/paraglide-js": "^2.0.4",
 		"@hono/node-server": "^1.14.0",
+		"@inlang/paraglide-js": "^2.0.4",
 		"@node-rs/argon2": "^2.0.2",
 		"@oslojs/crypto": "^1.0.1",
 		"@oslojs/encoding": "^1.1.0",
