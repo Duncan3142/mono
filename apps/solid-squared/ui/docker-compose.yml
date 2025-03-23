@@ -1,45 +1,21 @@
 services:
-  postgres:
-    image: postgres
+  wiremock:
+    image: wiremock/wiremock
     restart: always
     networks:
       - common
     ports:
-      - ${POSTGRES_PORT}:5432
+      - ${WIREMOCK_PORT}:8080
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
     volumes:
       - postgres:/var/lib/postgresql/data
-  minio:
-    image: minio/minio
-    restart: always
-    networks:
-      - common
-    ports:
-      - ${MINIO_PORT}:9000
-    environment:
-      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
-      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
-    volumes:
-      - minio:/data
-    command: ["server", "/data"]
-  ollama:
-    image: ollama/ollama
-    restart: always
-    networks:
-      - common
-    ports:
-      - ${OLLAMA_PORT}:11434
-    volumes:
-      - ollama:/root/.ollama
 
 networks:
   common:
     driver: bridge
 
 volumes:
-  postgres:
-  minio:
-  ollama:
+  wiremock:
