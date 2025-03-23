@@ -1,0 +1,4 @@
+Query {
+	self(): User
+	user(id: ID!): User
+}
