@@ -1,8 +1,19 @@
 {
-	"name": "solid-squared-api",
+	"name": "@duncan3142/solid-squared-api",
 	"private": true,
-	"version": "0.0.1",
+	"description": "Solid Squared API",
+	"keywords": [],
+	"version": "0.0.0",
+	"author": "Duncan Giles",
 	"type": "module",
+	"license": "MIT",
+	"engines": {
+		"node": ">=22",
+		"npm": ">=11"
+	},
+	"imports": {
+		"#*": "./.tsc/dist/*.js"
+	},
 	"scripts": {
 		"clean": "rm -rf .prettier .build .tsc",
 		"format:fix": "prettier --write --cache --cache-location='.prettier/cache' --cache-strategy content .",

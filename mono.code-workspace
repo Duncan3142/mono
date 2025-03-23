@@ -45,12 +45,20 @@
 			"path": "tools/npm",
 		},
 		{
+			"name": "tools/yomono",
+			"path": "tools/yomono",
+		},
+		{
 			"name": "apps/solid-squared/ui",
 			"path": "apps/solid-squared/ui",
 		},
 		{
 			"name": "apps/solid-squared/api",
 			"path": "apps/solid-squared/api",
+		},
+		{
+			"name": "pkgs/solid-squared/graphql",
+			"path": "pkgs/solid-squared/graphql",
 		},
 		{
 			"name": "pkgs/eslint-config",

@@ -1,8 +1,16 @@
 {
-	"name": "solid-squared",
+	"name": "@duncan3142/solid-squared-ui",
 	"private": true,
-	"version": "0.0.1",
+	"description": "Solid Squared UI",
+	"keywords": [],
+	"version": "0.0.0",
+	"author": "Duncan Giles",
 	"type": "module",
+	"license": "MIT",
+	"engines": {
+		"node": ">=22",
+		"npm": ">=11"
+	},
 	"scripts": {
 		"clean": "rm -rf .prettier .build .tsc",
 		"dev": "vite dev",
