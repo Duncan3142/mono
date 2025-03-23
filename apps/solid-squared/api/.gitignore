@@ -22,15 +22,9 @@ node_modules/
 !.prettierignore
 !.prettierrc.js
 
-# Storybook
-!.storybook/
-
 # Changesets
 !.changeset/
 
 # Paraglide
 project.inlang/cache/
 src/lib/paraglide/
-
-# Vite
-vite.config.*.timestamp-*
