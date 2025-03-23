@@ -45,8 +45,12 @@
 			"path": "tools/npm",
 		},
 		{
-			"name": "apps/solid-squared",
-			"path": "apps/solid-squared",
+			"name": "apps/solid-squared/ui",
+			"path": "apps/solid-squared/ui",
+		},
+		{
+			"name": "apps/solid-squared/api",
+			"path": "apps/solid-squared/api",
 		},
 		{
 			"name": "pkgs/eslint-config",

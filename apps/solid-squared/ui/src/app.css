@@ -1,0 +1,14 @@
+@theme {
+	--font-sans:
+		"Teko", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+		"Segoe UI Symbol", "Noto Color Emoji";
+}
+
+@layer base {
+	@font-face {
+		font-family: "Teko";
+		font-style: normal;
+		font-weight: 300 700;
+		src: url(/fonts/teko.ttf) format("truetype");
+	}
+}
