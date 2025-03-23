@@ -1,0 +1,11 @@
+{
+	"$schema": "https://json.schemastore.org/tsconfig",
+	"extends": ["@duncan3142/tsc-config/base"],
+	"compilerOptions": {
+		"paths": {
+			"#typescript": ["./src/typescript/index.ts"],
+			"#*": ["./src/*.ts"]
+		}
+	},
+	"include": []
+}
