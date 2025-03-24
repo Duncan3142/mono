@@ -1,3 +1,22 @@
+"""
+String of the following format:
+	urn:{partition}:{authority}:{provider}:{client}:{service}:{type}:{id}<[/{pathSegment}]>
+"""
+scalar URN
+
+"""
+Base node
+"""
 interface Node {
-	id: ID! # urn:{partition}:{authority}:{client}:{service}:{provider}:{type}:{id}<[/{pathSegment}]>
+	urn: URN!
+}
+
+"""
+Node queries
+"""
+type Query {
+	"""
+	Get a node by URN
+	"""
+	node(urn: URN!): Node
 }

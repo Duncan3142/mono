@@ -1,6 +1,0 @@
-type Query {
-	self: User!
-	node(id: ID!): Node
-	game(id: ID!): Game!
-	user(id: ID!): User!
-}

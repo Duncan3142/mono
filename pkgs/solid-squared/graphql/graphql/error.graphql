@@ -1,5 +1,8 @@
+"""
+Error
+"""
 interface Error {
-	ID: ID!
+	id: ID!
 	code: String!
 	message: String!
 }

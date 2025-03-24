@@ -1,4 +1,17 @@
+"""
+Game node
+"""
 interface Game implements Node {
-	id: ID!
+	urn: URN!
 	name: String!
+}
+
+"""
+Game queries
+"""
+type Query {
+	"""
+	Get a game by URN
+	"""
+	game(urn: URN!): Game!
 }

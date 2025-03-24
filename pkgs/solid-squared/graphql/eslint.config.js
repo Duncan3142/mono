@@ -23,6 +23,16 @@ const graphqlParser = {
 	plugins: {
 		"@graphql-eslint": graphql,
 	},
+	rules: {
+		"@graphql-eslint/strict-id-in-types": [
+			"error",
+			{
+				acceptedIdNames: ["id", "urn"],
+				acceptedIdTypes: ["ID", "URN"],
+				// exceptions: { types: ["Error"], suffixes: ["Payload"] },
+			},
+		],
+	},
 }
 
 /* eslint-enable jsdoc/check-tag-names -- Type required in JS */

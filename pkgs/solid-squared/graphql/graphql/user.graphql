@@ -1,12 +1,33 @@
+"""
+UserGame edge
+"""
 type UserGame {
 	id: ID!
 	user: User!
 	game: Game!
 }
 
+"""
+User node
+"""
 type User implements Node {
-	id: ID!
+	urn: URN!
 	name: String!
 	email: String!
 	games: [UserGame!]!
+}
+
+"""
+User queries
+"""
+type Query {
+	"""
+	Current user
+	"""
+	self: User!
+
+	"""
+	Get a user by URN
+	"""
+	user(urn: URN!): User!
 }

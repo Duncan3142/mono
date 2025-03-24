@@ -42,7 +42,8 @@
 		"check:tsc": "tsc --build --noEmit",
 		"lint:eslint": "eslint --max-warnings 0 .",
 		"lint:eslint:fix": "eslint --fix .",
-		"inspect:eslint": "eslint --inspect-config ."
+		"inspect:eslint": "eslint --inspect-config .",
+		"inspect:graphql": "graphql-inspector"
 	},
 	"devDependencies": {
 		"@changesets/cli": "^2.28.1",
