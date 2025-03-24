@@ -45,8 +45,8 @@
 			"path": "tools/npm",
 		},
 		{
-			"name": "tools/yomono",
-			"path": "tools/yomono",
+			"name": "tools/plopmono",
+			"path": "tools/plopmono",
 		},
 		{
 			"name": "apps/solid-squared/ui",
