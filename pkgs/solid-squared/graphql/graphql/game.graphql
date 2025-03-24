@@ -1,0 +1,4 @@
+interface Game implements Node {
+	id: ID!
+	name: String!
+}

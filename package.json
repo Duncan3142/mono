@@ -1,15 +1,10 @@
 {
 	"name": "@duncan3142/mono",
-	"version": "0.0.0",
-	"repository": {
-		"type": "git",
-		"url": "git+https://github.com/Duncan3142/mono.git"
-	},
 	"description": "GitHub All The Things",
 	"private": true,
 	"author": "Duncan Giles",
 	"type": "module",
-	"license": "MIT",
+	"license": "AGPL-3.0-only",
 	"engines": {
 		"node": ">=22",
 		"npm": ">=11"

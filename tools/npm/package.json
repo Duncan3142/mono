@@ -13,7 +13,7 @@
 	"version": "0.0.0",
 	"author": "Duncan Giles",
 	"type": "module",
-	"license": "MIT",
+	"license": "AGPL-3.0-only",
 	"bin": {
 		"npm-changes": "./bin/npm-changes.sh",
 		"npm-install": "./bin/npm-install.sh",

@@ -13,7 +13,7 @@
 	"version": "0.0.0",
 	"author": "Duncan Giles",
 	"type": "module",
-	"license": "MIT",
+	"license": "AGPL-3.0-only",
 	"bin": {
 		"git-fetch": "./bin/git-fetch.sh",
 		"git-init": "./bin/git-init.sh",

@@ -29,7 +29,7 @@ const graphqlParser = {
 
 const graphqlConfig = compose({
 	name: "@duncan3142/graphql",
-	files: ["**/*.graphql"],
+	files: ["graphql/*.graphql"],
 	extends: [
 		graphqlParser,
 		graphql.configs["flat/schema-recommended"],

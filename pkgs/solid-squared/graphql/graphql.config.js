@@ -1,5 +1,5 @@
 const config = {
-	schema: "./graphql/*.graphql",
+	schema: "graphql/*.graphql",
 }
 
 export default config
