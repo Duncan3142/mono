@@ -31,7 +31,8 @@
 	"files": [
 		".tsc/dist/**/*.js",
 		".tsc/dist/**/*.ts",
-		".tsc/dist/**/*.map"
+		".tsc/dist/**/*.map",
+		"graphql/*.graphql"
 	],
 	"scripts": {
 		"clean": "rm -rf .prettier .package .tsc",
@@ -53,6 +54,7 @@
 		"@eslint/config-inspector": "^1.0.2",
 		"@graphql-eslint/eslint-plugin": "^4.3.0",
 		"@graphql-inspector/cli": "^5.0.8",
+		"@types/node": "^22.0.0",
 		"eslint": "^9.23.0",
 		"prettier": "^3.5.3",
 		"typescript": "^5.8.2"
@@ -62,6 +64,8 @@
 		"npm": "11.2.0"
 	},
 	"dependencies": {
-		"graphql": "^16.10.0"
+		"graphql": "^16.10.0",
+		"find-up-simple": "^1.0.1",
+		"purify-ts": "2.1.0"
 	}
 }

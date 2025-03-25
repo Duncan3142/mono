@@ -1,7 +1,7 @@
 """
 Error
 """
-interface Error {
+type Error {
 	id: ID!
 	code: String!
 	message: String!
