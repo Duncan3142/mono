@@ -29,7 +29,7 @@ const graphqlParser = {
 			{
 				acceptedIdNames: ["id", "urn"],
 				acceptedIdTypes: ["ID", "URN"],
-				// exceptions: { types: ["Error"], suffixes: ["Payload"] },
+				exceptions: { types: ["Error", "PageInfo"], suffixes: ["Connection", "Edge"] },
 			},
 		],
 	},

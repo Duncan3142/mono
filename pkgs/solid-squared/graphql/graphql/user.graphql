@@ -1,10 +1,17 @@
 """
-UserGame edge
+User edge
 """
-type UserGame {
-	id: ID!
-	user: User!
-	game: Game!
+type UserEdge {
+	node: User! # The actual User object
+	cursor: String! # A cursor for pagination
+}
+
+"""
+User connection
+"""
+type UserConnection {
+	edges: [UserEdge!]!
+	pageInfo: PageInfo!
 }
 
 """
@@ -14,7 +21,7 @@ type User implements Node {
 	urn: URN!
 	name: String!
 	email: String!
-	games: [UserGame!]!
+	games: GameConnection!
 }
 
 """

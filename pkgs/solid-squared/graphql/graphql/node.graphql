@@ -1,5 +1,5 @@
 """
-String of the following format:
+A Base64 encoded string of the following format:
 	urn:{partition}:{authority}:{provider}:{client}:{service}:{type}:{id}<[/{pathSegment}]>
 """
 scalar URN
@@ -19,4 +19,22 @@ type Query {
 	Get a node by URN
 	"""
 	node(urn: URN!): Node
+}
+
+"""
+Cursor direction
+"""
+enum CursorDirection {
+	ASC
+	DESC
+}
+
+"""
+Page info
+"""
+type PageInfo {
+	hasNextPage: Boolean!
+	hasPreviousPage: Boolean!
+	startCursor: String
+	endCursor: String
 }

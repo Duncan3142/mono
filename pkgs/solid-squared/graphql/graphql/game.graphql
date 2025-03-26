@@ -7,6 +7,22 @@ interface Game implements Node {
 }
 
 """
+Game edge
+"""
+type GameEdge {
+	node: Game! # The actual Game object
+	cursor: String! # A cursor for pagination
+}
+
+"""
+Game connection
+"""
+type GameConnection {
+	edges: [GameEdge!]!
+	pageInfo: PageInfo!
+}
+
+"""
 Game queries
 """
 type Query {
