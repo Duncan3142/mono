@@ -32,7 +32,8 @@
 		".tsc/dist/**/*.js",
 		".tsc/dist/**/*.ts",
 		".tsc/dist/**/*.map",
-		"graphql/*.graphql"
+		"graphql/*.graphql",
+		".graphql/schema.json"
 	],
 	"scripts": {
 		"clean": "rm -rf .prettier .package .tsc",
