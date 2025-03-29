@@ -4,14 +4,15 @@ Game node
 interface Game implements Node {
 	urn: URN!
 	name: String!
+	topScore: Int
 }
 
 """
 Game edge
 """
 type GameEdge {
-	node: Game! # The actual Game object
-	cursor: String! # A cursor for pagination
+	node: Game!
+	cursor: String!
 }
 
 """
@@ -23,6 +24,38 @@ type GameConnection {
 }
 
 """
+Game field name
+"""
+enum GameFieldName {
+	NAME
+	TOP_SCORE
+}
+
+"""
+Game order
+"""
+input GameOrder {
+	field: GameFieldName!
+	direction: OrderDirection!
+}
+
+"""
+Game field
+"""
+input GameFieldValue @oneOf {
+	name: String
+	topScore: Int
+}
+
+"""
+Game filter
+"""
+input GameFilter {
+	field: GameFieldValue!
+	operator: ComparisonOperator!
+}
+
+"""
 Game queries
 """
 type Query {
@@ -30,4 +63,9 @@ type Query {
 	Get a game by URN
 	"""
 	game(urn: URN!): Game!
+
+	"""
+	Get games
+	"""
+	games(cursor: CursorInput, order: [GameOrder!], filter: [GameFilter!]): GameConnection!
 }

@@ -23,16 +23,6 @@ const graphqlParser = {
 	plugins: {
 		"@graphql-eslint": graphql,
 	},
-	rules: {
-		"@graphql-eslint/strict-id-in-types": [
-			"error",
-			{
-				acceptedIdNames: ["id", "urn"],
-				acceptedIdTypes: ["ID", "URN"],
-				exceptions: { types: ["Error", "PageInfo"], suffixes: ["Connection", "Edge"] },
-			},
-		],
-	},
 }
 
 /* eslint-enable jsdoc/check-tag-names -- Type required in JS */
@@ -44,6 +34,20 @@ const graphqlConfig = compose({
 		graphqlParser,
 		graphql.configs["flat/schema-recommended"],
 		graphql.configs["flat/schema-relay"],
+		{
+			rules: {
+				"@graphql-eslint/relay-page-info": "off",
+				"@graphql-eslint/relay-arguments": "off",
+				"@graphql-eslint/strict-id-in-types": [
+					"error",
+					{
+						acceptedIdNames: ["id", "urn"],
+						acceptedIdTypes: ["ID", "URN"],
+						exceptions: { types: ["Error", "PageInfo"], suffixes: ["Connection", "Edge"] },
+					},
+				],
+			},
+		},
 	],
 })
 

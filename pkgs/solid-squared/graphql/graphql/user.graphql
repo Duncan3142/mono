@@ -1,9 +1,72 @@
 """
 User edge
 """
+type UserGameEdge {
+	node: Game!
+	topScore: Int
+	cursor: String!
+}
+
+"""
+User connection
+"""
+type UserGameConnection {
+	edges: [UserGameEdge!]!
+	pageInfo: PageInfo!
+}
+
+"""
+User field name
+"""
+enum UserGameFieldName {
+	NAME
+	TOP_SCORE
+}
+
+"""
+User order
+"""
+input UserGameOrder {
+	field: UserGameFieldName!
+	direction: OrderDirection!
+}
+
+"""
+User field
+"""
+input UserGameFieldValue @oneOf {
+	name: String
+	topScore: Int
+}
+
+"""
+User filter
+"""
+input UserGameFilter {
+	field: UserGameFieldValue!
+	operator: ComparisonOperator!
+}
+
+"""
+User node
+"""
+type User implements Node {
+	urn: URN!
+	name: String!
+	email: String!
+	games(
+		cursor: CursorInput
+		order: [UserGameOrder!]
+		filter: [UserGameFilter!]
+	): UserGameConnection!
+}
+
+"""
+User edge
+"""
 type UserEdge {
-	node: User! # The actual User object
-	cursor: String! # A cursor for pagination
+	node: User!
+	cursor: String!
 }
 
 """
@@ -15,13 +78,35 @@ type UserConnection {
 }
 
 """
-User node
+User field name
 """
-type User implements Node {
-	urn: URN!
-	name: String!
-	email: String!
-	games: GameConnection!
+enum UserFieldName {
+	NAME
+	EMAIL
+}
+
+"""
+User order
+"""
+input UserOrder {
+	field: UserFieldName!
+	direction: OrderDirection!
+}
+
+"""
+User field
+"""
+input UserFieldValue @oneOf {
+	name: String
+	email: String
+}
+
+"""
+User filter
+"""
+input UserFilter {
+	field: UserFieldValue!
+	operator: ComparisonOperator!
 }
 
 """
@@ -37,4 +122,9 @@ type Query {
 	Get a user by URN
 	"""
 	user(urn: URN!): User!
+
+	"""
+	Get users
+	"""
+	users(cursor: CursorInput, order: [UserOrder!], filter: [UserFilter!]): UserConnection!
 }
