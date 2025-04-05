@@ -45,7 +45,7 @@ Game filter
 input GameFilterInput @oneOf {
 	and: [GameFilterInput!]
 	or: [GameFilterInput!]
-	leaf: GameFilterLeafInput
+	match: GameFilterLeafInput
 }
 
 extend type Query {
@@ -60,6 +60,6 @@ extend type Query {
 	games(
 		cursor: CursorInput
 		order: [GameSortOrderInput!]
-		filter: [GameFilterInput!]
+		filter: GameFilterInput
 	): GameConnection!
 }

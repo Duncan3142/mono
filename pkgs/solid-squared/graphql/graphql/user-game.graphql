@@ -37,7 +37,7 @@ User game filter
 input UserGameFilterInput @oneOf {
 	and: [UserGameFilterInput!]
 	or: [UserGameFilterInput!]
-	leaf: UserGameFilterLeafInput
+	match: UserGameFilterLeafInput
 }
 
 extend type User {

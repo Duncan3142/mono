@@ -45,7 +45,7 @@ User filter
 input UserFilterInput @oneOf {
 	and: [UserFilterInput!]
 	or: [UserFilterInput!]
-	leaf: UserFilterLeafInput
+	match: UserFilterLeafInput
 }
 
 extend type Query {
