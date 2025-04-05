@@ -1,7 +1,7 @@
 """
 Game node
 """
-interface Game implements Node {
+type Game implements Node {
 	urn: URN!
 	name: String!
 	topScore: Int
@@ -24,41 +24,31 @@ type GameConnection {
 }
 
 """
-Game field name
-"""
-enum GameFieldName {
-	NAME
-	TOP_SCORE
-}
-
-"""
 Game order
 """
-input GameOrder {
-	field: GameFieldName!
-	direction: OrderDirection!
+input GameSortOrderInput @oneOf {
+	name: SortOrder
+	topScore: SortOrder
 }
 
 """
-Game field
+Game filter leaf
 """
-input GameFieldValue @oneOf {
-	name: String
-	topScore: Int
+input GameFilterLeafInput @oneOf {
+	name: StringComparisonInput
+	topScore: IntComparisonInput
 }
 
 """
 Game filter
 """
-input GameFilter {
-	field: GameFieldValue!
-	operator: ComparisonOperator!
+input GameFilterInput @oneOf {
+	and: [GameFilterInput!]
+	or: [GameFilterInput!]
+	leaf: GameFilterLeafInput
 }
 
-"""
-Game queries
-"""
-type Query {
+extend type Query {
 	"""
 	Get a game by URN
 	"""
@@ -67,5 +57,9 @@ type Query {
 	"""
 	Get games
 	"""
-	games(cursor: CursorInput, order: [GameOrder!], filter: [GameFilter!]): GameConnection!
+	games(
+		cursor: CursorInput
+		order: [GameSortOrderInput!]
+		filter: [GameFilterInput!]
+	): GameConnection!
 }

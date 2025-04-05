@@ -1,0 +1,16 @@
+"""
+String comparison operator
+"""
+enum StringComparisonOperator {
+	EQ
+	NE
+	LIKE
+}
+
+"""
+Int comparison input
+"""
+input StringComparisonInput {
+	value: String!
+	operator: StringComparisonOperator!
+}
