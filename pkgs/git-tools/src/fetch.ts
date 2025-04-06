@@ -1,6 +1,7 @@
 import type { ExecaMethod } from "execa"
 import type { Logger } from "pino"
 import printRefs from "#refs"
+import { DEFAULT_DEPTH, DEFAULT_REMOTE } from "#consts"
 
 interface Ctx {
 	$: ExecaMethod
@@ -14,18 +15,6 @@ interface Props {
 	depth?: number
 }
 
-const DEFAULT_REMOTE = "origin"
-const DEFAULT_DEPTH = 1
-
-/*
-	'fatal'
-	'error'
-	'warn'
-	'info'
-	'debug'
-	'trace'
-*/
-
 /**
  * Fetches refs the remote repository.
  * @param ctx - Context object
@@ -38,7 +27,7 @@ const DEFAULT_DEPTH = 1
  * @param props.remote - Remote repository to fetch from
  * @returns - A promise that resolves when the fetch is complete
  */
-const fetch = async (
+const fetchRefs = async (
 	{ $, pino }: Ctx,
 	{ remote = DEFAULT_REMOTE, tags = [], branches = [], depth = DEFAULT_DEPTH }: Props
 ): Promise<void> => {
@@ -68,4 +57,4 @@ const fetch = async (
 	return
 }
 
-export default fetch
+export default fetchRefs

@@ -10,9 +10,9 @@ interface Ctx {
  * @param ctx.$ - execa instance
  * @returns - A promise that resolves when the refs are printed
  */
-const refs = async ({ $ }: Ctx): Promise<void> => {
+const printRefs = async ({ $ }: Ctx): Promise<void> => {
 	await $`git --no-pager branch -a -v -v`
 	await $`git --no-pager tag`
 }
 
-export default refs
+export default printRefs
