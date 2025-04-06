@@ -1,0 +1,14 @@
+name: "Git tools"
+description: "Install Git tools"
+
+runs:
+  using: "composite"
+  steps:
+    - name: Setup
+      shell: bash
+      run: |
+        set -ueC
+        set -o pipefail
+
+        ./install.sh
+      working-directory: ${{ github.action_path}}

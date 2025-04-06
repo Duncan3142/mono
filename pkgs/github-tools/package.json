@@ -1,0 +1,21 @@
+{
+	"name": "@duncan3142/github-tools",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/Duncan3142/mono.git"
+	},
+	"publishConfig": {
+		"registry": "https://npm.pkg.github.com",
+		"access": "restricted"
+	},
+	"description": "GitHub tools",
+	"keywords": [],
+	"version": "0.0.0",
+	"author": "Duncan Giles",
+	"type": "module",
+	"license": "AGPL-3.0-only",
+	"bin": {
+		"github-release": "./bin/github-release.sh",
+		"semver-pr": "./bin/semver-pr.sh"
+	}
+}

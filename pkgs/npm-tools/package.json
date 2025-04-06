@@ -1,5 +1,5 @@
 {
-	"name": "@duncan3142/bash-tools",
+	"name": "@duncan3142/npm-tools",
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/Duncan3142/mono.git"
@@ -8,15 +8,18 @@
 		"registry": "https://npm.pkg.github.com",
 		"access": "restricted"
 	},
-	"description": "Bash tools",
+	"description": "NPM tools",
 	"keywords": [],
 	"version": "0.0.0",
 	"author": "Duncan Giles",
 	"type": "module",
 	"license": "AGPL-3.0-only",
 	"bin": {
-		"mkpipe": "./bin/mkpipe.sh",
-		"print-env": "./bin/print-env.sh",
-		"timber": "./bin/timber.sh"
+		"npm-changes": "./bin/npm-changes.sh",
+		"npm-install": "./bin/npm-install.sh",
+		"npm-publish": "./bin/npm-publish.sh",
+		"npm-remote": "./bin/npm-remote.sh",
+		"npm-get-version": "./bin/npm-get-version.sh",
+		"npm-semver": "./bin/npm-semver.sh"
 	}
 }

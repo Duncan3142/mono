@@ -29,10 +29,6 @@
 			"path": "actions/volta"
 		},
 		{
-			"name": "tools/bash",
-			"path": "tools/bash"
-		},
-		{
 			"name": "tools/git",
 			"path": "tools/git"
 		},
@@ -59,6 +55,22 @@
 		{
 			"name": "pkgs/solid-squared/graphql",
 			"path": "pkgs/solid-squared/graphql",
+		},
+		{
+			"name": "pkgs/git-tools",
+			"path": "pkgs/git-tools"
+		},
+		{
+			"name": "pkgs/github-tools",
+			"path": "pkgs/github-tools"
+		},
+		{
+			"name": "pkgs/npm-tools",
+			"path": "pkgs/npm-tools",
+		},
+		{
+			"name": "pkgs/plopmono",
+			"path": "pkgs/plopmono",
 		},
 		{
 			"name": "pkgs/eslint-config",
