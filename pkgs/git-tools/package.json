@@ -55,12 +55,15 @@
 		"prettier": "^3.5.3",
 		"typescript": "^5.8.3"
 	},
+	"peerDependencies": {
+		"execa": "^9.5.2",
+		"pino": "^9.6.0"
+	},
+	"dependencies": {
+		"purify-ts": "^2.1.0"
+	},
 	"volta": {
 		"node": "22.14.0",
 		"npm": "11.2.0"
-	},
-	"dependencies": {
-		"execa": "^9.5.2",
-		"purify-ts": "^2.1.0"
 	}
 }

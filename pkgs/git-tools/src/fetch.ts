@@ -1,62 +1,71 @@
 import type { ExecaMethod } from "execa"
+import type { Logger } from "pino"
+import printRefs from "#refs"
+
+interface Ctx {
+	$: ExecaMethod
+	pino: Logger
+}
+
+interface Props {
+	remote?: string
+	tags?: Array<string>
+	branches?: Array<string>
+	depth?: number
+}
+
+const DEFAULT_REMOTE = "origin"
+const DEFAULT_DEPTH = 1
+
+/*
+	'fatal'
+	'error'
+	'warn'
+	'info'
+	'debug'
+	'trace'
+*/
 
 /**
  * Fetches refs the remote repository.
- * @param $ - The execa method to run the command
- * @returns - A promise that resolves when the command is complete
+ * @param ctx - Context object
+ * @param ctx.$ - execa instance
+ * @param ctx.pino - pino instance
+ * @param props - Props object
+ * @param props.tags - Tags to fetch
+ * @param props.branches - Branches to fetch
+ * @param props.depth - Depth of the fetch
+ * @param props.remote - Remote repository to fetch from
+ * @returns - A promise that resolves when the fetch is complete
  */
-const fetch = async ($: ExecaMethod): Promise<void> => {
-	await $`git fetch --help`
+const fetch = async (
+	{ $, pino }: Ctx,
+	{ remote = DEFAULT_REMOTE, tags = [], branches = [], depth = DEFAULT_DEPTH }: Props
+): Promise<void> => {
+	const refSpecs = [
+		...tags.map((tag) => `refs/tags/${tag}:refs/tags/${tag}`),
+		...branches.map((branch) => `refs/heads/${branch}:refs/remotes/${remote}/${branch}`),
+	]
+	// eslint-disable-next-line @typescript-eslint/no-magic-numbers -- Empty array check
+	if (refSpecs.length === 0) {
+		pino.warn("No refs to fetch")
+		return
+	}
+
+	if (pino.isLevelEnabled("debug")) {
+		pino.debug("Refs pre fetch")
+		await printRefs({ $ })
+	}
+
+	pino.info('Fetching ref specs "%s"', refSpecs.join(", "))
+
+	await $`git fetch ${remote} --depth=${depth} ${refSpecs}`
+
+	if (pino.isLevelEnabled("debug")) {
+		pino.debug("Refs post fetch")
+		await printRefs({ $ })
+	}
 	return
 }
 
-const bash = /* bash */ `
-	set -ueC
-	set -o pipefail
-
-	branches=()
-	tags=()
-	while (( "$#" )); do
-		case $1 in
-			-t | --tag)
-				tags=("$2")
-				shift 2
-				;;
-			-d | --depth)
-				GIT_FETCH_DEPTH=$2
-				shift 2
-				;;
-			*)
-				branches+=("$1")
-				shift
-				;;
-		esac
-	done
-
-	GIT_FETCH_DEPTH=\${GIT_FETCH_DEPTH:-1}
-
-	refSpecs=()
-	for branch in "\${branches[@]}"; do
-		refSpecs+=("refs/heads/\${branch}:refs/remotes/\${GIT_REMOTE}/\${branch}")
-	done
-	for tag in "\${tags[@]}"; do
-		refSpecs+=("refs/tags/\${tag}:refs/tags/\${tag}")
-	done
-
-	if timber -l debug; then
-		timber debug "Refs pre fetch"
-		git-refs
-	fi
-
-	timber info "Fetching ref specs \${refSpecs[*]}"
-
-	git fetch "\${GIT_REMOTE}" --depth="\${GIT_FETCH_DEPTH}" "\${refSpecs[@]}"
-
-	if timber -l debug; then
-		timber debug "Refs post fetch"
-		git-refs
-	fi
-`
-
-export { bash }
 export default fetch
