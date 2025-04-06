@@ -67,6 +67,6 @@
 	"dependencies": {
 		"find-up-simple": "^1.0.1",
 		"graphql": "^16.10.0",
-		"purify-ts": "2.1.0"
+		"purify-ts": "^2.1.0"
 	}
 }
