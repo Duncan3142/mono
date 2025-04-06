@@ -13,14 +13,54 @@
 	"version": "0.0.0",
 	"author": "Duncan Giles",
 	"type": "module",
-	"license": "AGPL-3.0-only",
-	"bin": {
-		"git-fetch": "./bin/git-fetch.sh",
-		"git-init": "./bin/git-init.sh",
-		"git-merge-base": "./bin/git-merge-base.sh",
-		"git-refs": "./bin/git-refs.sh",
-		"git-tag": "./bin/git-tag.sh",
-		"semver-branch": "./bin/semver-branch.sh",
-		"semver-commit": "./bin/semver-commit.sh"
+	"license": "LGPL-3.0-or-later",
+	"engines": {
+		"node": ">=22",
+		"npm": ">=11"
+	},
+	"main": "./.tsc/dist/index.js",
+	"imports": {
+		"#*": "./.tsc/dist/*.js"
+	},
+	"exports": {
+		"./*": {
+			"import": "./.tsc/dist/*.js",
+			"types": "./.tsc/dist/*.d.ts"
+		}
+	},
+	"files": [
+		".tsc/dist/**/*.js",
+		".tsc/dist/**/*.ts",
+		".tsc/dist/**/*.map"
+	],
+	"scripts": {
+		"clean": "rm -rf .prettier .package .tsc",
+		"format": "prettier --check --cache --cache-location='.prettier/cache' --cache-strategy content .",
+		"format:fix": "prettier --write --cache --cache-location='.prettier/cache' --cache-strategy content .",
+		"assets": "tsc --build",
+		"assets:watch": "tsc --build --watch",
+		"check:tsc": "tsc --build --noEmit",
+		"lint:eslint": "eslint --max-warnings 0 .",
+		"lint:eslint:fix": "eslint --fix .",
+		"inspect:eslint": "eslint --inspect-config ."
+	},
+	"devDependencies": {
+		"@changesets/cli": "^2.28.1",
+		"@duncan3142/eslint-config": "^0.1.10",
+		"@duncan3142/prettier-config": "^0.1.3",
+		"@duncan3142/tsc-config": "^0.1.6",
+		"@eslint/config-inspector": "^1.0.2",
+		"@types/node": "^22.14.0",
+		"eslint": "^9.24.0",
+		"prettier": "^3.5.3",
+		"typescript": "^5.8.3"
+	},
+	"volta": {
+		"node": "22.14.0",
+		"npm": "11.2.0"
+	},
+	"dependencies": {
+		"execa": "^9.5.2",
+		"purify-ts": "^2.1.0"
 	}
 }
