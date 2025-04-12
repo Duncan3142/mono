@@ -1,5 +1,28 @@
 import type { ExecaMethod } from "execa"
 
+const BRANCH = "branch"
+const TAG = "tag"
+
+/**
+ * Ref branch type
+ */
+type BRANCH_TYPE = typeof BRANCH
+
+/**
+ * Ref tag type
+ */
+type TAG_TYPE = typeof TAG
+
+/**
+ * Ref type
+ */
+type REF_TYPE = BRANCH_TYPE | TAG_TYPE
+
+interface Ref {
+	name: string
+	type?: REF_TYPE
+}
+
 interface Ctx {
 	$: ExecaMethod
 }
@@ -16,3 +39,5 @@ const printRefs = async ({ $ }: Ctx): Promise<void> => {
 }
 
 export default printRefs
+export type { BRANCH_TYPE, TAG_TYPE, REF_TYPE, Ref, Ctx }
+export { BRANCH, TAG }

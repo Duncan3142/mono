@@ -1,7 +1,12 @@
-import type { ExecaMethod } from "execa"
+import { ExecaError, type ExecaMethod } from "execa"
 import type { Logger } from "pino"
-import printRefs from "#refs"
+import printRefs, { BRANCH, TAG, type Ref, type REF_TYPE } from "#refs"
 import { DEFAULT_DEPTH, DEFAULT_REMOTE } from "#consts"
+import never from "#never"
+
+interface FetchRef extends Ref {
+	optional?: boolean
+}
 
 interface Ctx {
 	$: ExecaMethod
@@ -9,10 +14,57 @@ interface Ctx {
 }
 
 interface Props {
+	refs: Array<FetchRef>
 	remote?: string
-	tags?: Array<string>
-	branches?: Array<string>
 	depth?: number
+}
+
+type RefSpecs = [expected: Array<string>, optional: Array<string>]
+
+const appendRefSpec = (
+	name: string,
+	type: REF_TYPE,
+	remote: string,
+	refSpecs: Array<string>
+): void => {
+	switch (type) {
+		case BRANCH: {
+			refSpecs.push(`refs/heads/${name}:refs/remotes/${remote}/${name}`)
+			return
+		}
+		case TAG: {
+			refSpecs.push(`refs/tags/${name}:refs/tags/${name}`)
+			return
+		}
+		default: {
+			return never()
+		}
+	}
+}
+
+const buildRefSpecs = (refs: Array<FetchRef>, remote: string): RefSpecs =>
+	refs.reduce<RefSpecs>(
+		([expectedRefSpecs, optionalRefSpecs], { name, type = BRANCH, optional = false }) => {
+			const collector = optional ? optionalRefSpecs : expectedRefSpecs
+			appendRefSpec(name, type, remote, collector)
+
+			return [expectedRefSpecs, optionalRefSpecs]
+		},
+		[[], []]
+	)
+
+const doFetch = async (
+	{ $, pino }: Ctx,
+	remote: string,
+	depth: number,
+	refSpecs: Array<string>
+) => {
+	// eslint-disable-next-line @typescript-eslint/no-magic-numbers -- Empty erray check
+	if (refSpecs.length > 0) {
+		pino.info('Fetching ref specs "%s"', refSpecs.join(", "))
+
+		await $`git fetch ${remote} --depth=${depth} ${refSpecs}`
+	}
 }
 
 /**
@@ -21,34 +73,37 @@ interface Props {
  * @param ctx.$ - execa instance
  * @param ctx.pino - pino instance
  * @param props - Props object
- * @param props.tags - Tags to fetch
- * @param props.branches - Branches to fetch
+ * @param props.refs - Refs to fetch
  * @param props.depth - Depth of the fetch
  * @param props.remote - Remote repository to fetch from
  * @returns - A promise that resolves when the fetch is complete
  */
 const fetchRefs = async (
 	{ $, pino }: Ctx,
-	{ remote = DEFAULT_REMOTE, tags = [], branches = [], depth = DEFAULT_DEPTH }: Props
+	{ remote = DEFAULT_REMOTE, refs = [], depth = DEFAULT_DEPTH }: Props
 ): Promise<void> => {
-	const refSpecs = [
-		...tags.map((tag) => `refs/tags/${tag}:refs/tags/${tag}`),
-		...branches.map((branch) => `refs/heads/${branch}:refs/remotes/${remote}/${branch}`),
-	]
 	// eslint-disable-next-line @typescript-eslint/no-magic-numbers -- Empty array check
-	if (refSpecs.length === 0) {
+	if (refs.length === 0) {
 		pino.warn("No refs to fetch")
 		return
 	}
+
+	const [expectedRefSpecs, optionalRefSpecs] = buildRefSpecs(refs, remote)
 
 	if (pino.isLevelEnabled("debug")) {
 		pino.debug("Refs pre fetch")
 		await printRefs({ $ })
 	}
 
-	pino.info('Fetching ref specs "%s"', refSpecs.join(", "))
-
-	await $`git fetch ${remote} --depth=${depth} ${refSpecs}`
+	await doFetch({ $, pino }, remote, depth, expectedRefSpecs)
+	await doFetch({ $, pino }, remote, depth, optionalRefSpecs).catch((err: unknown) => {
+		const GIT_FETCH_ERROR_CODE = 128
+		if (err instanceof ExecaError && err.exitCode === GIT_FETCH_ERROR_CODE) {
+			pino.warn("Optional refs fetch failed")
+		} else {
+			throw err
+		}
+	})
 
 	if (pino.isLevelEnabled("debug")) {
 		pino.debug("Refs post fetch")
@@ -58,3 +113,4 @@ const fetchRefs = async (
 }
 
 export default fetchRefs
+export type { FetchRef }
