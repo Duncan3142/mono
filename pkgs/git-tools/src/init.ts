@@ -1,20 +1,26 @@
-import type { ExecaMethod } from "execa"
+import { resolve } from "node:path"
+import type { ExecaScriptMethod } from "execa"
 import type { Logger } from "pino"
-import printRefs from "#refs"
-import fetchRefs from "#fetch"
+import printRefs, { type Ref } from "#refs"
+import fetchRefs, { type FetchRef } from "#fetch"
 import { DEFAULT_DEPTH, DEFAULT_REMOTE } from "#consts"
 
 interface Ctx {
-	$: ExecaMethod
+	$: ExecaScriptMethod
 	pino: Logger
 }
 
 interface Props {
 	actor: string
 	workspace: string
-	remote?: string
-	tags?: Array<string>
-	branches?: Array<string>
+	workdir: string
+	remote: string
+	repository: {
+		name: string
+		serverUrl: string
+	}
+	checkout: Ref
+	fetch?: Array<FetchRef>
 	depth?: number
 }
 
@@ -24,12 +30,16 @@ interface Props {
  * @param ctx.$ - execa instance
  * @param ctx.pino - pino instance
  * @param props - Props object
- * @param props.tags - Tags to fetch
- * @param props.branches - Branches to fetch
- * @param props.depth - Depth of the fetch
+ * @param props.actor - Git actor name
+ * @param props.workspace - Workspace directory path
+ * @param props.workdir - Working directory path
  * @param props.remote - Remote repository to fetch from
- * @param props.actor
- * @param props.workspace
+ * @param props.repository - Repository information
+ * @param props.repository.name - Repository name
+ * @param props.repository.serverUrl - Repository server URL
+ * @param props.checkout - Ref to checkout
+ * @param props.fetch - Additional refs to fetch
+ * @param props.depth - Fetch depth
  * @returns - A promise that resolves when the init is complete
  */
 const init = async (
@@ -37,92 +47,54 @@ const init = async (
 	{
 		actor,
 		workspace,
+		workdir,
 		remote = DEFAULT_REMOTE,
-		tags = [],
-		branches = [],
+		repository: { name: repoName, serverUrl },
+		checkout,
+		fetch = [],
 		depth = DEFAULT_DEPTH,
 	}: Props
-): Promise<void> => {
+): Promise<ExecaScriptMethod> => {
+	pino.info("Set git config:")
+
 	await $`git config --global user.name ${actor}`
 	await $`git config --global user.email ${actor}@users.noreply.github.com`
 	await $`git config --global --add safe.directory ${workspace}`
 	await $`git config --global init.defaultBranch main`
 
+	pino.info("Create workspace dir:")
 	await $`mkdir -p ${workspace}"`
-	return
+
+	const $$ = $({ cwd: workspace })
+	pino.info("Init repo:")
+	await $$`git init`
+
+	pino.info("Set remote:")
+	await $$`git remote add ${remote} ${serverUrl}/${repoName}.git`
+
+	await fetchRefs({ $: $$, pino }, { remote, refs: [...fetch, checkout], depth })
+
+	pino.info(`Checkout ${checkout.type ?? "branch"} ${checkout.name}`)
+	await $$`git checkout --progress ${checkout.name}`
+
+	if (pino.isLevelEnabled("debug")) {
+		pino.debug("Refs post checkout:")
+		await printRefs({ $: $$ })
+	}
+
+	const workingDir = resolve(workspace, workdir)
+
+	const $$$ = $({ cwd: workingDir })
+
+	if (pino.isLevelEnabled("debug")) {
+		pino.debug("Work dir:")
+		pino.debug(workingDir)
+
+		pino.debug("Work dir files:")
+		await $$$`tree -a`
+	}
+
+	return $$$
 }
 
-// eslint-disable-next-line no-secrets/no-secrets -- Temporary
-const bash = /* bash */ `
-
-branches=()
-requiredBranches=()
-
-while (( "$#" )); do
-	case $1 in
-		-c | --checkout)
-			checkoutBranch="$2"
-			shift 2
-			;;
-		-b | --branch)
-			branches+=("$2")
-			shift 2
-			;;
-		-B | --required-branch)
-			requiredBranches+=("$2")
-			shift 2
-			;;
-		*)
-			timber error "Invalid argument: $1"
-			exit 1
-			;;
-	esac
-done
-
-mkdir -p "\${GIT_WORKSPACE}"
-
-cd "\${GIT_WORKSPACE}"
-
-timber info "Init repo:"
-git init
-
-# authHeaderConfigKey="http.\${GIT_SERVER_URL}/.extraheader"
-# authHeaderConfigValue="AUTHORIZATION: basic $(echo -n "x-access-token:\${GHA_TOKEN}" | base64)"
-
-git remote add "\${GIT_REMOTE}" "\${GIT_SERVER_URL}/\${GIT_REPOSITORY}.git"
-
-if timber -l debug; then
-	timber debug "Git config:"
-	git config --list
-fi
-
-git-fetch "$checkoutBranch"
-if [[ \${#requiredBranches[@]} -gt 0 ]]; then
-	git-fetch "\${requiredBranches[@]}"
-fi
-if [[ \${#branches[@]} -gt 0 ]]; then
-	git-fetch "\${branches[@]}" || true
-fi
-
-timber info "Checkout \${checkoutBranch}:"
-git checkout --progress "\${checkoutBranch}"
-
-if timber -l debug; then
-	timber debug "Refs post checkout"
-	git-refs
-fi
-
-cd "\${MONO_WORK_DIR}"
-
-if timber -l debug; then
-
-	timber debug "Work dir:"
-	pwd
-
-	timber debug "Work dir files:"
-	tree -a
-fi
-`
-
-export { bash }
 export default init
