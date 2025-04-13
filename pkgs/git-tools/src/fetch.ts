@@ -1,7 +1,7 @@
 import { ExecaError, type ExecaScriptMethod } from "execa"
 import type { Logger } from "pino"
 import printRefs, { BRANCH, TAG, type Ref, type REF_TYPE } from "#refs"
-import { DEFAULT_DEPTH, DEFAULT_REMOTE } from "#consts"
+import { BASE_10_RADIX, DEFAULT_DEPTH, DEFAULT_REMOTE } from "#consts"
 import never from "#never"
 
 interface FetchRef extends Ref {
@@ -17,6 +17,7 @@ interface Props {
 	refs: Array<FetchRef>
 	remote?: string
 	depth?: number
+	deepen?: boolean
 }
 
 type RefSpecs = [expected: Array<string>, optional: Array<string>]
@@ -57,13 +58,18 @@ const doFetch = async (
 	{ $, pino }: Ctx,
 	remote: string,
 	depth: number,
+	deepen: boolean,
 	refSpecs: Array<string>
 ) => {
 	// eslint-disable-next-line @typescript-eslint/no-magic-numbers -- Empty erray check
 	if (refSpecs.length > 0) {
 		pino.info('Fetching ref specs "%s"', refSpecs.join(", "))
 
-		await $`git fetch ${remote} --depth=${depth} ${refSpecs}`
+		const depthString = depth.toString(BASE_10_RADIX)
+
+		const depthArg = deepen ? `--deepen=${depthString}` : `--depth=${depthString}`
+
+		await $`git fetch ${depthArg} ${remote} ${refSpecs}`
 	}
 }
 
@@ -76,11 +82,12 @@ const doFetch = async (
  * @param props.refs - Refs to fetch
  * @param props.depth - Depth of the fetch
  * @param props.remote - Remote repository to fetch from
+ * @param props.deepen - Whether to deepen the fetch
  * @returns - A promise that resolves when the fetch is complete
  */
 const fetchRefs = async (
 	{ $, pino }: Ctx,
-	{ remote = DEFAULT_REMOTE, refs = [], depth = DEFAULT_DEPTH }: Props
+	{ remote = DEFAULT_REMOTE, refs = [], depth = DEFAULT_DEPTH, deepen = false }: Props
 ): Promise<void> => {
 	// eslint-disable-next-line @typescript-eslint/no-magic-numbers -- Empty array check
 	if (refs.length === 0) {
@@ -95,8 +102,8 @@ const fetchRefs = async (
 		await printRefs({ $ })
 	}
 
-	await doFetch({ $, pino }, remote, depth, expectedRefSpecs)
-	await doFetch({ $, pino }, remote, depth, optionalRefSpecs).catch((err: unknown) => {
+	await doFetch({ $, pino }, remote, depth, deepen, expectedRefSpecs)
+	await doFetch({ $, pino }, remote, depth, deepen, optionalRefSpecs).catch((err: unknown) => {
 		const GIT_FETCH_ERROR_CODE = 128
 		if (err instanceof ExecaError && err.exitCode === GIT_FETCH_ERROR_CODE) {
 			pino.warn("Optional refs fetch failed")
