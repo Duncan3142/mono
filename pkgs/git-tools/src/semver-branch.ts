@@ -1,17 +1,28 @@
-#!/usr/bin/env bash
+import type { ExecaScriptMethod } from "execa"
+import type { Logger } from "pino"
+import printRefs from "#refs"
 
-set -euC
-set -o pipefail
-
-function return () {
-	case $? in
-		0) ;;
-		64) ;;
-		*) exit 1
-	esac
+interface Ctx {
+	$: ExecaScriptMethod
+	pino: Logger
 }
 
-trap "return" EXIT
+interface Props {
+	baseRef: Ref
+	headRef: Ref
+	remote?: string
+	maxDepth?: number
+	deepenBy?: number
+}
+
+const semverBranch = async ({ $, pino }: Ctx) => {
+	if (pino.isLevelEnabled("debug")) {
+		pino.debug("Refs pre checkout:")
+		await printRefs({ $ })
+	}
+}
+
+const bash = /* bash */ `
 
 timber info "Checkout SemVer branch..."
 
@@ -47,3 +58,6 @@ if timber -l debug; then
 	timber debug "Refs post checkout:"
 	git-refs
 fi
+`
+
+export default bash
