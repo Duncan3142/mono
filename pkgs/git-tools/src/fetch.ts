@@ -55,23 +55,60 @@ const buildRefSpecs = (refs: Array<FetchRef>, remote: string): RefSpecs =>
 		[[], []]
 	)
 
+const FETCH_RESULT = {
+	EMPTY_REFS: "EMPTY_REFS",
+	FOUND: "FOUND",
+	NOT_FOUND: "NOT_FOUND",
+	ERROR: "ERROR",
+} as const
+
+type FetchResult = (typeof FETCH_RESULT)[keyof typeof FETCH_RESULT]
+
+interface DoFetchProps {
+	optional: boolean
+	remote: string
+	depth: number
+	deepen: boolean
+	refSpecs: Array<string>
+}
+
 const doFetch = async (
 	{ $, pino }: Ctx,
-	remote: string,
-	depth: number,
-	deepen: boolean,
-	refSpecs: Array<string>
-) => {
+	{ optional, remote, depth, deepen, refSpecs }: DoFetchProps
+): Promise<FetchResult> => {
 	// eslint-disable-next-line @typescript-eslint/no-magic-numbers -- Empty erray check
-	if (refSpecs.length > 0) {
-		pino.info('Fetching ref specs "%s"', refSpecs.join(", "))
-
-		const depthString = depth.toString(BASE_10_RADIX)
-
-		const depthArg = deepen ? `--deepen=${depthString}` : `--depth=${depthString}`
-
-		await $`git fetch ${depthArg} ${remote} ${refSpecs}`
+	if (refSpecs.length === 0) {
+		return FETCH_RESULT.EMPTY_REFS
 	}
+	pino.info('Fetching ref specs "%s"', refSpecs.join(", "))
+
+	const depthString = depth.toString(BASE_10_RADIX)
+
+	const depthArg = deepen ? `--deepen=${depthString}` : `--depth=${depthString}`
+
+	const { exitCode } = await $`git fetch ${depthArg} ${remote} ${refSpecs}`
+	const FETCH_SUCCESS_CODE = 0
+	const FETCH_ERROR_CODE = 128
+	switch (true) {
+		case exitCode === FETCH_SUCCESS_CODE: {
+			return FETCH_RESULT.FOUND
+		}
+		case exitCode === FETCH_ERROR_CODE && optional: {
+			pino.warn("Optional refs fetch failed")
+			return FETCH_RESULT.NOT_FOUND
+		}
+		default: {
+			pino.error("Fetch failed")
+			return FETCH_RESULT.ERROR
+		}
+	}
+}
+
+/**
+ * Fetch Error
+ */
+class FetchError extends Error {
+	public override name = "FetchError" as const
 }
 
 /**
@@ -89,11 +126,11 @@ const doFetch = async (
 const fetchRefs = async (
 	{ $, pino }: Ctx,
 	{ remote = DEFAULT_REMOTE, refs = [], depth = DEFAULT_DEPTH, deepen = false }: Props
-): Promise<void> => {
+): Promise<FetchResult> => {
 	// eslint-disable-next-line @typescript-eslint/no-magic-numbers -- Empty array check
 	if (refs.length === 0) {
 		pino.warn("No refs to fetch")
-		return
+		return FETCH_RESULT.EMPTY_REFS
 	}
 
 	const [expectedRefSpecs, optionalRefSpecs] = buildRefSpecs(refs, remote)
@@ -103,22 +140,29 @@ const fetchRefs = async (
 		await printRefs({ $ })
 	}
 
-	await doFetch({ $, pino }, remote, depth, deepen, expectedRefSpecs)
-	await doFetch({ $, pino }, remote, depth, deepen, optionalRefSpecs).catch((err: unknown) => {
-		const GIT_FETCH_ERROR_CODE = 128
-		if (err instanceof ExecaError && err.exitCode === GIT_FETCH_ERROR_CODE) {
-			pino.warn("Optional refs fetch failed")
-		} else {
-			throw err
-		}
-	})
+	throw 0
+
+	const expectedRes = await doFetch(
+		{ $, pino },
+		{ optional: false, remote, depth, deepen, refSpecs: expectedRefSpecs }
+	)
+	const optionalRes = await doFetch(
+		{ $, pino },
+		{ optional: true, remote, depth, deepen, refSpecs: optionalRefSpecs }
+	)
+
+	const res = [expectedRes, optionalRes]
+
+	if (res.includes(FETCH_RESULT.ERROR)) {
+		throw new FetchError("Fetch operation encountered an error.")
+	}
 
 	if (pino.isLevelEnabled("debug")) {
 		pino.debug("Refs post fetch")
 		await printRefs({ $ })
 	}
-	return
 }
 
 export default fetchRefs
+export { FetchError, FETCH_RESULT }
 export type { FetchRef }
