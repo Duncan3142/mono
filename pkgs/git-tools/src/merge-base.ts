@@ -1,4 +1,3 @@
-import { ExecaError } from "execa"
 import type { Logger } from "pino"
 import type { ExecaScript } from "#execa"
 import type { Ref } from "#refs"
@@ -23,13 +22,13 @@ const checkMergeBase = async (
 	baseRef: string,
 	headRef: string
 ): Promise<string | null> => {
-	const res = await $({ reject: false })`git merge-base ${baseRef} ${headRef}`
+	const { exitCode, stdout } = await $`git merge-base ${baseRef} ${headRef}`
 	const MERGE_BASE_FOUND = 0
-	if (res.exitCode === MERGE_BASE_FOUND && typeof res.stdout === "string") {
-		return res.stdout
+	if (exitCode === MERGE_BASE_FOUND && typeof stdout === "string") {
+		return stdout
 	}
 	const MERGE_BASE_NOT_FOUND = 1
-	if (res instanceof ExecaError && res.exitCode === MERGE_BASE_NOT_FOUND) {
+	if (exitCode === MERGE_BASE_NOT_FOUND) {
 		return null
 	}
 	throw new Error("Unexpected output from git merge-base")

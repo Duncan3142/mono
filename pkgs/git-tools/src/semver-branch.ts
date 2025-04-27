@@ -1,6 +1,7 @@
+import assert from "node:assert"
 import type { Logger } from "pino"
 import type { ExecaScript } from "#execa"
-import printRefs from "#refs"
+import printRefs, { type Ref } from "#refs"
 
 interface Ctx {
 	$: ExecaScript
@@ -8,11 +9,8 @@ interface Ctx {
 }
 
 interface Props {
-	baseRef: Ref
-	headRef: Ref
-	remote?: string
-	maxDepth?: number
-	deepenBy?: number
+	eventRef: Ref
+	semVerRef: Ref
 }
 
 /**
@@ -23,10 +21,16 @@ interface Props {
  * @param ctx - Context object
  * @param ctx.$ - execa instance
  * @param ctx.pino - pino logger instance
+ * @param props - Properties for checkout
+ * @param props.eventRef - The triggering event ref
+ * @param props.semVerRef - The SemVer branch ref
  * @returns - A promise that resolves when the branch is checked out
  * @throws {Error} - If the HEAD is not at the base branch
  */
-const semverBranch = async ({ $, pino }: Ctx): Promise<void> => {
+const semverBranch = async (
+	{ $, pino }: Ctx,
+	{ semVerRef, eventRef }: Props
+): Promise<void> => {
 	if (pino.isLevelEnabled("debug")) {
 		pino.debug("Refs pre checkout:")
 		await printRefs({ $ })
@@ -37,38 +41,39 @@ const semverBranch = async ({ $, pino }: Ctx): Promise<void> => {
 		pino.debug("Refs pre checkout:")
 		await printRefs({ $ })
 	}
+
+	// Check if the SemVer branch already exists
+	const { exitCode: checkoutExitCode } = await $`git checkout --progress "${semVerRef.name}"`
+	const CHECKOUT_SUCCESS = 0
+	if (checkoutExitCode === CHECKOUT_SUCCESS) {
+		if (pino.isLevelEnabled("debug")) {
+			pino.debug(`Resetting ${semVerRef.name} to ${eventRef.name}`)
+		}
+		await $`git reset --hard "${eventRef.name}"`
+	} else {
+		// Check if the HEAD is at the event ref
+		const { stdout: headSha } = await $`git rev-parse HEAD`
+		const { stdout: baseSha } = await $`git rev-parse "${eventRef.name}"`
+
+		assert(typeof headSha === "string", "HEAD sha is not a string")
+		assert(typeof baseSha === "string", "Base sha is not a string")
+
+		if (headSha !== baseSha) {
+			pino.error(`HEAD is not at ${eventRef.name}`)
+			pino.debug(`HEAD: ${headSha}`)
+			pino.debug(`${eventRef.name}: ${baseSha}`)
+			throw new Error("HEAD is not at event ref")
+		}
+
+		// Create semver branch from base
+		pino.debug(`Creating ${semVerRef.name} from ${eventRef.name}`)
+		await $`git checkout --progress -b "${semVerRef.name}"`
+	}
+	if (pino.isLevelEnabled("debug")) {
+		pino.debug("Refs post checkout:")
+		await printRefs({ $ })
+	}
 }
-
-const bash = /* bash */ `
-
-# Try to fetch remote semver branch
-if git checkout --progress "${SEMVER_BRANCH}"; then
-	if timber -l debug; then
-		timber debug "Resetting ${SEMVER_BRANCH} to ${EVENT_BRANCH}"
-	fi
-	git reset --hard "${EVENT_BRANCH}"
-else
-	# Check if the HEAD is at the base branch
-	headSha=$(git rev-parse HEAD)
-	baseSha=$(git rev-parse "${EVENT_BRANCH}")
-
-	if [[ "${headSha}" != "${baseSha}" ]]; then
-		timber error "HEAD is not at ${EVENT_BRANCH}"
-		timber debug "HEAD: ${headSha}"
-		timber debug "${EVENT_BRANCH}: ${baseSha}"
-		exit 1
-	fi
-
-	# Create semver branch from base
-	timber debug "Creating ${SEMVER_BRANCH} from ${EVENT_BRANCH}"
-	git checkout --progress -b "${SEMVER_BRANCH}"
-fi
-
-if timber -l debug; then
-	timber debug "Refs post checkout:"
-	git-refs
-fi
-`
 
 export default semverBranch
 export type { Ctx, Props }
