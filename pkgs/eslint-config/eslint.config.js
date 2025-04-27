@@ -6,6 +6,8 @@ import typescript from "#typescript"
 import ignored from "#ignored"
 import prettier from "#prettier"
 import comments from "#comments"
+import functional from "#functional"
+import unicorn from "#unicorn"
 import core, { compose } from "#core"
 
 // const boundaryOptions = {
@@ -61,6 +63,8 @@ const configs = compose(
 	base,
 	comments,
 	typescript(),
+	functional,
+	unicorn,
 	promise,
 	jsdoc,
 	secrets,
