@@ -13,6 +13,10 @@ interface Props {
 	semVerRef: Ref
 }
 
+class SemVerBranchError extends Error {
+	public override name = "SemVerBranchError" as const
+}
+
 /**
  * Checks out the SemVer branch.
  * If the branch already exists, it resets it to the base branch.
@@ -25,7 +29,7 @@ interface Props {
  * @param props.eventRef - The triggering event ref
  * @param props.semVerRef - The SemVer branch ref
  * @returns - A promise that resolves when the branch is checked out
- * @throws {Error} - If the HEAD is not at the base branch
+ * @throws {SemVerBranchError} - If the HEAD is not at the base branch
  */
 const semverBranch = async (
 	{ $, pino }: Ctx,
@@ -62,7 +66,7 @@ const semverBranch = async (
 			pino.error(`HEAD is not at ${eventRef.name}`)
 			pino.debug(`HEAD: ${headSha}`)
 			pino.debug(`${eventRef.name}: ${baseSha}`)
-			throw new Error("HEAD is not at event ref")
+			throw new SemVerBranchError("HEAD is not at event ref")
 		}
 
 		// Create semver branch from base

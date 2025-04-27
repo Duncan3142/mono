@@ -17,6 +17,10 @@ interface Props {
 	deepenBy?: number
 }
 
+class MergeBaseError extends Error {
+	public override name = "MergeBaseError" as const
+}
+
 const checkMergeBase = async (
 	$: ExecaScript,
 	baseRef: string,
@@ -31,11 +35,7 @@ const checkMergeBase = async (
 	if (exitCode === MERGE_BASE_NOT_FOUND) {
 		return null
 	}
-	throw new Error("Unexpected output from git merge-base")
-}
-
-class MergeBaseNotFound extends Error {
-	public override name = "MergeBaseNotFound" as const
+	throw new MergeBaseError("Unexpected output from git merge-base")
 }
 
 const DEFAULT_MAX_DEPTH = 4096
@@ -53,7 +53,7 @@ const DEFAULT_DEEPEN_BY = 128
  * @param props.deepenBy - Initial deepen value
  * @param props.maxDepth - Maximum fetch depth
  * @returns - A promise that resolves to the merge base commit hash
- * @throws {MergeBaseNotFound} - If the merge base is not found
+ * @throws {MergeBaseError} - If the merge base is not found
  */
 const mergeBase = async (
 	{ $, pino }: Ctx,
@@ -95,7 +95,7 @@ const mergeBase = async (
 	// eslint-disable-next-line @typescript-eslint/no-magic-numbers -- Base 10
 	const errMsg = `Fetch depth exceeded ${maxDepth.toString(10)}`
 	pino.error(errMsg)
-	throw new MergeBaseNotFound(errMsg)
+	throw new MergeBaseError(errMsg)
 }
 
 export default mergeBase
