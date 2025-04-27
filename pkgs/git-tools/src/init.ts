@@ -1,12 +1,12 @@
 import { resolve } from "node:path"
-import type { ExecaScriptMethod } from "execa"
 import type { Logger } from "pino"
+import type { ExecaScript } from "#execa"
 import printRefs, { type Ref } from "#refs"
 import fetchRefs, { type FetchRef } from "#fetch"
 import { DEFAULT_DEPTH, DEFAULT_REMOTE } from "#consts"
 
 interface Ctx {
-	$: ExecaScriptMethod
+	$: ExecaScript
 	pino: Logger
 }
 
@@ -54,7 +54,7 @@ const init = async (
 		fetch = [],
 		depth = DEFAULT_DEPTH,
 	}: Props
-): Promise<ExecaScriptMethod> => {
+): Promise<ExecaScript> => {
 	pino.info("Set git config:")
 
 	await $`git config --global user.name ${actor}`

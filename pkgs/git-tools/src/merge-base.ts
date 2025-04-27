@@ -1,11 +1,12 @@
-import { ExecaError, type ExecaScriptMethod } from "execa"
+import { ExecaError } from "execa"
 import type { Logger } from "pino"
+import type { ExecaScript } from "#execa"
 import type { Ref } from "#refs"
 import fetchRefs from "#fetch"
 import { DEFAULT_REMOTE } from "#consts"
 
 interface Ctx {
-	$: ExecaScriptMethod
+	$: ExecaScript
 	pino: Logger
 }
 
@@ -18,7 +19,7 @@ interface Props {
 }
 
 const checkMergeBase = async (
-	$: ExecaScriptMethod,
+	$: ExecaScript,
 	baseRef: string,
 	headRef: string
 ): Promise<string | null> => {

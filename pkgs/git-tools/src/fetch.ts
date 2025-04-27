@@ -1,5 +1,6 @@
-import { ExecaError, type ExecaScriptMethod } from "execa"
+import { ExecaError } from "execa"
 import type { Logger } from "pino"
+import type { ExecaScript } from "#execa"
 import printRefs, { BRANCH, TAG, type Ref, type REF_TYPE } from "#refs"
 import { BASE_10_RADIX, DEFAULT_DEPTH, DEFAULT_REMOTE } from "#consts"
 import never from "#never"
@@ -9,7 +10,7 @@ interface FetchRef extends Ref {
 }
 
 interface Ctx {
-	$: ExecaScriptMethod
+	$: ExecaScript
 	pino: Logger
 }
 

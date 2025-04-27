@@ -1,4 +1,4 @@
-import type { ExecaScriptMethod } from "execa"
+import type { ExecaScript } from "#execa"
 
 const BRANCH = "branch"
 const TAG = "tag"
@@ -24,7 +24,7 @@ interface Ref {
 }
 
 interface Ctx {
-	$: ExecaScriptMethod
+	$: ExecaScript
 }
 
 /**

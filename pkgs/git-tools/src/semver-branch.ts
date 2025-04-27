@@ -1,9 +1,9 @@
-import type { ExecaScriptMethod } from "execa"
 import type { Logger } from "pino"
+import type { ExecaScript } from "#execa"
 import printRefs from "#refs"
 
 interface Ctx {
-	$: ExecaScriptMethod
+	$: ExecaScript
 	pino: Logger
 }
 
@@ -15,7 +15,24 @@ interface Props {
 	deepenBy?: number
 }
 
-const semverBranch = async ({ $, pino }: Ctx) => {
+/**
+ * Checks out the SemVer branch.
+ * If the branch already exists, it resets it to the base branch.
+ * If the branch does not exist, it creates it from the base branch.
+ * If the HEAD is not at the base branch, it exits with an error.
+ * @param ctx - Context object
+ * @param ctx.$ - execa instance
+ * @param ctx.pino - pino logger instance
+ * @returns - A promise that resolves when the branch is checked out
+ * @throws {Error} - If the HEAD is not at the base branch
+ */
+const semverBranch = async ({ $, pino }: Ctx): Promise<void> => {
+	if (pino.isLevelEnabled("debug")) {
+		pino.debug("Refs pre checkout:")
+		await printRefs({ $ })
+	}
+	pino.info("Checkout SemVer branch...")
+
 	if (pino.isLevelEnabled("debug")) {
 		pino.debug("Refs pre checkout:")
 		await printRefs({ $ })
@@ -23,13 +40,6 @@ const semverBranch = async ({ $, pino }: Ctx) => {
 }
 
 const bash = /* bash */ `
-
-timber info "Checkout SemVer branch..."
-
-if timber -l debug; then
-	timber debug "Refs pre checkout"
-	git-refs
-fi
 
 # Try to fetch remote semver branch
 if git checkout --progress "${SEMVER_BRANCH}"; then
@@ -60,4 +70,5 @@ if timber -l debug; then
 fi
 `
 
-export default bash
+export default semverBranch
+export type { Ctx, Props }
