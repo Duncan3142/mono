@@ -1,5 +1,5 @@
 import { env } from "node:process"
-import { LINT_LEVEL, lintLevelMap, type LintLevel } from "#core"
+import { LINT_LEVEL, lintLevelMap, type LintLevel } from "#lib/core"
 
 interface EnvironmentVariables {
 	readonly level: LintLevel

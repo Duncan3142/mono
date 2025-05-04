@@ -7,7 +7,7 @@ import {
 	type Config,
 	type Configs,
 	type Parser,
-} from "#core"
+} from "#lib/core"
 
 const parser: Parser = tseslint.parser
 

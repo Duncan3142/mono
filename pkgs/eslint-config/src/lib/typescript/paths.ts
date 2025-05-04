@@ -1,4 +1,4 @@
-import type { Path } from "#core"
+import type { Path } from "#lib/core"
 
 const TS_CONFIG_DEFAULT: Path = "tsconfig.json"
 
