@@ -1,9 +1,15 @@
 import { env } from "node:process"
-import { LINT_LEVEL, lintLevelMap, type LintLevel } from "#lib/core"
+import { type } from "arktype"
+import { LINT_LEVEL, lintLevelMap, type LintLevel } from "./config.ts"
 
-interface EnvironmentVariables {
-	readonly level: LintLevel
-}
+const EnvironmentVariables = type({
+	"LINT_LEVEL?": "(number | string)[]",
+})
+
+type EnvironmentVariables = typeof EnvironmentVariables.infer
+
+const o: {} = {}
+console.log(o)
 
 const environmentLintLevel = env["LINT_LEVEL"]?.toLowerCase()
 

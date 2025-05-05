@@ -20,7 +20,8 @@
 	},
 	"imports": {
 		"#lib/typescript": "./.tsc/dist/lib/typescript/index.js",
-		"#lib/*": "./.tsc/dist/lib/*.js"
+		"#lib/*": "./.tsc/dist/lib/*.js",
+		"#/*": "./.tsc/dist/*.js"
 	},
 	"exports": {
 		"./typescript": {
@@ -63,6 +64,7 @@
 		"eslint-plugin-import-x": "^4.11.0",
 		"eslint-plugin-jsdoc": "^50.6.11",
 		"eslint-plugin-no-secrets": "^2.2.1",
+		"eslint-plugin-prefer-arrow-functions": "^3.6.2",
 		"eslint-plugin-promise": "^7.2.1",
 		"eslint-plugin-unicorn": "^59.0.0",
 		"remeda": "^2.21.3",
