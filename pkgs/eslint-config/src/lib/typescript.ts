@@ -1,4 +1,5 @@
 import tseslint from "typescript-eslint"
+import { createTypeScriptImportResolver } from "eslint-import-resolver-typescript"
 import {
 	compose,
 	filePatterns,
@@ -12,7 +13,6 @@ import {
 	type Path,
 	type Patterns,
 } from "#lib/core"
-import { createTypeScriptImportResolver } from "eslint-import-resolver-typescript"
 
 const TS_CONFIG_DEFAULT: Path = "tsconfig.json"
 

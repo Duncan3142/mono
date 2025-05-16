@@ -11,7 +11,7 @@ const IGNORE_FILES_DEFAULT: Paths = [GIT_IGNORE, PRETTIER_IGNORE]
  * Ignore files options
  */
 interface Options {
-	ignoreFiles: Paths
+	readonly ignoreFiles: Paths
 }
 
 const defaultOptions: Options = {

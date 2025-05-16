@@ -12,6 +12,11 @@ const custom: (guard: Guards) => Config = (guard) => {
 	}
 }
 
+/**
+ * Unicorn ESLint config
+ * @param guard - Guards
+ * @returns Configs
+ */
 const configs: (guard: Guards) => Configs = (guard) =>
 	compose({
 		name: "@duncan3142/eslint-config/unicorn",
