@@ -1,6 +1,6 @@
 import { env } from "node:process"
 import { type } from "arktype"
-import { type LintLevelKey, lintLevels, standard } from "./config/lintLevel.ts"
+import { type LintLevelKey, lintLevels, standard } from "#context/lint-level"
 
 const EnvironmentVariablesSchema = type({
 	LINT_LEVEL: type("string.lower")
@@ -9,7 +9,7 @@ const EnvironmentVariablesSchema = type({
 })
 
 interface EnvironmentVariables {
-	LINT_LEVEL: LintLevelKey
+	readonly LINT_LEVEL: LintLevelKey
 }
 
 /**

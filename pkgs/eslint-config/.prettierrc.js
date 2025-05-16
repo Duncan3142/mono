@@ -1,3 +1,1 @@
-import config from "@duncan3142/prettier-config"
-
-export default config
+export { default } from "@duncan3142/prettier-config"

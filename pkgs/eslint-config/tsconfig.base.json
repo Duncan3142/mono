@@ -4,7 +4,8 @@
 	"compilerOptions": {
 		"paths": {
 			"#lib/*": ["./src/lib/*.ts"],
-			"#/*": ["./.tsc/*.js"]
+			"#context/*": ["./src/context/*.ts"],
+			"#context": ["./src/context.ts"]
 		}
 	},
 	"include": []
