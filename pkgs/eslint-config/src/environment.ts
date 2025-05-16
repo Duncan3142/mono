@@ -1,45 +1,28 @@
 import { env } from "node:process"
 import { type } from "arktype"
-import { LINT_LEVEL, lintLevelMap, type LintLevel } from "./config.ts"
+import { type LintLevelKey, lintLevels, standard } from "./config/lintLevel.ts"
 
-const EnvironmentVariables = type({
-	"LINT_LEVEL?": "(number | string)[]",
+const EnvironmentVariablesSchema = type({
+	LINT_LEVEL: type("string.lower")
+		.pipe(type.enumerated(...lintLevels))
+		.default(standard),
 })
 
-type EnvironmentVariables = typeof EnvironmentVariables.infer
-
-const o: {} = {}
-console.log(o)
-
-const environmentLintLevel = env["LINT_LEVEL"]?.toLowerCase()
-
-const pickLintLevel = (level: string): LintLevel => {
-	const result = lintLevelMap.get(level)
-	// eslint-disable-next-line functional/no-conditional-statements -- Throw on invalid env vars
-	if (typeof result === "undefined") {
-		// eslint-disable-next-line functional/no-throw-statements -- Throw on invalid env vars
-		throw new TypeError(
-			`Invalid LINT_LEVEL environment variable. Expected one of ${[...lintLevelMap.keys()].join(
-				", "
-			)}, but received "${level}".`
-		)
-	}
-	return result
+interface EnvironmentVariables {
+	LINT_LEVEL: LintLevelKey
 }
-
-const level =
-	typeof environmentLintLevel === "undefined"
-		? LINT_LEVEL.standard
-		: pickLintLevel(environmentLintLevel)
 
 /**
  * Extract config from environment variables
  * @returns Environment config
  */
 const environmentVariables = (): EnvironmentVariables => {
-	return {
-		level,
+	const res = EnvironmentVariablesSchema(env)
+	if (res instanceof type.errors) {
+		throw new TypeError(res.summary)
 	}
+	return res
 }
 
+export type { EnvironmentVariables }
 export default environmentVariables

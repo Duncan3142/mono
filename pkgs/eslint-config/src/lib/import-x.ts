@@ -1,35 +1,13 @@
 import importX from "eslint-plugin-import-x"
-import { createTypeScriptImportResolver } from "eslint-import-resolver-typescript"
 
-import { TS_CONFIG_DEFAULT } from "./paths.ts"
-import {
-	compose,
-	filePatterns,
-	jsonExtensions,
-	jstsExtensions,
-	nodeExtensions,
-	type Config,
-	type Configs,
-	type Patterns,
-} from "#core"
+import { compose, filePatterns, jstsExtensions, type Config, type Configs } from "./core.ts"
 
 /* -------------------------------------------------------------------------- */
 /*                                   Configs                                  */
 /* -------------------------------------------------------------------------- */
 
-const extraExtensions: Patterns = [...jsonExtensions, ...nodeExtensions]
-
 const custom: Config = {
 	name: "@duncan3142/eslint-config/import/custom",
-	settings: {
-		"import-x/resolver-next": [
-			createTypeScriptImportResolver({
-				alwaysTryTypes: true,
-				project: TS_CONFIG_DEFAULT,
-				extensions: [...jstsExtensions, ...extraExtensions],
-			}),
-		],
-	},
 	rules: {
 		"import-x/named": "off", // tsc config
 		"import-x/namespace": "off", // tsc config

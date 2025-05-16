@@ -1,21 +1,16 @@
-import { entries as ObjectEntries } from "remeda"
+import { type Guards, LINT_LEVEL as LINT_LEVEL_ENUM, when } from "./config/lintLevel.ts"
+import environmentVariables from "./environment.ts"
 
-const LINT_LEVEL = {
-	all: 1,
-	standard: 0,
-} as const
+interface Config {
+	when: Guards
+}
 
-/**
- * Lint level key
- */
-type LintLevelKey = keyof typeof LINT_LEVEL
+const config = (): Config => {
+	const { LINT_LEVEL } = environmentVariables()
 
-/**
- * Lint level
- */
-type LintLevel = (typeof LINT_LEVEL)[LintLevelKey]
+	return {
+		when: when(LINT_LEVEL_ENUM[LINT_LEVEL]),
+	}
+}
 
-const lintLevelMap: ReadonlyMap<string, LintLevel> = new Map(ObjectEntries(LINT_LEVEL))
-
-export type { LintLevel, LintLevelKey }
-export { LINT_LEVEL, lintLevelMap }
+export default config

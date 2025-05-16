@@ -3,8 +3,8 @@
 	"extends": ["@duncan3142/tsc-config/base"],
 	"compilerOptions": {
 		"paths": {
-			"#lib/typescript": ["./src/lib/typescript/index.ts"],
-			"#lib/*": ["./src/lib/*.ts"]
+			"#lib/*": ["./src/lib/*.ts"],
+			"#/*": ["./.tsc/*.js"]
 		}
 	},
 	"include": []

@@ -19,15 +19,10 @@
 		"npm": ">=11"
 	},
 	"imports": {
-		"#lib/typescript": "./.tsc/dist/lib/typescript/index.js",
 		"#lib/*": "./.tsc/dist/lib/*.js",
 		"#/*": "./.tsc/dist/*.js"
 	},
 	"exports": {
-		"./typescript": {
-			"import": "./.tsc/dist/lib/typescript/index.js",
-			"types": "./.tsc/dist/lib/typescript/index.d.ts"
-		},
 		"./*": {
 			"import": "./.tsc/dist/lib/*.js",
 			"types": "./.tsc/dist/lib/*.d.ts"

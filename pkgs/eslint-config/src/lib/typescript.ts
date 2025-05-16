@@ -3,13 +3,22 @@ import {
 	compose,
 	filePatterns,
 	jsExtensions,
+	jsonExtensions,
 	jstsExtensions,
+	nodeExtensions,
 	type Config,
 	type Configs,
 	type Parser,
+	type Path,
+	type Patterns,
 } from "#lib/core"
+import { createTypeScriptImportResolver } from "eslint-import-resolver-typescript"
+
+const TS_CONFIG_DEFAULT: Path = "tsconfig.json"
 
 const parser: Parser = tseslint.parser
+
+const extraExtensions: Patterns = [...jsonExtensions, ...nodeExtensions]
 
 const custom: Config = {
 	name: "@duncan3142/eslint-config/typescipt/custom",
@@ -20,6 +29,15 @@ const custom: Config = {
 		parserOptions: {
 			projectService: true,
 		},
+	},
+	settings: {
+		"import-x/resolver-next": [
+			createTypeScriptImportResolver({
+				alwaysTryTypes: true,
+				project: TS_CONFIG_DEFAULT,
+				extensions: [...jstsExtensions, ...extraExtensions],
+			}),
+		],
 	},
 	rules: {
 		"@typescript-eslint/consistent-type-definitions": ["error", "interface"],
