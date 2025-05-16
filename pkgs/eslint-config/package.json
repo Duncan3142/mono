@@ -45,9 +45,10 @@
 		"assets": "tsc --build",
 		"assets:watch": "tsc --build --watch",
 		"check:tsc": "tsc --build --noEmit",
-		"lint:eslint": "TIMING=1 LINT_LEVEL=all eslint --max-warnings 0 .",
-		"lint:eslint:fix": "TIMING=1 LINT_LEVEL=all eslint --fix .",
-		"inspect:eslint": "eslint --inspect-config ."
+		"lint:eslint:all": "TIMING=1 LINT_LEVEL=all eslint --max-warnings 0 .",
+		"lint:eslint": "TIMING=1 eslint --max-warnings 0 .",
+		"lint:eslint:fix": "LINT_LEVEL=all eslint --fix .",
+		"inspect:eslint": "LINT_LEVEL=all eslint --inspect-config ."
 	},
 	"peerDependencies": {
 		"@types/eslint": "^9.6.1",

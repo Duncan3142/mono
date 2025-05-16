@@ -7,8 +7,8 @@ const LINT_LEVEL_ALL = 1
 const LINT_LEVEL_STANDARD = 0
 
 interface LINT_LEVEL {
-	[all]: typeof LINT_LEVEL_ALL
-	[standard]: typeof LINT_LEVEL_STANDARD
+	readonly [all]: typeof LINT_LEVEL_ALL
+	readonly [standard]: typeof LINT_LEVEL_STANDARD
 }
 
 const LINT_LEVEL: LINT_LEVEL = {
