@@ -1,5 +1,11 @@
 # @duncan3142/eslint-config
 
+## 0.1.11
+
+### Patch Changes
+
+- d6e602b: add functional config
+
 ## 0.1.10
 
 ### Patch Changes
