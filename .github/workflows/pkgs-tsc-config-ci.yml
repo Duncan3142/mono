@@ -3,7 +3,7 @@ name: TypeScript Config CI
 on:
   pull_request:
     types: [opened, synchronize, reopened]
-    branches: main
+    branches: [main]
     paths:
       - '.github/workflows/pkgs-tsc-config-ci.yml'
       - 'pkgs/tsc-config/**'

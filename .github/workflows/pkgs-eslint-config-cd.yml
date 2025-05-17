@@ -2,7 +2,7 @@ name: ESLint Config CD
 
 on:
   push:
-    branches: main
+    branches: [main]
     paths:
      - '.github/workflows/pkgs-eslint-config-cd.yml'
      - 'pkgs/eslint-config/**'

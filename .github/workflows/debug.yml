@@ -2,7 +2,7 @@ name: Debug Workflow
 
 on:
   push:
-    branches: debug-workflow
+    branches: [debug-workflow]
 
 concurrency:
   group: ${{ github.workflow_ref }}

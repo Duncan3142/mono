@@ -3,7 +3,7 @@ name: Prettier Config CI
 on:
   pull_request:
     types: [opened, synchronize, reopened]
-    branches: main
+    branches: [main]
     paths:
       - '.github/workflows/pkgs-prettier-config-ci.yml'
       - 'pkgs/prettier-config/**'
