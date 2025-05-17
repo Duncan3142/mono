@@ -41,10 +41,6 @@
 			"path": "tools/npm",
 		},
 		{
-			"name": "tools/plopmono",
-			"path": "tools/plopmono",
-		},
-		{
 			"name": "apps/solid-squared/ui",
 			"path": "apps/solid-squared/ui",
 		},
@@ -67,10 +63,6 @@
 		{
 			"name": "pkgs/npm-tools",
 			"path": "pkgs/npm-tools",
-		},
-		{
-			"name": "pkgs/plopmono",
-			"path": "pkgs/plopmono",
 		},
 		{
 			"name": "pkgs/eslint-config",
