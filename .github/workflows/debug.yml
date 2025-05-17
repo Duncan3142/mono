@@ -26,8 +26,6 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
       - name: Env vars
         uses: Duncan3142/mono/actions/common-env@main
-      - name: Bash scripts
-        uses: Duncan3142/mono/tools/bash@main
       - name: Git scripts
         uses: Duncan3142/mono/tools/git@main
 

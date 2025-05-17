@@ -20,6 +20,7 @@
 		"npm-publish": "./bin/npm-publish.sh",
 		"npm-remote": "./bin/npm-remote.sh",
 		"npm-get-version": "./bin/npm-get-version.sh",
-		"npm-semver": "./bin/npm-semver.sh"
+		"npm-semver": "./bin/npm-semver.sh",
+		"timber": "./bin/timber.sh"
 	}
 }
