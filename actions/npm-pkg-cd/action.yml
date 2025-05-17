@@ -18,8 +18,6 @@ runs:
       uses: Duncan3142/mono/actions/common-env@main
     - name: Volta setup
       uses: Duncan3142/mono/actions/volta@main
-    - name: Bash scripts
-      uses: Duncan3142/mono/tools/bash@main
     - name: Git scripts
       uses: Duncan3142/mono/tools/git@main
     - name: GitHub scripts

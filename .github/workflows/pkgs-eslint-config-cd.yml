@@ -2,7 +2,7 @@ name: ESLint Config CD
 
 on:
   push:
-    branches: main
+    branches: [main]
     paths:
      - '.github/workflows/pkgs-eslint-config-cd.yml'
      - 'pkgs/eslint-config/**'
@@ -10,8 +10,6 @@ on:
 concurrency:
   group: ${{ github.workflow }}
   cancel-in-progress: false
-
-
 
 permissions:
   packages: write

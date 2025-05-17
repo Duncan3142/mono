@@ -3,8 +3,9 @@
 	"extends": ["@duncan3142/tsc-config/base"],
 	"compilerOptions": {
 		"paths": {
-			"#typescript": ["./src/typescript/index.ts"],
-			"#*": ["./src/*.ts"]
+			"#lib/*": ["./src/lib/*.ts"],
+			"#context/*": ["./src/context/*.ts"],
+			"#context": ["./src/context.ts"]
 		}
 	},
 	"include": []

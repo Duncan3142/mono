@@ -1,0 +1,22 @@
+"""
+A Base64 encoded string of the following format:
+	urn:{partition}:{authority}:{provider}:{client}:{service}:{type}:{id}<[/{pathSegment}]>
+"""
+scalar URN
+
+"""
+Base node
+"""
+interface Node {
+	urn: URN!
+}
+
+"""
+Queries
+"""
+type Query {
+	"""
+	Get a node by URN
+	"""
+	node(urn: URN!): Node
+}

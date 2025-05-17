@@ -1,0 +1,37 @@
+"""
+Sort order
+"""
+enum SortOrder {
+	ASC
+	DESC
+}
+
+"""
+Cursor
+"""
+scalar Cursor
+
+"""
+Cursor direction
+"""
+enum CursorDirection {
+	FORWARD
+	BACKWARD
+}
+
+"""
+Cursor input
+"""
+input CursorInput {
+	count: Int
+	from: Cursor
+	direction: CursorDirection
+}
+
+"""
+Page info
+"""
+type PageInfo {
+	hasMore: Boolean!
+	cursor: Cursor
+}

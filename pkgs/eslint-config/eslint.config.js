@@ -1,12 +1,16 @@
-import base from "#base"
-import jsdoc from "#jsdoc"
-import secrets from "#secrets"
-import promise from "#promise"
-import typescript from "#typescript"
-import ignored from "#ignored"
-import prettier from "#prettier"
-import comments from "#comments"
-import core, { compose } from "#core"
+import base from "#lib/base"
+import jsdoc from "#lib/jsdoc"
+import secrets from "#lib/secrets"
+import promise from "#lib/promise"
+import typescript from "#lib/typescript"
+import ignored from "#lib/ignored"
+import importX from "#lib/import-x"
+import prettier from "#lib/prettier"
+import comments from "#lib/comments"
+import functional from "#lib/functional"
+import unicorn from "#lib/unicorn"
+import core, { compose } from "#lib/core"
+import context from "#context"
 
 // const boundaryOptions = {
 // settings: {
@@ -55,12 +59,17 @@ import core, { compose } from "#core"
 // 	tsConfigs: defaultOptions.tsConfigs,
 // }
 
+const { when } = context()
+
 const configs = compose(
 	core,
 	ignored(),
 	base,
 	comments,
 	typescript(),
+	importX(when),
+	functional,
+	unicorn(when),
 	promise,
 	jsdoc,
 	secrets,

@@ -2,7 +2,7 @@ name: Debug Workflow
 
 on:
   push:
-    branches: debug-workflow
+    branches: [debug-workflow]
 
 concurrency:
   group: ${{ github.workflow_ref }}
@@ -26,8 +26,6 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
       - name: Env vars
         uses: Duncan3142/mono/actions/common-env@main
-      - name: Bash scripts
-        uses: Duncan3142/mono/tools/bash@main
       - name: Git scripts
         uses: Duncan3142/mono/tools/git@main
 

@@ -1,0 +1,21 @@
+services:
+  wiremock:
+    image: wiremock/wiremock
+    restart: always
+    networks:
+      - common
+    ports:
+      - ${WIREMOCK_PORT}:8080
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - postgres:/var/lib/postgresql/data
+
+networks:
+  common:
+    driver: bridge
+
+volumes:
+  wiremock:

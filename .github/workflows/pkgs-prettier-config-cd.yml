@@ -2,7 +2,7 @@ name: Prettier Config CD
 
 on:
   push:
-    branches: main
+    branches: [main]
     paths:
      - '.github/workflows/pkgs-prettier-config-cd.yml'
      - 'pkgs/prettier-config/**'

@@ -1,0 +1,30 @@
+# Hidden
+.*
+
+# Node
+node_modules/
+
+# Env
+!.env.example
+!.env.test
+
+# VS Code
+!.vscode/
+
+# Git
+!.gitignore
+
+# NPM
+!.npmrc
+!.npmignore
+
+# Prettier
+!.prettierignore
+!.prettierrc.js
+
+# Changesets
+!.changeset/
+
+# Paraglide
+project.inlang/cache/
+src/lib/paraglide/

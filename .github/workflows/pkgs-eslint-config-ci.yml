@@ -3,7 +3,7 @@ name: ESLint Config CI
 on:
   pull_request:
     types: [opened, synchronize, reopened]
-    branches: main
+    branches: [main]
     paths:
       - '.github/workflows/pkgs-eslint-config-ci.yml'
       - 'pkgs/eslint-config/**'
