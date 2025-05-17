@@ -83,10 +83,6 @@
 		{
 			"name": "pkgs/tsc-config",
 			"path": "pkgs/tsc-config"
-		},
-		{
-			"name": "pkgs/xis",
-			"path": "pkgs/xis"
 		}
 	],
 	"settings": {
