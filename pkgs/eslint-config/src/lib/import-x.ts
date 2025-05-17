@@ -28,7 +28,7 @@ const custom: (guard: Guards) => MutableConfig = (guard) => {
 			"import-x/no-relative-parent-imports": "off", // Investigate further
 			"import-x/no-internal-modules": "off", // Investigate further
 			"import-x/no-extraneous-dependencies": "off", // Investigate further
-			"import-x/no-named-as-default": "error",
+			"import-x/no-named-as-default": guard.all,
 			"import-x/prefer-default-export": "error",
 			"import-x/no-empty-named-blocks": "error",
 			"import-x/no-unassigned-import": "error",

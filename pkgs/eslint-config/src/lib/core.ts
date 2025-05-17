@@ -86,8 +86,9 @@ const jstsExtensions: MutablePatterns = [...jsExtensions, ...tsExtensions]
 const filePatterns = (...extensionPatterns: MutablePatterns): MutablePatterns =>
 	extensionPatterns.map((pattern) => `**/*${pattern}`)
 
-const compose: (...configs: Array<InfiniteDepthConfigWithExtends>) => MutableConfigs =
-	tseslint.config
+type MutableConfigWithExtendsArray = Array<InfiniteDepthConfigWithExtends>
+
+const compose: (...configs: MutableConfigWithExtendsArray) => MutableConfigs = tseslint.config
 
 const core: MutableConfig = {
 	name: "@duncan3142/eslint-config/core",

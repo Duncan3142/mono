@@ -108,7 +108,7 @@ const custom: MutableConfig = {
 	},
 }
 
-const typed = compose({
+const typed: MutableConfigs = compose({
 	name: "@duncan3142/eslint-config/typescipt",
 	files: filePatterns(...jstsExtensions),
 	extends: [tseslint.configs.strictTypeChecked, tseslint.configs.stylisticTypeChecked, custom],

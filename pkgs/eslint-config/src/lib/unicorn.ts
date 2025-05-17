@@ -8,7 +8,7 @@ import {
 } from "./core.ts"
 import type { Guards } from "#context/lint-level"
 
-const custom: (guard: Guards) => MutableConfig = (guard) => {
+const custom: (guard: Guards) => MutableConfig = (guard): MutableConfig => {
 	return {
 		name: "@duncan3142/eslint-config/unicorn/custom",
 		rules: {
@@ -24,7 +24,7 @@ const custom: (guard: Guards) => MutableConfig = (guard) => {
  * @param guard - Guards
  * @returns Configs
  */
-const configs: (guard: Guards) => MutableConfigs = (guard) =>
+const configs: (guard: Guards) => MutableConfigs = (guard): MutableConfigs =>
 	compose({
 		name: "@duncan3142/eslint-config/unicorn",
 		files: filePatterns(...jstsExtensions),

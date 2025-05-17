@@ -28,8 +28,9 @@ const ignored = ({
 	ignoreFiles = IGNORE_FILES_DEFAULT,
 }: Options = defaultOptions): MutableConfigs =>
 	compose(
-		ignoreFiles.map((path) =>
-			compose({ name: `Ignore '${path}' files`, extends: [includeIgnoreFile(resolve(path))] })
+		ignoreFiles.map(
+			(path): MutableConfigs =>
+				compose({ name: `Ignore '${path}' files`, extends: [includeIgnoreFile(resolve(path))] })
 		)
 	)
 
