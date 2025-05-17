@@ -1,5 +1,11 @@
 # @duncan3142/tsc-config
 
+## 0.1.7
+
+### Patch Changes
+
+- d6e602b: update deps
+
 ## 0.1.6
 
 ### Patch Changes
