@@ -1,7 +1,13 @@
 import jsdoc from "eslint-plugin-jsdoc"
-import { compose, filePatterns, jstsExtensions, type Config, type Configs } from "./core.ts"
+import {
+	compose,
+	filePatterns,
+	jstsExtensions,
+	type MutableConfig,
+	type MutableConfigs,
+} from "./core.ts"
 
-const custom: Config = {
+const custom: MutableConfig = {
 	name: "@duncan3142/eslint-config/jsdoc/custom",
 	rules: {
 		"jsdoc/require-jsdoc": [
@@ -32,7 +38,7 @@ const custom: Config = {
 	},
 }
 
-const configs: Configs = compose({
+const configs: MutableConfigs = compose({
 	name: "@duncan3142/eslint-config/jsdoc",
 	files: filePatterns(...jstsExtensions),
 	extends: [jsdoc.configs["flat/recommended-typescript-error"], custom],

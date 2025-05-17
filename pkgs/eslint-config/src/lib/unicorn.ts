@@ -1,13 +1,20 @@
 import unicorn from "eslint-plugin-unicorn"
-import { compose, filePatterns, jstsExtensions, type Config, type Configs } from "./core.ts"
+import {
+	compose,
+	filePatterns,
+	jstsExtensions,
+	type MutableConfig,
+	type MutableConfigs,
+} from "./core.ts"
 import type { Guards } from "#context/lint-level"
 
-const custom: (guard: Guards) => Config = (guard) => {
+const custom: (guard: Guards) => MutableConfig = (guard) => {
 	return {
 		name: "@duncan3142/eslint-config/unicorn/custom",
 		rules: {
 			"unicorn/no-typeof-undefined": "off",
 			"unicorn/no-unnecessary-polyfills": guard.all,
+			"unicorn/import-style": "off",
 		},
 	}
 }
@@ -17,7 +24,7 @@ const custom: (guard: Guards) => Config = (guard) => {
  * @param guard - Guards
  * @returns Configs
  */
-const configs: (guard: Guards) => Configs = (guard) =>
+const configs: (guard: Guards) => MutableConfigs = (guard) =>
 	compose({
 		name: "@duncan3142/eslint-config/unicorn",
 		files: filePatterns(...jstsExtensions),

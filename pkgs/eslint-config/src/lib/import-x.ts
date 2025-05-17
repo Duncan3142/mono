@@ -1,6 +1,12 @@
 import importX from "eslint-plugin-import-x"
 
-import { compose, filePatterns, jstsExtensions, type Config, type Configs } from "./core.ts"
+import {
+	compose,
+	filePatterns,
+	jstsExtensions,
+	type MutableConfig,
+	type MutableConfigs,
+} from "./core.ts"
 import type { Guards } from "#context/lint-level"
 
 /* -------------------------------------------------------------------------- */
@@ -8,7 +14,7 @@ import type { Guards } from "#context/lint-level"
 /* -------------------------------------------------------------------------- */
 
 // eslint-disable-next-line functional/prefer-immutable-types -- Config object
-const custom: (guard: Guards) => Config = (guard) => {
+const custom: (guard: Guards) => MutableConfig = (guard) => {
 	return {
 		name: "@duncan3142/eslint-config/import/custom",
 		rules: {
@@ -51,7 +57,7 @@ const custom: (guard: Guards) => Config = (guard) => {
  * @returns Configs
  */
 // eslint-disable-next-line functional/prefer-immutable-types -- Config object
-const configs: (guard: Guards) => Configs = (guard) =>
+const configs: (guard: Guards) => MutableConfigs = (guard) =>
 	compose({
 		name: "@duncan3142/eslint-config/import",
 		files: filePatterns(...jstsExtensions),

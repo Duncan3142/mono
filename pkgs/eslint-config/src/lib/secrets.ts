@@ -1,7 +1,7 @@
 import noSecrets from "eslint-plugin-no-secrets"
-import type { Config } from "./core.ts"
+import type { MutableConfig } from "./core.ts"
 
-const secrets: Config = {
+const secrets: MutableConfig = {
 	name: "@duncan3142/eslint-config/secrets",
 	plugins: { "no-secrets": noSecrets },
 	rules: {

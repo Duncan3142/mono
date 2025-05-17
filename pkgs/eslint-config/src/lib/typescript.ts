@@ -7,20 +7,20 @@ import {
 	jsonExtensions,
 	jstsExtensions,
 	nodeExtensions,
-	type Config,
-	type Configs,
+	type MutableConfig,
+	type MutableConfigs,
 	type Parser,
 	type Path,
-	type Patterns,
+	type MutablePatterns,
 } from "#lib/core"
 
 const TS_CONFIG_DEFAULT: Path = "tsconfig.json"
 
 const parser: Parser = tseslint.parser
 
-const extraExtensions: Patterns = [...jsonExtensions, ...nodeExtensions]
+const extraExtensions: MutablePatterns = [...jsonExtensions, ...nodeExtensions]
 
-const custom: Config = {
+const custom: MutableConfig = {
 	name: "@duncan3142/eslint-config/typescipt/custom",
 	languageOptions: {
 		sourceType: "module",
@@ -114,7 +114,7 @@ const typed = compose({
 	extends: [tseslint.configs.strictTypeChecked, tseslint.configs.stylisticTypeChecked, custom],
 })
 
-const untyped: Configs = compose({
+const untyped: MutableConfigs = compose({
 	name: "@duncan3142/eslint-config/untyped",
 	files: filePatterns(...jsExtensions),
 	extends: [tseslint.configs.disableTypeChecked],
@@ -127,6 +127,6 @@ const untyped: Configs = compose({
  * TypeScript ESLint config
  * @returns ESLint config
  */
-const configs = (): Configs => compose(typed, untyped)
+const configs = (): MutableConfigs => compose(typed, untyped)
 
 export default configs

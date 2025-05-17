@@ -1,7 +1,13 @@
 import eslintjs from "@eslint/js"
-import { compose, filePatterns, jstsExtensions, type Config, type Configs } from "./core.ts"
+import {
+	compose,
+	filePatterns,
+	jstsExtensions,
+	type MutableConfig,
+	type MutableConfigs,
+} from "./core.ts"
 
-const custom: Config = {
+const custom: MutableConfig = {
 	name: "@duncan3142/eslint-config/base/custom",
 	languageOptions: {
 		sourceType: "module",
@@ -43,7 +49,7 @@ const custom: Config = {
 	},
 }
 
-const base: Configs = compose({
+const base: MutableConfigs = compose({
 	name: "@duncan3142/eslint-config/base",
 	files: filePatterns(...jstsExtensions),
 	extends: [eslintjs.configs.recommended, custom],

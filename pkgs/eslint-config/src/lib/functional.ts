@@ -4,20 +4,35 @@ import {
 	filePatterns,
 	jsExtensions,
 	jstsExtensions,
-	type Config,
-	type Configs,
+	type MutableConfig,
+	type MutableConfigs,
 } from "./core.ts"
 
-const custom: Readonly<Config> = {
+/**
+ * ImmutableArray type
+ */
+type ImmutableArray<E> =
+	Readonly<E> extends infer Element
+		? ReadonlyArray<Element> extends infer InferredArray
+			? {
+					readonly [P in keyof InferredArray & {}]: InferredArray[P]
+				}
+			: never
+		: never
+
+const custom: Readonly<MutableConfig> = {
 	name: "@duncan3142/eslint-config/functional/custom",
 	rules: {
 		"functional/no-try-statements": "off",
 		"functional/functional-parameters": "off",
-		"functional/prefer-immutable-types": ["error", { enforcement: "ReadonlyDeep" }],
+		"functional/prefer-immutable-types": [
+			"error",
+			{ enforcement: "ReadonlyDeep", ignoreTypePattern: "^Mutable.*" },
+		],
 	},
 }
 
-const configs: Configs = compose(
+const configs: MutableConfigs = compose(
 	{
 		name: "@duncan3142/eslint-config/functional",
 		files: filePatterns(...jstsExtensions),
@@ -30,4 +45,5 @@ const configs: Configs = compose(
 	}
 )
 
+export type { ImmutableArray }
 export default configs
