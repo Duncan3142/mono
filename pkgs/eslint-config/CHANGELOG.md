@@ -1,5 +1,11 @@
 # @duncan3142/eslint-config
 
+## 0.1.12
+
+### Patch Changes
+
+- b6bd684: Guard "import-x/no-unused-modules"
+
 ## 0.1.11
 
 ### Patch Changes
