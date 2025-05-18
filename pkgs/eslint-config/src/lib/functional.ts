@@ -45,6 +45,12 @@ const custom: Readonly<MutableConfig> = {
 			},
 		],
 		"functional/no-classes": "off",
+		"functional/no-class-inheritance": [
+			"error",
+			{
+				ignoreIdentifierPattern: ".*Error$",
+			},
+		],
 	},
 }
 
