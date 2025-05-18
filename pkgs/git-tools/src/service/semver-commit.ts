@@ -1,8 +1,8 @@
 import assert from "node:assert"
 import type { Logger } from "pino"
 import type { ExecaScript } from "#execa"
-import type { Ref } from "#refs"
-import { DEFAULT_REMOTE } from "#consts"
+import type { Ref } from "#service/refs"
+import { DEFAULT_REMOTE } from "#config/consts"
 
 interface Ctx {
 	$: ExecaScript

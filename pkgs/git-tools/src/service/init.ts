@@ -1,9 +1,9 @@
 import { resolve } from "node:path"
 import type { Logger } from "pino"
-import type { ExecaScript } from "#execa"
-import printRefs, { type Ref } from "#refs"
-import fetchRefs, { type FetchRef } from "#fetch"
-import { DEFAULT_DEPTH, DEFAULT_REMOTE } from "#consts"
+import type { ExecaScript } from "#adapter/execa"
+import printRefs, { type Ref } from "#service/refs"
+import fetchRefs, { type FetchRef } from "#service/fetch"
+import { DEFAULT_DEPTH, DEFAULT_REMOTE } from "#config/consts"
 
 interface Ctx {
 	$: ExecaScript
@@ -72,7 +72,7 @@ const init = async (
 	pino.info("Set remote:")
 	await $$`git remote add ${remote} ${serverUrl}/${repoName}.git`
 
-	await fetchRefs({ $: $$, pino }, { remote, refs: [...fetch, checkout], depth })
+	await fetchRefs({ $: $$, logger: pino }, { remote, refs: [...fetch, checkout], depth })
 
 	pino.info(`Checkout ${checkout.type ?? "branch"} ${checkout.name}`)
 	await $$`git checkout --progress ${checkout.name}`

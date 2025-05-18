@@ -1,8 +1,8 @@
 import type { Logger } from "pino"
 import type { ExecaScript } from "#execa"
-import type { Ref } from "#refs"
-import fetchRefs from "#fetch"
-import { DEFAULT_REMOTE } from "#consts"
+import type { Ref } from "#service/refs"
+import fetchRefs from "#service/fetch"
+import { DEFAULT_REMOTE } from "#config/consts"
 
 interface Ctx {
 	$: ExecaScript
@@ -83,7 +83,7 @@ const mergeBase = async (
 		pino.debug("Deepening fetch...")
 		// eslint-disable-next-line no-await-in-loop -- Independant calls
 		await fetchRefs(
-			{ $, pino },
+			{ $, logger: pino },
 			{
 				remote,
 				depth: deepenBy,

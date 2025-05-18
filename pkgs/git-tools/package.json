@@ -20,7 +20,15 @@
 	},
 	"main": "./.tsc/dist/index.js",
 	"imports": {
-		"#*": "./.tsc/dist/*.js"
+		"#adapter/*": "./.tsc/dist/adapter/*.js",
+		"#config/*": "./.tsc/dist/config/*.js",
+		"#domain/*": "./.tsc/dist/domain/*.js",
+		"#driver/*": "./.tsc/dist/driver/*.js",
+		"#driven/*": "./.tsc/dist/driven/*.js",
+		"#error/*": "./.tsc/dist/error/*.js",
+		"#layer/*": "./.tsc/dist/service/*.js",
+		"#schema/*": "./.tsc/dist/schema/*.js",
+		"#service/*": "./.tsc/dist/service/*.js"
 	},
 	"exports": {
 		"./*": {
@@ -58,7 +66,7 @@
 	},
 	"peerDependencies": {
 		"effect": "^3.15.2",
-		"execa": "^9.5.3"
+		"@effect/platform": "^0.82.3"
 	},
 	"volta": {
 		"node": "22.14.0",

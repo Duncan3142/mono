@@ -1,114 +1,83 @@
-import { ExecaError } from "execa"
-import type { Logger } from "pino"
-import type { ExecaScript } from "#execa"
-import printRefs, { BRANCH, TAG, type Ref, type REF_TYPE } from "#refs"
-import { BASE_10_RADIX, DEFAULT_DEPTH, DEFAULT_REMOTE } from "#consts"
-import never from "#never"
+import { type Command, make as makeCommand } from "@effect/platform/Command"
+import { type Effect, logInfo, logDebug, whenLogLevel, fail } from "effect/Effect"
+import { isNonEmptyReadonlyArray, type NonEmptyReadonlyArray } from "effect/Array"
+import { type Logger } from "effect/Logger"
+import printRefs, { BRANCH, TAG, type Ref, type REF_TYPE } from "#service/refs"
+import { BASE_10_RADIX, DEFAULT_DEPTH, DEFAULT_REMOTE } from "#config/consts"
+import never from "#error/never"
 
 interface FetchRef extends Ref {
 	optional?: boolean
 }
 
 interface Ctx {
-	$: ExecaScript
-	pino: Logger
+	$: Command.Command
+	logger: Logger<unknown, void>
 }
 
 interface Props {
-	refs: Array<FetchRef>
+	refs: NonEmptyReadonlyArray<FetchRef>
 	remote?: string
 	depth?: number
 	deepen?: boolean
 }
 
-type RefSpecs = [expected: Array<string>, optional: Array<string>]
+const EXPECTED = "expected"
+const OPTIONAL = "optional"
 
-const appendRefSpec = (
-	name: string,
-	type: REF_TYPE,
-	remote: string,
-	refSpecs: Array<string>
-): void => {
-	switch (type) {
-		case BRANCH: {
-			refSpecs.push(`refs/heads/${name}:refs/remotes/${remote}/${name}`)
-			return
-		}
-		case TAG: {
-			refSpecs.push(`refs/tags/${name}:refs/tags/${name}`)
-			return
-		}
-		default: {
-			return never()
-		}
-	}
+type Contingent = typeof EXPECTED | typeof OPTIONAL
+
+interface ContingentRefSpecs<Type extends Contingent> {
+	type: Type
+	refs: NonEmptyReadonlyArray<string>
 }
 
-const buildRefSpecs = (refs: Array<FetchRef>, remote: string): RefSpecs =>
-	refs.reduce<RefSpecs>(
+type RefSpecs =
+	| [expected: NonEmptyReadonlyArray<string>, optional: NonEmptyReadonlyArray<string>]
+	| ContingentRefSpecs<typeof EXPECTED>
+	| ContingentRefSpecs<typeof OPTIONAL>
+
+const buildRefSpecs = (refs: NonEmptyReadonlyArray<FetchRef>, remote: string): RefSpecs => {
+	const append = (
+		type: REF_TYPE,
+		name: string,
+		remote: string,
+		refSpecs: Array<string>
+	): void => {
+		switch (type) {
+			case BRANCH: {
+				refSpecs.push(`refs/heads/${name}:refs/remotes/${remote}/${name}`)
+				return
+			}
+			case TAG: {
+				refSpecs.push(`refs/tags/${name}:refs/tags/${name}`)
+				return
+			}
+			default: {
+				return never()
+			}
+		}
+	}
+
+	const [expected, optional]: [ReadonlyArray<string>, ReadonlyArray<string>] = refs.reduce<
+		[Array<string>, Array<string>]
+	>(
 		([expectedRefSpecs, optionalRefSpecs], { name, type = BRANCH, optional = false }) => {
 			const collector = optional ? optionalRefSpecs : expectedRefSpecs
-			appendRefSpec(name, type, remote, collector)
+			append(type, name, remote, collector)
 
 			return [expectedRefSpecs, optionalRefSpecs]
 		},
 		[[], []]
 	)
 
-const FETCH_RESULT = {
-	EMPTY_REFS: "EMPTY_REFS",
-	FOUND: "FOUND",
-	NOT_FOUND: "NOT_FOUND",
-	ERROR: "ERROR",
-} as const
-
-type FetchResult = (typeof FETCH_RESULT)[keyof typeof FETCH_RESULT]
-
-interface DoFetchProps {
-	optional: boolean
-	remote: string
-	depth: number
-	deepen: boolean
-	refSpecs: Array<string>
-}
-
-const doFetch = async (
-	{ $, pino }: Ctx,
-	{ optional, remote, depth, deepen, refSpecs }: DoFetchProps
-): Promise<FetchResult> => {
-	// eslint-disable-next-line @typescript-eslint/no-magic-numbers -- Empty erray check
-	if (refSpecs.length === 0) {
-		return FETCH_RESULT.EMPTY_REFS
-	}
-	pino.info('Fetching ref specs "%s"', refSpecs.join(", "))
-
-	const depthString = depth.toString(BASE_10_RADIX)
-
-	const depthArg = deepen ? `--deepen=${depthString}` : `--depth=${depthString}`
-
-	const { exitCode } = await $`git fetch ${depthArg} ${remote} ${refSpecs}`
-	const FETCH_SUCCESS_CODE = 0
-	const FETCH_ERROR_CODE = 128
-	switch (true) {
-		case exitCode === FETCH_SUCCESS_CODE: {
-			return FETCH_RESULT.FOUND
-		}
-		case exitCode === FETCH_ERROR_CODE && optional: {
-			pino.warn("Optional refs fetch failed")
-			return FETCH_RESULT.NOT_FOUND
-		}
-		default: {
-			pino.error("Fetch failed")
-			return FETCH_RESULT.ERROR
-		}
-	}
-}
-
-/**
- * Fetch Error
- */
-class FetchError extends Error {
-	public override name = "FetchError" as const
+	return isNonEmptyReadonlyArray(expected) && isNonEmptyReadonlyArray(optional)
+		? [expected, optional]
+		: isNonEmptyReadonlyArray(expected)
+			? { type: EXPECTED, refs: expected }
+			: isNonEmptyReadonlyArray(optional)
+				? { type: OPTIONAL, refs: optional }
+				: never()
 }
 
 /**
@@ -124,28 +93,23 @@ class FetchError extends Error {
  * @returns - A promise that resolves when the fetch is complete
  */
 const fetchRefs = async (
-	{ $, pino }: Ctx,
-	{ remote = DEFAULT_REMOTE, refs = [], depth = DEFAULT_DEPTH, deepen = false }: Props
-): Promise<FetchResult> => {
-	// eslint-disable-next-line @typescript-eslint/no-magic-numbers -- Empty array check
-	if (refs.length === 0) {
-		pino.warn("No refs to fetch")
-		return FETCH_RESULT.EMPTY_REFS
-	}
-
+	{ $, logger: pino }: Ctx,
+	{ refs, remote = DEFAULT_REMOTE, depth = DEFAULT_DEPTH, deepen = false }: Props
+): Effect<Found, FetchError | FetchNotFoundError> => {
 	const [expectedRefSpecs, optionalRefSpecs] = buildRefSpecs(refs, remote)
 
-	if (pino.isLevelEnabled("debug")) {
+
+	whenLogLevel("Debug")) {
 		pino.debug("Refs pre fetch")
 		await printRefs({ $ })
 	}
 
 	const expectedRes = await doFetch(
-		{ $, pino },
+		{ $, logger: pino },
 		{ optional: false, remote, depth, deepen, refSpecs: expectedRefSpecs }
 	)
 	const optionalRes = await doFetch(
-		{ $, pino },
+		{ $, logger: pino },
 		{ optional: true, remote, depth, deepen, refSpecs: optionalRefSpecs }
 	)
 
@@ -156,11 +120,11 @@ const fetchRefs = async (
 	}
 
 	if (pino.isLevelEnabled("debug")) {
-		pino.debug("Refs post fetch")
+		pino.log("Refs post fetch")
 		await printRefs({ $ })
 	}
 }
 
 export default fetchRefs
-export { FetchError, FETCH_RESULT }
+export { FetchError }
 export type { FetchRef }
