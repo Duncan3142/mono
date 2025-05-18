@@ -1,9 +1,13 @@
 import type { NonEmptyReadonlyArray } from "effect/Array"
-import type { Effect } from "effect/Effect"
-import type { FetchError, FetchNotFoundError, Found } from "#domain/fetch"
+import { make, exitCode, stdout, workingDirectory } from "@effect/platform/Command"
+import { type Effect, gen, logInfo, logWarning, logError, fail } from "effect/Effect"
+import type { PlatformError } from "@effect/platform/Error"
+import type { CommandExecutor } from "@effect/platform/CommandExecutor"
+import { FetchNotFoundError, type WasFound, Found, NotFound } from "#domain/fetch"
 import { BASE_10_RADIX } from "#config/consts"
 
 interface FetchProperties {
+	readonly repoDir: string
 	readonly optional: boolean
 	readonly remote: string
 	readonly depth: number
@@ -14,6 +18,7 @@ interface FetchProperties {
 /**
  * Fetches the specified ref specs from the remote repository
  * @param props - The properties for the fetch operation
+ * @param props.repoDir - The directory of the repository
  * @param props.optional - Whether the fetch is optional
  * @param props.remote - The remote repository to fetch from
  * @param props.depth - The depth of the fetch operation
@@ -21,37 +26,45 @@ interface FetchProperties {
  * @param props.refSpecs - The ref specs to fetch
  * @returns An Effect that resolves to Found, FetchError, or FetchNotFoundError
  */
-const fetch = async ({
+const fetch = ({
+	repoDir,
 	optional,
 	remote,
 	depth,
 	deepen,
 	refSpecs,
-}: FetchProperties): Effect<Found, FetchError | FetchNotFoundError> => {
-	const depthString = depth.toString(BASE_10_RADIX)
+}: FetchProperties): Effect<WasFound, FetchNotFoundError | PlatformError, CommandExecutor> =>
+	gen(function* () {
+		const depthString = depth.toString(BASE_10_RADIX)
 
-	const depthArgument = deepen ? `--deepen=${depthString}` : `--depth=${depthString}`
+		const depthArgument = deepen ? `--deepen=${depthString}` : `--depth=${depthString}`
 
-	const FETCH_SUCCESS_CODE = 0
-	const FETCH_ERROR_CODE = 128
+		const FETCH_SUCCESS_CODE = 0
+		const FETCH_NOT_FOUND_CODE = 128
 
-	logInfo('Fetching ref specs "%s"', refSpecs.join(", "))
+		yield* logInfo(`Fetching ref specs "${refSpecs.join(", ")}"`)
 
-	const command = makeCommand("git", "fetch", depthArgument, remote, ...refSpecs)
+		const command = make("git", "fetch", depthArgument, remote, ...refSpecs).pipe(
+			workingDirectory(repoDir),
+			stdout("inherit"),
+			exitCode
+		)
 
-	switch (true) {
-		case exitCode === FETCH_SUCCESS_CODE: {
-			return FETCH_RESULT.FOUND
+		const code = yield* command
+
+		switch (true) {
+			case code === FETCH_SUCCESS_CODE: {
+				return Found
+			}
+			case code === FETCH_NOT_FOUND_CODE && optional: {
+				yield* logWarning("Optional refs fetch failed")
+				return NotFound
+			}
+			default: {
+				yield* logError("Fetch failed")
+				return yield* fail(new FetchNotFoundError())
+			}
 		}
-		case exitCode === FETCH_ERROR_CODE && optional: {
-			pino.warn("Optional refs fetch failed")
-			return FETCH_RESULT.NOT_FOUND
-		}
-		default: {
-			pino.error("Fetch failed")
-			return FETCH_RESULT.ERROR
-		}
-	}
-}
+	})
 
 export default fetch

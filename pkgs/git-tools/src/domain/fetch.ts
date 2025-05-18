@@ -1,18 +1,16 @@
-type Found = boolean
-
 /**
- * Fetch Error
+ * Fetch refs found
  */
-class FetchError extends Error {
-	public override name = "FetchError" as const
-}
+type WasFound = boolean
+const Found = true
+const NotFound = false
 
 /**
  * Fetch Not Found Error
  */
 class FetchNotFoundError extends Error {
-	public override name = "FetchNotFoundError" as const
+	public override readonly name = "FetchNotFoundError" as const
 }
 
-export type { Found }
-export { FetchError, FetchNotFoundError }
+export type { WasFound }
+export { FetchNotFoundError, Found, NotFound }
