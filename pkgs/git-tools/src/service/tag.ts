@@ -1,9 +1,9 @@
 import assert from "node:assert"
 import type { Logger } from "pino"
 import type { ExecaScript } from "#execa"
-import { TAG, type Ref } from "#refs"
-import { DEFAULT_REMOTE } from "#consts"
-import fetchRefs from "#fetch"
+import { TAG, type Ref } from "#service/refs"
+import { DEFAULT_REMOTE } from "#config/consts"
+import fetchRefs from "#service/fetch"
 
 interface Ctx {
 	$: ExecaScript
@@ -43,7 +43,10 @@ const tag = async (
 	{ pkgTag, eventRef, remote = DEFAULT_REMOTE }: Props
 ): Promise<void> => {
 	pino.info(`Tagging ${pkgTag}...`)
-	const {} = await fetchRefs({ $, pino }, { refs: [{ name: pkgTag, type: TAG }], remote })
+	const {} = await fetchRefs(
+		{ $, logger: pino },
+		{ refs: [{ name: pkgTag, type: TAG }], remote }
+	)
 }
 
 const bash = /* bash */ `

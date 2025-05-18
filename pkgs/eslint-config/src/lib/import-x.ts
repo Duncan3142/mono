@@ -34,7 +34,7 @@ const custom: (guard: Guards) => MutableConfig = (guard) => {
 			"import-x/no-unassigned-import": "error",
 			"import-x/no-anonymous-default-export": "error",
 			"import-x/no-cycle": guard.all,
-			"import-x/no-unused-modules": "error",
+			"import-x/no-unused-modules": guard.all,
 			"import-x/no-deprecated": guard.all,
 			"import-x/no-self-import": "error",
 			"import-x/no-commonjs": "error",

@@ -1,7 +1,7 @@
 import assert from "node:assert"
 import type { Logger } from "pino"
 import type { ExecaScript } from "#execa"
-import printRefs, { type Ref } from "#refs"
+import printRefs, { type Ref } from "#service/refs"
 
 interface Ctx {
 	$: ExecaScript

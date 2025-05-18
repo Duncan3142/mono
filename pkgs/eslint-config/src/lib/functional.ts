@@ -29,6 +29,21 @@ const custom: Readonly<MutableConfig> = {
 			"error",
 			{ enforcement: "ReadonlyDeep", ignoreTypePattern: "^Mutable.*" },
 		],
+		"functional/type-declaration-immutability": [
+			"error",
+			{
+				rules: [
+					{
+						identifiers: "^(?!Mutable).*",
+						immutability: "ReadonlyDeep",
+						comparator: "AtLeast",
+						fixer: false,
+						suggestions: false,
+					},
+				],
+				ignoreInterfaces: false,
+			},
+		],
 	},
 }
 
