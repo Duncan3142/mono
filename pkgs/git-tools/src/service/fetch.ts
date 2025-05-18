@@ -140,8 +140,6 @@ const fetchRefs = async (
 		await printRefs({ $ })
 	}
 
-	throw 0
-
 	const expectedRes = await doFetch(
 		{ $, pino },
 		{ optional: false, remote, depth, deepen, refSpecs: expectedRefSpecs }
