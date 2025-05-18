@@ -44,6 +44,7 @@ const custom: Readonly<MutableConfig> = {
 				ignoreInterfaces: false,
 			},
 		],
+		"functional/no-classes": "off",
 	},
 }
 
