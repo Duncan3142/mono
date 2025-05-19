@@ -15,6 +15,7 @@ const custom: (guard: Guards) => MutableConfig = (guard): MutableConfig => {
 			"unicorn/no-typeof-undefined": "off",
 			"unicorn/no-unnecessary-polyfills": guard.all,
 			"unicorn/import-style": "off",
+			"unicorn/no-array-reduce": "off",
 		},
 	}
 }
