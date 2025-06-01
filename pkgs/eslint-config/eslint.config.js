@@ -8,7 +8,6 @@ import importX from "#lib/import-x"
 import prettier from "#lib/prettier"
 import comments from "#lib/comments"
 import functional from "#lib/functional"
-import unicorn from "#lib/unicorn"
 import core, { compose } from "#lib/core"
 import context from "#context"
 
@@ -69,7 +68,6 @@ const configs = compose(
 	typescript(),
 	importX(when),
 	functional,
-	unicorn(when),
 	promise,
 	jsdoc,
 	secrets,
