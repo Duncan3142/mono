@@ -12,8 +12,7 @@ import {
 	as,
 } from "effect/Effect"
 import { filterMap, toEntries } from "effect/Record"
-import { some, none } from "effect/Option"
-import { value, when, orElse } from "effect/Match"
+import { value, when, orElse, option } from "effect/Match"
 import { type NonEmptyReadonlyArray, groupBy, sortBy, map as arrayMap } from "effect/Array"
 import { pipe } from "effect/Function"
 import type { CommandExecutor, ExitCode } from "@effect/platform/CommandExecutor"
@@ -113,9 +112,9 @@ const fetchReferences = ({
 		filterMap((fetchRefs, key) =>
 			pipe(
 				value(key),
-				when(REQUIRED, () => some(fetchRequired(fetchRefs))),
-				when(OPTIONAL, () => some(fetchOptional(fetchRefs))),
-				orElse(() => none())
+				when(REQUIRED, () => fetchRequired(fetchRefs)),
+				when(OPTIONAL, () => fetchOptional(fetchRefs)),
+				option
 			)
 		),
 		toEntries,
