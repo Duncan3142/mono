@@ -11,11 +11,11 @@ import {
 	fail,
 	as,
 } from "effect/Effect"
-
 import { filterMap, toEntries } from "effect/Record"
 import { some, none } from "effect/Option"
+import { value, when, orElse } from "effect/Match"
 import { type NonEmptyReadonlyArray, groupBy, sortBy, map as arrayMap } from "effect/Array"
-import { pipe } from "effect"
+import { pipe } from "effect/Function"
 import type { CommandExecutor, ExitCode } from "@effect/platform/CommandExecutor"
 import type { PlatformError } from "@effect/platform/Error"
 import type { UnknownException } from "effect/Cause"
@@ -32,6 +32,7 @@ import {
 	REQUIRED,
 	OPTIONAL,
 	type FetchReferences,
+	FetchFailedError,
 } from "#domain/fetch"
 import type { LogReferencesError, Reference } from "#domain/reference"
 
@@ -45,33 +46,28 @@ interface Arguments {
 const fetchFailed = () =>
 	pipe(
 		logError("Fetch failed"),
-		flatMap(() => fail(new FetchNotFoundError()))
+		flatMap(() => fail(new FetchFailedError()))
 	)
 
-const handleRequired = flatMap((code: ExitCode) => {
-	switch (true) {
-		case code === FETCH_SUCCESS_CODE: {
-			return succeed(Found)
-		}
-		default: {
-			return fetchFailed()
-		}
-	}
-})
+const handleRequired = flatMap((code: ExitCode) =>
+	pipe(
+		value(code),
+		when(FETCH_SUCCESS_CODE, () => succeed(Found)),
+		when(FETCH_NOT_FOUND_CODE, () => fail(new FetchNotFoundError())),
+		orElse(() => fetchFailed())
+	)
+)
 
-const handleOptional = flatMap((code: ExitCode) => {
-	switch (true) {
-		case code === FETCH_SUCCESS_CODE: {
-			return succeed(Found)
-		}
-		case code === FETCH_NOT_FOUND_CODE: {
-			return pipe(logWarning("Failed to fetch one or more optional refs"), as(NotFound))
-		}
-		default: {
-			return fetchFailed()
-		}
-	}
-})
+const handleOptional = flatMap((code: ExitCode) =>
+	pipe(
+		value(code),
+		when(FETCH_SUCCESS_CODE, () => succeed(Found)),
+		when(FETCH_NOT_FOUND_CODE, () =>
+			pipe(logWarning("Failed to fetch one or more optional refs"), as(NotFound))
+		),
+		orElse(() => fetchFailed())
+	)
+)
 
 /**
  * Fetches refs the remote repository.
@@ -91,7 +87,7 @@ const fetchReferences = ({
 	deepen = false,
 }: Arguments): Effect<
 	WasFound,
-	FetchNotFoundError | LogReferencesError | PlatformError | UnknownException,
+	FetchNotFoundError | FetchFailedError | LogReferencesError | PlatformError | UnknownException,
 	CommandExecutor
 > => {
 	const doFetch = (references: NonEmptyReadonlyArray<Reference>) =>
@@ -105,22 +101,23 @@ const fetchReferences = ({
 			},
 		})
 
+	const fetchRequired = (references: NonEmptyReadonlyArray<Reference>) =>
+		pipe(doFetch(references), handleRequired)
+
+	const fetchOptional = (references: NonEmptyReadonlyArray<Reference>) =>
+		pipe(doFetch(references), handleOptional)
+
 	const sequence = pipe(
 		refs,
 		groupBy(optionalString),
-		filterMap((value, key) => {
-			switch (key) {
-				case REQUIRED: {
-					return some(pipe(doFetch(value), handleRequired))
-				}
-				case OPTIONAL: {
-					return some(pipe(doFetch(value), handleOptional))
-				}
-				default: {
-					return none()
-				}
-			}
-		}),
+		filterMap((fetchRefs, key) =>
+			pipe(
+				value(key),
+				when(REQUIRED, () => some(fetchRequired(fetchRefs))),
+				when(OPTIONAL, () => some(fetchOptional(fetchRefs))),
+				orElse(() => none())
+			)
+		),
 		toEntries,
 		sortBy(mapInput(string, ([key]) => key)),
 		arrayMap(([_, effect]) => effect)

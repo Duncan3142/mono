@@ -1,6 +1,6 @@
 import { make, exitCode, stdout, workingDirectory, stderr } from "@effect/platform/Command"
 import { type Effect, logInfo, andThen } from "effect/Effect"
-import { pipe } from "effect"
+import { pipe } from "effect/Function"
 import type { PlatformError } from "@effect/platform/Error"
 import type { CommandExecutor, ExitCode } from "@effect/platform/CommandExecutor"
 import { BASE_10_RADIX } from "#config/consts"

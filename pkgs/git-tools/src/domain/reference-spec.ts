@@ -1,7 +1,8 @@
 import { type NonEmptyReadonlyArray, map } from "effect/Array"
+import { value, when, exhaustive } from "effect/Match"
+import { pipe } from "effect/Function"
 import { BRANCH, TAG, type Reference, type as referenceType } from "./reference.ts"
 import type { Remote } from "./remote.ts"
-import never from "#error/never"
 
 interface ReferenceSpec {
 	remote: Remote
@@ -21,17 +22,12 @@ interface ReferenceSpecsStrings {
 const toString = ({ remote: { name: remote }, ref }: ReferenceSpec): string => {
 	const { name } = ref
 	const type = referenceType(ref)
-	switch (type) {
-		case BRANCH: {
-			return `refs/heads/${name}:refs/remotes/${remote}/${name}`
-		}
-		case TAG: {
-			return `refs/tags/${name}:refs/tags/${name}`
-		}
-		default: {
-			return never(type)
-		}
-	}
+	return pipe(
+		value(type),
+		when(BRANCH, () => `refs/heads/${name}:refs/remotes/${remote}/${name}`),
+		when(TAG, () => `refs/tags/${name}:refs/tags/${name}`),
+		exhaustive
+	)
 }
 
 /**

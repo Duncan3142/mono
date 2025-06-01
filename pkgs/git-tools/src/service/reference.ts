@@ -10,7 +10,7 @@ import {
 	whenLogLevel,
 	logWithLevel,
 } from "effect/Effect"
-import { pipe } from "effect"
+import { pipe } from "effect/Function"
 import { fromLiteral, type Literal as LogLevel } from "effect/LogLevel"
 import { LogReferencesError } from "#domain/reference"
 

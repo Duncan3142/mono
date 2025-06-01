@@ -1,7 +1,9 @@
 import type { NonEmptyReadonlyArray } from "effect/Array"
 import { mapInput, type Order, boolean } from "effect/Order"
+import { TaggedError } from "effect/Data"
 import type { Reference } from "./reference.ts"
 import type { Remote } from "./remote.ts"
+import type { TaggedErrorCtor } from "#error/tagged"
 
 /**
  * Fetch refs found
@@ -10,11 +12,28 @@ type WasFound = boolean
 const Found = true
 const NotFound = false
 
+const FETCH_NOT_FOUND_ERROR = "FETCH_NOT_FOUND_ERROR"
+
+const FetchNotFoundErrorBase: TaggedErrorCtor<typeof FETCH_NOT_FOUND_ERROR> =
+	TaggedError(FETCH_NOT_FOUND_ERROR)
+
 /**
  * Fetch Not Found Error
  */
-class FetchNotFoundError extends Error {
-	public override readonly name = "FetchNotFoundError" as const
+class FetchNotFoundError extends FetchNotFoundErrorBase {
+	public override readonly name: typeof FETCH_NOT_FOUND_ERROR = FETCH_NOT_FOUND_ERROR
+}
+
+const FETCH_FAILED_ERROR = "FETCH_FAILED_ERROR"
+
+const FetchFailedErrorBase: TaggedErrorCtor<typeof FETCH_FAILED_ERROR> =
+	TaggedError(FETCH_FAILED_ERROR)
+
+/**
+ * Fetch Failed Error
+ */
+class FetchFailedError extends FetchFailedErrorBase {
+	public override readonly name: typeof FETCH_FAILED_ERROR = FETCH_FAILED_ERROR
 }
 
 interface FetchReference extends Reference {
@@ -65,6 +84,7 @@ interface FetchReferences {
 export type { WasFound, FetchReference, FetchReferences, Optional, Required }
 export {
 	FetchNotFoundError,
+	FetchFailedError,
 	Found,
 	NotFound,
 	sortByOptionality,

@@ -1,4 +1,6 @@
+import { TaggedError } from "effect/Data"
 import { mapInput, string, type Order } from "effect/Order"
+import type { TaggedErrorCtor } from "#error/tagged"
 
 const BRANCH = "branch"
 const TAG = "tag"
@@ -31,24 +33,29 @@ interface Reference {
 const type = (reference: Reference): REF_TYPE => reference.type ?? BRANCH
 
 /**
- * Fetch reference order by type
+ * Order reference by type
  * @param reference - Reference to check
- * @returns FetchReference order
+ * @returns Reference ordering
  */
 const sortByType: Order<Reference> = mapInput(string, (reference) => type(reference))
 
 /**
- * Fetch reference order by type
+ * Order reference order by name
  * @param reference - Reference to check
- * @returns FetchReference order
+ * @returns Reference ordering
  */
 const sortByName: Order<Reference> = mapInput(string, ({ name }) => name)
+
+const LOG_REFERENCES_ERROR = "LOG_REFERENCES_ERROR"
+
+const LogReferencesErrorBase: TaggedErrorCtor<typeof LOG_REFERENCES_ERROR> =
+	TaggedError(LOG_REFERENCES_ERROR)
 
 /**
  * Error thrown when logging references fails
  */
-class LogReferencesError extends Error {
-	public override readonly name = "LogReferencesError" as const
+class LogReferencesError extends LogReferencesErrorBase {
+	public override readonly name: typeof LOG_REFERENCES_ERROR = LOG_REFERENCES_ERROR
 }
 
 export type { BRANCH_TYPE, TAG_TYPE, REF_TYPE, Reference }
