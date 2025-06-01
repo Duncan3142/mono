@@ -1,3 +1,5 @@
+import { mapInput, string, type Order } from "effect/Order"
+
 const BRANCH = "branch"
 const TAG = "tag"
 
@@ -22,6 +24,27 @@ interface Reference {
 }
 
 /**
+ * Extracts the type of a reference.
+ * @param reference - Reference to check
+ * @returns the reference type, defaults to BRANCH if not specified
+ */
+const type = (reference: Reference): REF_TYPE => reference.type ?? BRANCH
+
+/**
+ * Fetch reference order by type
+ * @param reference - Reference to check
+ * @returns FetchReference order
+ */
+const sortByType: Order<Reference> = mapInput(string, (reference) => type(reference))
+
+/**
+ * Fetch reference order by type
+ * @param reference - Reference to check
+ * @returns FetchReference order
+ */
+const sortByName: Order<Reference> = mapInput(string, ({ name }) => name)
+
+/**
  * Error thrown when logging references fails
  */
 class LogReferencesError extends Error {
@@ -29,4 +52,4 @@ class LogReferencesError extends Error {
 }
 
 export type { BRANCH_TYPE, TAG_TYPE, REF_TYPE, Reference }
-export { LogReferencesError, BRANCH, TAG }
+export { LogReferencesError, BRANCH, TAG, type, sortByType, sortByName }

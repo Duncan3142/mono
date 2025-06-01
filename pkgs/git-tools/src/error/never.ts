@@ -8,13 +8,14 @@ class NeverError extends Error {
 
 /**
  * Function that should never be called
+ * @param _ - A never value
  * @throws NeverError
  *
  * This function is used to protect unreachable code paths.
  * It throws a NeverError to signal that the code should never be executed.
  */
-const never = (): never => {
-	throw new NeverError("Executed unexpected code")
+const never = (_: never): never => {
+	throw new NeverError("Unexpected code branch reached")
 }
 
 export default never

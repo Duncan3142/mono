@@ -27,7 +27,7 @@ interface ExecArguments {
 
 const SUCCESS_CODE = 0
 
-const exec = ({
+const command = ({
 	args,
 	repoDirectory,
 }: ExecArguments): Effect<void, PlatformError | LogReferencesError, CommandExecutor> =>
@@ -57,8 +57,8 @@ const logReferences = ({
 		all(
 			[
 				logWithLevel(fromLiteral(level), message),
-				exec({ repoDirectory, args: ["branch", "-a", "-v", "-v"] }),
-				exec({ repoDirectory, args: ["tag"] }),
+				command({ repoDirectory, args: ["branch", "-a", "-v", "-v"] }),
+				command({ repoDirectory, args: ["tag"] }),
 			],
 			{
 				discard: true,

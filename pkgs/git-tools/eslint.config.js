@@ -10,7 +10,6 @@ import importX from "@duncan3142/eslint-config/import-x"
 import prettier from "@duncan3142/eslint-config/prettier"
 import comments from "@duncan3142/eslint-config/comments"
 // import functional from "@duncan3142/eslint-config/functional"
-import unicorn from "@duncan3142/eslint-config/unicorn"
 import context from "@duncan3142/eslint-config/context"
 import core, { compose } from "@duncan3142/eslint-config/core"
 
@@ -24,7 +23,6 @@ const configs = compose(
 	typescript(),
 	importX(when),
 	// functional,
-	unicorn(when),
 	promise,
 	jsdoc,
 	secrets,

@@ -8,10 +8,12 @@
 			"#domain/*": ["./src/domain/*.ts"],
 			"#driver/*": ["./src/driver/*.ts"],
 			"#driven/*": ["./src/driven/*.ts"],
+			"#order/*": ["./src/order/*.ts"],
 			"#error/*": ["./src/error/*.ts"],
 			"#layer/*": ["./src/service/*.ts"],
 			"#schema/*": ["./src/schema/*.ts"],
-			"#service/*": ["./src/service/*.ts"]
+			"#service/*": ["./src/service/*.ts"],
+			"#util/*": ["./src/util/*.ts"]
 		}
 	},
 	"include": []
