@@ -48,24 +48,20 @@ const fetchFailed = () =>
 		flatMap(() => fail(new FetchFailedError()))
 	)
 
-const handleRequired = flatMap((code: ExitCode) =>
+const handleExitCode = <A, E, R>(f: () => Effect<A, E, R>) =>
+	flatMap((code: ExitCode) =>
 	pipe(
 		value(code),
 		when(FETCH_SUCCESS_CODE, () => succeed(Found)),
-		when(FETCH_NOT_FOUND_CODE, () => fail(new FetchNotFoundError())),
+			when(FETCH_NOT_FOUND_CODE, f),
 		orElse(() => fetchFailed())
 	)
 )
 
-const handleOptional = flatMap((code: ExitCode) =>
-	pipe(
-		value(code),
-		when(FETCH_SUCCESS_CODE, () => succeed(Found)),
-		when(FETCH_NOT_FOUND_CODE, () =>
+const handleRequired = handleExitCode(() => fail(new FetchNotFoundError()))
+
+const handleOptional = handleExitCode(() =>
 			pipe(logWarning("Failed to fetch one or more optional refs"), as(NotFound))
-		),
-		orElse(() => fetchFailed())
-	)
 )
 
 /**
