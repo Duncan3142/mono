@@ -85,22 +85,25 @@ const fetchReferences = ({
 	FetchNotFoundError | FetchFailedError | LogReferencesError | PlatformError | UnknownException,
 	CommandExecutor
 > => {
-	const doFetch = (references: NonEmptyReadonlyArray<Reference>) =>
-		command({
-			repoDir,
-			depth,
-			deepen,
-			refSpecs: {
-				remote,
-				refs: references,
-			},
-		})
+	const doFetch =
+		<E>(f: (code: ExitCode) => Effect<WasFound, FetchFailedError | E>) =>
+		(references: NonEmptyReadonlyArray<Reference>) =>
+			pipe(
+				command({
+					repoDir,
+					depth,
+					deepen,
+					refSpecs: {
+						remote,
+						refs: references,
+					},
+				}),
+				flatMap(f)
+			)
 
-	const fetchRequired = (references: NonEmptyReadonlyArray<Reference>) =>
-		pipe(doFetch(references), flatMap(handleRequired))
+	const fetchRequired = doFetch(handleRequired)
 
-	const fetchOptional = (references: NonEmptyReadonlyArray<Reference>) =>
-		pipe(doFetch(references), flatMap(handleOptional))
+	const fetchOptional = doFetch(handleOptional)
 
 	const sequence = pipe(
 		refs,
