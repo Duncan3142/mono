@@ -48,20 +48,20 @@ const fetchFailed = () =>
 		flatMap(() => fail(new FetchFailedError()))
 	)
 
-const handleExitCode = <A, E, R>(f: () => Effect<A, E, R>) =>
-	flatMap((code: ExitCode) =>
-	pipe(
-		value(code),
-		when(FETCH_SUCCESS_CODE, () => succeed(Found)),
+const handleExitCode =
+	<A, E, R>(f: () => Effect<A, E, R>) =>
+	(code: ExitCode) =>
+		pipe(
+			value(code),
+			when(FETCH_SUCCESS_CODE, () => succeed(Found)),
 			when(FETCH_NOT_FOUND_CODE, f),
-		orElse(() => fetchFailed())
-	)
-)
+			orElse(() => fetchFailed())
+		)
 
 const handleRequired = handleExitCode(() => fail(new FetchNotFoundError()))
 
 const handleOptional = handleExitCode(() =>
-			pipe(logWarning("Failed to fetch one or more optional refs"), as(NotFound))
+	pipe(logWarning("Failed to fetch one or more optional refs"), as(NotFound))
 )
 
 /**
@@ -97,10 +97,10 @@ const fetchReferences = ({
 		})
 
 	const fetchRequired = (references: NonEmptyReadonlyArray<Reference>) =>
-		pipe(doFetch(references), handleRequired)
+		pipe(doFetch(references), flatMap(handleRequired))
 
 	const fetchOptional = (references: NonEmptyReadonlyArray<Reference>) =>
-		pipe(doFetch(references), handleOptional)
+		pipe(doFetch(references), flatMap(handleOptional))
 
 	const sequence = pipe(
 		refs,
