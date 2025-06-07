@@ -1,5 +1,5 @@
 import type { NonEmptyReadonlyArray } from "effect/Array"
-import { mapInput, type Order, boolean } from "effect/Order"
+import { mapInput as orderMapInput, type Order, boolean as orderBoolean } from "effect/Order"
 import { TaggedError } from "effect/Data"
 import type { Reference } from "./reference.ts"
 import type { Remote } from "./remote.ts"
@@ -21,7 +21,7 @@ const FetchNotFoundErrorBase: TaggedErrorCtor<typeof FETCH_NOT_FOUND_ERROR> =
  * Fetch Not Found Error
  */
 class FetchNotFoundError extends FetchNotFoundErrorBase {
-	public override readonly name: typeof FETCH_NOT_FOUND_ERROR = FETCH_NOT_FOUND_ERROR
+	public override readonly name: typeof this._tag = this._tag
 }
 
 const FETCH_FAILED_ERROR = "FETCH_FAILED_ERROR"
@@ -33,7 +33,7 @@ const FetchFailedErrorBase: TaggedErrorCtor<typeof FETCH_FAILED_ERROR> =
  * Fetch Failed Error
  */
 class FetchFailedError extends FetchFailedErrorBase {
-	public override readonly name: typeof FETCH_FAILED_ERROR = FETCH_FAILED_ERROR
+	public override readonly name: typeof this._tag = this._tag
 }
 
 interface FetchReference extends Reference {
@@ -72,7 +72,7 @@ const optionalString = (reference: FetchReference): Optional | Required =>
  * @param reference - Reference to check
  * @returns FetchReference order
  */
-const sortByOptionality: Order<FetchReference> = mapInput(boolean, (reference) =>
+const sortByOptionality: Order<FetchReference> = orderMapInput(orderBoolean, (reference) =>
 	isOptional(reference)
 )
 

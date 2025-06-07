@@ -2,7 +2,13 @@ import type { CommandExecutor, ExitCode } from "@effect/platform/CommandExecutor
 import type { PlatformError } from "@effect/platform/Error"
 import { pipe } from "effect/Function"
 import type { Effect } from "effect/Effect"
-import { make, exitCode, stdout, workingDirectory, stderr } from "@effect/platform/Command"
+import {
+	make as commandMake,
+	exitCode as commandExitCode,
+	stdout as commandStdout,
+	workingDirectory as commandWorkDir,
+	stderr as commandStderr,
+} from "@effect/platform/Command"
 import type { LogReferencesError, REF_TYPE } from "#domain/reference"
 
 const SUCCESS_CODE = 0
@@ -25,12 +31,12 @@ const command = ({
 }: Arguments): Effect<ExitCode, PlatformError | LogReferencesError, CommandExecutor> => {
 	const args = type === "branch" ? ["branch", "-a", "-v", "-v"] : ["tag"]
 	return pipe(
-		make("git", "--no-pager", ...args),
-		workingDirectory(repoDirectory),
-		stdout("inherit"),
-		stderr("inherit"),
-		exitCode
+		commandMake("git", "--no-pager", ...args),
+		commandWorkDir(repoDirectory),
+		commandStdout("inherit"),
+		commandStderr("inherit"),
+		commandExitCode
 	)
 }
-
-export { command, SUCCESS_CODE }
+export default command
+export { SUCCESS_CODE }

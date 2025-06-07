@@ -1,10 +1,16 @@
-import { make, exitCode, stdout, workingDirectory, stderr } from "@effect/platform/Command"
-import { type Effect, logInfo, andThen } from "effect/Effect"
+import {
+	make as commandMake,
+	exitCode as commandExitCode,
+	stdout as commandStdout,
+	workingDirectory as commandWorkDir,
+	stderr as commandStderr,
+} from "@effect/platform/Command"
+import { type Effect, logInfo as effectLogInfo, andThen as effectAndThen } from "effect/Effect"
 import { pipe } from "effect/Function"
 import type { PlatformError } from "@effect/platform/Error"
 import type { CommandExecutor, ExitCode } from "@effect/platform/CommandExecutor"
 import { BASE_10_RADIX } from "#config/consts"
-import { toStrings, type ReferenceSpecs } from "#domain/reference-spec"
+import { toStrings as refSpecToStrings, type ReferenceSpecs } from "#domain/reference-spec"
 
 interface Arguments {
 	readonly repoDir: string
@@ -31,21 +37,21 @@ const command = ({
 	deepen,
 	refSpecs,
 }: Arguments): Effect<ExitCode, PlatformError, CommandExecutor> => {
-	const { remote, refs } = toStrings(refSpecs)
+	const { remote, refs } = refSpecToStrings(refSpecs)
 
 	const depthString = depth.toString(BASE_10_RADIX)
 
 	const depthArgument = deepen ? `--deepen=${depthString}` : `--depth=${depthString}`
 
 	return pipe(
-		logInfo(`Fetching ref specs "${refs.join(", ")}"`),
-		andThen(
+		effectLogInfo(`Fetching ref specs "${refs.join(", ")}"`),
+		effectAndThen(
 			pipe(
-				make("git", "fetch", depthArgument, remote, ...refs),
-				workingDirectory(repoDir),
-				stdout("inherit"),
-				stderr("inherit"),
-				exitCode
+				commandMake("git", "fetch", depthArgument, remote, ...refs),
+				commandWorkDir(repoDir),
+				commandStdout("inherit"),
+				commandStderr("inherit"),
+				commandExitCode
 			)
 		)
 	)

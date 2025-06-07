@@ -1,26 +1,38 @@
 import {
 	type Effect,
-	tap,
-	andThen,
-	reduce,
-	map,
-	logWarning,
-	succeed,
-	logError,
-	flatMap,
-	fail,
-	as,
+	tap as effectTap,
+	andThen as effectAndThen,
+	reduce as effectReduce,
+	map as effectMap,
+	logWarning as effectLogWarning,
+	succeed as effectSucceed,
+	logError as effectLogError,
+	flatMap as effectFlatMap,
+	fail as effectFail,
+	as as effectAs,
 } from "effect/Effect"
-import { filterMap, toEntries } from "effect/Record"
-import { value, when, orElse, option } from "effect/Match"
-import { type NonEmptyReadonlyArray, groupBy, sortBy, map as arrayMap } from "effect/Array"
+import { filterMap as recordFilterMap, toEntries as recordToEntries } from "effect/Record"
+import {
+	value as matchValue,
+	when as matchWhen,
+	orElse as matchOrElse,
+	option as matchOption,
+} from "effect/Match"
+import {
+	type NonEmptyReadonlyArray,
+	groupBy as arrayGroupBy,
+	sortBy as arraySortBy,
+	map as arrayMap,
+} from "effect/Array"
 import { pipe } from "effect/Function"
+import { either as effectEither } from "effect/Effect"
 import type { CommandExecutor, ExitCode } from "@effect/platform/CommandExecutor"
 import type { PlatformError } from "@effect/platform/Error"
 import type { UnknownException } from "effect/Cause"
-import { mapInput, string } from "effect/Order"
-import command, { FETCH_NOT_FOUND_CODE, FETCH_SUCCESS_CODE } from "#command/fetch"
-import logReferences from "#service/reference"
+import { match as eitherMatch } from "effect/Either"
+import { mapInput as orderMapInput, string as orderString } from "effect/Order"
+import fetchCommand, { FETCH_NOT_FOUND_CODE, FETCH_SUCCESS_CODE } from "#command/fetch"
+import referenceLog from "#service/reference"
 import { DEFAULT_DEPTH, DEFAULT_REMOTE } from "#config/consts"
 import {
 	FetchNotFoundError,
@@ -44,24 +56,24 @@ interface Arguments {
 
 const fetchFailed = () =>
 	pipe(
-		logError("Fetch failed"),
-		flatMap(() => fail(new FetchFailedError()))
+		effectLogError("Fetch failed"),
+		effectFlatMap(() => effectFail(new FetchFailedError()))
 	)
 
 const handleExitCode =
 	<A, E, R>(handleNotFound: () => Effect<A, E, R>) =>
 	(code: ExitCode) =>
 		pipe(
-			value(code),
-			when(FETCH_SUCCESS_CODE, () => succeed(Found)),
-			when(FETCH_NOT_FOUND_CODE, handleNotFound),
-			orElse(() => fetchFailed())
+			matchValue(code),
+			matchWhen(FETCH_SUCCESS_CODE, () => effectSucceed(Found)),
+			matchWhen(FETCH_NOT_FOUND_CODE, handleNotFound),
+			matchOrElse(() => fetchFailed())
 		)
 
-const handleRequired = handleExitCode(() => fail(new FetchNotFoundError()))
+const handleRequired = handleExitCode(() => effectFail(new FetchNotFoundError()))
 
 const handleOptional = handleExitCode(() =>
-	pipe(logWarning("Failed to fetch one or more optional refs"), as(NotFound))
+	pipe(effectLogWarning("Failed to fetch one or more optional refs"), effectAs(NotFound))
 )
 
 /**
@@ -86,10 +98,10 @@ const fetchReferences = ({
 	CommandExecutor
 > => {
 	const doFetch =
-		<E>(f: (code: ExitCode) => Effect<WasFound, FetchFailedError | E>) =>
+		<E>(codeHandler: (code: ExitCode) => Effect<WasFound, FetchFailedError | E>) =>
 		(references: NonEmptyReadonlyArray<Reference>) =>
 			pipe(
-				command({
+				fetchCommand({
 					repoDir,
 					depth,
 					deepen,
@@ -98,7 +110,14 @@ const fetchReferences = ({
 						refs: references,
 					},
 				}),
-				flatMap(f)
+				effectFlatMap(codeHandler),
+				effectEither,
+				effectFlatMap(
+					eitherMatch({
+						onLeft: (error) => effectFail(error),
+						onRight: (found) => effectSucceed(found),
+					})
+				)
 			)
 
 	const fetchRequired = doFetch(handleRequired)
@@ -107,31 +126,33 @@ const fetchReferences = ({
 
 	const sequence = pipe(
 		refs,
-		groupBy(optionalString),
-		filterMap((fetchRefs, key) =>
+		arrayGroupBy(optionalString),
+		recordFilterMap((fetchRefs, key) =>
 			pipe(
-				value(key),
-				when(REQUIRED, () => fetchRequired(fetchRefs)),
-				when(OPTIONAL, () => fetchOptional(fetchRefs)),
-				option
+				matchValue(key),
+				matchWhen(REQUIRED, () => fetchRequired(fetchRefs)),
+				matchWhen(OPTIONAL, () => fetchOptional(fetchRefs)),
+				matchOption
 			)
 		),
-		toEntries,
-		sortBy(mapInput(string, ([key]) => key)),
+		recordToEntries,
+		arraySortBy(orderMapInput(orderString, ([key]) => key)),
 		arrayMap(([_, effect]) => effect)
 	)
 
 	return pipe(
-		logReferences({ repoDirectory: repoDir, level: "Debug", message: "Refs pre fetch" }),
-		andThen(
-			reduce(sequence, Found, (accumulator, effect) =>
+		referenceLog({ repoDirectory: repoDir, level: "Debug", message: "Refs pre fetch" }),
+		effectAndThen(
+			effectReduce(sequence, Found, (accumulator, effect) =>
 				pipe(
 					effect,
-					map((result) => result && accumulator)
+					effectMap((result) => result && accumulator)
 				)
 			)
 		),
-		tap(logReferences({ repoDirectory: repoDir, level: "Debug", message: "Refs post fetch" }))
+		effectTap(
+			referenceLog({ repoDirectory: repoDir, level: "Debug", message: "Refs post fetch" })
+		)
 	)
 }
 

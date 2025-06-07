@@ -1,5 +1,9 @@
-import { type NonEmptyReadonlyArray, map } from "effect/Array"
-import { value, when, exhaustive } from "effect/Match"
+import { type NonEmptyReadonlyArray, map as arrayMap } from "effect/Array"
+import {
+	value as matchValue,
+	when as matchWhen,
+	exhaustive as matchExhaustive,
+} from "effect/Match"
 import { pipe } from "effect/Function"
 import { BRANCH, TAG, type Reference, type as referenceType } from "./reference.ts"
 import type { Remote } from "./remote.ts"
@@ -23,10 +27,10 @@ const toString = ({ remote: { name: remote }, ref }: ReferenceSpec): string => {
 	const { name } = ref
 	const type = referenceType(ref)
 	return pipe(
-		value(type),
-		when(BRANCH, () => `refs/heads/${name}:refs/remotes/${remote}/${name}`),
-		when(TAG, () => `refs/tags/${name}:refs/tags/${name}`),
-		exhaustive
+		matchValue(type),
+		matchWhen(BRANCH, () => `refs/heads/${name}:refs/remotes/${remote}/${name}`),
+		matchWhen(TAG, () => `refs/tags/${name}:refs/tags/${name}`),
+		matchExhaustive
 	)
 }
 
@@ -40,7 +44,7 @@ const toString = ({ remote: { name: remote }, ref }: ReferenceSpec): string => {
 const toStrings = ({ remote, refs }: ReferenceSpecs): ReferenceSpecsStrings => {
 	return {
 		remote: remote.name,
-		refs: map(refs, (reference) => toString({ remote, ref: reference })),
+		refs: arrayMap(refs, (reference) => toString({ remote, ref: reference })),
 	}
 }
 
