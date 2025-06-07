@@ -1,4 +1,4 @@
-import type { Remote } from "#domain/remote"
+import type { Remote } from "#remote/domain"
 
 const DEFAULT_REMOTE_NAME = "origin"
 const DEFAULT_REMOTE: Remote = { name: DEFAULT_REMOTE_NAME }

@@ -14,13 +14,11 @@ import {
 	die as effectDie,
 } from "effect/Effect"
 import { pipe } from "effect/Function"
-
 import { value as matchValue, when as matchWhen, orElse as matchOrElse } from "effect/Match"
 import type { CommandExecutor } from "@effect/platform/CommandExecutor"
-
+import { FetchFailedError, FetchNotFoundError } from "./domain.js"
 import { BASE_10_RADIX } from "#config/consts"
-import { toStrings as refSpecToStrings, type ReferenceSpecs } from "#domain/reference-spec"
-import { FetchFailedError, FetchNotFoundError } from "#domain/fetch"
+import { toStrings as refSpecToStrings, type ReferenceSpecs } from "#reference-spec/domain"
 
 interface Arguments {
 	readonly repoDir: string

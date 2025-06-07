@@ -1,8 +1,8 @@
 import type { NonEmptyReadonlyArray } from "effect/Array"
 import { mapInput as orderMapInput, type Order, boolean as orderBoolean } from "effect/Order"
 import { TaggedError } from "effect/Data"
-import type { Reference } from "./reference.ts"
-import type { Remote } from "./remote.ts"
+import type { Reference } from "#reference/domain"
+import type { Remote } from "#remote/domain"
 import type { TaggedErrorCtor } from "#error/tagged"
 
 /**

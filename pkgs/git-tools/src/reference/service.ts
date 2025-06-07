@@ -10,8 +10,8 @@ import {
 	fromLiteral as logLevelFromLiteral,
 	type Literal as LogLevelLiteral,
 } from "effect/LogLevel"
-import { type REF_TYPE, TAG, BRANCH } from "#domain/reference"
-import command from "#command/reference"
+import { type REF_TYPE, TAG, BRANCH } from "./domain.js"
+import command from "./command.js"
 
 interface Arguments {
 	level: LogLevelLiteral

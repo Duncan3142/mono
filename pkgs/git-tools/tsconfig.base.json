@@ -3,14 +3,12 @@
 	"extends": ["@duncan3142/tsc-config/base"],
 	"compilerOptions": {
 		"paths": {
-			"#command/*": ["./src/command/*.ts"],
 			"#config/*": ["./src/config/*.ts"],
-			"#domain/*": ["./src/domain/*.ts"],
 			"#error/*": ["./src/error/*.ts"],
-			"#layer/*": ["./src/service/*.ts"],
-			"#port/*": ["./src/port/*.ts"],
-			"#schema/*": ["./src/schema/*.ts"],
-			"#service/*": ["./src/service/*.ts"]
+			"#fetch/*": ["./src/fetch/*.ts"],
+			"#reference/*": ["./src/reference/*.ts"],
+			"#reference-spec/*": ["./src/reference-spec/*.ts"],
+			"#remote/*": ["./src/remote/*.ts"]
 		}
 	},
 	"include": []

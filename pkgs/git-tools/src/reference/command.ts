@@ -20,7 +20,7 @@ import {
 	workingDirectory as commandWorkDir,
 	stderr as commandStderr,
 } from "@effect/platform/Command"
-import { BRANCH, LogReferencesError, TAG, type REF_TYPE } from "#domain/reference"
+import { BRANCH, LogReferencesError, TAG, type REF_TYPE } from "./domain.js"
 
 const SUCCESS_CODE = 0
 

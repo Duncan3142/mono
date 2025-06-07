@@ -20,14 +20,12 @@
 	},
 	"main": "./.tsc/dist/index.js",
 	"imports": {
-		"#command/*": "./.tsc/dist/command/*.js",
 		"#config/*": "./.tsc/dist/config/*.js",
-		"#domain/*": "./.tsc/dist/domain/*.js",
 		"#error/*": "./.tsc/dist/error/*.js",
-		"#layer/*": "./.tsc/dist/service/*.js",
-		"#port/*": "./.tsc/dist/port/*.js",
-		"#schema/*": "./.tsc/dist/schema/*.js",
-		"#service/*": "./.tsc/dist/service/*.js"
+		"#fetch/*": "./.tsc/dist/fetch/*.js",
+		"#reference/*": "./.tsc/dist/reference/*.js",
+		"#reference-spec/*": "./.tsc/dist/reference-spec/*.js",
+		"#remote/*": "./.tsc/dist/remote/*.js"
 	},
 	"exports": {
 		"./*": {

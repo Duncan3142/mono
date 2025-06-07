@@ -19,9 +19,6 @@ import { pipe } from "effect/Function"
 import { catchTag as effectCatchTag } from "effect/Effect"
 import type { CommandExecutor } from "@effect/platform/CommandExecutor"
 import { mapInput as orderMapInput, string as orderString } from "effect/Order"
-import fetchCommand from "#command/fetch"
-import referenceLog from "#service/reference"
-import { DEFAULT_DEPTH, DEFAULT_REMOTE } from "#config/consts"
 import {
 	type FetchReferences,
 	type FetchNotFoundError,
@@ -32,8 +29,11 @@ import {
 	REQUIRED,
 	OPTIONAL,
 	FETCH_NOT_FOUND_ERROR_TAG,
-} from "#domain/fetch"
-import type { Reference } from "#domain/reference"
+} from "./domain.js"
+import fetchCommand from "./command.js"
+import referenceLog from "#reference/service"
+import { DEFAULT_DEPTH, DEFAULT_REMOTE } from "#config/consts"
+import type { Reference } from "#reference/domain"
 
 interface Arguments {
 	fetchRefs: FetchReferences
