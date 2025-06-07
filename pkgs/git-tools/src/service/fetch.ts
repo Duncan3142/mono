@@ -5,19 +5,10 @@ import {
 	reduce as effectReduce,
 	map as effectMap,
 	logWarning as effectLogWarning,
-	succeed as effectSucceed,
-	logError as effectLogError,
-	flatMap as effectFlatMap,
-	fail as effectFail,
 	as as effectAs,
 } from "effect/Effect"
 import { filterMap as recordFilterMap, toEntries as recordToEntries } from "effect/Record"
-import {
-	value as matchValue,
-	when as matchWhen,
-	orElse as matchOrElse,
-	option as matchOption,
-} from "effect/Match"
+import { value as matchValue, when as matchWhen, option as matchOption } from "effect/Match"
 import {
 	type NonEmptyReadonlyArray,
 	groupBy as arrayGroupBy,
@@ -25,25 +16,23 @@ import {
 	map as arrayMap,
 } from "effect/Array"
 import { pipe } from "effect/Function"
-import { either as effectEither } from "effect/Effect"
-import type { CommandExecutor, ExitCode } from "@effect/platform/CommandExecutor"
-import type { PlatformError } from "@effect/platform/Error"
-import type { UnknownException } from "effect/Cause"
-import { match as eitherMatch } from "effect/Either"
+import { catchTag as effectCatchTag } from "effect/Effect"
+import type { CommandExecutor } from "@effect/platform/CommandExecutor"
 import { mapInput as orderMapInput, string as orderString } from "effect/Order"
-import fetchCommand, { FETCH_NOT_FOUND_CODE, FETCH_SUCCESS_CODE } from "#command/fetch"
+import fetchCommand from "#command/fetch"
 import referenceLog from "#service/reference"
 import { DEFAULT_DEPTH, DEFAULT_REMOTE } from "#config/consts"
 import {
-	FetchNotFoundError,
+	type FetchReferences,
+	type FetchFailedError,
+	type FetchNotFoundError,
 	Found,
 	type WasFound,
 	NotFound,
 	optionalString,
 	REQUIRED,
 	OPTIONAL,
-	type FetchReferences,
-	FetchFailedError,
+	FETCH_NOT_FOUND_ERROR_TAG,
 } from "#domain/fetch"
 import type { LogReferencesError, Reference } from "#domain/reference"
 
@@ -54,27 +43,20 @@ interface Arguments {
 	deepen?: boolean
 }
 
-const fetchFailed = () =>
+const handleFound = effectMap(() => Found)
+
+const handleRequired = handleFound
+
+const handleOptional = (
+	result: Effect<void, FetchFailedError | FetchNotFoundError, CommandExecutor>
+) =>
 	pipe(
-		effectLogError("Fetch failed"),
-		effectFlatMap(() => effectFail(new FetchFailedError()))
-	)
-
-const handleExitCode =
-	<A, E, R>(handleNotFound: () => Effect<A, E, R>) =>
-	(code: ExitCode) =>
-		pipe(
-			matchValue(code),
-			matchWhen(FETCH_SUCCESS_CODE, () => effectSucceed(Found)),
-			matchWhen(FETCH_NOT_FOUND_CODE, handleNotFound),
-			matchOrElse(() => fetchFailed())
+		result,
+		handleFound,
+		effectCatchTag(FETCH_NOT_FOUND_ERROR_TAG, () =>
+			pipe(effectLogWarning("Failed to fetch one or more optional refs"), effectAs(NotFound))
 		)
-
-const handleRequired = handleExitCode(() => effectFail(new FetchNotFoundError()))
-
-const handleOptional = handleExitCode(() =>
-	pipe(effectLogWarning("Failed to fetch one or more optional refs"), effectAs(NotFound))
-)
+	)
 
 /**
  * Fetches refs the remote repository.
@@ -94,11 +76,15 @@ const fetchReferences = ({
 	deepen = false,
 }: Arguments): Effect<
 	WasFound,
-	FetchNotFoundError | FetchFailedError | LogReferencesError | PlatformError | UnknownException,
+	FetchNotFoundError | FetchFailedError | LogReferencesError,
 	CommandExecutor
 > => {
 	const doFetch =
-		<E>(codeHandler: (code: ExitCode) => Effect<WasFound, FetchFailedError | E>) =>
+		<E>(
+			commandHandler: (
+				result: Effect<void, FetchFailedError | FetchNotFoundError, CommandExecutor>
+			) => Effect<boolean, FetchFailedError | E, CommandExecutor>
+		) =>
 		(references: NonEmptyReadonlyArray<Reference>) =>
 			pipe(
 				fetchCommand({
@@ -110,14 +96,7 @@ const fetchReferences = ({
 						refs: references,
 					},
 				}),
-				effectFlatMap(codeHandler),
-				effectEither,
-				effectFlatMap(
-					eitherMatch({
-						onLeft: (error) => effectFail(error),
-						onRight: (found) => effectSucceed(found),
-					})
-				)
+				commandHandler
 			)
 
 	const fetchRequired = doFetch(handleRequired)

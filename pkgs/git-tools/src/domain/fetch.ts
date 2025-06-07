@@ -8,14 +8,29 @@ import type { TaggedErrorCtor } from "#error/tagged"
 /**
  * Fetch refs found
  */
-type WasFound = boolean
+
 const Found = true
+/**
+ * Found
+ */
+type Found = typeof Found
+
 const NotFound = false
+/**
+ * Not found
+ */
+type NotFound = typeof NotFound
 
-const FETCH_NOT_FOUND_ERROR = "FETCH_NOT_FOUND_ERROR"
+/**
+ * Represents whether a fetch operation found the requested refs or not.
+ */
+type WasFound = Found | NotFound
 
-const FetchNotFoundErrorBase: TaggedErrorCtor<typeof FETCH_NOT_FOUND_ERROR> =
-	TaggedError(FETCH_NOT_FOUND_ERROR)
+const FETCH_NOT_FOUND_ERROR_TAG = "FETCH_NOT_FOUND_ERROR"
+
+const FetchNotFoundErrorBase: TaggedErrorCtor<typeof FETCH_NOT_FOUND_ERROR_TAG> = TaggedError(
+	FETCH_NOT_FOUND_ERROR_TAG
+)
 
 /**
  * Fetch Not Found Error
@@ -24,10 +39,10 @@ class FetchNotFoundError extends FetchNotFoundErrorBase {
 	public override readonly name: typeof this._tag = this._tag
 }
 
-const FETCH_FAILED_ERROR = "FETCH_FAILED_ERROR"
+const FETCH_FAILED_ERROR_TAG = "FETCH_FAILED_ERROR"
 
-const FetchFailedErrorBase: TaggedErrorCtor<typeof FETCH_FAILED_ERROR> =
-	TaggedError(FETCH_FAILED_ERROR)
+const FetchFailedErrorBase: TaggedErrorCtor<typeof FETCH_FAILED_ERROR_TAG> =
+	TaggedError(FETCH_FAILED_ERROR_TAG)
 
 /**
  * Fetch Failed Error
@@ -84,7 +99,9 @@ interface FetchReferences {
 export type { WasFound, FetchReference, FetchReferences, Optional, Required }
 export {
 	FetchNotFoundError,
+	FETCH_NOT_FOUND_ERROR_TAG,
 	FetchFailedError,
+	FETCH_FAILED_ERROR_TAG,
 	Found,
 	NotFound,
 	sortByOptionality,

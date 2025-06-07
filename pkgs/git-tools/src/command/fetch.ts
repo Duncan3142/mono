@@ -5,12 +5,20 @@ import {
 	workingDirectory as commandWorkDir,
 	stderr as commandStderr,
 } from "@effect/platform/Command"
-import { type Effect, logInfo as effectLogInfo, andThen as effectAndThen } from "effect/Effect"
+import {
+	type Effect,
+	flatMap as effectFlatMap,
+	void as effectVoid,
+	fail as effectFail,
+	either as effectEither,
+} from "effect/Effect"
 import { pipe } from "effect/Function"
-import type { PlatformError } from "@effect/platform/Error"
-import type { CommandExecutor, ExitCode } from "@effect/platform/CommandExecutor"
+import { match as eitherMatch } from "effect/Either"
+import { value as matchValue, when as matchWhen, orElse as matchOrElse } from "effect/Match"
+import type { CommandExecutor } from "@effect/platform/CommandExecutor"
 import { BASE_10_RADIX } from "#config/consts"
 import { toStrings as refSpecToStrings, type ReferenceSpecs } from "#domain/reference-spec"
+import { FetchFailedError, FetchNotFoundError } from "#domain/fetch"
 
 interface Arguments {
 	readonly repoDir: string
@@ -21,6 +29,8 @@ interface Arguments {
 
 const FETCH_SUCCESS_CODE = 0
 const FETCH_NOT_FOUND_CODE = 128
+
+const commandFail = () => effectFail(new FetchFailedError())
 
 /**
  * Fetches the specified ref specs from the remote repository
@@ -36,7 +46,7 @@ const command = ({
 	depth,
 	deepen,
 	refSpecs,
-}: Arguments): Effect<ExitCode, PlatformError, CommandExecutor> => {
+}: Arguments): Effect<void, FetchFailedError | FetchNotFoundError, CommandExecutor> => {
 	const { remote, refs } = refSpecToStrings(refSpecs)
 
 	const depthString = depth.toString(BASE_10_RADIX)
@@ -44,19 +54,26 @@ const command = ({
 	const depthArgument = deepen ? `--deepen=${depthString}` : `--depth=${depthString}`
 
 	return pipe(
-		effectLogInfo(`Fetching ref specs "${refs.join(", ")}"`),
-		effectAndThen(
-			pipe(
-				commandMake("git", "fetch", depthArgument, remote, ...refs),
-				commandWorkDir(repoDir),
-				commandStdout("inherit"),
-				commandStderr("inherit"),
-				commandExitCode
-			)
+		commandMake("git", "fetch", depthArgument, remote, ...refs),
+		commandWorkDir(repoDir),
+		commandStdout("inherit"),
+		commandStderr("inherit"),
+		commandExitCode,
+		effectEither,
+		effectFlatMap(
+			eitherMatch({
+				onLeft: commandFail,
+				onRight: (code) =>
+					pipe(
+						matchValue(code),
+						matchWhen(FETCH_SUCCESS_CODE, () => effectVoid),
+						matchWhen(FETCH_NOT_FOUND_CODE, () => effectFail(new FetchNotFoundError())),
+						matchOrElse(() => commandFail())
+					),
+			})
 		)
 	)
 }
 
 export default command
-export { FETCH_SUCCESS_CODE, FETCH_NOT_FOUND_CODE }
 export type { Arguments }

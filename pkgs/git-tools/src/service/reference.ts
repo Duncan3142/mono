@@ -1,11 +1,7 @@
 import type { CommandExecutor } from "@effect/platform/CommandExecutor"
-import type { PlatformError } from "@effect/platform/Error"
 import {
 	type Effect,
 	all as effectAll,
-	fail as effectFail,
-	flatMap as effectFlatMap,
-	void as effectVoid,
 	whenLogLevel as effectWhenLogLevel,
 	logWithLevel as effectLogWithLevel,
 } from "effect/Effect"
@@ -14,8 +10,8 @@ import {
 	fromLiteral as logLevelFromLiteral,
 	type Literal as LogLevelLiteral,
 } from "effect/LogLevel"
-import { LogReferencesError, BRANCH, type REF_TYPE } from "#domain/reference"
-import command, { SUCCESS_CODE } from "#command/reference"
+import { type LogReferencesError, type REF_TYPE, TAG, BRANCH } from "#domain/reference"
+import command from "#command/reference"
 
 interface Arguments {
 	level: LogLevelLiteral
@@ -35,22 +31,12 @@ const logReferences = ({
 	message,
 	repoDirectory,
 	level,
-}: Arguments): Effect<void, PlatformError | LogReferencesError, CommandExecutor> => {
-	const doPrint = (type: REF_TYPE) =>
-		pipe(
-			command({ repoDirectory, type }),
-			effectFlatMap((code) =>
-				code === SUCCESS_CODE ? effectVoid : effectFail(new LogReferencesError())
-			)
-		)
+}: Arguments): Effect<void, LogReferencesError, CommandExecutor> => {
+	const doPrint = (type: REF_TYPE) => command({ repoDirectory, type })
 
 	return pipe(
 		effectAll(
-			[
-				effectLogWithLevel(logLevelFromLiteral(level), message),
-				doPrint(BRANCH),
-				doPrint("tag"),
-			],
+			[effectLogWithLevel(logLevelFromLiteral(level), message), doPrint(BRANCH), doPrint(TAG)],
 			{
 				discard: true,
 			}
