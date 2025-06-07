@@ -10,7 +10,7 @@ import {
 	fromLiteral as logLevelFromLiteral,
 	type Literal as LogLevelLiteral,
 } from "effect/LogLevel"
-import { type LogReferencesError, type REF_TYPE, TAG, BRANCH } from "#domain/reference"
+import { type REF_TYPE, TAG, BRANCH } from "#domain/reference"
 import command from "#command/reference"
 
 interface Arguments {
@@ -31,7 +31,7 @@ const logReferences = ({
 	message,
 	repoDirectory,
 	level,
-}: Arguments): Effect<void, LogReferencesError, CommandExecutor> => {
+}: Arguments): Effect<void, never, CommandExecutor> => {
 	const doPrint = (type: REF_TYPE) => command({ repoDirectory, type })
 
 	return pipe(

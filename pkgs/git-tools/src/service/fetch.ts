@@ -24,7 +24,6 @@ import referenceLog from "#service/reference"
 import { DEFAULT_DEPTH, DEFAULT_REMOTE } from "#config/consts"
 import {
 	type FetchReferences,
-	type FetchFailedError,
 	type FetchNotFoundError,
 	Found,
 	type WasFound,
@@ -34,7 +33,7 @@ import {
 	OPTIONAL,
 	FETCH_NOT_FOUND_ERROR_TAG,
 } from "#domain/fetch"
-import type { LogReferencesError, Reference } from "#domain/reference"
+import type { Reference } from "#domain/reference"
 
 interface Arguments {
 	fetchRefs: FetchReferences
@@ -47,9 +46,7 @@ const handleFound = effectMap(() => Found)
 
 const handleRequired = handleFound
 
-const handleOptional = (
-	result: Effect<void, FetchFailedError | FetchNotFoundError, CommandExecutor>
-) =>
+const handleOptional = (result: Effect<void, FetchNotFoundError, CommandExecutor>) =>
 	pipe(
 		result,
 		handleFound,
@@ -74,16 +71,12 @@ const fetchReferences = ({
 	repoDir,
 	depth = DEFAULT_DEPTH,
 	deepen = false,
-}: Arguments): Effect<
-	WasFound,
-	FetchNotFoundError | FetchFailedError | LogReferencesError,
-	CommandExecutor
-> => {
+}: Arguments): Effect<WasFound, FetchNotFoundError, CommandExecutor> => {
 	const doFetch =
 		<E>(
 			commandHandler: (
-				result: Effect<void, FetchFailedError | FetchNotFoundError, CommandExecutor>
-			) => Effect<boolean, FetchFailedError | E, CommandExecutor>
+				result: Effect<void, FetchNotFoundError, CommandExecutor>
+			) => Effect<boolean, E, CommandExecutor>
 		) =>
 		(references: NonEmptyReadonlyArray<Reference>) =>
 			pipe(

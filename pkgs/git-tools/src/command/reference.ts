@@ -4,8 +4,8 @@ import {
 	type Effect,
 	flatMap as effectFlatMap,
 	void as effectVoid,
-	fail as effectFail,
-	either as effectEither,
+	die as effectDie,
+	orDie as effectOrDie,
 } from "effect/Effect"
 import {
 	value as matchValue,
@@ -13,7 +13,6 @@ import {
 	orElse as matchOrElse,
 	exhaustive as matchExhaustive,
 } from "effect/Match"
-import { match as eitherMatch } from "effect/Either"
 import {
 	make as commandMake,
 	exitCode as commandExitCode,
@@ -30,7 +29,7 @@ interface Arguments {
 	type: REF_TYPE
 }
 
-const commandFail = () => effectFail(new LogReferencesError())
+const commandFail = () => effectDie(new LogReferencesError())
 
 /**
  * Lists the references (branches or tags) in a git repository.
@@ -39,10 +38,7 @@ const commandFail = () => effectFail(new LogReferencesError())
  * @param args.type - The type of references to list (branch or tag)
  * @returns An Effect that executes the git command to list references
  */
-const command = ({
-	repoDirectory,
-	type,
-}: Arguments): Effect<void, LogReferencesError, CommandExecutor> => {
+const command = ({ repoDirectory, type }: Arguments): Effect<void, never, CommandExecutor> => {
 	const args = pipe(
 		matchValue(type),
 		matchWhen(BRANCH, () => ["branch", "-a", "-v", "-v"]),
@@ -55,17 +51,13 @@ const command = ({
 		commandStdout("inherit"),
 		commandStderr("inherit"),
 		commandExitCode,
-		effectEither,
-		effectFlatMap(
-			eitherMatch({
-				onLeft: commandFail,
-				onRight: (code) =>
-					pipe(
-						matchValue(code),
-						matchWhen(SUCCESS_CODE, () => effectVoid),
-						matchOrElse(commandFail)
-					),
-			})
+		effectOrDie,
+		effectFlatMap((code) =>
+			pipe(
+				matchValue(code),
+				matchWhen(SUCCESS_CODE, () => effectVoid),
+				matchOrElse(commandFail)
+			)
 		)
 	)
 }
