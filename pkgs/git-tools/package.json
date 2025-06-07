@@ -20,17 +20,14 @@
 	},
 	"main": "./.tsc/dist/index.js",
 	"imports": {
-		"#adapter/*": "./.tsc/dist/adapter/*.js",
+		"#command/*": "./.tsc/dist/command/*.js",
 		"#config/*": "./.tsc/dist/config/*.js",
 		"#domain/*": "./.tsc/dist/domain/*.js",
-		"#order/*": "./.tsc/dist/order/*.js",
-		"#driver/*": "./.tsc/dist/driver/*.js",
-		"#driven/*": "./.tsc/dist/driven/*.js",
 		"#error/*": "./.tsc/dist/error/*.js",
 		"#layer/*": "./.tsc/dist/service/*.js",
+		"#port/*": "./.tsc/dist/port/*.js",
 		"#schema/*": "./.tsc/dist/schema/*.js",
-		"#service/*": "./.tsc/dist/service/*.js",
-		"#util/*": "./.tsc/dist/util/*.js"
+		"#service/*": "./.tsc/dist/service/*.js"
 	},
 	"exports": {
 		"./*": {
@@ -60,15 +57,16 @@
 		"@duncan3142/eslint-config": "^0.1.12",
 		"@duncan3142/prettier-config": "^0.1.4",
 		"@duncan3142/tsc-config": "^0.1.7",
-		"@eslint/config-inspector": "^1.0.2",
-		"@types/node": "^22.15.29",
+		"@eslint/config-inspector": "^1.1.0",
+		"@types/node": "^22.15.30",
 		"eslint": "^9.28.0",
 		"prettier": "^3.5.3",
-		"typescript": "^5.8.3"
+		"typescript": "^5.8.3",
+		"vitest": "^3.2.2"
 	},
 	"peerDependencies": {
-		"@effect/platform": "^0.84.4",
-		"effect": "^3.16.3"
+		"@effect/platform": "^0.84.8",
+		"effect": "^3.16.4"
 	},
 	"volta": {
 		"node": "22.14.0",

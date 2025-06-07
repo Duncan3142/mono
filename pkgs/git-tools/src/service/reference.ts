@@ -1,4 +1,3 @@
-import { make, exitCode, stdout, workingDirectory, stderr } from "@effect/platform/Command"
 import type { CommandExecutor } from "@effect/platform/CommandExecutor"
 import type { PlatformError } from "@effect/platform/Error"
 import {
@@ -12,33 +11,14 @@ import {
 } from "effect/Effect"
 import { pipe } from "effect/Function"
 import { fromLiteral, type Literal as LogLevel } from "effect/LogLevel"
-import { LogReferencesError } from "#domain/reference"
+import { LogReferencesError, BRANCH, type REF_TYPE } from "#domain/reference"
+import { command, SUCCESS_CODE } from "#command/reference"
 
 interface Arguments {
 	level: LogLevel
 	message: string
 	repoDirectory: string
 }
-
-interface ExecArguments {
-	repoDirectory: string
-	args: ReadonlyArray<string>
-}
-
-const SUCCESS_CODE = 0
-
-const command = ({
-	args,
-	repoDirectory,
-}: ExecArguments): Effect<void, PlatformError | LogReferencesError, CommandExecutor> =>
-	pipe(
-		make("git", "--no-pager", ...args),
-		workingDirectory(repoDirectory),
-		stdout("inherit"),
-		stderr("inherit"),
-		exitCode,
-		flatMap((code) => (code === SUCCESS_CODE ? asVoid : fail(new LogReferencesError())))
-	)
 
 /**
  * Prints the refs of the current git repository.
@@ -52,19 +32,19 @@ const logReferences = ({
 	message,
 	repoDirectory,
 	level,
-}: Arguments): Effect<void, PlatformError | LogReferencesError, CommandExecutor> =>
-	pipe(
-		all(
-			[
-				logWithLevel(fromLiteral(level), message),
-				command({ repoDirectory, args: ["branch", "-a", "-v", "-v"] }),
-				command({ repoDirectory, args: ["tag"] }),
-			],
-			{
-				discard: true,
-			}
-		),
+}: Arguments): Effect<void, PlatformError | LogReferencesError, CommandExecutor> => {
+	const doPrint = (type: REF_TYPE) =>
+		pipe(
+			command({ repoDirectory, type }),
+			flatMap((code) => (code === SUCCESS_CODE ? asVoid : fail(new LogReferencesError())))
+		)
+
+	return pipe(
+		all([logWithLevel(fromLiteral(level), message), doPrint(BRANCH), doPrint("tag")], {
+			discard: true,
+		}),
 		whenLogLevel(level)
 	)
+}
 
 export default logReferences

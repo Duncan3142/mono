@@ -19,7 +19,7 @@ import type { CommandExecutor, ExitCode } from "@effect/platform/CommandExecutor
 import type { PlatformError } from "@effect/platform/Error"
 import type { UnknownException } from "effect/Cause"
 import { mapInput, string } from "effect/Order"
-import command, { FETCH_NOT_FOUND_CODE, FETCH_SUCCESS_CODE } from "./fetch/command.ts"
+import command, { FETCH_NOT_FOUND_CODE, FETCH_SUCCESS_CODE } from "#command/fetch"
 import logReferences from "#service/reference"
 import { DEFAULT_DEPTH, DEFAULT_REMOTE } from "#config/consts"
 import {
@@ -49,12 +49,12 @@ const fetchFailed = () =>
 	)
 
 const handleExitCode =
-	<A, E, R>(f: () => Effect<A, E, R>) =>
+	<A, E, R>(handleNotFound: () => Effect<A, E, R>) =>
 	(code: ExitCode) =>
 		pipe(
 			value(code),
 			when(FETCH_SUCCESS_CODE, () => succeed(Found)),
-			when(FETCH_NOT_FOUND_CODE, f),
+			when(FETCH_NOT_FOUND_CODE, handleNotFound),
 			orElse(() => fetchFailed())
 		)
 
