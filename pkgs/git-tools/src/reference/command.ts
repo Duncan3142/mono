@@ -6,6 +6,7 @@ import {
 	void as effectVoid,
 	die as effectDie,
 	orDie as effectOrDie,
+	timeoutFail as effectTimeoutFail,
 } from "effect/Effect"
 import {
 	value as matchValue,
@@ -20,7 +21,13 @@ import {
 	workingDirectory as commandWorkDir,
 	stderr as commandStderr,
 } from "@effect/platform/Command"
-import { BRANCH, LogReferencesError, TAG, type REF_TYPE } from "./domain.js"
+import {
+	BRANCH,
+	LogReferencesError,
+	LogReferencesTimeoutError,
+	TAG,
+	type REF_TYPE,
+} from "./domain.js"
 
 const SUCCESS_CODE = 0
 
@@ -51,6 +58,10 @@ const command = ({ repoDirectory, type }: Arguments): Effect<void, never, Comman
 		commandStdout("inherit"),
 		commandStderr("inherit"),
 		commandExitCode,
+		effectTimeoutFail({
+			duration: "2 seconds",
+			onTimeout: () => new LogReferencesTimeoutError(),
+		}),
 		effectOrDie,
 		effectFlatMap((code) =>
 			pipe(

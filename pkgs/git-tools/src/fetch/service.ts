@@ -42,7 +42,7 @@ interface Arguments {
 	deepen?: boolean
 }
 
-const handleFound = effectMap(() => Found)
+const handleFound = effectAs(Found)
 
 const handleRequired = handleFound
 

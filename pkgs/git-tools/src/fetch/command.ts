@@ -12,11 +12,12 @@ import {
 	fail as effectFail,
 	orDie as effectOrDie,
 	die as effectDie,
+	timeoutFail as effectTimeoutFail,
 } from "effect/Effect"
 import { pipe } from "effect/Function"
 import { value as matchValue, when as matchWhen, orElse as matchOrElse } from "effect/Match"
 import type { CommandExecutor } from "@effect/platform/CommandExecutor"
-import { FetchFailedError, FetchNotFoundError } from "./domain.js"
+import { FetchFailedError, FetchNotFoundError, FetchTimeoutError } from "./domain.js"
 import { BASE_10_RADIX } from "#config/consts"
 import { toStrings as refSpecToStrings, type ReferenceSpecs } from "#reference-spec/domain"
 
@@ -58,6 +59,10 @@ const command = ({
 		commandStdout("inherit"),
 		commandStderr("inherit"),
 		commandExitCode,
+		effectTimeoutFail({
+			duration: "8 seconds",
+			onTimeout: () => new FetchTimeoutError(),
+		}),
 		effectOrDie,
 		effectFlatMap((code) =>
 			pipe(

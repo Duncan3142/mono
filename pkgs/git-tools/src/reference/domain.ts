@@ -46,10 +46,10 @@ const sortByType: Order<Reference> = orderMapInput(orderString, (reference) => t
  */
 const sortByName: Order<Reference> = orderMapInput(orderString, ({ name }) => name)
 
-const LOG_REFERENCES_ERROR = "LOG_REFERENCES_ERROR"
+const LOG_REFERENCES_ERROR_TAG = "LOG_REFERENCES_ERROR"
 
-const LogReferencesErrorBase: TaggedErrorCtor<typeof LOG_REFERENCES_ERROR> =
-	TaggedError(LOG_REFERENCES_ERROR)
+const LogReferencesErrorBase: TaggedErrorCtor<typeof LOG_REFERENCES_ERROR_TAG> =
+	TaggedError(LOG_REFERENCES_ERROR_TAG)
 
 /**
  * Error thrown when logging references fails
@@ -58,5 +58,25 @@ class LogReferencesError extends LogReferencesErrorBase {
 	public override readonly name: typeof this._tag = this._tag
 }
 
+const LOG_REFERENCES_TIMEOUT_ERROR_TAG = "LOG_REFERENCES_TIMEOUT_ERROR"
+
+const LogReferencesTimeoutErrorBase: TaggedErrorCtor<typeof LOG_REFERENCES_TIMEOUT_ERROR_TAG> =
+	TaggedError(LOG_REFERENCES_TIMEOUT_ERROR_TAG)
+
+/**
+ * Error thrown when logging references times out
+ */
+class LogReferencesTimeoutError extends LogReferencesTimeoutErrorBase {
+	public override readonly name: typeof this._tag = this._tag
+}
+
 export type { BRANCH_TYPE, TAG_TYPE, REF_TYPE, Reference }
-export { LogReferencesError, BRANCH, TAG, type, sortByType, sortByName }
+export {
+	LogReferencesError,
+	LogReferencesTimeoutError,
+	BRANCH,
+	TAG,
+	type,
+	sortByType,
+	sortByName,
+}

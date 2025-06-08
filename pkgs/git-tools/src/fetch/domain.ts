@@ -39,6 +39,18 @@ class FetchNotFoundError extends FetchNotFoundErrorBase {
 	public override readonly name: typeof this._tag = this._tag
 }
 
+const FETCH_TIMEOUT_ERROR_TAG = "FETCH_TIMEOUT_ERROR"
+
+const FetchTimeoutErrorBase: TaggedErrorCtor<typeof FETCH_TIMEOUT_ERROR_TAG> =
+	TaggedError(FETCH_TIMEOUT_ERROR_TAG)
+
+/**
+ * Fetch Timeout Error
+ */
+class FetchTimeoutError extends FetchTimeoutErrorBase {
+	public override readonly name: typeof this._tag = this._tag
+}
+
 const FETCH_FAILED_ERROR_TAG = "FETCH_FAILED_ERROR"
 
 const FetchFailedErrorBase: TaggedErrorCtor<typeof FETCH_FAILED_ERROR_TAG> =
@@ -102,6 +114,8 @@ export {
 	FETCH_NOT_FOUND_ERROR_TAG,
 	FetchFailedError,
 	FETCH_FAILED_ERROR_TAG,
+	FetchTimeoutError,
+	FETCH_TIMEOUT_ERROR_TAG,
 	Found,
 	NotFound,
 	sortByOptionality,
