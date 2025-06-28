@@ -21,11 +21,11 @@
 	"main": "./.tsc/dist/index.js",
 	"imports": {
 		"#config/*": "./.tsc/dist/config/*.js",
-		"#error/*": "./.tsc/dist/error/*.js",
-		"#fetch/*": "./.tsc/dist/fetch/*.js",
-		"#reference/*": "./.tsc/dist/reference/*.js",
-		"#reference-spec/*": "./.tsc/dist/reference-spec/*.js",
-		"#remote/*": "./.tsc/dist/remote/*.js"
+		"#error/*": "./.tsc/dist/lib/error/*.js",
+		"#fetch/*": "./.tsc/dist/lib/fetch/*.js",
+		"#reference/*": "./.tsc/dist/lib/reference/*.js",
+		"#reference-spec/*": "./.tsc/dist/lib/reference-spec/*.js",
+		"#remote/*": "./.tsc/dist/lib/remote/*.js"
 	},
 	"exports": {
 		"./*": {
