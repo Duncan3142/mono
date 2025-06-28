@@ -36,8 +36,6 @@ interface Arguments {
 	type: REF_TYPE
 }
 
-const commandFail = () => effectDie(new LogReferencesError())
-
 /**
  * Lists the references (branches or tags) in a git repository.
  * @param args - The arguments for the command
@@ -67,7 +65,7 @@ const command = ({ repoDirectory, type }: Arguments): Effect<void, never, Comman
 			pipe(
 				matchValue(code),
 				matchWhen(SUCCESS_CODE, () => effectVoid),
-				matchOrElse(commandFail)
+				matchOrElse(() => effectDie(new LogReferencesError()))
 			)
 		)
 	)

@@ -30,7 +30,6 @@ interface Arguments {
 
 const FETCH_SUCCESS_CODE = 0
 const FETCH_NOT_FOUND_CODE = 128
-const commandFail = () => effectDie(new FetchFailedError())
 
 /**
  * Fetches the specified ref specs from the remote repository
@@ -69,7 +68,7 @@ const command = ({
 				matchValue(code),
 				matchWhen(FETCH_SUCCESS_CODE, () => effectVoid),
 				matchWhen(FETCH_NOT_FOUND_CODE, () => effectFail(new FetchNotFoundError())),
-				matchOrElse(() => commandFail())
+				matchOrElse(() => effectDie(new FetchFailedError()))
 			)
 		)
 	)
