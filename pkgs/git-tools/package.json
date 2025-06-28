@@ -20,7 +20,7 @@
 	},
 	"main": "./.tsc/dist/index.js",
 	"imports": {
-		"#config/*": "./.tsc/dist/config/*.js",
+		"#const": "./.tsc/dist/const.js",
 		"#error/*": "./.tsc/dist/lib/error/*.js",
 		"#fetch/*": "./.tsc/dist/lib/fetch/*.js",
 		"#reference/*": "./.tsc/dist/lib/reference/*.js",

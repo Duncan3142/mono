@@ -3,7 +3,7 @@
 	"extends": ["@duncan3142/tsc-config/base"],
 	"compilerOptions": {
 		"paths": {
-			"#config/*": ["./src/config/*.ts"],
+			"#const": ["./src/const.ts"],
 			"#error/*": ["./src/lib/error/*.ts"],
 			"#fetch/*": ["./src/lib/fetch/*.ts"],
 			"#reference/*": ["./src/lib/reference/*.ts"],

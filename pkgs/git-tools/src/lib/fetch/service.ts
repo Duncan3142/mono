@@ -31,8 +31,9 @@ import {
 	FETCH_NOT_FOUND_ERROR_TAG,
 } from "./domain.js"
 import fetchCommand from "./command.js"
+import { DEFAULT_DEPTH } from "./const.js"
+import { DEFAULT_REMOTE } from "#remote/const"
 import referenceLog from "#reference/service"
-import { DEFAULT_DEPTH, DEFAULT_REMOTE } from "#config/consts"
 import type { Reference } from "#reference/domain"
 
 interface Arguments {
