@@ -86,6 +86,13 @@ const REQUIRED = "required" as const
  */
 type Required = typeof REQUIRED
 
+// type Optionality = Optional | Required
+
+const OPTIONALITY_ORDER_MAP = {
+	required: 0,
+	optional: 1,
+} as const
+
 /**
  * Returns a string representation of the optionality of a fetch reference
  * @param reference - Reference to check
@@ -123,4 +130,5 @@ export {
 	optionalString,
 	OPTIONAL,
 	REQUIRED,
+	OPTIONALITY_ORDER_MAP,
 }

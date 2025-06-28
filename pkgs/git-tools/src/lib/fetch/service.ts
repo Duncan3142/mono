@@ -7,18 +7,19 @@ import {
 	logWarning as effectLogWarning,
 	as as effectAs,
 } from "effect/Effect"
-import { filterMap as recordFilterMap, toEntries as recordToEntries } from "effect/Record"
+import { toEntries as recordToEntries } from "effect/Record"
 import { value as matchValue, when as matchWhen, option as matchOption } from "effect/Match"
 import {
 	type NonEmptyReadonlyArray,
 	groupBy as arrayGroupBy,
 	sortBy as arraySortBy,
+	filterMap as arrayFilterMap,
 	map as arrayMap,
 } from "effect/Array"
 import { pipe } from "effect/Function"
 import { catchTag as effectCatchTag } from "effect/Effect"
 import type { CommandExecutor } from "@effect/platform/CommandExecutor"
-import { mapInput as orderMapInput, string as orderString } from "effect/Order"
+import { mapInput as orderMapInput, number as orderNumber } from "effect/Order"
 import {
 	type FetchReferences,
 	type FetchNotFoundError,
@@ -28,6 +29,7 @@ import {
 	optionalString,
 	REQUIRED,
 	OPTIONAL,
+	OPTIONALITY_ORDER_MAP,
 	FETCH_NOT_FOUND_ERROR_TAG,
 } from "./domain.js"
 import fetchCommand from "./command.js"
@@ -100,19 +102,18 @@ const fetchReferences = ({
 	const sequence = pipe(
 		refs,
 		arrayGroupBy(optionalString),
-		recordFilterMap((fetchRefs, key) =>
+		recordToEntries,
+		arrayFilterMap(([key, fetchRefs]) =>
 			pipe(
 				matchValue(key),
-				matchWhen(REQUIRED, () => fetchRequired(fetchRefs)),
-				matchWhen(OPTIONAL, () => fetchOptional(fetchRefs)),
+				matchWhen(REQUIRED, (r) => [r, fetchRequired(fetchRefs)] as const),
+				matchWhen(OPTIONAL, (o) => [o, fetchOptional(fetchRefs)] as const),
 				matchOption
 			)
 		),
-		recordToEntries,
-		arraySortBy(orderMapInput(orderString, ([key]) => key)),
+		arraySortBy(orderMapInput(orderNumber, ([key]) => OPTIONALITY_ORDER_MAP[key])),
 		arrayMap(([_, effect]) => effect)
 	)
-
 	return pipe(
 		referenceLog({ repoDirectory: repoDir, level: "Debug", message: "Refs pre fetch" }),
 		effectAndThen(
