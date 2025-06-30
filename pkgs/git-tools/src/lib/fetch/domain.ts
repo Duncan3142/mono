@@ -3,7 +3,6 @@ import { mapInput as orderMapInput, type Order, boolean as orderBoolean } from "
 import { TaggedError } from "effect/Data"
 import type { Reference } from "#reference/domain"
 import type { Remote } from "#remote/domain"
-import type { TaggedErrorCtor } from "#error/tagged"
 
 /**
  * Fetch refs found
@@ -28,38 +27,28 @@ type WasFound = Found | NotFound
 
 const FETCH_NOT_FOUND_ERROR_TAG = "FETCH_NOT_FOUND_ERROR"
 
-const FetchNotFoundErrorBase: TaggedErrorCtor<typeof FETCH_NOT_FOUND_ERROR_TAG> = TaggedError(
-	FETCH_NOT_FOUND_ERROR_TAG
-)
-
 /**
  * Fetch Not Found Error
  */
-class FetchNotFoundError extends FetchNotFoundErrorBase {
+class FetchNotFoundError extends TaggedError(FETCH_NOT_FOUND_ERROR_TAG) {
 	public override readonly name: typeof this._tag = this._tag
 }
 
 const FETCH_TIMEOUT_ERROR_TAG = "FETCH_TIMEOUT_ERROR"
 
-const FetchTimeoutErrorBase: TaggedErrorCtor<typeof FETCH_TIMEOUT_ERROR_TAG> =
-	TaggedError(FETCH_TIMEOUT_ERROR_TAG)
-
 /**
  * Fetch Timeout Error
  */
-class FetchTimeoutError extends FetchTimeoutErrorBase {
+class FetchTimeoutError extends TaggedError(FETCH_TIMEOUT_ERROR_TAG) {
 	public override readonly name: typeof this._tag = this._tag
 }
 
 const FETCH_FAILED_ERROR_TAG = "FETCH_FAILED_ERROR"
 
-const FetchFailedErrorBase: TaggedErrorCtor<typeof FETCH_FAILED_ERROR_TAG> =
-	TaggedError(FETCH_FAILED_ERROR_TAG)
-
 /**
  * Fetch Failed Error
  */
-class FetchFailedError extends FetchFailedErrorBase {
+class FetchFailedError extends TaggedError(FETCH_FAILED_ERROR_TAG) {
 	public override readonly name: typeof this._tag = this._tag
 }
 

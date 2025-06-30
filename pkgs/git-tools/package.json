@@ -21,7 +21,6 @@
 	"main": "./.tsc/dist/index.js",
 	"imports": {
 		"#const": "./.tsc/dist/const.js",
-		"#error/*": "./.tsc/dist/lib/error/*.js",
 		"#fetch/*": "./.tsc/dist/lib/fetch/*.js",
 		"#reference/*": "./.tsc/dist/lib/reference/*.js",
 		"#reference-spec/*": "./.tsc/dist/lib/reference-spec/*.js",

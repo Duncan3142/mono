@@ -1,4 +1,5 @@
-import type { CommandExecutor } from "@effect/platform/CommandExecutor"
+import { CommandExecutor } from "@effect/platform/CommandExecutor"
+import { effect as layerEffect, type Layer } from "effect/Layer"
 import { pipe } from "effect/Function"
 import {
 	type Effect,
@@ -6,7 +7,9 @@ import {
 	void as effectVoid,
 	die as effectDie,
 	orDie as effectOrDie,
+	gen as effectGen,
 	timeoutFail as effectTimeoutFail,
+	provideService as effectProvideService,
 } from "effect/Effect"
 import {
 	value as matchValue,
@@ -21,13 +24,9 @@ import {
 	workingDirectory as commandWorkDir,
 	stderr as commandStderr,
 } from "@effect/platform/Command"
-import {
-	BRANCH,
-	LogReferencesError,
-	LogReferencesTimeoutError,
-	TAG,
-	type REF_TYPE,
-} from "./domain.js"
+import { BRANCH, TAG, type REF_TYPE } from "#reference/core/reference.entity"
+import { LogReferencesError, LogReferencesTimeoutError } from "#reference/core/print.error"
+import PrintCommand from "#reference/core/print.command"
 
 const SUCCESS_CODE = 0
 
@@ -56,6 +55,7 @@ const command = ({ repoDirectory, type }: Arguments): Effect<void, never, Comman
 		commandStdout("inherit"),
 		commandStderr("inherit"),
 		commandExitCode,
+
 		effectTimeoutFail({
 			duration: "2 seconds",
 			onTimeout: () => new LogReferencesTimeoutError(),
@@ -70,4 +70,17 @@ const command = ({ repoDirectory, type }: Arguments): Effect<void, never, Comman
 		)
 	)
 }
+
+const PrintCommandLive: Layer<PrintCommand, never, CommandExecutor> = layerEffect(
+	PrintCommand,
+	effectGen(function* () {
+		const executor = yield* CommandExecutor
+
+		return {
+			exec: (args: Arguments) => effectProvideService(command(args), CommandExecutor, executor),
+		}
+	})
+)
+
 export default command
+export { PrintCommandLive }

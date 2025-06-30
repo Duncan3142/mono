@@ -7,6 +7,7 @@ import {
 	logWarning as effectLogWarning,
 	as as effectAs,
 } from "effect/Effect"
+
 import { toEntries as recordToEntries } from "effect/Record"
 import { value as matchValue, when as matchWhen, option as matchOption } from "effect/Match"
 import {
@@ -106,8 +107,8 @@ const fetchReferences = ({
 		arrayFilterMap(([key, fetchRefs]) =>
 			pipe(
 				matchValue(key),
-				matchWhen(REQUIRED, (r) => [r, fetchRequired(fetchRefs)] as const),
-				matchWhen(OPTIONAL, (o) => [o, fetchOptional(fetchRefs)] as const),
+				matchWhen(REQUIRED, (k) => [k, fetchRequired(fetchRefs)] as const),
+				matchWhen(OPTIONAL, (k) => [k, fetchOptional(fetchRefs)] as const),
 				matchOption
 			)
 		),

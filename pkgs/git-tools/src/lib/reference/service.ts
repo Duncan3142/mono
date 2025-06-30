@@ -1,48 +1,28 @@
+import type { Effect } from "effect/Effect"
+import { Tag } from "effect/Context"
 import type { CommandExecutor } from "@effect/platform/CommandExecutor"
-import {
-	type Effect,
-	all as effectAll,
-	whenLogLevel as effectWhenLogLevel,
-	logWithLevel as effectLogWithLevel,
-} from "effect/Effect"
-import { pipe } from "effect/Function"
-import {
-	fromLiteral as logLevelFromLiteral,
-	type Literal as LogLevelLiteral,
-} from "effect/LogLevel"
-import { type REF_TYPE, TAG, BRANCH } from "./domain.js"
-import command from "./command.js"
+import type { Literal as LogLevelLiteral } from "effect/LogLevel"
 
-interface Arguments {
+interface PrintArguments {
 	level: LogLevelLiteral
 	message: string
 	repoDirectory: string
 }
 
 /**
- * Prints the refs of the current git repository.
- * @param args - Context object
- * @param args.repoDirectory - Repo directory
- * @param args.level - Log level
- * @param args.message - Log message header
- * @returns - A promise that resolves when the refs are printed
+ * Reference service
  */
-const logReferences = ({
-	message,
-	repoDirectory,
-	level,
-}: Arguments): Effect<void, never, CommandExecutor> => {
-	const doPrint = (type: REF_TYPE) => command({ repoDirectory, type })
+class Reference extends Tag("ReferenceService")<
+	Reference,
+	{
+		readonly print: (args: PrintArguments) => Effect<void, never, CommandExecutor>
+	}
+>() {}
 
-	return pipe(
-		effectAll(
-			[effectLogWithLevel(logLevelFromLiteral(level), message), doPrint(BRANCH), doPrint(TAG)],
-			{
-				discard: true,
-			}
-		),
-		effectWhenLogLevel(level)
-	)
-}
+/**
+ * Shape of the Reference service
+ */
+type ReferenceShape = Tag.Service<Reference>
 
-export default logReferences
+export type { PrintArguments, ReferenceShape }
+export default Reference

@@ -4,12 +4,12 @@
 	"compilerOptions": {
 		"paths": {
 			"#const": ["./src/const.ts"],
-			"#error/*": ["./src/lib/error/*.ts"],
 			"#fetch/*": ["./src/lib/fetch/*.ts"],
 			"#reference/*": ["./src/lib/reference/*.ts"],
 			"#reference-spec/*": ["./src/lib/reference-spec/*.ts"],
 			"#remote/*": ["./src/lib/remote/*.ts"]
-		}
+		},
+		"isolatedDeclarations": false
 	},
 	"include": []
 }
