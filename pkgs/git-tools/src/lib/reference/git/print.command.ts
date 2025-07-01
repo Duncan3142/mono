@@ -72,7 +72,8 @@ const PrintCommandLive: Layer<PrintCommand, never, CommandExecutor> = layerEffec
 		const executor = yield* CommandExecutor
 
 		return {
-			exec: (args: Arguments) => effectProvideService(command(args), CommandExecutor, executor),
+			exec: (args: Arguments) =>
+				pipe(command(args), effectProvideService(CommandExecutor, executor)),
 		}
 	})
 )
