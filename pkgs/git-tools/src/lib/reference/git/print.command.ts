@@ -24,16 +24,11 @@ import {
 	workingDirectory as commandWorkDir,
 	stderr as commandStderr,
 } from "@effect/platform/Command"
-import { BRANCH, TAG, type REF_TYPE } from "#reference/core/reference.entity"
+import { BRANCH, TAG } from "#reference/core/reference.entity"
 import { LogReferencesError, LogReferencesTimeoutError } from "#reference/core/print.error"
-import PrintCommand from "#reference/core/print.command"
+import PrintCommand, { type Arguments } from "#reference/core/print.command"
 
 const SUCCESS_CODE = 0
-
-interface Arguments {
-	repoDirectory: string
-	type: REF_TYPE
-}
 
 /**
  * Lists the references (branches or tags) in a git repository.

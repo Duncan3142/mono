@@ -51,3 +51,4 @@ const print = ({
 	})
 
 export default print
+export type { Arguments }

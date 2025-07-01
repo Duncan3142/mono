@@ -1,13 +1,6 @@
 import type { Effect } from "effect/Effect"
 import { Tag } from "effect/Context"
-import type { CommandExecutor } from "@effect/platform/CommandExecutor"
-import type { Literal as LogLevelLiteral } from "effect/LogLevel"
-
-interface PrintArguments {
-	level: LogLevelLiteral
-	message: string
-	repoDirectory: string
-}
+import type { Arguments as PrintArguments } from "./core/print.case.ts"
 
 /**
  * Reference service
@@ -15,14 +8,8 @@ interface PrintArguments {
 class Reference extends Tag("ReferenceService")<
 	Reference,
 	{
-		readonly print: (args: PrintArguments) => Effect<void, never, CommandExecutor>
+		readonly print: (args: PrintArguments) => Effect<void>
 	}
 >() {}
 
-/**
- * Shape of the Reference service
- */
-type ReferenceShape = Tag.Service<Reference>
-
-export type { PrintArguments, ReferenceShape }
 export default Reference
