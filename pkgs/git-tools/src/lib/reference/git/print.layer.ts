@@ -50,7 +50,6 @@ const command = ({ repoDirectory, type }: Arguments): Effect<void, never, Comman
 		commandStdout("inherit"),
 		commandStderr("inherit"),
 		commandExitCode,
-
 		effectTimeoutFail({
 			duration: "2 seconds",
 			onTimeout: () => new PrintReferencesTimeoutError(),

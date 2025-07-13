@@ -8,7 +8,7 @@ import {
 import { provide as layerProvide } from "effect/Layer"
 import { pipe } from "effect/Function"
 import { NodeContext } from "@effect/platform-node"
-// import { pretty as loggerPretty } from "effect/Logger"
+import { pretty as loggerPretty } from "effect/Logger"
 import ReferenceLayer from "#reference/layer"
 import Reference from "#reference/service"
 import PrintLayer from "#reference/git/print.layer"
@@ -20,22 +20,22 @@ const MainLayer = pipe(
 )
 
 describe("Reference Layer", () => {
-	it.live("prints references", () =>
+	it.effect("prints references", () =>
 		pipe(
 			effectGen(function* () {
 				const reference = yield* Reference
 				const result = yield* effectExit(
 					reference.print({
 						repoDirectory: process.cwd(),
-						level: "All",
+						level: "Info",
 						message: "Testing print references",
 					})
 				)
 
 				expect(result).toStrictEqual(effectVoid)
 			}),
-			effectProvide(MainLayer)
-			// effectProvide(loggerPretty)
+			effectProvide(MainLayer),
+			effectProvide(loggerPretty)
 		)
 	)
 })
