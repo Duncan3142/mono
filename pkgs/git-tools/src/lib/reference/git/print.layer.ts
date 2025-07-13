@@ -10,7 +10,10 @@ import {
 	gen as effectGen,
 	timeoutFail as effectTimeoutFail,
 	provideService as effectProvideService,
+	all as effectAll,
 } from "effect/Effect"
+import { log as consoleLog, error as consoleError } from "effect/Console"
+import { decodeText, runForEach as streamRunForEach } from "effect/Stream"
 import {
 	value as matchValue,
 	when as matchWhen,
@@ -19,11 +22,12 @@ import {
 } from "effect/Match"
 import {
 	make as commandMake,
-	exitCode as commandExitCode,
 	stdout as commandStdout,
 	workingDirectory as commandWorkDir,
 	stderr as commandStderr,
+	start as commandStart,
 } from "@effect/platform/Command"
+import { Scope } from "effect/Scope"
 import { BRANCH, TAG } from "#reference/core/reference.entity"
 import { PrintReferencesError, PrintReferencesTimeoutError } from "#reference/core/print.error"
 import Print, { type Arguments } from "#reference/core/print.service"
@@ -37,7 +41,10 @@ const SUCCESS_CODE = 0
  * @param args.type - The type of references to list (branch or tag)
  * @returns An Effect that executes the git command to list references
  */
-const command = ({ repoDirectory, type }: Arguments): Effect<void, never, CommandExecutor> => {
+const command = ({
+	repoDirectory,
+	type,
+}: Arguments): Effect<void, never, CommandExecutor | Scope> => {
 	const args = pipe(
 		matchValue(type),
 		matchWhen(BRANCH, () => ["branch", "-a", "-v", "-v"]),
@@ -47,32 +54,51 @@ const command = ({ repoDirectory, type }: Arguments): Effect<void, never, Comman
 	return pipe(
 		commandMake("git", "--no-pager", ...args),
 		commandWorkDir(repoDirectory),
-		commandStdout("inherit"),
-		commandStderr("inherit"),
-		commandExitCode,
-		effectTimeoutFail({
-			duration: "2 seconds",
-			onTimeout: () => new PrintReferencesTimeoutError(),
-		}),
+		commandStdout("pipe"),
+		commandStderr("pipe"),
+		commandStart,
 		effectOrDie,
-		effectFlatMap((code) =>
-			pipe(
-				matchValue(code),
-				matchWhen(SUCCESS_CODE, () => effectVoid),
-				matchOrElse(() => effectDie(new PrintReferencesError()))
+		effectFlatMap(({ exitCode, stdout, stderr }) =>
+			effectAll(
+				[
+					pipe(
+						exitCode,
+						effectTimeoutFail({
+							duration: "2 seconds",
+							onTimeout: () => new PrintReferencesTimeoutError(),
+						}),
+						effectOrDie,
+						effectFlatMap((code) =>
+							pipe(
+								matchValue(code),
+								matchWhen(SUCCESS_CODE, () => effectVoid),
+								matchOrElse(() => effectDie(new PrintReferencesError()))
+							)
+						)
+					),
+					pipe(stdout, decodeText(), streamRunForEach(consoleLog), effectOrDie),
+					pipe(stderr, decodeText(), streamRunForEach(consoleError), effectOrDie),
+				],
+				{ discard: true, concurrency: 3 }
 			)
 		)
 	)
 }
 
-const PrintCommandLive: Layer<Print, never, CommandExecutor> = layerEffect(
+const PrintCommandLive: Layer<Print, never, CommandExecutor | Scope> = layerEffect(
 	Print,
 	effectGen(function* () {
-		const executor = yield* CommandExecutor
+		const [executor, scope] = yield* effectAll([CommandExecutor, Scope], {
+			concurrency: 2,
+		})
 
 		return {
 			exec: (args: Arguments) =>
-				pipe(command(args), effectProvideService(CommandExecutor, executor)),
+				pipe(
+					command(args),
+					effectProvideService(CommandExecutor, executor),
+					effectProvideService(Scope, scope)
+				),
 		}
 	})
 )

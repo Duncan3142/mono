@@ -32,11 +32,14 @@ const loggerLayer = loggerReplace(defaultLogger, loggerMake(logHandler))
 
 const MockConsole = mockDeep<Console>()
 
-// MockConsole.log.mockImplementation(() => effectVoid)
-// MockConsole.unsafe.log.mockImplementation(() => effectVoid)
+MockConsole.log.mockImplementation((args) => {
+	console.log(args)
+	return effectVoid
+})
+MockConsole.error.mockImplementation(() => effectVoid)
 
 describe("Reference Layer", () => {
-	it.effect("prints references", () =>
+	it.scoped("prints references", () =>
 		pipe(
 			effectGen(function* () {
 				const reference = yield* Reference
