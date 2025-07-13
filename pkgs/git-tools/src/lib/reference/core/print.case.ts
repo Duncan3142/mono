@@ -12,7 +12,7 @@ import Print from "./print.service.ts"
 import { type REF_TYPE, TAG, BRANCH } from "./reference.entity.ts"
 
 interface Arguments {
-	level: LogLevelLiteral
+	level: Exclude<LogLevelLiteral, "None" | "All">
 	message: string
 	repoDirectory: string
 }
