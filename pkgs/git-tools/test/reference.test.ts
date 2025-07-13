@@ -6,7 +6,12 @@ import {
 	void as effectVoid,
 } from "effect/Effect"
 import { provide as layerProvide } from "effect/Layer"
-import { make as loggerMake, replace as loggerReplace, defaultLogger } from "effect/Logger"
+import {
+	make as loggerMake,
+	replace as loggerReplace,
+	defaultLogger,
+	type Logger,
+} from "effect/Logger"
 import { pipe } from "effect/Function"
 import { NodeContext } from "@effect/platform-node"
 import { type Console, withConsole } from "effect/Console"
@@ -21,7 +26,7 @@ const MainLayer = pipe(
 	layerProvide(NodeContext.layer)
 )
 
-const logHandler = vi.fn()
+const logHandler = vi.fn<(options: Logger.Options<unknown>) => void>()
 
 const loggerLayer = loggerReplace(defaultLogger, loggerMake(logHandler))
 
@@ -43,10 +48,10 @@ describe("Reference Layer", () => {
 					})
 				)
 				expect(result).toStrictEqual(effectVoid)
-
 				expect(logHandler).toHaveBeenCalledWith(
 					expect.objectContaining({
 						message: ["Testing print references"],
+						// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- returns 'any'
 						logLevel: expect.objectContaining({ label: "INFO" }),
 					})
 				)
