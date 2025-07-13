@@ -8,7 +8,7 @@ import {
 import { pipe } from "effect/Function"
 import { fromLiteral as logLevelFromLiteral } from "effect/LogLevel"
 import type { Literal as LogLevelLiteral } from "effect/LogLevel"
-import PrintCommand from "./print.command.ts"
+import Print from "./print.service.ts"
 import { type REF_TYPE, TAG, BRANCH } from "./reference.entity.ts"
 
 interface Arguments {
@@ -25,13 +25,9 @@ interface Arguments {
  * @param args.message - Log message header
  * @returns - A promise that resolves when the refs are printed
  */
-const print = ({
-	message,
-	repoDirectory,
-	level,
-}: Arguments): Effect<void, never, PrintCommand> =>
+const print = ({ message, repoDirectory, level }: Arguments): Effect<void, never, Print> =>
 	effectGen(function* () {
-		const command = yield* PrintCommand
+		const command = yield* Print
 
 		const doPrint = (type: REF_TYPE) => command.exec({ repoDirectory, type })
 

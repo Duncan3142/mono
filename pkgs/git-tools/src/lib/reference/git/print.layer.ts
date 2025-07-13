@@ -25,8 +25,8 @@ import {
 	stderr as commandStderr,
 } from "@effect/platform/Command"
 import { BRANCH, TAG } from "#reference/core/reference.entity"
-import { LogReferencesError, LogReferencesTimeoutError } from "#reference/core/print.error"
-import PrintCommand, { type Arguments } from "#reference/core/print.command"
+import { PrintReferencesError, PrintReferencesTimeoutError } from "#reference/core/print.error"
+import Print, { type Arguments } from "#reference/core/print.service"
 
 const SUCCESS_CODE = 0
 
@@ -53,21 +53,21 @@ const command = ({ repoDirectory, type }: Arguments): Effect<void, never, Comman
 
 		effectTimeoutFail({
 			duration: "2 seconds",
-			onTimeout: () => new LogReferencesTimeoutError(),
+			onTimeout: () => new PrintReferencesTimeoutError(),
 		}),
 		effectOrDie,
 		effectFlatMap((code) =>
 			pipe(
 				matchValue(code),
 				matchWhen(SUCCESS_CODE, () => effectVoid),
-				matchOrElse(() => effectDie(new LogReferencesError()))
+				matchOrElse(() => effectDie(new PrintReferencesError()))
 			)
 		)
 	)
 }
 
-const PrintCommandLive: Layer<PrintCommand, never, CommandExecutor> = layerEffect(
-	PrintCommand,
+const PrintCommandLive: Layer<Print, never, CommandExecutor> = layerEffect(
+	Print,
 	effectGen(function* () {
 		const executor = yield* CommandExecutor
 
@@ -78,5 +78,5 @@ const PrintCommandLive: Layer<PrintCommand, never, CommandExecutor> = layerEffec
 	})
 )
 
-export default command
-export { PrintCommandLive }
+export default PrintCommandLive
+export { command }

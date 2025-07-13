@@ -1,18 +1,18 @@
 import { effect as layerEffect, type Layer } from "effect/Layer"
 import { gen as effectGen, provideService as effectProvideService } from "effect/Effect"
 import { pipe } from "effect/Function"
-import print, { type Arguments as PrintArguments } from "./core/print.case.ts"
+import printCase, { type Arguments as PrintArguments } from "./core/print.case.ts"
 import Reference from "./service.ts"
-import PrintCommand from "./core/print.command.ts"
+import Print from "./core/print.service.ts"
 
-const ReferenceLive: Layer<Reference, never, PrintCommand> = layerEffect(
+const ReferenceLive: Layer<Reference, never, Print> = layerEffect(
 	Reference,
 	effectGen(function* () {
-		const command = yield* PrintCommand
+		const print = yield* Print
 
 		return {
 			print: (args: PrintArguments) =>
-				pipe(print(args), effectProvideService(PrintCommand, command)),
+				pipe(printCase(args), effectProvideService(Print, print)),
 		}
 	})
 )

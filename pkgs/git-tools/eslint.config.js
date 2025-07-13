@@ -9,9 +9,9 @@ import ignored from "@duncan3142/eslint-config/ignored"
 import importX from "@duncan3142/eslint-config/import-x"
 import prettier from "@duncan3142/eslint-config/prettier"
 import comments from "@duncan3142/eslint-config/comments"
-// import functional from "@duncan3142/eslint-config/functional"
 import context from "@duncan3142/eslint-config/context"
 import core, { compose } from "@duncan3142/eslint-config/core"
+import vitest from "@vitest/eslint-plugin"
 
 const { when } = context()
 
@@ -22,10 +22,13 @@ const configs = compose(
 	comments,
 	typescript(),
 	importX(when),
-	// functional,
 	promise,
 	jsdoc,
 	secrets,
+	{
+		files: ["test/**/*.test.ts"],
+		extends: [vitest.configs.recommended],
+	},
 	prettier
 )
 
