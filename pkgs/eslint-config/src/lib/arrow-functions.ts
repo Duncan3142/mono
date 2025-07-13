@@ -1,7 +1,6 @@
 import arrow from "eslint-plugin-prefer-arrow-functions"
 import { filePatterns, jstsExtensions, type MutableConfig } from "./core.ts"
 
-// eslint-disable-next-line functional/prefer-immutable-types -- Package type
 const { rules } = arrow
 
 const custom: MutableConfig = {
