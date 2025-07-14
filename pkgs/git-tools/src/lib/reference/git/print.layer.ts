@@ -92,14 +92,12 @@ const PrintCommandLive: Layer<Print, never, CommandExecutor | Scope> = layerEffe
 			concurrency: 2,
 		})
 
-		return {
-			exec: (args: Arguments) =>
-				pipe(
-					command(args),
-					effectProvideService(CommandExecutor, executor),
-					effectProvideService(Scope, scope)
-				),
-		}
+		return (args: Arguments) =>
+			pipe(
+				command(args),
+				effectProvideService(CommandExecutor, executor),
+				effectProvideService(Scope, scope)
+			)
 	})
 )
 

@@ -12,9 +12,7 @@ interface Arguments {
  */
 class Print extends Tag("PrintService")<
 	Print,
-	{
-		readonly exec: ({ repoDirectory, type }: Arguments) => Effect<void>
-	}
+	({ repoDirectory, type }: Arguments) => Effect<void>
 >() {}
 
 export default Print

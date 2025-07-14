@@ -29,7 +29,7 @@ const print = ({ message, repoDirectory, level }: Arguments): Effect<void, never
 	effectGen(function* () {
 		const command = yield* Print
 
-		const doPrint = (type: REF_TYPE) => command.exec({ repoDirectory, type })
+		const doPrint = (type: REF_TYPE) => command({ repoDirectory, type })
 
 		yield* pipe(
 			effectAll(
