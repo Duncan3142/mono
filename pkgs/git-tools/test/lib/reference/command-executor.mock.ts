@@ -13,12 +13,11 @@ import {
 	await as deferredAwait,
 } from "effect/Deferred"
 import { make as refMake, get as refGet, set as refSet } from "effect/Ref"
-import { fromIterable as streamFromIterable } from "effect/Stream"
+import { fromIterable as streamFromIterable, empty as streamEmpty } from "effect/Stream"
 import { pipe } from "effect/Function"
-
-import { mockDeep } from "vitest-mock-extended"
 import { CommandExecutor, ExitCode, type Process } from "@effect/platform/CommandExecutor"
 import { effect as layerEffect, type Layer } from "effect/Layer"
+import { mockDeep } from "vitest-mock-extended"
 
 const mockProcessGenerator = (): Effect<Process> =>
 	effectGen(function* () {
@@ -58,7 +57,7 @@ const mockProcessGenerator = (): Effect<Process> =>
 					`  remotes/origin/effect-test c6722b4 Semver @duncan3142/effect-test (#1)`
 				),
 			]),
-			stderr: streamFromIterable([]),
+			stderr: streamEmpty,
 		})
 	})
 
