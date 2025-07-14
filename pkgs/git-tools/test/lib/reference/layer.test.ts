@@ -58,6 +58,8 @@ describe("Reference Layer", () => {
 				yield* testClockAdjust("3 seconds")
 				const result = yield* effectJoin(fiber)
 				expect(result).toStrictEqual(effectVoid)
+				// eslint-disable-next-line @typescript-eslint/no-magic-numbers -- once
+				expect(logHandler).toHaveBeenCalledTimes(1)
 				expect(logHandler).toHaveBeenCalledWith(
 					expect.objectContaining({
 						message: ["Testing print references"],
