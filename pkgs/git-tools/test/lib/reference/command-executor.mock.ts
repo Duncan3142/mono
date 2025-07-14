@@ -69,32 +69,28 @@ const mockProcessGenerator = ({
  */
 type CommandExecutorMockProps = [branch: MockProcessProps, tag: MockProcessProps]
 
-const CommandExecutorTest: Layer<CommandExecutor> = layerEffect(
-	CommandExecutor,
-	effectGen(function* (_) {
-		const branchProcess = yield* mockProcessGenerator({
-			delay: "1 second",
-			exitCode: 0,
-			stdOutLines: [
-				`* effect-test                0468291 [origin/effect-test] abc def`,
-				`  main                       62c5d1a [origin/main] Semver @duncan3142/effect-test (#2)`,
-				`  remotes/origin/HEAD        -> origin/main`,
-				`  remotes/origin/effect-test c6722b4 Semver @duncan3142/effect-test (#1)`,
-			],
-			stdErrLines: [],
+/**
+ * Creates a mock CommandExecutor layer for testing.
+ * @param props - The properties for the command executor mock
+ * @param props."0" - Properties for the branch command
+ * @param props."1" - Properties for the tag command
+ * @returns A layer that provides a mocked CommandExecutor
+ */
+const CommandExecutorTest: (props: CommandExecutorMockProps) => Layer<CommandExecutor> = ([
+	branchProps,
+	tagProps,
+]: CommandExecutorMockProps) =>
+	layerEffect(
+		CommandExecutor,
+		effectGen(function* (_) {
+			const branchProcess = yield* mockProcessGenerator(branchProps)
+			const tagProcess = yield* mockProcessGenerator(tagProps)
+			const commandExecutorMock = mockDeep<CommandExecutor>()
+			commandExecutorMock.start.mockReturnValueOnce(effectSucceed(branchProcess))
+			commandExecutorMock.start.mockReturnValueOnce(effectSucceed(tagProcess))
+			return commandExecutorMock
 		})
-		const tagProcess = yield* mockProcessGenerator({
-			delay: "1 second",
-			exitCode: 0,
-			stdOutLines: [`@duncan3142/git-tools@0.0.0`, `@duncan3142/git-tools@0.0.1`],
-			stdErrLines: [],
-		})
-		const commandExecutorMock = mockDeep<CommandExecutor>()
-		commandExecutorMock.start.mockReturnValueOnce(effectSucceed(branchProcess))
-		commandExecutorMock.start.mockReturnValueOnce(effectSucceed(tagProcess))
-		return commandExecutorMock
-	})
-)
+	)
 
 export default CommandExecutorTest
 export type { MockProcessProps, CommandExecutorMockProps }

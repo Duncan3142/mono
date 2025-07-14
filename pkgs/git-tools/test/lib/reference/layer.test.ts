@@ -18,7 +18,7 @@ import { type Console, withConsole } from "effect/Console"
 import { mockDeep } from "vitest-mock-extended"
 import { provide as layerProvide } from "effect/Layer"
 import { adjust as testClockAdjust } from "effect/TestClock"
-import CommandExecutorTest from "./command-executor.mock.ts"
+import CommandExecutorTest, { type MockProcessProps } from "./command-executor.mock.ts"
 import ReferenceLayer from "#reference/layer"
 import Reference from "#reference/service"
 import PrintLayer from "#reference/git/print.layer"
@@ -35,10 +35,29 @@ MockConsole.log.mockImplementation((args) => {
 })
 MockConsole.error.mockImplementation(() => effectVoid)
 
+const branchProps = {
+	delay: "1 second",
+	exitCode: 0,
+	stdOutLines: [
+		`* effect-test                0468291 [origin/effect-test] abc def`,
+		`  main                       62c5d1a [origin/main] Semver @duncan3142/effect-test (#2)`,
+		`  remotes/origin/HEAD        -> origin/main`,
+		`  remotes/origin/effect-test c6722b4 Semver @duncan3142/effect-test (#1)`,
+	],
+	stdErrLines: [],
+} satisfies MockProcessProps
+
+const tagProps = {
+	delay: "1 second",
+	exitCode: 0,
+	stdOutLines: [`@duncan3142/git-tools@0.0.0`, `@duncan3142/git-tools@0.0.1`],
+	stdErrLines: [],
+} satisfies MockProcessProps
+
 const MainLayer = pipe(
 	ReferenceLayer,
 	layerProvide(PrintLayer),
-	layerProvide(CommandExecutorTest)
+	layerProvide(CommandExecutorTest([branchProps, tagProps]))
 )
 
 describe("Reference Layer", () => {
