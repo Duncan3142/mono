@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/unbound-method -- Check mock use */
+/* eslint-disable @typescript-eslint/no-magic-numbers -- Check mock use */
 import { expect, describe, it, vi } from "@effect/vitest"
 import {
 	exit as effectExit,
@@ -29,10 +31,7 @@ const loggerLayer = loggerReplace(defaultLogger, loggerMake(logHandler))
 
 const MockConsole = mockDeep<Console>()
 
-MockConsole.log.mockImplementation((args) => {
-	console.log(args)
-	return effectVoid
-})
+MockConsole.log.mockImplementation(() => effectVoid)
 MockConsole.error.mockImplementation(() => effectVoid)
 
 const branchProps = {
@@ -77,15 +76,35 @@ describe("Reference Layer", () => {
 				yield* testClockAdjust("3 seconds")
 				const result = yield* effectJoin(fiber)
 				expect(result).toStrictEqual(effectVoid)
-				// eslint-disable-next-line @typescript-eslint/no-magic-numbers -- once
+
 				expect(logHandler).toHaveBeenCalledTimes(1)
-				expect(logHandler).toHaveBeenCalledWith(
+				expect(logHandler).toHaveBeenNthCalledWith(
+					1,
 					expect.objectContaining({
 						message: ["Testing print references"],
 						// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- returns 'any'
 						logLevel: expect.objectContaining({ label: "INFO" }),
 					})
 				)
+				expect(MockConsole.log).toHaveBeenCalledTimes(6)
+				expect(MockConsole.log).toHaveBeenNthCalledWith(
+					1,
+					"* effect-test                0468291 [origin/effect-test] abc def"
+				)
+				expect(MockConsole.log).toHaveBeenNthCalledWith(
+					2,
+					`  main                       62c5d1a [origin/main] Semver @duncan3142/effect-test (#2)`
+				)
+				expect(MockConsole.log).toHaveBeenNthCalledWith(
+					3,
+					`  remotes/origin/HEAD        -> origin/main`
+				)
+				expect(MockConsole.log).toHaveBeenNthCalledWith(
+					4,
+					`  remotes/origin/effect-test c6722b4 Semver @duncan3142/effect-test (#1)`
+				)
+				expect(MockConsole.log).toHaveBeenNthCalledWith(5, `@duncan3142/git-tools@0.0.0`)
+				expect(MockConsole.log).toHaveBeenNthCalledWith(6, `@duncan3142/git-tools@0.0.1`)
 			}),
 			effectProvide(MainLayer),
 			effectProvide(loggerLayer),
@@ -93,3 +112,5 @@ describe("Reference Layer", () => {
 		)
 	)
 })
+/* eslint-enable @typescript-eslint/unbound-method -- Check mock use */
+/* eslint-enable @typescript-eslint/no-magic-numbers -- Check mock use */
