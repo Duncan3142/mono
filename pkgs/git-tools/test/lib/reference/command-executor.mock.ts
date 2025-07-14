@@ -47,12 +47,14 @@ const mockProcessGenerator = (): Effect<Process> =>
 			isRunning: isRunningEffect,
 			exitCode: exitCodeEffect, // exitCode can now be immediate
 			stdout: streamFromIterable([
-				Uint8Array.from(`* effect-test                0468291 [origin/effect-test] abc def\n`),
-				Uint8Array.from(
-					`  main                       62c5d1a [origin/main] Semver @duncan3142/effect-test (#2)\n`
+				new TextEncoder().encode(
+					`* effect-test                0468291 [origin/effect-test] abc def`
 				),
-				Uint8Array.from(`  remotes/origin/HEAD        -> origin/main\n`),
-				Uint8Array.from(
+				new TextEncoder().encode(
+					`  main                       62c5d1a [origin/main] Semver @duncan3142/effect-test (#2)`
+				),
+				new TextEncoder().encode(`  remotes/origin/HEAD        -> origin/main`),
+				new TextEncoder().encode(
 					`  remotes/origin/effect-test c6722b4 Semver @duncan3142/effect-test (#1)`
 				),
 			]),
