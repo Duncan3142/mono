@@ -28,8 +28,7 @@ import { pipe } from "effect/Function"
 import { type Console, withConsole } from "effect/Console"
 import { mockDeep } from "vitest-mock-extended"
 import { CommandExecutor, ExitCode, type Process } from "@effect/platform/CommandExecutor"
-import { provide as layerProvide, scoped as layerScoped, type Layer } from "effect/Layer"
-import type { Scope } from "effect/Scope"
+import { provide as layerProvide, effect as layerEffect, type Layer } from "effect/Layer"
 import { adjust as testClockAdjust } from "effect/TestClock"
 import ReferenceLayer from "#reference/layer"
 import Reference from "#reference/service"
@@ -47,7 +46,7 @@ MockConsole.log.mockImplementation((args) => {
 })
 MockConsole.error.mockImplementation(() => effectVoid)
 
-const mockProcessGenerator = (): Effect<Process, never, Scope> =>
+const mockProcessGenerator = (): Effect<Process> =>
 	effectGen(function* () {
 		const isRunningRef = yield* refMake(true)
 		const exitCodeDeferred = yield* deferredMake<ExitCode>()
@@ -87,7 +86,7 @@ const mockProcessGenerator = (): Effect<Process, never, Scope> =>
 		})
 	})
 
-const CommandExecutorTest: Layer<CommandExecutor> = layerScoped(
+const CommandExecutorTest: Layer<CommandExecutor> = layerEffect(
 	CommandExecutor,
 	effectGen(function* (_) {
 		// Acquire the correctly constructed mock from our factory.
