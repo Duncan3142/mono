@@ -17,7 +17,7 @@ import {
 import { pipe } from "effect/Function"
 import { value as matchValue, when as matchWhen, orElse as matchOrElse } from "effect/Match"
 import type { CommandExecutor } from "@effect/platform/CommandExecutor"
-import { FetchFailedError, FetchNotFoundError, FetchTimeoutError } from "./domain.js"
+import { FetchFailedError, FetchNotFoundError, FetchTimeoutError } from "./domain.ts"
 import { BASE_10_RADIX } from "#const"
 import { toStrings as refSpecToStrings, type ReferenceSpecs } from "#reference-spec/domain"
 

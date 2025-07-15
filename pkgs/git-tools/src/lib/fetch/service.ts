@@ -32,9 +32,9 @@ import {
 	OPTIONAL,
 	OPTIONALITY_ORDER_MAP,
 	FETCH_NOT_FOUND_ERROR_TAG,
-} from "./domain.js"
-import fetchCommand from "./command.js"
-import { DEFAULT_DEPTH } from "./const.js"
+} from "./domain.ts"
+import fetchCommand from "./command.ts"
+import { DEFAULT_DEPTH } from "./const.ts"
 import { DEFAULT_REMOTE } from "#remote/const"
 import referenceLog from "#reference/service"
 import type { Reference } from "#reference/domain"
