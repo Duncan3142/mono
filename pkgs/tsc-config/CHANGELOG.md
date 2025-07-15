@@ -1,5 +1,11 @@
 # @duncan3142/tsc-config
 
+## 0.1.8
+
+### Patch Changes
+
+- 87a783c: update deps
+
 ## 0.1.7
 
 ### Patch Changes
