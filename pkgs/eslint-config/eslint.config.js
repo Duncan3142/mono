@@ -9,6 +9,7 @@ import prettier from "#lib/prettier"
 import comments from "#lib/comments"
 import core, { compose } from "#lib/core"
 import arrow from "#lib/arrow-functions"
+import vitest from "#lib/vitest"
 import context from "#context"
 
 const { when } = context()
@@ -24,6 +25,7 @@ const configs = compose(
 	arrow,
 	jsdoc,
 	secrets,
+	vitest,
 	prettier
 )
 
