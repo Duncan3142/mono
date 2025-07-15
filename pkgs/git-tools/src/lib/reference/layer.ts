@@ -5,7 +5,7 @@ import printCase, { type Arguments as PrintArguments } from "./core/print.case.t
 import Reference from "./service.ts"
 import PrintCommand from "./core/print-command.service.ts"
 
-const referenceLive: Layer<Reference, never, PrintCommand> = layerEffect(
+const ReferenceLive: Layer<Reference, never, PrintCommand> = layerEffect(
 	Reference,
 	effectGen(function* () {
 		const print = yield* PrintCommand
@@ -17,4 +17,4 @@ const referenceLive: Layer<Reference, never, PrintCommand> = layerEffect(
 	})
 )
 
-export default referenceLive
+export default ReferenceLive

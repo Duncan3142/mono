@@ -53,7 +53,6 @@ const mockProcessGenerator = ({
 
 		yield* effectFork(settleProcess)
 
-		// The `isRunning` effect is now just a simple, efficient read from the SHARED ref.
 		const isRunningEffect = refGet(isRunningRef)
 		const exitCodeEffect = deferredAwait(exitCodeDeferred)
 
@@ -64,7 +63,7 @@ const mockProcessGenerator = ({
 
 		return mockDeep<Process>({
 			isRunning: isRunningEffect,
-			exitCode: exitCodeEffect, // exitCode can now be immediate
+			exitCode: exitCodeEffect,
 			stdout: streamFromIterable(stdOutBytes),
 			stderr: streamFromIterable(stdErrBytes),
 		})
@@ -82,7 +81,7 @@ type CommandExecutorMockProps = [branch: MockProcessProps, tag: MockProcessProps
  * @param props."1" - Properties for the tag command
  * @returns A layer that provides a mocked CommandExecutor
  */
-const commandExecutorTest: (props: CommandExecutorMockProps) => Layer<CommandExecutor> = ([
+const CommandExecutorTest: (props: CommandExecutorMockProps) => Layer<CommandExecutor> = ([
 	branchProps,
 	tagProps,
 ]: CommandExecutorMockProps) =>
@@ -98,5 +97,5 @@ const commandExecutorTest: (props: CommandExecutorMockProps) => Layer<CommandExe
 		})
 	)
 
-export default commandExecutorTest
+export default CommandExecutorTest
 export type { MockProcessProps, CommandExecutorMockProps }

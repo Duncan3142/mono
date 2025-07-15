@@ -20,14 +20,14 @@ import { type Console, withConsole } from "effect/Console"
 import { mockDeep } from "vitest-mock-extended"
 import { provide as layerProvide } from "effect/Layer"
 import { adjust as testClockAdjust } from "effect/TestClock"
-import commandExecutorTest, { type MockProcessProps } from "./command-executor.mock.ts"
-import referenceLayer from "#reference/layer"
+import CommandExecutorTest, { type MockProcessProps } from "./command-executor.mock.ts"
+import ReferenceLive from "#reference/layer"
 import Reference from "#reference/service"
-import printCommandLayer from "#reference/git/print-command.layer"
+import PrintCommandLive from "#reference/git/print-command.layer"
 
 const logHandler = vi.fn<(options: Logger.Options<unknown>) => void>()
 
-const loggerLayer = loggerReplace(defaultLogger, loggerMake(logHandler))
+const LoggerLayer = loggerReplace(defaultLogger, loggerMake(logHandler))
 
 const mockConsole = mockDeep<Console>()
 
@@ -54,9 +54,9 @@ const tagProps = {
 } satisfies MockProcessProps
 
 const MainLayer = pipe(
-	referenceLayer,
-	layerProvide(printCommandLayer),
-	layerProvide(commandExecutorTest([branchProps, tagProps]))
+	ReferenceLive,
+	layerProvide(PrintCommandLive),
+	layerProvide(CommandExecutorTest([branchProps, tagProps]))
 )
 
 describe("Reference Layer", () => {
@@ -78,7 +78,7 @@ describe("Reference Layer", () => {
 					return yield* effectJoin(fiber)
 				}),
 				effectProvide(MainLayer),
-				effectProvide(loggerLayer),
+				effectProvide(LoggerLayer),
 				withConsole(mockConsole)
 			)
 
