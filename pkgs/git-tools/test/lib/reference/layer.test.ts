@@ -61,55 +61,58 @@ const MainLayer = pipe(
 
 describe("Reference Layer", () => {
 	it.scoped("prints references", () =>
-		pipe(
-			effectGen(function* () {
-				const reference = yield* Reference
-				const fiber = yield* effectFork(
-					effectExit(
-						reference.print({
-							repoDirectory: process.cwd(),
-							level: "Info",
-							message: "Testing print references",
-						})
+		effectGen(function* () {
+			const result = yield* pipe(
+				effectGen(function* () {
+					const reference = yield* Reference
+					const fiber = yield* effectFork(
+						effectExit(
+							reference.print({
+								repoDirectory: process.cwd(),
+								level: "Info",
+								message: "Testing print references",
+							})
+						)
 					)
-				)
-				yield* testClockAdjust("3 seconds")
-				const result = yield* effectJoin(fiber)
-				expect(result).toStrictEqual(effectVoid)
+					yield* testClockAdjust("3 seconds")
+					return yield* effectJoin(fiber)
+				}),
+				effectProvide(MainLayer),
+				effectProvide(loggerLayer),
+				withConsole(mockConsole)
+			)
 
-				expect(logHandler).toHaveBeenCalledTimes(1)
-				expect(logHandler).toHaveBeenNthCalledWith(
-					1,
-					expect.objectContaining({
-						message: ["Testing print references"],
-						// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- returns 'any'
-						logLevel: expect.objectContaining({ label: "INFO" }),
-					})
-				)
-				expect(mockConsole.log).toHaveBeenCalledTimes(6)
-				expect(mockConsole.log).toHaveBeenNthCalledWith(
-					1,
-					"* effect-test                0468291 [origin/effect-test] abc def"
-				)
-				expect(mockConsole.log).toHaveBeenNthCalledWith(
-					2,
-					`  main                       62c5d1a [origin/main] Semver @duncan3142/effect-test (#2)`
-				)
-				expect(mockConsole.log).toHaveBeenNthCalledWith(
-					3,
-					`  remotes/origin/HEAD        -> origin/main`
-				)
-				expect(mockConsole.log).toHaveBeenNthCalledWith(
-					4,
-					`  remotes/origin/effect-test c6722b4 Semver @duncan3142/effect-test (#1)`
-				)
-				expect(mockConsole.log).toHaveBeenNthCalledWith(5, `@duncan3142/git-tools@0.0.0`)
-				expect(mockConsole.log).toHaveBeenNthCalledWith(6, `@duncan3142/git-tools@0.0.1`)
-			}),
-			effectProvide(MainLayer),
-			effectProvide(loggerLayer),
-			withConsole(mockConsole)
-		)
+			expect(result).toStrictEqual(effectVoid)
+
+			expect(logHandler).toHaveBeenCalledTimes(1)
+			expect(logHandler).toHaveBeenNthCalledWith(
+				1,
+				expect.objectContaining({
+					message: ["Testing print references"],
+					// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- returns 'any'
+					logLevel: expect.objectContaining({ label: "INFO" }),
+				})
+			)
+			expect(mockConsole.log).toHaveBeenCalledTimes(6)
+			expect(mockConsole.log).toHaveBeenNthCalledWith(
+				1,
+				"* effect-test                0468291 [origin/effect-test] abc def"
+			)
+			expect(mockConsole.log).toHaveBeenNthCalledWith(
+				2,
+				`  main                       62c5d1a [origin/main] Semver @duncan3142/effect-test (#2)`
+			)
+			expect(mockConsole.log).toHaveBeenNthCalledWith(
+				3,
+				`  remotes/origin/HEAD        -> origin/main`
+			)
+			expect(mockConsole.log).toHaveBeenNthCalledWith(
+				4,
+				`  remotes/origin/effect-test c6722b4 Semver @duncan3142/effect-test (#1)`
+			)
+			expect(mockConsole.log).toHaveBeenNthCalledWith(5, `@duncan3142/git-tools@0.0.0`)
+			expect(mockConsole.log).toHaveBeenNthCalledWith(6, `@duncan3142/git-tools@0.0.1`)
+		})
 	)
 })
 /* eslint-enable @typescript-eslint/unbound-method -- Check mock use */

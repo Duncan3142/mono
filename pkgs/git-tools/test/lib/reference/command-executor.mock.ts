@@ -14,9 +14,16 @@ import {
 import { make as refMake, get as refGet, set as refSet } from "effect/Ref"
 import { fromIterable as streamFromIterable } from "effect/Stream"
 import { pipe } from "effect/Function"
-import { CommandExecutor, ExitCode, type Process } from "@effect/platform/CommandExecutor"
+import {
+	CommandExecutor,
+	ExitCode,
+	type Process,
+	makeExecutor,
+} from "@effect/platform/CommandExecutor"
+
 import { effect as layerEffect, type Layer } from "effect/Layer"
 import { mockDeep } from "vitest-mock-extended"
+import { vi } from "vitest"
 import type { DurationInput } from "effect/Duration"
 
 interface MockProcessProps {
@@ -84,10 +91,10 @@ const commandExecutorTest: (props: CommandExecutorMockProps) => Layer<CommandExe
 		effectGen(function* (_) {
 			const branchProcess = yield* mockProcessGenerator(branchProps)
 			const tagProcess = yield* mockProcessGenerator(tagProps)
-			const commandExecutorMock = mockDeep<CommandExecutor>()
-			commandExecutorMock.start.mockReturnValueOnce(effectSucceed(branchProcess))
-			commandExecutorMock.start.mockReturnValueOnce(effectSucceed(tagProcess))
-			return commandExecutorMock
+			const start = vi.fn()
+			start.mockReturnValueOnce(effectSucceed(branchProcess))
+			start.mockReturnValueOnce(effectSucceed(tagProcess))
+			return makeExecutor(start)
 		})
 	)
 
