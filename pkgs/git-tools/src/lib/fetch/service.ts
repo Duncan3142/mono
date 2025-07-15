@@ -37,7 +37,7 @@ import fetchCommand from "./command.ts"
 import { DEFAULT_DEPTH } from "./const.ts"
 import { DEFAULT_REMOTE } from "#remote/const"
 import referenceLog from "#reference/service"
-import type { Reference } from "#reference/domain"
+import type { Reference } from "#reference/core/reference.entity"
 
 interface Arguments {
 	fetchRefs: FetchReferences

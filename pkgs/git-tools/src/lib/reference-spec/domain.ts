@@ -5,7 +5,12 @@ import {
 	exhaustive as matchExhaustive,
 } from "effect/Match"
 import { pipe } from "effect/Function"
-import { BRANCH, TAG, type Reference, type as referenceType } from "#reference/domain"
+import {
+	BRANCH,
+	TAG,
+	type Reference,
+	type as referenceType,
+} from "#reference/core/reference.entity"
 import type { Remote } from "#remote/domain"
 
 interface ReferenceSpec {

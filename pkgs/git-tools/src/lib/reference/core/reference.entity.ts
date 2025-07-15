@@ -3,19 +3,10 @@ import { mapInput as orderMapInput, string as orderString, type Order } from "ef
 const BRANCH = "branch"
 const TAG = "tag"
 
-/**
- * Ref branch type
- */
 type BRANCH_TYPE = typeof BRANCH
 
-/**
- * Ref tag type
- */
 type TAG_TYPE = typeof TAG
 
-/**
- * Ref type
- */
 type REF_TYPE = BRANCH_TYPE | TAG_TYPE
 
 interface Reference {

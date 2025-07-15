@@ -30,7 +30,7 @@ import {
 import { Scope } from "effect/Scope"
 import { BRANCH, TAG } from "#reference/core/reference.entity"
 import { PrintReferencesError, PrintReferencesTimeoutError } from "#reference/core/print.error"
-import Print, { type Arguments } from "#reference/core/print.service"
+import PrintCommand, { type Arguments } from "#reference/core/print-command.service"
 
 const SUCCESS_CODE = 0
 
@@ -85,8 +85,8 @@ const command = ({
 	)
 }
 
-const PrintCommandLive: Layer<Print, never, CommandExecutor | Scope> = layerEffect(
-	Print,
+const PrintCommandLive: Layer<PrintCommand, never, CommandExecutor | Scope> = layerEffect(
+	PrintCommand,
 	effectGen(function* () {
 		const [executor, scope] = yield* effectAll([CommandExecutor, Scope], {
 			concurrency: 2,

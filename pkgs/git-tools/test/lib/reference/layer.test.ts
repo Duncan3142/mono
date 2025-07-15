@@ -23,7 +23,7 @@ import { adjust as testClockAdjust } from "effect/TestClock"
 import CommandExecutorTest, { type MockProcessProps } from "./command-executor.mock.ts"
 import ReferenceLayer from "#reference/layer"
 import Reference from "#reference/service"
-import PrintLayer from "#reference/git/print.layer"
+import PrintCommandLayer from "#reference/git/print-command.layer"
 
 const logHandler = vi.fn<(options: Logger.Options<unknown>) => void>()
 
@@ -55,7 +55,7 @@ const tagProps = {
 
 const MainLayer = pipe(
 	ReferenceLayer,
-	layerProvide(PrintLayer),
+	layerProvide(PrintCommandLayer),
 	layerProvide(CommandExecutorTest([branchProps, tagProps]))
 )
 

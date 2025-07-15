@@ -8,12 +8,12 @@ interface Arguments {
 }
 
 /**
- * Print service
+ * Print command service
  */
-class Print extends Tag("PrintService")<
-	Print,
+class PrintCommand extends Tag("PrintCommandService")<
+	PrintCommand,
 	({ repoDirectory, type }: Arguments) => Effect<void>
 >() {}
 
-export default Print
+export default PrintCommand
 export type { Arguments }

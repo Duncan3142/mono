@@ -1,28 +1,15 @@
 import type { NonEmptyReadonlyArray } from "effect/Array"
 import { mapInput as orderMapInput, type Order, boolean as orderBoolean } from "effect/Order"
 import { TaggedError } from "effect/Data"
-import type { Reference } from "#reference/domain"
+import type { Reference } from "#reference/core/reference.entity"
 import type { Remote } from "#remote/domain"
 
-/**
- * Fetch refs found
- */
-
 const Found = true
-/**
- * Found
- */
 type Found = typeof Found
 
 const NotFound = false
-/**
- * Not found
- */
 type NotFound = typeof NotFound
 
-/**
- * Represents whether a fetch operation found the requested refs or not.
- */
 type WasFound = Found | NotFound
 
 const FETCH_NOT_FOUND_ERROR_TAG = "FETCH_NOT_FOUND_ERROR"
@@ -64,15 +51,9 @@ interface FetchReference extends Reference {
 const isOptional = (reference: FetchReference): boolean => reference.optional ?? false
 
 const OPTIONAL = "optional" as const
-/**
- * Optional fetch reference
- */
 type Optional = typeof OPTIONAL
 
 const REQUIRED = "required" as const
-/**
- * Required fetch reference
- */
 type Required = typeof REQUIRED
 
 // type Optionality = Optional | Required
