@@ -1,5 +1,11 @@
 # @duncan3142/prettier-config
 
+## 0.1.5
+
+### Patch Changes
+
+- 87a783c: update deps
+
 ## 0.1.4
 
 ### Patch Changes
