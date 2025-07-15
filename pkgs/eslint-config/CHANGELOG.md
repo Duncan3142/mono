@@ -1,5 +1,11 @@
 # @duncan3142/eslint-config
 
+## 0.1.13
+
+### Patch Changes
+
+- 87a783c: Allow classes
+
 ## 0.1.12
 
 ### Patch Changes
