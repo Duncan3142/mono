@@ -75,7 +75,7 @@ type CommandExecutorMockProps = [branch: MockProcessProps, tag: MockProcessProps
  * @param props."1" - Properties for the tag command
  * @returns A layer that provides a mocked CommandExecutor
  */
-const CommandExecutorTest: (props: CommandExecutorMockProps) => Layer<CommandExecutor> = ([
+const commandExecutorTest: (props: CommandExecutorMockProps) => Layer<CommandExecutor> = ([
 	branchProps,
 	tagProps,
 ]: CommandExecutorMockProps) =>
@@ -91,5 +91,5 @@ const CommandExecutorTest: (props: CommandExecutorMockProps) => Layer<CommandExe
 		})
 	)
 
-export default CommandExecutorTest
+export default commandExecutorTest
 export type { MockProcessProps, CommandExecutorMockProps }

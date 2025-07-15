@@ -20,19 +20,19 @@ import { type Console, withConsole } from "effect/Console"
 import { mockDeep } from "vitest-mock-extended"
 import { provide as layerProvide } from "effect/Layer"
 import { adjust as testClockAdjust } from "effect/TestClock"
-import CommandExecutorTest, { type MockProcessProps } from "./command-executor.mock.ts"
-import ReferenceLayer from "#reference/layer"
+import commandExecutorTest, { type MockProcessProps } from "./command-executor.mock.ts"
+import referenceLayer from "#reference/layer"
 import Reference from "#reference/service"
-import PrintCommandLayer from "#reference/git/print-command.layer"
+import printCommandLayer from "#reference/git/print-command.layer"
 
 const logHandler = vi.fn<(options: Logger.Options<unknown>) => void>()
 
 const loggerLayer = loggerReplace(defaultLogger, loggerMake(logHandler))
 
-const MockConsole = mockDeep<Console>()
+const mockConsole = mockDeep<Console>()
 
-MockConsole.log.mockImplementation(() => effectVoid)
-MockConsole.error.mockImplementation(() => effectVoid)
+mockConsole.log.mockImplementation(() => effectVoid)
+mockConsole.error.mockImplementation(() => effectVoid)
 
 const branchProps = {
 	delay: "1 second",
@@ -54,9 +54,9 @@ const tagProps = {
 } satisfies MockProcessProps
 
 const MainLayer = pipe(
-	ReferenceLayer,
-	layerProvide(PrintCommandLayer),
-	layerProvide(CommandExecutorTest([branchProps, tagProps]))
+	referenceLayer,
+	layerProvide(printCommandLayer),
+	layerProvide(commandExecutorTest([branchProps, tagProps]))
 )
 
 describe("Reference Layer", () => {
@@ -86,29 +86,29 @@ describe("Reference Layer", () => {
 						logLevel: expect.objectContaining({ label: "INFO" }),
 					})
 				)
-				expect(MockConsole.log).toHaveBeenCalledTimes(6)
-				expect(MockConsole.log).toHaveBeenNthCalledWith(
+				expect(mockConsole.log).toHaveBeenCalledTimes(6)
+				expect(mockConsole.log).toHaveBeenNthCalledWith(
 					1,
 					"* effect-test                0468291 [origin/effect-test] abc def"
 				)
-				expect(MockConsole.log).toHaveBeenNthCalledWith(
+				expect(mockConsole.log).toHaveBeenNthCalledWith(
 					2,
 					`  main                       62c5d1a [origin/main] Semver @duncan3142/effect-test (#2)`
 				)
-				expect(MockConsole.log).toHaveBeenNthCalledWith(
+				expect(mockConsole.log).toHaveBeenNthCalledWith(
 					3,
 					`  remotes/origin/HEAD        -> origin/main`
 				)
-				expect(MockConsole.log).toHaveBeenNthCalledWith(
+				expect(mockConsole.log).toHaveBeenNthCalledWith(
 					4,
 					`  remotes/origin/effect-test c6722b4 Semver @duncan3142/effect-test (#1)`
 				)
-				expect(MockConsole.log).toHaveBeenNthCalledWith(5, `@duncan3142/git-tools@0.0.0`)
-				expect(MockConsole.log).toHaveBeenNthCalledWith(6, `@duncan3142/git-tools@0.0.1`)
+				expect(mockConsole.log).toHaveBeenNthCalledWith(5, `@duncan3142/git-tools@0.0.0`)
+				expect(mockConsole.log).toHaveBeenNthCalledWith(6, `@duncan3142/git-tools@0.0.1`)
 			}),
 			effectProvide(MainLayer),
 			effectProvide(loggerLayer),
-			withConsole(MockConsole)
+			withConsole(mockConsole)
 		)
 	)
 })

@@ -85,7 +85,7 @@ const command = ({
 	)
 }
 
-const PrintCommandLive: Layer<PrintCommand, never, CommandExecutor | Scope> = layerEffect(
+const printCommandLive: Layer<PrintCommand, never, CommandExecutor | Scope> = layerEffect(
 	PrintCommand,
 	effectGen(function* () {
 		const [executor, scope] = yield* effectAll([CommandExecutor, Scope], {
@@ -101,5 +101,5 @@ const PrintCommandLive: Layer<PrintCommand, never, CommandExecutor | Scope> = la
 	})
 )
 
-export default PrintCommandLive
+export default printCommandLive
 export { command }
