@@ -3,16 +3,13 @@
 	"extends": ["@duncan3142/tsc-config/base"],
 	"compilerOptions": {
 		"paths": {
-			"#adapter/*": ["./src/adapter/*.ts"],
-			"#config/*": ["./src/config/*.ts"],
-			"#domain/*": ["./src/domain/*.ts"],
-			"#driver/*": ["./src/driver/*.ts"],
-			"#driven/*": ["./src/driven/*.ts"],
-			"#error/*": ["./src/error/*.ts"],
-			"#layer/*": ["./src/service/*.ts"],
-			"#schema/*": ["./src/schema/*.ts"],
-			"#service/*": ["./src/service/*.ts"]
-		}
+			"#const": ["./src/const.ts"],
+			"#fetch/*": ["./src/lib/fetch/*.ts"],
+			"#reference/*": ["./src/lib/reference/*.ts"],
+			"#reference-spec/*": ["./src/lib/reference-spec/*.ts"],
+			"#remote/*": ["./src/lib/remote/*.ts"]
+		},
+		"isolatedDeclarations": false
 	},
 	"include": []
 }

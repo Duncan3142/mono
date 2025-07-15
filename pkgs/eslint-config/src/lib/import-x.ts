@@ -1,4 +1,4 @@
-import importX from "eslint-plugin-import-x"
+import { importX } from "eslint-plugin-import-x"
 
 import {
 	compose,
@@ -13,7 +13,6 @@ import type { Guards } from "#context/lint-level"
 /*                                   Configs                                  */
 /* -------------------------------------------------------------------------- */
 
-// eslint-disable-next-line functional/prefer-immutable-types -- Config object
 const custom: (guard: Guards) => MutableConfig = (guard) => {
 	return {
 		name: "@duncan3142/eslint-config/import/custom",
@@ -56,7 +55,6 @@ const custom: (guard: Guards) => MutableConfig = (guard) => {
  * @param guard - Guards
  * @returns Configs
  */
-// eslint-disable-next-line functional/prefer-immutable-types -- Config object
 const configs: (guard: Guards) => MutableConfigs = (guard) =>
 	compose({
 		name: "@duncan3142/eslint-config/import",

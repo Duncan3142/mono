@@ -1,5 +1,0 @@
-const DEFAULT_REMOTE = "origin"
-const DEFAULT_DEPTH = 1
-const BASE_10_RADIX = 10
-
-export { DEFAULT_DEPTH, DEFAULT_REMOTE, BASE_10_RADIX }

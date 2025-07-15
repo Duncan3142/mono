@@ -22,7 +22,6 @@ const custom: MutableConfig = {
 					FunctionExpression: true,
 					MethodDefinition: true,
 				},
-				contexts: ["TSInterfaceDeclaration", "TSTypeAliasDeclaration"],
 			},
 		],
 		"jsdoc/no-blank-blocks": ["error", { enableFixer: false }],

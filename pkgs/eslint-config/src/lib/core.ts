@@ -1,7 +1,6 @@
 import type { ESLint } from "eslint"
 import tseslint, { type InfiniteDepthConfigWithExtends } from "typescript-eslint"
 import type { FlatConfig, Parser as TSParser } from "@typescript-eslint/utils/ts-eslint"
-import type { ImmutableArray } from "./functional.ts"
 
 /**
  * File path
@@ -11,7 +10,7 @@ type Path = string
 /**
  * Files paths
  */
-type Paths = ImmutableArray<Path>
+type Paths = ReadonlyArray<Path>
 
 /**
  * ESLint config
