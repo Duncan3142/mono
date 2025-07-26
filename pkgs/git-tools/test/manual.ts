@@ -3,30 +3,26 @@ import {
 	provide as effectProvide,
 	exit as effectExit,
 	tap as effectTap,
+	withConfigProvider,
 } from "effect/Effect"
 import { NodeContext, NodeRuntime } from "@effect/platform-node"
-import { provide as layerProvide, succeed as layerSucceed } from "effect/Layer"
+import { provide as layerProvide } from "effect/Layer"
+import { fromMap as configProviderFromMap } from "effect/ConfigProvider"
 import GitLive from "#layer"
 import Git from "#service"
 import FetchLive from "#case/fetch.layer"
 import FetchCommandLive from "#git/command/fetch.layer"
 import PrintRefsLive from "#case/print-refs.layer"
 import PrintRefsCommandLive from "#git/command/print-refs.layer"
-import RepositoryConfig from "#config/repository-config.service"
+import RepositoryConfigLive from "#config/repository-config.layer"
 
 const ProgramLive = GitLive.pipe(
-	layerProvide(FetchLive.pipe(layerProvide(FetchCommandLive))),
+	layerProvide(FetchLive),
+	layerProvide(FetchCommandLive),
 	layerProvide(PrintRefsLive),
 	layerProvide(PrintRefsCommandLive),
 	layerProvide(NodeContext.layer),
-	layerProvide(
-		layerSucceed(RepositoryConfig, {
-			defaultRemote: {
-				name: "origin",
-			},
-			directory: process.cwd(),
-		})
-	)
+	layerProvide(RepositoryConfigLive)
 )
 
 const program = effectGen(function* () {
@@ -35,6 +31,16 @@ const program = effectGen(function* () {
 		level: "Info",
 		message: "Print refs test",
 	})
-}).pipe(effectProvide(ProgramLive))
+}).pipe(
+	effectProvide(ProgramLive),
+	withConfigProvider(
+		configProviderFromMap(
+			new Map([
+				["DEFAULT_REMOTE_NAME", "origin"],
+				["GIT_DIRECTORY", process.cwd()],
+			])
+		)
+	)
+)
 
 NodeRuntime.runMain(program.pipe(effectExit, effectTap(console.log)))

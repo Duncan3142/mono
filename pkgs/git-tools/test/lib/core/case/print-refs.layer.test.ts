@@ -7,6 +7,7 @@ import {
 	provide as effectProvide,
 	void as effectVoid,
 	fork as effectFork,
+	withConfigProvider,
 } from "effect/Effect"
 import { join as effectJoin } from "effect/Fiber"
 import {
@@ -18,13 +19,14 @@ import {
 import { pipe } from "effect/Function"
 import { type Console, withConsole } from "effect/Console"
 import { mockDeep } from "vitest-mock-extended"
-import { provide as layerProvide, succeed as layerSucceed } from "effect/Layer"
+import { provide as layerProvide } from "effect/Layer"
 import { adjust as testClockAdjust } from "effect/TestClock"
+import { fromMap as configProviderFromMap } from "effect/ConfigProvider"
 import CommandExecutorTest, { type MockProcessProps } from "#mock/command-executor.mock"
 import PrintRefsLive from "#case/print-refs.layer"
 import PrintRefsCommandLive from "#git/command/print-refs.layer"
 import PrintRefs from "#case/print-refs.service"
-import RepositoryConfig from "#config/repository-config.service"
+import RepositoryConfigLive from "#config/repository-config.layer"
 
 const logHandler = vi.fn<(options: Logger.Options<unknown>) => void>()
 
@@ -58,14 +60,7 @@ const ProgramLayer = pipe(
 	PrintRefsLive,
 	layerProvide(PrintRefsCommandLive),
 	layerProvide(CommandExecutorTest([branchProps, tagProps])),
-	layerProvide(
-		layerSucceed(RepositoryConfig, {
-			defaultRemote: {
-				name: "origin",
-			},
-			directory: process.cwd(),
-		})
-	),
+	layerProvide(RepositoryConfigLive),
 	layerProvide(LoggerLayer)
 )
 
@@ -87,7 +82,15 @@ describe("Reference Layer", () => {
 					return yield* effectJoin(fiber)
 				}),
 				effectProvide(ProgramLayer),
-				withConsole(mockConsole)
+				withConsole(mockConsole),
+				withConfigProvider(
+					configProviderFromMap(
+						new Map([
+							["DEFAULT_REMOTE_NAME", "origin"],
+							["GIT_DIRECTORY", process.cwd()],
+						])
+					)
+				)
 			)
 
 			expect(result).toStrictEqual(effectVoid)
