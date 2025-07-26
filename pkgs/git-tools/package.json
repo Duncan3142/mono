@@ -23,6 +23,7 @@
 		"#const": "./.tsc/dist/const.js",
 		"#layer": "./.tsc/dist/layer.js",
 		"#service": "./.tsc/dist/service.js",
+		"#config/*": "./.tsc/dist/lib/core/config/*.js",
 		"#case/*": "./.tsc/dist/lib/core/case/*.js",
 		"#command/*": "./.tsc/dist/lib/core/command/*.js",
 		"#domain/*": "./.tsc/dist/lib/core/domain/*.js",

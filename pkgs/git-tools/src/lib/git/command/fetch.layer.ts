@@ -34,6 +34,7 @@ import { BASE_10_RADIX } from "#const"
 import { toStrings as refSpecToStrings } from "#domain/reference-spec"
 import type { Arguments } from "#command/fetch.service"
 import FetchCommand from "#command/fetch.service"
+import RepositoryConfig from "#config/repository-config.service"
 
 const FETCH_SUCCESS_CODE = 0
 const FETCH_NOT_FOUND_CODE = 128
@@ -41,71 +42,89 @@ const FETCH_NOT_FOUND_CODE = 128
 /**
  * Fetches the specified ref specs from the remote repository
  * @param props - The properties for the fetch operation
- * @param props.repoDir - The directory of the repository
  * @param props.depth - The depth of the fetch operation
  * @param props.deepen - Whether to deepen the fetch
- * @param props.refSpecs - The ref specs to fetch
+ * @param props.remote - The remote repository to fetch from
+ * @param props.refs - The references to fetch
  * @returns An Effect that resolves to void or FetchNotFoundError
  */
 const command = ({
-	repoDir,
 	depth,
 	deepen,
-	refSpecs,
-}: Arguments): Effect<void, FetchReferenceNotFoundError, CommandExecutor | Scope> => {
-	const { remote, refs } = refSpecToStrings(refSpecs)
+	remote,
+	refs,
+}: Arguments): Effect<
+	void,
+	FetchReferenceNotFoundError,
+	CommandExecutor | Scope | RepositoryConfig
+> =>
+	effectGen(function* () {
+		const { defaultRemote, directory: repoDirectory } = yield* RepositoryConfig
 
-	const depthString = depth.toString(BASE_10_RADIX)
+		const { remote: remoteName, refs: refStrings } = refSpecToStrings({
+			remote: remote ?? defaultRemote,
+			refs,
+		})
 
-	const depthArgument = deepen ? `--deepen=${depthString}` : `--depth=${depthString}`
+		const depthString = depth.toString(BASE_10_RADIX)
 
-	return pipe(
-		commandMake("git", "fetch", depthArgument, remote, ...refs),
-		commandWorkDir(repoDir),
-		commandStdout("pipe"),
-		commandStderr("pipe"),
-		commandStart,
-		effectOrDie,
-		effectFlatMap(({ exitCode, stdout, stderr }) => {
-			const result = pipe(
-				exitCode,
-				effectTimeoutFail({
-					duration: "8 seconds",
-					onTimeout: () => new FetchTimeoutError(),
-				}),
-				effectOrDie,
-				effectFlatMap((code) =>
-					pipe(
-						matchValue(code),
-						matchWhen(FETCH_SUCCESS_CODE, () => effectVoid),
-						matchWhen(FETCH_NOT_FOUND_CODE, () =>
-							effectFail(new FetchReferenceNotFoundError())
-						),
-						matchOrElse(() => effectDie(new FetchFailedError()))
+		const depthArgument = deepen ? `--deepen=${depthString}` : `--depth=${depthString}`
+
+		return yield* pipe(
+			commandMake("git", "fetch", depthArgument, remoteName, ...refStrings),
+			commandWorkDir(repoDirectory),
+			commandStdout("pipe"),
+			commandStderr("pipe"),
+			commandStart,
+			effectOrDie,
+			effectFlatMap(({ exitCode, stdout, stderr }) => {
+				const result = pipe(
+					exitCode,
+					effectTimeoutFail({
+						duration: "8 seconds",
+						onTimeout: () => new FetchTimeoutError(),
+					}),
+					effectOrDie,
+					effectFlatMap((code) =>
+						pipe(
+							matchValue(code),
+							matchWhen(FETCH_SUCCESS_CODE, () => effectVoid),
+							matchWhen(FETCH_NOT_FOUND_CODE, () =>
+								effectFail(new FetchReferenceNotFoundError())
+							),
+							matchOrElse(() => effectDie(new FetchFailedError()))
+						)
 					)
 				)
-			)
-			return effectAll(
-				[
-					result,
-					pipe(stdout, decodeText(), streamRunForEach(consoleLog), effectOrDie),
-					pipe(stderr, decodeText(), streamRunForEach(consoleError), effectOrDie),
-				],
-				{ concurrency: "unbounded", discard: true }
-			)
+				return effectAll(
+					[
+						result,
+						pipe(stdout, decodeText(), streamRunForEach(consoleLog), effectOrDie),
+						pipe(stderr, decodeText(), streamRunForEach(consoleError), effectOrDie),
+					],
+					{ concurrency: "unbounded", discard: true }
+				)
+			})
+		)
+	})
+
+const FetchCommandLive: Layer<FetchCommand, never, CommandExecutor | RepositoryConfig> =
+	layerEffect(
+		FetchCommand,
+		effectGen(function* () {
+			const executor = yield* CommandExecutor
+			const config = yield* RepositoryConfig
+
+			return (args: Arguments) =>
+				pipe(
+					args,
+					command,
+					effectScoped,
+					effectProvideService(CommandExecutor, executor),
+					effectProvideService(RepositoryConfig, config)
+				)
 		})
 	)
-}
-
-const FetchCommandLive: Layer<FetchCommand, never, CommandExecutor> = layerEffect(
-	FetchCommand,
-	effectGen(function* () {
-		const executor = yield* CommandExecutor
-
-		return (args: Arguments) =>
-			pipe(command(args), effectScoped, effectProvideService(CommandExecutor, executor))
-	})
-)
 
 export default FetchCommandLive
 export { command }

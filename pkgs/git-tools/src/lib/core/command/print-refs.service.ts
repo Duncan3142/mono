@@ -4,7 +4,6 @@ import type { REF_TYPE } from "#domain/reference"
 import { SERVICE_PREFIX } from "#const"
 
 interface Arguments {
-	repoDirectory: string
 	type: REF_TYPE
 }
 
@@ -13,7 +12,7 @@ interface Arguments {
  */
 class PrintRefsCommand extends Tag(`${SERVICE_PREFIX}/command/print-refs`)<
 	PrintRefsCommand,
-	({ repoDirectory, type }: Arguments) => Effect<void>
+	({ type }: Arguments) => Effect<void>
 >() {}
 
 export default PrintRefsCommand

@@ -14,20 +14,15 @@ import PrintRefsCommand from "#command/print-refs.service"
 /**
  * Prints the refs of the current git repository.
  * @param args - Context object
- * @param args.repoDirectory - Repo directory
  * @param args.level - Log level
  * @param args.message - Log message header
  * @returns - A promise that resolves when the refs are printed
  */
-const print = ({
-	message,
-	repoDirectory,
-	level,
-}: Arguments): Effect<void, never, PrintRefsCommand> =>
+const print = ({ message, level }: Arguments): Effect<void, never, PrintRefsCommand> =>
 	effectGen(function* () {
 		const command = yield* PrintRefsCommand
 
-		const doPrint = (type: REF_TYPE) => command({ repoDirectory, type })
+		const doPrint = (type: REF_TYPE) => command({ type })
 
 		yield* pipe(
 			effectAll(

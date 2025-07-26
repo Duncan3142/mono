@@ -12,8 +12,9 @@ import PrintRefs from "./print-refs.service.ts"
 import PrintRefsLive from "./print-refs.layer.ts"
 import FetchCommand from "#command/fetch.service"
 import FetchCommandLive from "#git/command/fetch.layer"
+import type RepositoryConfig from "#config/repository-config.service"
 
-const FetchLive: Layer<Fetch, never, CommandExecutor> = layerEffect(
+const FetchLive: Layer<Fetch, never, CommandExecutor | RepositoryConfig> = layerEffect(
 	Fetch,
 	effectGen(function* () {
 		const [fetchCommand, printRefs] = yield* effectAll([FetchCommand, PrintRefs], {

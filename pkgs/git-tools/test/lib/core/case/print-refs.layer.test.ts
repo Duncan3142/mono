@@ -18,11 +18,12 @@ import {
 import { pipe } from "effect/Function"
 import { type Console, withConsole } from "effect/Console"
 import { mockDeep } from "vitest-mock-extended"
-import { provide as layerProvide } from "effect/Layer"
+import { provide as layerProvide, succeed as layerSucceed } from "effect/Layer"
 import { adjust as testClockAdjust } from "effect/TestClock"
 import CommandExecutorTest, { type MockProcessProps } from "#mock/command-executor.mock"
 import PrintRefsLive from "#case/print-refs.layer"
 import PrintRefs from "#case/print-refs.service"
+import RepositoryConfig from "#config/repository-config.service"
 
 const logHandler = vi.fn<(options: Logger.Options<unknown>) => void>()
 
@@ -54,7 +55,15 @@ const tagProps = {
 
 const MainLayer = pipe(
 	PrintRefsLive,
-	layerProvide(CommandExecutorTest([branchProps, tagProps]))
+	layerProvide(CommandExecutorTest([branchProps, tagProps])),
+	layerProvide(
+		layerSucceed(RepositoryConfig, {
+			defaultRemote: {
+				name: "origin",
+			},
+			directory: process.cwd(),
+		})
+	)
 )
 
 describe("Reference Layer", () => {

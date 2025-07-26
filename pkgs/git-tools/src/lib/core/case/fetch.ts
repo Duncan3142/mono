@@ -37,7 +37,6 @@ import {
 	OPTIONAL,
 	OPTIONALITY_ORDER_MAP,
 } from "#domain/fetch-reference"
-import { DEFAULT_REMOTE } from "#domain/remote"
 import type { Reference } from "#domain/reference"
 
 const DEFAULT_DEPTH = 1
@@ -67,7 +66,7 @@ const handleOptional = <R>(result: Effect<void, FetchReferenceNotFoundError, R>)
  * @returns - A promise that resolves when the fetch is complete
  */
 const fetchReferences = ({
-	fetchRefs: { refs, remote = DEFAULT_REMOTE },
+	fetchRefs: { refs, remote },
 	repoDir,
 	depth = DEFAULT_DEPTH,
 	deepen = false,
@@ -86,13 +85,10 @@ const fetchReferences = ({
 			(references: NonEmptyReadonlyArray<Reference>) =>
 				pipe(
 					fetchCommand({
-						repoDir,
 						depth,
 						deepen,
-						refSpecs: {
-							remote,
-							refs: references,
-						},
+						remote,
+						refs: references,
 					}),
 					commandHandler
 				)

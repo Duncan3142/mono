@@ -6,6 +6,7 @@
 			"#const": ["./src/const.ts"],
 			"#layer": ["./src/layer.ts"],
 			"#service": ["./src/service.ts"],
+			"#config/*": ["./src/lib/core/config/*.ts"],
 			"#case/*": ["./src/lib/core/case/*.ts"],
 			"#command/*": ["./src/lib/core/command/*.ts"],
 			"#domain/*": ["./src/lib/core/domain/*.ts"],

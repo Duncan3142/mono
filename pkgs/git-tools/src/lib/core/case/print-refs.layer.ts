@@ -6,8 +6,9 @@ import PrintRefs, { type Arguments } from "./print-refs.service.ts"
 import printRefs from "./print-refs.ts"
 import PrintRefsCommand from "#command/print-refs.service"
 import PrintRefsCommandLive from "#git/command/print-refs.layer"
+import type RepositoryConfig from "#config/repository-config.service"
 
-const PrintRefsLive: Layer<PrintRefs, never, CommandExecutor> = layerEffect(
+const PrintRefsLive: Layer<PrintRefs, never, CommandExecutor | RepositoryConfig> = layerEffect(
 	PrintRefs,
 	effectGen(function* () {
 		const printRefsCommand = yield* PrintRefsCommand
