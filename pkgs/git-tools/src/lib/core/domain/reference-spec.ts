@@ -5,13 +5,8 @@ import {
 	exhaustive as matchExhaustive,
 } from "effect/Match"
 import { pipe } from "effect/Function"
-import {
-	BRANCH,
-	TAG,
-	type Reference,
-	type as referenceType,
-} from "#reference/core/reference.entity"
-import type { Remote } from "#remote/domain"
+import { BRANCH, TAG, type Reference, type as referenceType } from "./reference.ts"
+import type { Remote } from "./remote.ts"
 
 interface ReferenceSpec {
 	remote: Remote

@@ -45,7 +45,7 @@ const mockProcessGenerator = ({
 		const settleProcess = pipe(
 			effectAll(
 				[refSet(isRunningRef, false), deferredSucceed(exitCodeDeferred, ExitCode(exitCode))],
-				{ discard: true, concurrency: 2 }
+				{ discard: true, concurrency: "unbounded" }
 			),
 			effectDelay(delay)
 		)

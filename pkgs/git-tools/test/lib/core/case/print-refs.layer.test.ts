@@ -20,10 +20,10 @@ import { type Console, withConsole } from "effect/Console"
 import { mockDeep } from "vitest-mock-extended"
 import { provide as layerProvide } from "effect/Layer"
 import { adjust as testClockAdjust } from "effect/TestClock"
-import CommandExecutorTest, { type MockProcessProps } from "./command-executor.mock.ts"
-import ReferenceLive from "#reference/layer"
-import Reference from "#reference/service"
-import PrintCommandLive from "#reference/git/print-command.layer"
+import CommandExecutorTest, { type MockProcessProps } from "#mock/command-executor.mock"
+import PrintRefsLive from "#case/print-refs.layer"
+import PrintRefs from "#case/print-refs.service"
+import PrintRefsCommandLive from "#git/command/print-refs.layer"
 
 const logHandler = vi.fn<(options: Logger.Options<unknown>) => void>()
 
@@ -54,20 +54,20 @@ const tagProps = {
 } satisfies MockProcessProps
 
 const MainLayer = pipe(
-	ReferenceLive,
-	layerProvide(PrintCommandLive),
+	PrintRefsLive,
+	layerProvide(PrintRefsCommandLive),
 	layerProvide(CommandExecutorTest([branchProps, tagProps]))
 )
 
 describe("Reference Layer", () => {
-	it.scoped("prints references", () =>
+	it.effect("prints references", () =>
 		effectGen(function* () {
 			const result = yield* pipe(
 				effectGen(function* () {
-					const reference = yield* Reference
+					const printRefs = yield* PrintRefs
 					const fiber = yield* effectFork(
 						effectExit(
-							reference.print({
+							printRefs({
 								repoDirectory: process.cwd(),
 								level: "Info",
 								message: "Testing print references",

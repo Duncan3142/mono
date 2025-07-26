@@ -41,7 +41,7 @@ const custom: (guard: Guards) => MutableConfig = (guard) => {
 			"import-x/first": "error",
 			"import-x/exports-last": "error",
 			"import-x/newline-after-import": "error",
-			"import-x/no-duplicates": "error",
+			"import-x/no-duplicates": ["error", { "prefer-inline": true }],
 			"import-x/no-absolute-path": "error",
 			"import-x/no-useless-path-segments": "error",
 			"import-x/group-exports": "error",

@@ -7,15 +7,9 @@ import {
 } from "effect/Effect"
 import { pipe } from "effect/Function"
 import { fromLiteral as logLevelFromLiteral } from "effect/LogLevel"
-import type { Literal as LogLevelLiteral } from "effect/LogLevel"
-import PrintCommand from "./print-command.service.ts"
-import { type REF_TYPE, TAG, BRANCH } from "./reference.entity.ts"
-
-interface Arguments {
-	level: Exclude<LogLevelLiteral, "None" | "All">
-	message: string
-	repoDirectory: string
-}
+import type { Arguments } from "./print-refs.service.ts"
+import { type REF_TYPE, TAG, BRANCH } from "#domain/reference"
+import PrintRefsCommand from "#command/print-refs.service"
 
 /**
  * Prints the refs of the current git repository.
@@ -29,9 +23,9 @@ const print = ({
 	message,
 	repoDirectory,
 	level,
-}: Arguments): Effect<void, never, PrintCommand> =>
+}: Arguments): Effect<void, never, PrintRefsCommand> =>
 	effectGen(function* () {
-		const command = yield* PrintCommand
+		const command = yield* PrintRefsCommand
 
 		const doPrint = (type: REF_TYPE) => command({ repoDirectory, type })
 
