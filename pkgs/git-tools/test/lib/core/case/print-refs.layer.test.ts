@@ -22,6 +22,7 @@ import { provide as layerProvide, succeed as layerSucceed } from "effect/Layer"
 import { adjust as testClockAdjust } from "effect/TestClock"
 import CommandExecutorTest, { type MockProcessProps } from "#mock/command-executor.mock"
 import PrintRefsLive from "#case/print-refs.layer"
+import PrintRefsCommandLive from "#git/command/print-refs.layer"
 import PrintRefs from "#case/print-refs.service"
 import RepositoryConfig from "#config/repository-config.service"
 
@@ -53,8 +54,9 @@ const tagProps = {
 	stdErrLines: [],
 } satisfies MockProcessProps
 
-const MainLayer = pipe(
+const ProgramLayer = pipe(
 	PrintRefsLive,
+	layerProvide(PrintRefsCommandLive),
 	layerProvide(CommandExecutorTest([branchProps, tagProps])),
 	layerProvide(
 		layerSucceed(RepositoryConfig, {
@@ -63,7 +65,8 @@ const MainLayer = pipe(
 			},
 			directory: process.cwd(),
 		})
-	)
+	),
+	layerProvide(LoggerLayer)
 )
 
 describe("Reference Layer", () => {
@@ -84,8 +87,7 @@ describe("Reference Layer", () => {
 					yield* testClockAdjust("3 seconds")
 					return yield* effectJoin(fiber)
 				}),
-				effectProvide(MainLayer),
-				effectProvide(LoggerLayer),
+				effectProvide(ProgramLayer),
 				withConsole(mockConsole)
 			)
 
