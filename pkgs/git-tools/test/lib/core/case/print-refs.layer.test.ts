@@ -78,7 +78,6 @@ describe("Reference Layer", () => {
 					const fiber = yield* effectFork(
 						effectExit(
 							printRefs({
-								repoDirectory: process.cwd(),
 								level: "Info",
 								message: "Testing print references",
 							})

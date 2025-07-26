@@ -11,7 +11,6 @@ interface Arguments {
 		remote: Remote
 		refs: NonEmptyReadonlyArray<FetchReference>
 	}
-	repoDir: string
 	depth?: number
 	deepen?: boolean
 }

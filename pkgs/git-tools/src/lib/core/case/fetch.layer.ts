@@ -65,7 +65,6 @@ const FetchLive: Layer<Fetch, never, FetchCommand | PrintRefs> = layerEffect(
 
 		return ({
 			fetchRefs: { refs, remote },
-			repoDir,
 			depth = DEFAULT_DEPTH,
 			deepen = false,
 		}: Arguments): Effect<WasFound, FetchReferenceNotFoundError> =>
@@ -107,7 +106,7 @@ const FetchLive: Layer<Fetch, never, FetchCommand | PrintRefs> = layerEffect(
 					arrayMap(([_, effect]) => effect)
 				)
 				return yield* pipe(
-					printRefs({ repoDirectory: repoDir, level: "Debug", message: "Refs pre fetch" }),
+					printRefs({ level: "Debug", message: "Refs pre fetch" }),
 					effectAndThen(
 						effectReduce(sequence, Found, (accumulator, effect) =>
 							pipe(
@@ -116,9 +115,7 @@ const FetchLive: Layer<Fetch, never, FetchCommand | PrintRefs> = layerEffect(
 							)
 						)
 					),
-					effectTap(
-						printRefs({ repoDirectory: repoDir, level: "Debug", message: "Refs post fetch" })
-					)
+					effectTap(printRefs({ level: "Debug", message: "Refs post fetch" }))
 				)
 			})
 	})

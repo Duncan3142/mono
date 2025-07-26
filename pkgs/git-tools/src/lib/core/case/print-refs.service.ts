@@ -6,7 +6,6 @@ import { SERVICE_PREFIX } from "#const"
 interface Arguments {
 	level: Exclude<LogLevelLiteral, "None" | "All">
 	message: string
-	repoDirectory: string
 }
 
 /**
