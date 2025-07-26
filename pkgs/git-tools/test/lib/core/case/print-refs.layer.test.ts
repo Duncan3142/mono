@@ -23,7 +23,6 @@ import { adjust as testClockAdjust } from "effect/TestClock"
 import CommandExecutorTest, { type MockProcessProps } from "#mock/command-executor.mock"
 import PrintRefsLive from "#case/print-refs.layer"
 import PrintRefs from "#case/print-refs.service"
-import PrintRefsCommandLive from "#git/command/print-refs.layer"
 
 const logHandler = vi.fn<(options: Logger.Options<unknown>) => void>()
 
@@ -55,7 +54,6 @@ const tagProps = {
 
 const MainLayer = pipe(
 	PrintRefsLive,
-	layerProvide(PrintRefsCommandLive),
 	layerProvide(CommandExecutorTest([branchProps, tagProps]))
 )
 

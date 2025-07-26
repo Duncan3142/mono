@@ -21,6 +21,8 @@
 	"main": "./.tsc/dist/index.js",
 	"imports": {
 		"#const": "./.tsc/dist/const.js",
+		"#layer": "./.tsc/dist/layer.js",
+		"#service": "./.tsc/dist/service.js",
 		"#case/*": "./.tsc/dist/lib/core/case/*.js",
 		"#command/*": "./.tsc/dist/lib/core/command/*.js",
 		"#domain/*": "./.tsc/dist/lib/core/domain/*.js",
@@ -56,6 +58,7 @@
 		"@duncan3142/prettier-config": "^0.1.5",
 		"@duncan3142/tsc-config": "^0.1.8",
 		"@effect/language-service": "^0.30.0",
+		"@effect/platform-node": "^0.94.0",
 		"@effect/vitest": "^0.25.0",
 		"@eslint/config-inspector": "^1.1.0",
 		"@types/node": "^22.16.5",

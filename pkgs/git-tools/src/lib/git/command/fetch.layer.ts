@@ -24,6 +24,7 @@ import { value as matchValue, when as matchWhen, orElse as matchOrElse } from "e
 import { CommandExecutor } from "@effect/platform/CommandExecutor"
 import { effect as layerEffect, type Layer } from "effect/Layer"
 import { log as consoleLog, error as consoleError } from "effect/Console"
+import type { Scope } from "effect/Scope"
 import {
 	FetchFailedError,
 	FetchReferenceNotFoundError,
@@ -51,7 +52,7 @@ const command = ({
 	depth,
 	deepen,
 	refSpecs,
-}: Arguments): Effect<void, FetchReferenceNotFoundError, CommandExecutor> => {
+}: Arguments): Effect<void, FetchReferenceNotFoundError, CommandExecutor | Scope> => {
 	const { remote, refs } = refSpecToStrings(refSpecs)
 
 	const depthString = depth.toString(BASE_10_RADIX)
@@ -64,7 +65,6 @@ const command = ({
 		commandStdout("pipe"),
 		commandStderr("pipe"),
 		commandStart,
-		effectScoped,
 		effectOrDie,
 		effectFlatMap(({ exitCode, stdout, stderr }) => {
 			const result = pipe(
@@ -103,7 +103,7 @@ const FetchCommandLive: Layer<FetchCommand, never, CommandExecutor> = layerEffec
 		const executor = yield* CommandExecutor
 
 		return (args: Arguments) =>
-			pipe(command(args), effectProvideService(CommandExecutor, executor))
+			pipe(command(args), effectScoped, effectProvideService(CommandExecutor, executor))
 	})
 )
 

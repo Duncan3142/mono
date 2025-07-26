@@ -28,6 +28,7 @@ import {
 	stderr as commandStderr,
 	start as commandStart,
 } from "@effect/platform/Command"
+import type { Scope } from "effect/Scope"
 import { BRANCH, TAG } from "#domain/reference"
 import { PrintReferencesError, PrintReferencesTimeoutError } from "#domain/print-refs.error"
 import PrintCommand, { type Arguments } from "#command/print-refs.service"
@@ -41,7 +42,10 @@ const SUCCESS_CODE = 0
  * @param args.type - The type of references to list (branch or tag)
  * @returns An Effect that executes the git command to list references
  */
-const command = ({ repoDirectory, type }: Arguments): Effect<void, never, CommandExecutor> => {
+const command = ({
+	repoDirectory,
+	type,
+}: Arguments): Effect<void, never, CommandExecutor | Scope> => {
 	const args = pipe(
 		matchValue(type),
 		matchWhen(BRANCH, () => ["branch", "-a", "-v", "-v"]),
@@ -54,7 +58,6 @@ const command = ({ repoDirectory, type }: Arguments): Effect<void, never, Comman
 		commandStdout("pipe"),
 		commandStderr("pipe"),
 		commandStart,
-		effectScoped,
 		effectOrDie,
 		effectFlatMap(({ exitCode, stdout, stderr }) => {
 			const result = pipe(
@@ -78,7 +81,7 @@ const command = ({ repoDirectory, type }: Arguments): Effect<void, never, Comman
 					pipe(stdout, decodeText(), streamRunForEach(consoleLog), effectOrDie),
 					pipe(stderr, decodeText(), streamRunForEach(consoleError), effectOrDie),
 				],
-				{ discard: true, concurrency: "unbounded" }
+				{ concurrency: "unbounded", discard: true }
 			)
 		})
 	)
@@ -90,7 +93,7 @@ const PrintRefsCommandLive: Layer<PrintCommand, never, CommandExecutor> = layerE
 		const executor = yield* CommandExecutor
 
 		return (args: Arguments) =>
-			pipe(command(args), effectProvideService(CommandExecutor, executor))
+			pipe(command(args), effectScoped, effectProvideService(CommandExecutor, executor))
 	})
 )
 
