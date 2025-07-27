@@ -9,13 +9,8 @@ import {
 	fork as effectFork,
 	withConfigProvider,
 } from "effect/Effect"
+import { right } from "effect/Either"
 import { join as effectJoin } from "effect/Fiber"
-import {
-	make as loggerMake,
-	replace as loggerReplace,
-	defaultLogger,
-	type Logger,
-} from "effect/Logger"
 import { pipe } from "effect/Function"
 import { type Console, withConsole } from "effect/Console"
 import { mockDeep } from "vitest-mock-extended"
@@ -27,10 +22,9 @@ import PrintRefsLive from "#case/print-refs.layer"
 import PrintRefsCommandLive from "#git/command/print-refs.layer"
 import PrintRefs from "#case/print-refs.service"
 import RepositoryConfigLive from "#config/repository-config.layer"
+import LoggerTest from "#mock/logger.mock"
 
-const logHandler = vi.fn<(options: Logger.Options<unknown>) => void>()
-
-const LoggerLayer = loggerReplace(defaultLogger, loggerMake(logHandler))
+const logHandler = vi.fn<() => void>()
 
 const mockConsole = mockDeep<Console>()
 
@@ -39,21 +33,25 @@ mockConsole.error.mockImplementation(() => effectVoid)
 
 const branchProps = {
 	delay: "1 second",
-	exitCode: 0,
-	stdOutLines: [
-		`* effect-test                0468291 [origin/effect-test] abc def`,
-		`  main                       62c5d1a [origin/main] Semver @duncan3142/effect-test (#2)`,
-		`  remotes/origin/HEAD        -> origin/main`,
-		`  remotes/origin/effect-test c6722b4 Semver @duncan3142/effect-test (#1)`,
-	],
-	stdErrLines: [],
+	result: right({
+		exitCode: 0,
+		stdOutLines: [
+			`* effect-test                0468291 [origin/effect-test] abc def`,
+			`  main                       62c5d1a [origin/main] Semver @duncan3142/effect-test (#2)`,
+			`  remotes/origin/HEAD        -> origin/main`,
+			`  remotes/origin/effect-test c6722b4 Semver @duncan3142/effect-test (#1)`,
+		],
+		stdErrLines: [],
+	}),
 } satisfies MockProcessProps
 
 const tagProps = {
 	delay: "1 second",
-	exitCode: 0,
-	stdOutLines: [`@duncan3142/git-tools@0.0.0`, `@duncan3142/git-tools@0.0.1`],
-	stdErrLines: [],
+	result: right({
+		exitCode: 0,
+		stdOutLines: [`@duncan3142/git-tools@0.0.0`, `@duncan3142/git-tools@0.0.1`],
+		stdErrLines: [],
+	}),
 } satisfies MockProcessProps
 
 const ProgramLayer = pipe(
@@ -61,7 +59,7 @@ const ProgramLayer = pipe(
 	layerProvide(PrintRefsCommandLive),
 	layerProvide(CommandExecutorTest([branchProps, tagProps])),
 	layerProvide(RepositoryConfigLive),
-	layerProvide(LoggerLayer)
+	layerProvide(LoggerTest(logHandler))
 )
 
 describe("Reference Layer", () => {

@@ -1,18 +1,21 @@
 import {
 	gen as effectGen,
 	succeed as effectSucceed,
+	fail as effectFail,
 	delay as effectDelay,
 	fork as effectFork,
 	type Effect,
 	all as effectAll,
 } from "effect/Effect"
+import { match as eitherMatch } from "effect/Either"
 import {
 	make as deferredMake,
 	succeed as deferredSucceed,
 	await as deferredAwait,
 } from "effect/Deferred"
+import { map as arrayMap } from "effect/Array"
 import { make as refMake, get as refGet, set as refSet } from "effect/Ref"
-import { fromIterable as streamFromIterable } from "effect/Stream"
+import { fromIterable as streamFromIterable, fail as streamFail } from "effect/Stream"
 import { pipe } from "effect/Function"
 import {
 	CommandExecutor,
@@ -22,50 +25,67 @@ import {
 } from "@effect/platform/CommandExecutor"
 import { effect as layerEffect, type Layer } from "effect/Layer"
 import { mockDeep } from "vitest-mock-extended"
-import { vi } from "vitest"
+import { vi } from "@effect/vitest"
 import type { DurationInput } from "effect/Duration"
+import type { PlatformError } from "@effect/platform/Error"
+import type { Either } from "effect/Either"
 
 interface MockProcessProps {
-	exitCode: number
 	delay: DurationInput
-	stdOutLines: Array<string>
-	stdErrLines: Array<string>
+	result: Either<
+		{ exitCode: number; stdOutLines: Array<string>; stdErrLines: Array<string> },
+		PlatformError
+	>
 }
 
-const mockProcessGenerator = ({
-	exitCode,
-	delay,
-	stdOutLines,
-	stdErrLines,
-}: MockProcessProps): Effect<Process> =>
-	effectGen(function* () {
-		const isRunningRef = yield* refMake(true)
-		const exitCodeDeferred = yield* deferredMake<ExitCode>()
-
-		const settleProcess = pipe(
-			effectAll(
-				[refSet(isRunningRef, false), deferredSucceed(exitCodeDeferred, ExitCode(exitCode))],
-				{ discard: true, concurrency: "unbounded" }
+const mockProcessGenerator = ({ delay, result }: MockProcessProps): Effect<Process> =>
+	eitherMatch(result, {
+		onLeft: (err) =>
+			effectSucceed(
+				mockDeep<Process>({
+					isRunning: effectSucceed(false),
+					exitCode: effectFail(err),
+					stdout: streamFail(err),
+					stderr: streamFail(err),
+				})
 			),
-			effectDelay(delay)
-		)
+		onRight: ({ exitCode: exitCodeNumber, stdOutLines, stdErrLines }) =>
+			effectGen(function* () {
+				const isRunningRef = yield* refMake(true)
+				const exitCodeDeferred = yield* deferredMake<ExitCode, PlatformError>()
 
-		yield* effectFork(settleProcess)
+				const settleProcess = pipe(
+					effectAll(
+						[
+							refSet(isRunningRef, false),
+							deferredSucceed(exitCodeDeferred, ExitCode(exitCodeNumber)),
+						],
+						{ discard: true, concurrency: "unbounded" }
+					),
+					effectDelay(delay)
+				)
 
-		const isRunningEffect = refGet(isRunningRef)
-		const exitCodeEffect = deferredAwait(exitCodeDeferred)
+				yield* effectFork(settleProcess)
 
-		const encoder = new TextEncoder()
+				const isRunning = refGet(isRunningRef)
+				const exitCode = deferredAwait(exitCodeDeferred)
 
-		const stdOutBytes = stdOutLines.map((line) => encoder.encode(line))
-		const stdErrBytes = stdErrLines.map((line) => encoder.encode(line))
+				const encoder = new TextEncoder()
+				const lineToByteStream = (lines: Array<string>) =>
+					pipe(
+						arrayMap(lines, (line) => encoder.encode(line)),
+						streamFromIterable
+					)
+				const stdout = lineToByteStream(stdOutLines)
+				const stderr = lineToByteStream(stdErrLines)
 
-		return mockDeep<Process>({
-			isRunning: isRunningEffect,
-			exitCode: exitCodeEffect,
-			stdout: streamFromIterable(stdOutBytes),
-			stderr: streamFromIterable(stdErrBytes),
-		})
+				return mockDeep<Process>({
+					isRunning,
+					exitCode,
+					stdout,
+					stderr,
+				})
+			}),
 	})
 
 /**
@@ -87,10 +107,10 @@ const CommandExecutorTest: (props: CommandExecutorMockProps) => Layer<CommandExe
 	layerEffect(
 		CommandExecutor,
 		effectGen(function* (_) {
-			const branchProcess = yield* mockProcessGenerator(branchProps)
-			const tagProcess = yield* mockProcessGenerator(tagProps)
 			const start = vi.fn()
+			const branchProcess = yield* mockProcessGenerator(branchProps)
 			start.mockReturnValueOnce(effectSucceed(branchProcess))
+			const tagProcess = yield* mockProcessGenerator(tagProps)
 			start.mockReturnValueOnce(effectSucceed(tagProcess))
 			return makeExecutor(start)
 		})
