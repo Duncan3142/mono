@@ -5,14 +5,12 @@ import { SERVICE_PREFIX } from "#const"
 import type { Remote } from "#domain/remote"
 import type { FetchReference, WasFound } from "#domain/fetch-reference"
 import type { FetchRefsNotFoundError } from "#domain/fetch.error"
+import type { FetchModeInput } from "#command/fetch.service"
 
 interface Arguments {
-	fetchRefs: {
-		remote: Remote
-		refs: NonEmptyReadonlyArray<FetchReference>
-	}
-	depth?: number
-	deepen?: boolean
+	remote?: Remote
+	refs: NonEmptyReadonlyArray<FetchReference>
+	mode?: FetchModeInput
 }
 
 /**

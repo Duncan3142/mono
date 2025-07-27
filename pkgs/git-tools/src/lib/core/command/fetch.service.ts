@@ -6,10 +6,19 @@ import { SERVICE_PREFIX } from "#const"
 import type { Reference } from "#domain/reference"
 import type { Remote } from "#domain/remote"
 
+const FETCH_MODE_DEPTH = "depth"
+const FETCH_MODE_DEEPEN_BY = "deepen-by"
+
+type FetchMode = typeof FETCH_MODE_DEPTH | typeof FETCH_MODE_DEEPEN_BY
+
+interface FetchModeInput {
+	mode: FetchMode
+	value: number
+}
+
 interface Arguments {
-	readonly depth: number
-	readonly deepen: boolean
-	readonly remote?: Remote
+	readonly mode: FetchModeInput
+	readonly remote: Remote
 	readonly refs: NonEmptyReadonlyArray<Reference>
 }
 
@@ -18,8 +27,9 @@ interface Arguments {
  */
 class FetchCommand extends Tag(`${SERVICE_PREFIX}/command/fetch`)<
 	FetchCommand,
-	({ depth, deepen, remote, refs }: Arguments) => Effect<void, FetchRefsNotFoundError>
+	({ mode, remote, refs }: Arguments) => Effect<void, FetchRefsNotFoundError>
 >() {}
 
 export default FetchCommand
-export type { Arguments }
+export { FETCH_MODE_DEEPEN_BY, FETCH_MODE_DEPTH }
+export type { Arguments, FetchMode, FetchModeInput }

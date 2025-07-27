@@ -20,7 +20,12 @@ import {
 } from "effect/Effect"
 import { decodeText, runForEach as streamRunForEach } from "effect/Stream"
 import { pipe } from "effect/Function"
-import { value as matchValue, when as matchWhen, orElse as matchOrElse } from "effect/Match"
+import {
+	value as matchValue,
+	when as matchWhen,
+	orElse as matchOrElse,
+	exhaustive as matchExhaustive,
+} from "effect/Match"
 import { CommandExecutor } from "@effect/platform/CommandExecutor"
 import { effect as layerEffect, type Layer } from "effect/Layer"
 import { log as consoleLog, error as consoleError } from "effect/Console"
@@ -29,7 +34,7 @@ import { FetchRefsNotFoundError } from "#domain/fetch.error"
 import { BASE_10_RADIX } from "#const"
 import { toStrings as refSpecToStrings } from "#domain/reference-spec"
 import type { Arguments } from "#command/fetch.service"
-import FetchCommand from "#command/fetch.service"
+import FetchCommand, { FETCH_MODE_DEEPEN_BY, FETCH_MODE_DEPTH } from "#command/fetch.service"
 import RepositoryConfig from "#config/repository-config.service"
 import { GitCommandFailedError, GitCommandTimeoutError } from "#domain/git-command.error"
 
@@ -40,27 +45,33 @@ const FetchCommandLive: Layer<FetchCommand, never, CommandExecutor | RepositoryC
 	layerEffect(
 		FetchCommand,
 		effectGen(function* () {
-			const { defaultRemote, directory: repoDirectory } = yield* RepositoryConfig
+			const { directory: repoDirectory } = yield* RepositoryConfig
 			const executor = yield* CommandExecutor
 
-			return ({
-				depth,
-				deepen,
-				remote,
-				refs,
-			}: Arguments): Effect<void, FetchRefsNotFoundError> =>
+			return ({ mode, remote, refs }: Arguments): Effect<void, FetchRefsNotFoundError> =>
 				effectGen(function* () {
 					const { remote: remoteName, refs: refStrings } = refSpecToStrings({
-						remote: remote ?? defaultRemote,
+						remote,
 						refs,
 					})
 
-					const depthString = depth.toString(BASE_10_RADIX)
+					const modeValueString = (modeValue: number) => modeValue.toString(BASE_10_RADIX)
 
-					const depthArgument = deepen ? `--deepen=${depthString}` : `--depth=${depthString}`
+					const modeArg = pipe(
+						matchValue(mode),
+						matchWhen(
+							{ mode: FETCH_MODE_DEPTH },
+							({ value }) => `--depth=${modeValueString(value)}`
+						),
+						matchWhen(
+							{ mode: FETCH_MODE_DEEPEN_BY },
+							({ value }) => `--deepen=${modeValueString(value)}`
+						),
+						matchExhaustive
+					)
 
 					const subCommand = "fetch"
-					const subArgs = [depthArgument, remoteName, ...refStrings]
+					const subArgs = [modeArg, remoteName, ...refStrings]
 					const timeout: DurationInput = "8 seconds"
 
 					return yield* pipe(

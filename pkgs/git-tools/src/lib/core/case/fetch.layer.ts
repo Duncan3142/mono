@@ -24,7 +24,7 @@ import {
 import { mapInput as orderMapInput, number as orderNumber } from "effect/Order"
 import Fetch, { type Arguments } from "./fetch.service.ts"
 import PrintRefs from "./print-refs.service.ts"
-import FetchCommand from "#command/fetch.service"
+import FetchCommand, { FETCH_MODE_DEPTH } from "#command/fetch.service"
 
 import {
 	type FetchRefsNotFoundError,
@@ -40,8 +40,7 @@ import {
 	OPTIONALITY_ORDER_MAP,
 } from "#domain/fetch-reference"
 import type { Reference } from "#domain/reference"
-
-const DEFAULT_DEPTH = 1
+import RepositoryConfig from "#config/repository-config.service"
 
 const handleFound = effectAs(Found)
 
@@ -56,17 +55,24 @@ const handleOptional = <R>(result: Effect<void, FetchRefsNotFoundError, R>) =>
 		)
 	)
 
-const FetchLive: Layer<Fetch, never, FetchCommand | PrintRefs> = layerEffect(
+const FetchLive: Layer<Fetch, never, FetchCommand | PrintRefs | RepositoryConfig> = layerEffect(
 	Fetch,
 	effectGen(function* () {
-		const [fetchCommand, printRefs] = yield* effectAll([FetchCommand, PrintRefs], {
+		const [
+			fetchCommand,
+			printRefs,
+			{
+				defaultRemote,
+				fetch: { defaultDepth },
+			},
+		] = yield* effectAll([FetchCommand, PrintRefs, RepositoryConfig], {
 			concurrency: "unbounded",
 		})
 
 		return ({
-			fetchRefs: { refs, remote },
-			depth = DEFAULT_DEPTH,
-			deepen = false,
+			refs,
+			remote = defaultRemote,
+			mode = { mode: FETCH_MODE_DEPTH, value: defaultDepth },
 		}: Arguments): Effect<WasFound, FetchRefsNotFoundError> =>
 			effectGen(function* () {
 				const doFetch =
@@ -76,8 +82,7 @@ const FetchLive: Layer<Fetch, never, FetchCommand | PrintRefs> = layerEffect(
 					(references: NonEmptyReadonlyArray<Reference>) =>
 						pipe(
 							fetchCommand({
-								depth,
-								deepen,
+								mode,
 								remote,
 								refs: references,
 							}),

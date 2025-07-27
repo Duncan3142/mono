@@ -10,6 +10,11 @@ class RepositoryConfig extends Tag(`${SERVICE_PREFIX}/repo-config`)<
 	{
 		readonly directory: string
 		readonly defaultRemote: Remote
+		readonly fetch: {
+			maxDepth: number
+			defaultDepth: number
+			defaultDeepenBy: number
+		}
 	}
 >() {}
 
