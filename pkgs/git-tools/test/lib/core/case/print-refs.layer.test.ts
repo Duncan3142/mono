@@ -65,31 +65,19 @@ const ProgramLayer = pipe(
 describe("Reference Layer", () => {
 	it.effect("prints references", () =>
 		effectGen(function* () {
-			const result = yield* pipe(
-				effectGen(function* () {
-					const printRefs = yield* PrintRefs
-					const fiber = yield* effectFork(
-						effectExit(
-							printRefs({
-								level: "Info",
-								message: "Testing print references",
-							})
-						)
-					)
-					yield* testClockAdjust("3 seconds")
-					return yield* effectJoin(fiber)
-				}),
-				effectProvide(ProgramLayer),
-				withConsole(mockConsole),
-				withConfigProvider(
-					configProviderFromMap(
-						new Map([
-							["DEFAULT_REMOTE_NAME", "origin"],
-							["GIT_DIRECTORY", process.cwd()],
-						])
+			const result = yield* effectGen(function* () {
+				const printRefs = yield* PrintRefs
+				const fiber = yield* effectFork(
+					effectExit(
+						printRefs({
+							level: "Info",
+							message: "Testing print references",
+						})
 					)
 				)
-			)
+				yield* testClockAdjust("3 seconds")
+				return yield* effectJoin(fiber)
+			})
 
 			expect(result).toStrictEqual(effectVoid)
 
@@ -121,7 +109,18 @@ describe("Reference Layer", () => {
 			)
 			expect(mockConsole.log).toHaveBeenNthCalledWith(5, `@duncan3142/git-tools@0.0.0`)
 			expect(mockConsole.log).toHaveBeenNthCalledWith(6, `@duncan3142/git-tools@0.0.1`)
-		})
+		}).pipe(
+			effectProvide(ProgramLayer),
+			withConsole(mockConsole),
+			withConfigProvider(
+				configProviderFromMap(
+					new Map([
+						["DEFAULT_REMOTE_NAME", "origin"],
+						["GIT_DIRECTORY", process.cwd()],
+					])
+				)
+			)
+		)
 	)
 })
 /* eslint-enable @typescript-eslint/unbound-method -- Check mock use */

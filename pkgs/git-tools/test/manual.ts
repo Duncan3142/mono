@@ -15,6 +15,7 @@ import FetchCommandLive from "#git/command/fetch.layer"
 import PrintRefsLive from "#case/print-refs.layer"
 import PrintRefsCommandLive from "#git/command/print-refs.layer"
 import RepositoryConfigLive from "#config/repository-config.layer"
+import FetchDepthLive from "#state/fetch-depth.layer"
 
 const ProgramLive = GitLive.pipe(
 	layerProvide(FetchLive),
@@ -22,6 +23,7 @@ const ProgramLive = GitLive.pipe(
 	layerProvide(PrintRefsLive),
 	layerProvide(PrintRefsCommandLive),
 	layerProvide(NodeContext.layer),
+	layerProvide(FetchDepthLive),
 	layerProvide(RepositoryConfigLive)
 )
 
