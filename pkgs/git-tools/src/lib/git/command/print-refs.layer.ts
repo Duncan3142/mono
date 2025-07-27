@@ -28,8 +28,10 @@ import {
 	stderr as commandStderr,
 	start as commandStart,
 } from "@effect/platform/Command"
+import type { DurationInput } from "effect/Duration"
+import type { NonEmptyReadonlyArray } from "effect/Array"
 import { BRANCH, TAG } from "#domain/reference"
-import { PrintReferencesError, PrintReferencesTimeoutError } from "#domain/print-refs.error"
+import { GitCommandFailedError, GitCommandTimeoutError } from "#domain/git-command.error"
 import PrintCommand, { type Arguments } from "#command/print-refs.service"
 import RepositoryConfig from "#config/repository-config.service"
 
@@ -46,10 +48,15 @@ const PrintRefsCommandLive: Layer<PrintCommand, never, CommandExecutor | Reposit
 				effectGen(function* () {
 					const args = pipe(
 						matchValue(type),
-						matchWhen(BRANCH, () => ["branch", "-a", "-v", "-v"]),
-						matchWhen(TAG, () => ["tag"]),
+						matchWhen(
+							BRANCH,
+							(): NonEmptyReadonlyArray<string> => ["branch", "-a", "-v", "-v"]
+						),
+						matchWhen(TAG, (): NonEmptyReadonlyArray<string> => ["tag"]),
 						matchExhaustive
 					)
+					const [subcommand, ...subArgs] = args
+					const timeout: DurationInput = "2 seconds"
 					return yield* pipe(
 						commandMake("git", "--no-pager", ...args),
 						commandWorkDir(repoDirectory),
@@ -61,15 +68,24 @@ const PrintRefsCommandLive: Layer<PrintCommand, never, CommandExecutor | Reposit
 							const result = pipe(
 								exitCode,
 								effectTimeoutFail({
-									duration: "2 seconds",
-									onTimeout: () => new PrintReferencesTimeoutError(),
+									duration: timeout,
+									onTimeout: () =>
+										new GitCommandTimeoutError({ timeout, command: subcommand, args: subArgs }),
 								}),
 								effectOrDie,
 								effectFlatMap((code) =>
 									pipe(
 										matchValue(code),
 										matchWhen(SUCCESS_CODE, () => effectVoid),
-										matchOrElse(() => effectDie(new PrintReferencesError()))
+										matchOrElse((errorCode) =>
+											effectDie(
+												new GitCommandFailedError({
+													exitCode: errorCode,
+													command: subcommand,
+													args: subArgs,
+												})
+											)
+										)
 									)
 								)
 							)

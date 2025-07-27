@@ -4,7 +4,7 @@ import type { NonEmptyReadonlyArray } from "effect/Array"
 import { SERVICE_PREFIX } from "#const"
 import type { Remote } from "#domain/remote"
 import type { FetchReference, WasFound } from "#domain/fetch-reference"
-import type { FetchReferenceNotFoundError } from "#domain/fetch.error"
+import type { FetchRefsNotFoundError } from "#domain/fetch.error"
 
 interface Arguments {
 	fetchRefs: {
@@ -20,7 +20,7 @@ interface Arguments {
  */
 class Fetch extends Tag(`${SERVICE_PREFIX}/case/fetch`)<
 	Fetch,
-	(args: Arguments) => Effect<WasFound, FetchReferenceNotFoundError>
+	(args: Arguments) => Effect<WasFound, FetchRefsNotFoundError>
 >() {}
 
 export default Fetch

@@ -1,7 +1,7 @@
 import type { Effect } from "effect/Effect"
 import { Tag } from "effect/Context"
 import type { NonEmptyReadonlyArray } from "effect/Array"
-import type { FetchReferenceNotFoundError } from "#domain/fetch.error"
+import type { FetchRefsNotFoundError } from "#domain/fetch.error"
 import { SERVICE_PREFIX } from "#const"
 import type { Reference } from "#domain/reference"
 import type { Remote } from "#domain/remote"
@@ -18,7 +18,7 @@ interface Arguments {
  */
 class FetchCommand extends Tag(`${SERVICE_PREFIX}/command/fetch`)<
 	FetchCommand,
-	({ depth, deepen, remote, refs }: Arguments) => Effect<void, FetchReferenceNotFoundError>
+	({ depth, deepen, remote, refs }: Arguments) => Effect<void, FetchRefsNotFoundError>
 >() {}
 
 export default FetchCommand

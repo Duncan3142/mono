@@ -27,8 +27,8 @@ import PrintRefs from "./print-refs.service.ts"
 import FetchCommand from "#command/fetch.service"
 
 import {
-	type FetchReferenceNotFoundError,
-	FETCH_REFERENCE_NOT_FOUND_ERROR_TAG,
+	type FetchRefsNotFoundError,
+	FETCH_REFS_NOT_FOUND_ERROR_TAG,
 } from "#domain/fetch.error"
 import {
 	Found,
@@ -47,11 +47,11 @@ const handleFound = effectAs(Found)
 
 const handleRequired = handleFound
 
-const handleOptional = <R>(result: Effect<void, FetchReferenceNotFoundError, R>) =>
+const handleOptional = <R>(result: Effect<void, FetchRefsNotFoundError, R>) =>
 	pipe(
 		result,
 		handleFound,
-		effectCatchTag(FETCH_REFERENCE_NOT_FOUND_ERROR_TAG, () =>
+		effectCatchTag(FETCH_REFS_NOT_FOUND_ERROR_TAG, () =>
 			pipe(effectLogWarning("Failed to fetch one or more optional refs"), effectAs(NotFound))
 		)
 	)
@@ -67,13 +67,11 @@ const FetchLive: Layer<Fetch, never, FetchCommand | PrintRefs> = layerEffect(
 			fetchRefs: { refs, remote },
 			depth = DEFAULT_DEPTH,
 			deepen = false,
-		}: Arguments): Effect<WasFound, FetchReferenceNotFoundError> =>
+		}: Arguments): Effect<WasFound, FetchRefsNotFoundError> =>
 			effectGen(function* () {
 				const doFetch =
 					<E>(
-						commandHandler: (
-							result: Effect<void, FetchReferenceNotFoundError>
-						) => Effect<boolean, E>
+						commandHandler: (result: Effect<void, FetchRefsNotFoundError>) => Effect<boolean, E>
 					) =>
 					(references: NonEmptyReadonlyArray<Reference>) =>
 						pipe(

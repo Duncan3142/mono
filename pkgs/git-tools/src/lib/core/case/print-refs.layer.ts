@@ -17,22 +17,15 @@ const PrintRefsLive: Layer<PrintRefs, never, PrintRefsCommand> = layerEffect(
 	effectGen(function* () {
 		const command = yield* PrintRefsCommand
 
-		return ({ message, level }: Arguments): Effect<void> =>
+		return ({ message, level: logLevelLiteral }: Arguments): Effect<void> =>
 			effectGen(function* () {
 				const doPrint = (type: REF_TYPE) => command({ type })
-
+				const logLevel = logLevelFromLiteral(logLevelLiteral)
 				yield* pipe(
-					effectAll(
-						[
-							effectLogWithLevel(logLevelFromLiteral(level), message),
-							doPrint(BRANCH),
-							doPrint(TAG),
-						],
-						{
-							discard: true,
-						}
-					),
-					effectWhenLogLevel(level)
+					effectAll([effectLogWithLevel(logLevel, message), doPrint(BRANCH), doPrint(TAG)], {
+						discard: true,
+					}),
+					effectWhenLogLevel(logLevel)
 				)
 			})
 	})

@@ -24,16 +24,14 @@ import { value as matchValue, when as matchWhen, orElse as matchOrElse } from "e
 import { CommandExecutor } from "@effect/platform/CommandExecutor"
 import { effect as layerEffect, type Layer } from "effect/Layer"
 import { log as consoleLog, error as consoleError } from "effect/Console"
-import {
-	FetchFailedError,
-	FetchReferenceNotFoundError,
-	FetchTimeoutError,
-} from "#domain/fetch.error"
+import type { DurationInput } from "effect/Duration"
+import { FetchRefsNotFoundError } from "#domain/fetch.error"
 import { BASE_10_RADIX } from "#const"
 import { toStrings as refSpecToStrings } from "#domain/reference-spec"
 import type { Arguments } from "#command/fetch.service"
 import FetchCommand from "#command/fetch.service"
 import RepositoryConfig from "#config/repository-config.service"
+import { GitCommandFailedError, GitCommandTimeoutError } from "#domain/git-command.error"
 
 const FETCH_SUCCESS_CODE = 0
 const FETCH_NOT_FOUND_CODE = 128
@@ -50,7 +48,7 @@ const FetchCommandLive: Layer<FetchCommand, never, CommandExecutor | RepositoryC
 				deepen,
 				remote,
 				refs,
-			}: Arguments): Effect<void, FetchReferenceNotFoundError> =>
+			}: Arguments): Effect<void, FetchRefsNotFoundError> =>
 				effectGen(function* () {
 					const { remote: remoteName, refs: refStrings } = refSpecToStrings({
 						remote: remote ?? defaultRemote,
@@ -61,8 +59,12 @@ const FetchCommandLive: Layer<FetchCommand, never, CommandExecutor | RepositoryC
 
 					const depthArgument = deepen ? `--deepen=${depthString}` : `--depth=${depthString}`
 
+					const subCommand = "fetch"
+					const subArgs = [depthArgument, remoteName, ...refStrings]
+					const timeout: DurationInput = "8 seconds"
+
 					return yield* pipe(
-						commandMake("git", "fetch", depthArgument, remoteName, ...refStrings),
+						commandMake("git", subCommand, ...subArgs),
 						commandWorkDir(repoDirectory),
 						commandStdout("pipe"),
 						commandStderr("pipe"),
@@ -72,8 +74,13 @@ const FetchCommandLive: Layer<FetchCommand, never, CommandExecutor | RepositoryC
 							const result = pipe(
 								exitCode,
 								effectTimeoutFail({
-									duration: "8 seconds",
-									onTimeout: () => new FetchTimeoutError(),
+									duration: timeout,
+									onTimeout: () =>
+										new GitCommandTimeoutError({
+											timeout,
+											command: subCommand,
+											args: subArgs,
+										}),
 								}),
 								effectOrDie,
 								effectFlatMap((code) =>
@@ -81,9 +88,21 @@ const FetchCommandLive: Layer<FetchCommand, never, CommandExecutor | RepositoryC
 										matchValue(code),
 										matchWhen(FETCH_SUCCESS_CODE, () => effectVoid),
 										matchWhen(FETCH_NOT_FOUND_CODE, () =>
-											effectFail(new FetchReferenceNotFoundError())
+											effectFail(
+												new FetchRefsNotFoundError({
+													references: refStrings,
+												})
+											)
 										),
-										matchOrElse(() => effectDie(new FetchFailedError()))
+										matchOrElse((errorCode) =>
+											effectDie(
+												new GitCommandFailedError({
+													exitCode: errorCode,
+													command: subCommand,
+													args: subArgs,
+												})
+											)
+										)
 									)
 								)
 							)
