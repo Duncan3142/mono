@@ -1,35 +1,6 @@
-import {
-	make as commandMake,
-	start as commandStart,
-	stdout as commandStdout,
-	workingDirectory as commandWorkDir,
-	stderr as commandStderr,
-} from "@effect/platform/Command"
-import {
-	type Effect,
-	flatMap as effectFlatMap,
-	void as effectVoid,
-	fail as effectFail,
-	orDie as effectOrDie,
-	die as effectDie,
-	timeoutFail as effectTimeoutFail,
-	all as effectAll,
-	provideService as effectProvideService,
-	gen as effectGen,
-	scoped as effectScoped,
-} from "effect/Effect"
-import { decodeText, runForEach as streamRunForEach } from "effect/Stream"
-import { pipe } from "effect/Function"
-import {
-	value as matchValue,
-	when as matchWhen,
-	orElse as matchOrElse,
-	exhaustive as matchExhaustive,
-} from "effect/Match"
-import { CommandExecutor } from "@effect/platform/CommandExecutor"
-import { effect as layerEffect, type Layer } from "effect/Layer"
-import { log as consoleLog, error as consoleError } from "effect/Console"
-import type { DurationInput } from "effect/Duration"
+import { Command, CommandExecutor } from "@effect/platform"
+import type { Duration } from "effect"
+import { Effect, Match, Stream, pipe, Layer, Console } from "effect"
 import { FetchRefsNotFoundError } from "#domain/fetch.error"
 import { BASE_10_RADIX } from "#const"
 import { toStrings as refSpecToStrings } from "#domain/reference-spec"
@@ -41,96 +12,104 @@ import { GitCommandFailedError, GitCommandTimeoutError } from "#domain/git-comma
 const FETCH_SUCCESS_CODE = 0
 const FETCH_NOT_FOUND_CODE = 128
 
-const FetchCommandLive: Layer<FetchCommand, never, CommandExecutor | RepositoryConfig> =
-	layerEffect(
-		FetchCommand,
-		effectGen(function* () {
-			const { directory: repoDirectory } = yield* RepositoryConfig
-			const executor = yield* CommandExecutor
+const FetchCommandLive: Layer.Layer<
+	FetchCommand,
+	never,
+	CommandExecutor.CommandExecutor | RepositoryConfig
+> = Layer.effect(
+	FetchCommand,
+	Effect.gen(function* () {
+		const { directory: repoDirectory } = yield* RepositoryConfig
+		const executor = yield* CommandExecutor.CommandExecutor
 
-			return ({ mode, remote, refs }: Arguments): Effect<void, FetchRefsNotFoundError> =>
-				effectGen(function* () {
-					const { remote: remoteName, refs: refStrings } = refSpecToStrings({
-						remote,
-						refs,
-					})
+		return ({ mode, remote, refs }: Arguments): Effect.Effect<void, FetchRefsNotFoundError> =>
+			Effect.gen(function* () {
+				const { remote: remoteName, refs: refStrings } = refSpecToStrings({
+					remote,
+					refs,
+				})
 
-					const modeValueString = (modeValue: number) => modeValue.toString(BASE_10_RADIX)
+				const modeValueString = (modeValue: number) => modeValue.toString(BASE_10_RADIX)
 
-					const modeArg = pipe(
-						matchValue(mode),
-						matchWhen(
-							{ mode: FETCH_MODE_DEPTH },
-							({ value }) => `--depth=${modeValueString(value)}`
-						),
-						matchWhen(
-							{ mode: FETCH_MODE_DEEPEN_BY },
-							({ value }) => `--deepen=${modeValueString(value)}`
-						),
-						matchExhaustive
-					)
+				const modeArg = pipe(
+					Match.value(mode),
+					Match.when(
+						{ mode: FETCH_MODE_DEPTH },
+						({ value }) => `--depth=${modeValueString(value)}`
+					),
+					Match.when(
+						{ mode: FETCH_MODE_DEEPEN_BY },
+						({ value }) => `--deepen=${modeValueString(value)}`
+					),
+					Match.exhaustive
+				)
 
-					const subCommand = "fetch"
-					const subArgs = [modeArg, remoteName, ...refStrings]
-					const timeout: DurationInput = "8 seconds"
+				const subCommand = "fetch"
+				const subArgs = [modeArg, remoteName, ...refStrings]
+				const timeout: Duration.DurationInput = "8 seconds"
 
-					return yield* pipe(
-						commandMake("git", subCommand, ...subArgs),
-						commandWorkDir(repoDirectory),
-						commandStdout("pipe"),
-						commandStderr("pipe"),
-						commandStart,
-						effectOrDie,
-						effectFlatMap(({ exitCode, stdout, stderr }) => {
-							const result = pipe(
-								exitCode,
-								effectTimeoutFail({
-									duration: timeout,
-									onTimeout: () =>
-										new GitCommandTimeoutError({
-											timeout,
-											command: subCommand,
-											args: subArgs,
-										}),
-								}),
-								effectOrDie,
-								effectFlatMap((code) =>
-									pipe(
-										matchValue(code),
-										matchWhen(FETCH_SUCCESS_CODE, () => effectVoid),
-										matchWhen(FETCH_NOT_FOUND_CODE, () =>
-											effectFail(
-												new FetchRefsNotFoundError({
-													references: refStrings,
-												})
-											)
-										),
-										matchOrElse((errorCode) =>
-											effectDie(
-												new GitCommandFailedError({
-													exitCode: errorCode,
-													command: subCommand,
-													args: subArgs,
-												})
-											)
+				return yield* pipe(
+					Command.make("git", subCommand, ...subArgs),
+					Command.workingDirectory(repoDirectory),
+					Command.stdout("pipe"),
+					Command.stderr("pipe"),
+					Command.start,
+					Effect.orDie,
+					Effect.flatMap(({ exitCode, stdout, stderr }) => {
+						const result = pipe(
+							exitCode,
+							Effect.timeoutFail({
+								duration: timeout,
+								onTimeout: () =>
+									new GitCommandTimeoutError({
+										timeout,
+										command: subCommand,
+										args: subArgs,
+									}),
+							}),
+							Effect.orDie,
+							Effect.flatMap((code) =>
+								pipe(
+									Match.value(code),
+									Match.when(FETCH_SUCCESS_CODE, () => Effect.void),
+									Match.when(FETCH_NOT_FOUND_CODE, () =>
+										Effect.fail(
+											new FetchRefsNotFoundError({
+												references: refStrings,
+											})
+										)
+									),
+									Match.orElse((errorCode) =>
+										Effect.die(
+											new GitCommandFailedError({
+												exitCode: errorCode,
+												command: subCommand,
+												args: subArgs,
+											})
 										)
 									)
 								)
 							)
-							return effectAll(
-								[
-									result,
-									pipe(stdout, decodeText(), streamRunForEach(consoleLog), effectOrDie),
-									pipe(stderr, decodeText(), streamRunForEach(consoleError), effectOrDie),
-								],
-								{ concurrency: "unbounded", discard: true }
-							)
-						}),
-						effectScoped,
-						effectProvideService(CommandExecutor, executor)
-					)
-				})
-		})
-	)
+						)
+						return Effect.all(
+							[
+								result,
+								pipe(stdout, Stream.decodeText(), Stream.runForEach(Console.log), Effect.orDie),
+								pipe(
+									stderr,
+									Stream.decodeText(),
+									Stream.runForEach(Console.error),
+									Effect.orDie
+								),
+							],
+							{ concurrency: "unbounded", discard: true }
+						)
+					}),
+					Effect.scoped,
+					Effect.provideService(CommandExecutor.CommandExecutor, executor)
+				)
+			})
+	})
+)
 
 export default FetchCommandLive

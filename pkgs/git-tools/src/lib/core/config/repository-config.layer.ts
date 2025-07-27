@@ -1,52 +1,44 @@
-import { type Layer, effect as layerEffect } from "effect/Layer"
-import {
-	string as configString,
-	number as configNumber,
-	withDefault as configWithDefault,
-	all as configAll,
-	nested as configNested,
-	map as configMap,
-} from "effect/Config"
-import { gen as effectGen } from "effect/Effect"
-import type { ConfigError } from "effect/ConfigError"
+import type { ConfigError } from "effect"
+import { Layer, Config, Effect } from "effect"
 import RepositoryConfig from "./repository-config.service.ts"
 
 const DEFAULT_REMOTE_NAME = "origin"
 
 const FETCH = { DEFAULT_DEPTH: 1, DEFAULT_DEEPEN_BY: 512, DEFAULT_MAX_DEPTH: 1024 }
 
-const RepositoryConfigLive: Layer<RepositoryConfig, ConfigError> = layerEffect(
-	RepositoryConfig,
-	effectGen(function* () {
-		const defaultRemote = yield* configNested(
-			configString("NAME").pipe(configWithDefault(DEFAULT_REMOTE_NAME)),
-			"DEFAULT_REMOTE"
-		).pipe(
-			configMap((name) => {
-				return { name }
-			})
-		)
-		const gitDirectory = yield* configString("GIT_DIRECTORY")
+const RepositoryConfigLive: Layer.Layer<RepositoryConfig, ConfigError.ConfigError> =
+	Layer.effect(
+		RepositoryConfig,
+		Effect.gen(function* () {
+			const defaultRemote = yield* Config.nested(
+				Config.string("NAME").pipe(Config.withDefault(DEFAULT_REMOTE_NAME)),
+				"DEFAULT_REMOTE"
+			).pipe(
+				Config.map((name) => {
+					return { name }
+				})
+			)
+			const gitDirectory = yield* Config.string("GIT_DIRECTORY")
 
-		const fetch = yield* configNested(
-			configAll([
-				configNumber("DEFAULT_DEPTH").pipe(configWithDefault(FETCH.DEFAULT_DEPTH)),
-				configNumber("DEFAULT_DEEPEN_BY").pipe(configWithDefault(FETCH.DEFAULT_DEEPEN_BY)),
-				configNumber("DEFAULT_MAX_DEPTH").pipe(configWithDefault(FETCH.DEFAULT_MAX_DEPTH)),
-			]),
-			"FETCH"
-		).pipe(
-			configMap(([defaultDepth, defaultDeepenBy, maxDepth]) => {
-				return { defaultDepth, defaultDeepenBy, maxDepth }
-			})
-		)
+			const fetch = yield* Config.nested(
+				Config.all([
+					Config.number("DEFAULT_DEPTH").pipe(Config.withDefault(FETCH.DEFAULT_DEPTH)),
+					Config.number("DEFAULT_DEEPEN_BY").pipe(Config.withDefault(FETCH.DEFAULT_DEEPEN_BY)),
+					Config.number("DEFAULT_MAX_DEPTH").pipe(Config.withDefault(FETCH.DEFAULT_MAX_DEPTH)),
+				]),
+				"FETCH"
+			).pipe(
+				Config.map(([defaultDepth, defaultDeepenBy, maxDepth]) => {
+					return { defaultDepth, defaultDeepenBy, maxDepth }
+				})
+			)
 
-		return {
-			directory: gitDirectory,
-			defaultRemote,
-			fetch,
-		}
-	})
-)
+			return {
+				directory: gitDirectory,
+				defaultRemote,
+				fetch,
+			}
+		})
+	)
 
 export default RepositoryConfigLive

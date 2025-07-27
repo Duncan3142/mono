@@ -1,19 +1,18 @@
-import type { Effect } from "effect/Effect"
-import { Tag } from "effect/Context"
-import type { Literal as LogLevelLiteral } from "effect/LogLevel"
+import type { Effect, LogLevel } from "effect"
+import { Context } from "effect"
 import { SERVICE_PREFIX } from "#const"
 
 interface Arguments {
-	level: Exclude<LogLevelLiteral, "None" | "All">
+	level: Exclude<LogLevel.Literal, "None" | "All">
 	message: string
 }
 
 /**
  * Reference service
  */
-class PrintRefs extends Tag(`${SERVICE_PREFIX}/case/print-refs`)<
+class PrintRefs extends Context.Tag(`${SERVICE_PREFIX}/case/print-refs`)<
 	PrintRefs,
-	(args: Arguments) => Effect<void>
+	(args: Arguments) => Effect.Effect<void>
 >() {}
 
 export default PrintRefs

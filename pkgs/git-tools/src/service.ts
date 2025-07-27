@@ -1,4 +1,4 @@
-import { Tag } from "effect/Context"
+import { Context } from "effect"
 import type PrintRefs from "#case/print-refs.service"
 import type Fetch from "#case/fetch.service"
 import { SERVICE_PREFIX } from "#const"
@@ -6,11 +6,11 @@ import { SERVICE_PREFIX } from "#const"
 /**
  * Git service
  */
-class Git extends Tag(`${SERVICE_PREFIX}/git`)<
+class Git extends Context.Tag(`${SERVICE_PREFIX}/git`)<
 	Git,
 	{
-		readonly printRefs: Tag.Service<PrintRefs>
-		readonly fetch: Tag.Service<Fetch>
+		readonly printRefs: Context.Tag.Service<PrintRefs>
+		readonly fetch: Context.Tag.Service<Fetch>
 	}
 >() {}
 

@@ -1,22 +1,9 @@
 /* eslint-disable @typescript-eslint/unbound-method -- Check mock use */
 /* eslint-disable @typescript-eslint/no-magic-numbers -- Check mock use */
 import { expect, describe, it, vi } from "@effect/vitest"
-import {
-	exit as effectExit,
-	gen as effectGen,
-	provide as effectProvide,
-	void as effectVoid,
-	fork as effectFork,
-	withConfigProvider,
-} from "effect/Effect"
-import { right } from "effect/Either"
-import { join as effectJoin } from "effect/Fiber"
-import { pipe } from "effect/Function"
-import { type Console, withConsole } from "effect/Console"
+import type { Console } from "effect"
+import { Effect, Fiber, pipe, ConfigProvider, Layer, TestClock, Either } from "effect"
 import { mockDeep } from "vitest-mock-extended"
-import { provide as layerProvide } from "effect/Layer"
-import { adjust as testClockAdjust } from "effect/TestClock"
-import { fromMap as configProviderFromMap } from "effect/ConfigProvider"
 import CommandExecutorTest, { type MockProcessProps } from "#mock/command-executor.mock"
 import PrintRefsLive from "#case/print-refs.layer"
 import PrintRefsCommandLive from "#git/command/print-refs.layer"
@@ -26,14 +13,14 @@ import LoggerTest from "#mock/logger.mock"
 
 const logHandler = vi.fn<() => void>()
 
-const mockConsole = mockDeep<Console>()
+const mockConsole = mockDeep<Console.Console>()
 
-mockConsole.log.mockImplementation(() => effectVoid)
-mockConsole.error.mockImplementation(() => effectVoid)
+mockConsole.log.mockImplementation(() => Effect.void)
+mockConsole.error.mockImplementation(() => Effect.void)
 
 const branchProps = {
 	delay: "1 second",
-	result: right({
+	result: Either.right({
 		exitCode: 0,
 		stdOutLines: [
 			`* effect-test                0468291 [origin/effect-test] abc def`,
@@ -47,7 +34,7 @@ const branchProps = {
 
 const tagProps = {
 	delay: "1 second",
-	result: right({
+	result: Either.right({
 		exitCode: 0,
 		stdOutLines: [`@duncan3142/git-tools@0.0.0`, `@duncan3142/git-tools@0.0.1`],
 		stdErrLines: [],
@@ -56,30 +43,30 @@ const tagProps = {
 
 const ProgramLayer = pipe(
 	PrintRefsLive,
-	layerProvide(PrintRefsCommandLive),
-	layerProvide(CommandExecutorTest([branchProps, tagProps])),
-	layerProvide(RepositoryConfigLive),
-	layerProvide(LoggerTest(logHandler))
+	Layer.provide(PrintRefsCommandLive),
+	Layer.provide(CommandExecutorTest([branchProps, tagProps])),
+	Layer.provide(RepositoryConfigLive),
+	Layer.provide(LoggerTest(logHandler))
 )
 
 describe("Reference Layer", () => {
 	it.effect("prints references", () =>
-		effectGen(function* () {
-			const result = yield* effectGen(function* () {
+		Effect.gen(function* () {
+			const result = yield* Effect.gen(function* () {
 				const printRefs = yield* PrintRefs
-				const fiber = yield* effectFork(
-					effectExit(
+				const fiber = yield* Effect.fork(
+					Effect.exit(
 						printRefs({
 							level: "Info",
 							message: "Testing print references",
 						})
 					)
 				)
-				yield* testClockAdjust("3 seconds")
-				return yield* effectJoin(fiber)
+				yield* TestClock.adjust("3 seconds")
+				return yield* Fiber.join(fiber)
 			})
 
-			expect(result).toStrictEqual(effectVoid)
+			expect(result).toStrictEqual(Effect.void)
 
 			expect(logHandler).toHaveBeenCalledTimes(1)
 			expect(logHandler).toHaveBeenNthCalledWith(
@@ -110,10 +97,10 @@ describe("Reference Layer", () => {
 			expect(mockConsole.log).toHaveBeenNthCalledWith(5, `@duncan3142/git-tools@0.0.0`)
 			expect(mockConsole.log).toHaveBeenNthCalledWith(6, `@duncan3142/git-tools@0.0.1`)
 		}).pipe(
-			effectProvide(ProgramLayer),
-			withConsole(mockConsole),
-			withConfigProvider(
-				configProviderFromMap(
+			Effect.provide(ProgramLayer),
+			Effect.withConsole(mockConsole),
+			Effect.withConfigProvider(
+				ConfigProvider.fromMap(
 					new Map([
 						["DEFAULT_REMOTE_NAME", "origin"],
 						["GIT_DIRECTORY", process.cwd()],

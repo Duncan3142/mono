@@ -1,5 +1,5 @@
-import type { Effect } from "effect/Effect"
-import { Tag } from "effect/Context"
+import type { Effect } from "effect"
+import { Context } from "effect"
 import type { REF_TYPE } from "#domain/reference"
 import { SERVICE_PREFIX } from "#const"
 
@@ -10,9 +10,9 @@ interface Arguments {
 /**
  * Print refs command service
  */
-class PrintRefsCommand extends Tag(`${SERVICE_PREFIX}/command/print-refs`)<
+class PrintRefsCommand extends Context.Tag(`${SERVICE_PREFIX}/command/print-refs`)<
 	PrintRefsCommand,
-	({ type }: Arguments) => Effect<void>
+	({ type }: Arguments) => Effect.Effect<void>
 >() {}
 
 export default PrintRefsCommand

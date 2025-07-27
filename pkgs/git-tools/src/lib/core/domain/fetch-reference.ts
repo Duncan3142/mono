@@ -1,4 +1,4 @@
-import { mapInput as orderMapInput, type Order, boolean as orderBoolean } from "effect/Order"
+import { Order } from "effect"
 
 import type { Reference } from "./reference.ts"
 
@@ -47,8 +47,9 @@ const optionalString = (reference: FetchReference): Optional | Required =>
  * @param reference - Reference to check
  * @returns FetchReference order
  */
-const sortByOptionality: Order<FetchReference> = orderMapInput(orderBoolean, (reference) =>
-	isOptional(reference)
+const sortByOptionality: Order.Order<FetchReference> = Order.mapInput(
+	Order.boolean,
+	(reference) => isOptional(reference)
 )
 
 export type { WasFound, FetchReference, Optional, Required }

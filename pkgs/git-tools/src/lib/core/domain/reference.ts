@@ -1,4 +1,4 @@
-import { mapInput as orderMapInput, string as orderString, type Order } from "effect/Order"
+import { Order } from "effect"
 
 const BRANCH = "branch"
 const TAG = "tag"
@@ -26,14 +26,16 @@ const type = (reference: Reference): REF_TYPE => reference.type ?? BRANCH
  * @param reference - Reference to check
  * @returns Reference ordering
  */
-const sortByType: Order<Reference> = orderMapInput(orderString, (reference) => type(reference))
+const sortByType: Order.Order<Reference> = Order.mapInput(Order.string, (reference) =>
+	type(reference)
+)
 
 /**
  * Order reference order by name
  * @param reference - Reference to check
  * @returns Reference ordering
  */
-const sortByName: Order<Reference> = orderMapInput(orderString, ({ name }) => name)
+const sortByName: Order.Order<Reference> = Order.mapInput(Order.string, ({ name }) => name)
 
 export type { BRANCH_TYPE, TAG_TYPE, REF_TYPE, Reference }
 export { BRANCH, TAG, type, sortByType, sortByName }

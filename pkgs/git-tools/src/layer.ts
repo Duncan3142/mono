@@ -1,14 +1,13 @@
-import { effect as layerEffect, type Layer } from "effect/Layer"
-import { gen as effectGen, all as effectAll } from "effect/Effect"
-import type { ConfigError } from "effect/ConfigError"
+import type { ConfigError } from "effect"
+import { Layer, Effect } from "effect"
 import Git from "./service.ts"
 import PrintRefs from "#case/print-refs.service"
 import Fetch from "#case/fetch.service"
 
-const GitLive: Layer<Git, ConfigError, PrintRefs | Fetch> = layerEffect(
+const GitLive: Layer.Layer<Git, ConfigError.ConfigError, PrintRefs | Fetch> = Layer.effect(
 	Git,
-	effectGen(function* () {
-		const [printRefs, fetch] = yield* effectAll([PrintRefs, Fetch])
+	Effect.gen(function* () {
+		const [printRefs, fetch] = yield* Effect.all([PrintRefs, Fetch])
 
 		return {
 			printRefs,

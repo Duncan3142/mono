@@ -1,17 +1,14 @@
 import { describe, it, expect } from "@effect/vitest"
-import { gen as effectGen, provide as effectProvide, withConfigProvider } from "effect/Effect"
-import { pipe } from "effect/Function"
-import { provide as layerProvide } from "effect/Layer"
-import { fromMap as configProviderFromMap } from "effect/ConfigProvider"
+import { ConfigProvider, Effect, Layer, pipe } from "effect"
 import FetchDepth from "#state/fetch-depth.service"
 import FetchDepthLive from "#state/fetch-depth.layer"
 import RepositoryConfigLive from "#config/repository-config.layer"
 
-const ProgramTest = pipe(FetchDepthLive, layerProvide(RepositoryConfigLive))
+const ProgramTest = pipe(FetchDepthLive, Layer.provide(RepositoryConfigLive))
 
 describe("FetchDepth", () => {
 	it.effect("should increment", () =>
-		effectGen(function* () {
+		Effect.gen(function* () {
 			const fetchDepth = yield* FetchDepth
 			const depth = yield* fetchDepth.get
 			const ZERO = 0
@@ -25,9 +22,9 @@ describe("FetchDepth", () => {
 			const incrementedDepthAgain = yield* fetchDepth.get
 			expect(incrementedDepthAgain).toBe(TWO)
 		}).pipe(
-			effectProvide(ProgramTest),
-			withConfigProvider(
-				configProviderFromMap(
+			Effect.provide(ProgramTest),
+			Effect.withConfigProvider(
+				ConfigProvider.fromMap(
 					new Map([
 						["DEFAULT_REMOTE_NAME", "origin"],
 						["GIT_DIRECTORY", process.cwd()],
@@ -37,9 +34,9 @@ describe("FetchDepth", () => {
 		)
 	)
 	it.effect("should increment across scopes independently", () =>
-		effectGen(function* () {
+		Effect.gen(function* () {
 			const program = (incBy: number) =>
-				effectGen(function* () {
+				Effect.gen(function* () {
 					const fetchDepth = yield* FetchDepth
 
 					yield* fetchDepth.inc(incBy)
@@ -47,14 +44,14 @@ describe("FetchDepth", () => {
 				})
 			const EIGHT = 8
 			const NINE = 9
-			const eight = yield* program(EIGHT).pipe(effectProvide(FetchDepthLive))
-			const nine = yield* program(NINE).pipe(effectProvide(FetchDepthLive))
+			const eight = yield* program(EIGHT).pipe(Effect.provide(FetchDepthLive))
+			const nine = yield* program(NINE).pipe(Effect.provide(FetchDepthLive))
 			expect(eight).toBe(EIGHT)
 			expect(nine).toBe(NINE)
 		}).pipe(
-			effectProvide(RepositoryConfigLive),
-			withConfigProvider(
-				configProviderFromMap(
+			Effect.provide(RepositoryConfigLive),
+			Effect.withConfigProvider(
+				ConfigProvider.fromMap(
 					new Map([
 						["DEFAULT_REMOTE_NAME", "origin"],
 						["GIT_DIRECTORY", process.cwd()],
@@ -64,9 +61,9 @@ describe("FetchDepth", () => {
 		)
 	)
 	it.effect("should increment within a scope dependently", () =>
-		effectGen(function* () {
+		Effect.gen(function* () {
 			const program = (incBy: number) =>
-				effectGen(function* () {
+				Effect.gen(function* () {
 					const fetchDepth = yield* FetchDepth
 
 					yield* fetchDepth.inc(incBy)
@@ -80,9 +77,9 @@ describe("FetchDepth", () => {
 			expect(eight).toBe(EIGHT)
 			expect(seventeen).toBe(SEVENTEEN)
 		}).pipe(
-			effectProvide(ProgramTest),
-			withConfigProvider(
-				configProviderFromMap(
+			Effect.provide(ProgramTest),
+			Effect.withConfigProvider(
+				ConfigProvider.fromMap(
 					new Map([
 						["DEFAULT_REMOTE_NAME", "origin"],
 						["GIT_DIRECTORY", process.cwd()],

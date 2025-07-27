@@ -1,31 +1,22 @@
-import { effect as layerEffect, type Layer } from "effect/Layer"
-import { gen as effectGen } from "effect/Effect"
-import { pipe } from "effect/Function"
-import {
-	type Effect,
-	all as effectAll,
-	whenLogLevel as effectWhenLogLevel,
-	logWithLevel as effectLogWithLevel,
-} from "effect/Effect"
-import { fromLiteral as logLevelFromLiteral } from "effect/LogLevel"
+import { Effect, Layer, LogLevel, pipe } from "effect"
 import PrintRefs, { type Arguments } from "./print-refs.service.ts"
 import PrintRefsCommand from "#command/print-refs.service"
 import { type REF_TYPE, TAG, BRANCH } from "#domain/reference"
 
-const PrintRefsLive: Layer<PrintRefs, never, PrintRefsCommand> = layerEffect(
+const PrintRefsLive: Layer.Layer<PrintRefs, never, PrintRefsCommand> = Layer.effect(
 	PrintRefs,
-	effectGen(function* () {
+	Effect.gen(function* () {
 		const command = yield* PrintRefsCommand
 
-		return ({ message, level: logLevelLiteral }: Arguments): Effect<void> =>
-			effectGen(function* () {
+		return ({ message, level: logLevelLiteral }: Arguments): Effect.Effect<void> =>
+			Effect.gen(function* () {
 				const doPrint = (type: REF_TYPE) => command({ type })
-				const logLevel = logLevelFromLiteral(logLevelLiteral)
+				const logLevel = LogLevel.fromLiteral(logLevelLiteral)
 				yield* pipe(
-					effectAll([effectLogWithLevel(logLevel, message), doPrint(BRANCH), doPrint(TAG)], {
+					Effect.all([Effect.logWithLevel(logLevel, message), doPrint(BRANCH), doPrint(TAG)], {
 						discard: true,
 					}),
-					effectWhenLogLevel(logLevel)
+					Effect.whenLogLevel(logLevel)
 				)
 			})
 	})

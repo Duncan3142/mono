@@ -1,41 +1,38 @@
-import { effect as layerEffect, type Layer } from "effect/Layer"
-import { make as refMake, update as refUpdate, get as refGet } from "effect/Ref"
-import { pipe } from "effect/Function"
-import { gen as effectGen, fail as effectFail, flatMap as effectFlatMap } from "effect/Effect"
+import { Layer, Ref, Effect, pipe } from "effect"
 import FetchDepth from "./fetch-depth.service.ts"
 import RepositoryConfig from "#config/repository-config.service"
 import { FetchDepthExceededError } from "#domain/fetch.error"
 
-const FetchDepthLive: Layer<FetchDepth, never, RepositoryConfig> = layerEffect(
+const FetchDepthLive: Layer.Layer<FetchDepth, never, RepositoryConfig> = Layer.effect(
 	FetchDepth,
-	effectGen(function* () {
+	Effect.gen(function* () {
 		const {
 			fetch: { maxDepth },
 		} = yield* RepositoryConfig
 		const ZERO = 0
-		const ref = yield* refMake(ZERO)
+		const ref = yield* Ref.make(ZERO)
 
 		return {
 			inc: (by: number) =>
 				pipe(
-					refGet(ref),
-					effectFlatMap((currentDepth) => {
+					Ref.get(ref),
+					Effect.flatMap((currentDepth) => {
 						const requestedDepth = currentDepth + by
 						return requestedDepth > maxDepth
-							? effectFail(
+							? Effect.fail(
 									new FetchDepthExceededError({
 										requestedDepth: currentDepth + by,
 										maxDepth,
 									})
 								)
-							: refUpdate(ref, (n) => n + by)
+							: Ref.update(ref, (n) => n + by)
 					})
 				),
-			get: refGet(ref),
+			get: Ref.get(ref),
 			set: (requestedDepth: number) =>
 				requestedDepth > maxDepth
-					? refUpdate(ref, () => requestedDepth)
-					: effectFail(
+					? Ref.update(ref, () => requestedDepth)
+					: Effect.fail(
 							new FetchDepthExceededError({
 								requestedDepth,
 								maxDepth,
