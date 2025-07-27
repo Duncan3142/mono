@@ -1,6 +1,7 @@
 import { TaggedError } from "effect/Data"
+import { SERVICE_PREFIX } from "#const"
 
-const FETCH_REFS_NOT_FOUND_ERROR_TAG = "FETCH_REFS_NOT_FOUND_ERROR"
+const FETCH_REFS_NOT_FOUND_ERROR_TAG = `${SERVICE_PREFIX}/FETCH_REFS_NOT_FOUND_ERROR`
 
 /**
  * Fetch Not Found Error

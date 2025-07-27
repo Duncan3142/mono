@@ -1,7 +1,8 @@
 import { TaggedError } from "effect/Data"
 import type { DurationInput } from "effect/Duration"
+import { SERVICE_PREFIX } from "#const"
 
-const GIT_COMMAND_TIMEOUT_ERROR_TAG = "GIT_COMMAND_TIMEOUT_ERROR"
+const GIT_COMMAND_TIMEOUT_ERROR_TAG = `${SERVICE_PREFIX}/GIT_COMMAND_TIMEOUT_ERROR`
 
 /**
  * Git Command Timeout Error
@@ -12,7 +13,7 @@ class GitCommandTimeoutError extends TaggedError(GIT_COMMAND_TIMEOUT_ERROR_TAG)<
 	args: Array<string>
 }> {}
 
-const GIT_COMMAND_FAILED_ERROR_TAG = "GIT_COMMAND_FAILED_ERROR"
+const GIT_COMMAND_FAILED_ERROR_TAG = `${SERVICE_PREFIX}/GIT_COMMAND_FAILED_ERROR`
 
 /**
  * Git Command Failed Error
