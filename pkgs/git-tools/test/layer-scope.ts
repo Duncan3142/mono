@@ -27,8 +27,8 @@ class Counter extends Context.Tag("Counter")<
 
 type CounterService = Context.Tag.Service<Counter>
 
-class CounterStore extends Context.Tag("CounterStore")<
-	CounterStore,
+class CounterFactory extends Context.Tag("CounterFactory")<
+	CounterFactory,
 	Effect.Effect<CounterService, never, Scope.Scope>
 >() {}
 
@@ -42,10 +42,10 @@ class IncrementCount extends Context.Tag("IncrementCount")<
 	Effect.Effect<void, never, Counter>
 >() {}
 
-const CounterStoreLive = Layer.effect(
-	CounterStore,
+const CounterFactoryLive = Layer.effect(
+	CounterFactory,
 	Effect.gen(function* () {
-		yield* Console.log("CounterStoreLive initialized")
+		yield* Console.log("CounterFactoryLive initialized")
 		const map = yield* Ref.make(HashMap.empty<string, CounterService>())
 		const acquire = Effect.gen(function* () {
 			const counter = yield* Counter.make
@@ -90,11 +90,11 @@ const IncrementCountLive = Layer.effect(
 const ProgramLive = pipe(
 	IncrementCountLive,
 	Layer.provide(PrintCountLive),
-	Layer.merge(CounterStoreLive)
+	Layer.merge(CounterFactoryLive)
 )
 
 const program = Effect.gen(function* () {
-	const counterStore = yield* CounterStore
+	const counterStore = yield* CounterFactory
 	const counter = yield* counterStore
 	const increment = yield* IncrementCount
 	yield* increment.pipe(Effect.provideService(Counter, counter))
