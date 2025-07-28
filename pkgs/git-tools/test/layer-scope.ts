@@ -1,67 +1,113 @@
 /* eslint-disable @typescript-eslint/no-magic-numbers -- Example */
-import { Effect, Ref, Context, Layer, Console, pipe } from "effect"
+import type { Scope } from "effect"
+import { Effect, Ref, Context, Layer, Console, pipe, HashMap } from "effect"
 
-class Counter extends Context.Tag("Counter")<Counter, Ref.Ref<number>>() {}
+type Count = number
 
-class PrintCount extends Context.Tag("PrintCount")<PrintCount, () => Effect.Effect<void>>() {}
+class Counter extends Context.Tag("Counter")<
+	Counter,
+	{
+		id: string
+		inc: (by: number) => Effect.Effect<void>
+		get: Effect.Effect<Count>
+		set: (value: Count) => Effect.Effect<void>
+	}
+>() {
+	public static make = Effect.gen(function* () {
+		const id = crypto.randomUUID()
+		const ref = yield* Ref.make(0)
+		return Counter.of({
+			id,
+			inc: (by: number) => Ref.update(ref, (n) => n + by),
+			get: Ref.get(ref),
+			set: (value: Count) => Ref.set(ref, value),
+		})
+	})
+}
+
+type CounterService = Context.Tag.Service<Counter>
+
+class CounterStore extends Context.Tag("CounterStore")<
+	CounterStore,
+	Effect.Effect<CounterService, never, Scope.Scope>
+>() {}
+
+class PrintCount extends Context.Tag("PrintCount")<
+	PrintCount,
+	Effect.Effect<void, never, Counter>
+>() {}
 
 class IncrementCount extends Context.Tag("IncrementCount")<
 	IncrementCount,
-	() => Effect.Effect<void>
+	Effect.Effect<void, never, Counter>
 >() {}
 
-const CounterLive = Layer.effect(Counter, Ref.make(0))
+const CounterStoreLive = Layer.effect(
+	CounterStore,
+	Effect.gen(function* () {
+		yield* Console.log("CounterStoreLive initialized")
+		const map = yield* Ref.make(HashMap.empty<string, CounterService>())
+		const acquire = Effect.gen(function* () {
+			const counter = yield* Counter.make
+			yield* Console.log("Created Counter:", counter.id)
+			yield* Ref.update(map, (m) => HashMap.set(m, counter.id, counter))
+			return counter
+		})
+		const release = (counter: CounterService) =>
+			Effect.gen(function* () {
+				yield* Console.log("Releasing Counter:", counter.id)
+				return yield* Ref.update(map, (m) => HashMap.remove(m, counter.id))
+			})
+		return Effect.acquireRelease(acquire, release)
+	})
+)
 
 const PrintCountLive = Layer.effect(
 	PrintCount,
 	Effect.gen(function* () {
-		const counter = yield* Counter
-		return () =>
-			Effect.gen(function* () {
-				const count = yield* Ref.get(counter)
-				yield* Console.log(`Current count: ${count.toString()}`)
-			})
+		yield* Console.log("PrintCountLive initialized")
+		return Effect.gen(function* () {
+			const counter = yield* Counter
+			const count = yield* counter.get
+			yield* Console.log(`Current count: ${count.toString()}`)
+		})
 	})
 )
 
 const IncrementCountLive = Layer.effect(
 	IncrementCount,
 	Effect.gen(function* () {
+		yield* Console.log("IncrementCountLive initialized")
 		const print = yield* PrintCount
-		const counter = yield* Counter
-		return () =>
-			Effect.gen(function* () {
-				yield* Ref.update(counter, (n) => n + 1)
-				yield* print()
-			})
+		return Effect.gen(function* () {
+			const counter = yield* Counter
+			yield* counter.inc(14)
+			yield* print
+		})
 	})
 )
 
 const ProgramLive = pipe(
 	IncrementCountLive,
 	Layer.provide(PrintCountLive),
-	Layer.provide(CounterLive) // How can a new ref layer be generated for each scope?
+	Layer.merge(CounterStoreLive)
 )
 
 const program = Effect.gen(function* () {
+	const counterStore = yield* CounterStore
+	const counter = yield* counterStore
 	const increment = yield* IncrementCount
-	yield* increment()
-})
+	yield* increment.pipe(Effect.provideService(Counter, counter))
+}).pipe(Effect.scoped)
 
-Effect.runFork(
-	Effect.all([Effect.scoped(program), Effect.scoped(program)]).pipe(Effect.provide(ProgramLive))
+const programs = Effect.all([program, program]).pipe(
+	Effect.provide(ProgramLive),
+	Effect.exit,
+	Effect.map((exit) => {
+		console.log("All programs completed with exit:", exit)
+	})
 )
-/*
-Prints the following:
-Current count: 1
-Current count: 2
 
-Is it possible to have a new Ref instance for each scope?
-This would allow independent counters in each scope.
-
-The desired output would be:
-Current count: 1
-Current count: 1
-*/
+Effect.runFork(programs)
 
 /* eslint-enable @typescript-eslint/no-magic-numbers -- Example */
