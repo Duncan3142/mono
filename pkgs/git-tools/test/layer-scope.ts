@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-magic-numbers -- Example */
-import type { Scope } from "effect"
 import { Effect, Ref, Context, Layer, Console, pipe, HashMap } from "effect"
 
 type Count = number
@@ -27,24 +26,8 @@ class Counter extends Context.Tag("Counter")<
 
 type CounterService = Context.Tag.Service<Counter>
 
-class CounterFactory extends Context.Tag("CounterFactory")<
-	CounterFactory,
-	Effect.Effect<CounterService, never, Scope.Scope>
->() {}
-
-class PrintCount extends Context.Tag("PrintCount")<
-	PrintCount,
-	Effect.Effect<void, never, Counter>
->() {}
-
-class IncrementCount extends Context.Tag("IncrementCount")<
-	IncrementCount,
-	Effect.Effect<void, never, Counter>
->() {}
-
-const CounterFactoryLive = Layer.effect(
-	CounterFactory,
-	Effect.gen(function* () {
+class CounterFactory extends Effect.Service<CounterFactory>()("CounterFactory", {
+	effect: Effect.gen(function* () {
 		yield* Console.log("CounterFactoryLive initialized")
 		const map = yield* Ref.make(HashMap.empty<string, CounterService>())
 		const acquire = Effect.gen(function* () {
@@ -59,24 +42,22 @@ const CounterFactoryLive = Layer.effect(
 				return yield* Ref.update(map, (m) => HashMap.remove(m, counter.id))
 			})
 		return Effect.acquireRelease(acquire, release)
-	})
-)
+	}),
+}) {}
 
-const PrintCountLive = Layer.effect(
-	PrintCount,
-	Effect.gen(function* () {
+class PrintCount extends Effect.Service<PrintCount>()("PrintCount", {
+	effect: Effect.gen(function* () {
 		yield* Console.log("PrintCountLive initialized")
 		return Effect.gen(function* () {
 			const counter = yield* Counter
 			const count = yield* counter.get
 			yield* Console.log(`Current count: ${count.toString()}`)
 		})
-	})
-)
+	}),
+}) {}
 
-const IncrementCountLive = Layer.effect(
-	IncrementCount,
-	Effect.gen(function* () {
+class IncrementCount extends Effect.Service<IncrementCount>()("IncrementCount", {
+	effect: Effect.gen(function* () {
 		yield* Console.log("IncrementCountLive initialized")
 		const print = yield* PrintCount
 		return Effect.gen(function* () {
@@ -84,13 +65,13 @@ const IncrementCountLive = Layer.effect(
 			yield* counter.inc(14)
 			yield* print
 		})
-	})
-)
+	}),
+}) {}
 
 const ProgramLive = pipe(
-	IncrementCountLive,
-	Layer.provide(PrintCountLive),
-	Layer.merge(CounterFactoryLive)
+	IncrementCount.Default,
+	Layer.provide(PrintCount.Default),
+	Layer.merge(CounterFactory.Default)
 )
 
 const program = Effect.gen(function* () {
