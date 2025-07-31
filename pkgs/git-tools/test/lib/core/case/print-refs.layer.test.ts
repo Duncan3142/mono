@@ -5,7 +5,6 @@ import type { Console } from "effect"
 import { Effect, Fiber, pipe, ConfigProvider, Layer, TestClock, Either } from "effect"
 import { mockDeep } from "vitest-mock-extended"
 import CommandExecutorTest, { type MockProcessProps } from "#mock/command-executor.mock"
-import PrintRefsLive from "#case/print-refs.layer"
 import PrintRefsCommandLive from "#git/command/print-refs.layer"
 import PrintRefs from "#case/print-refs.service"
 import RepositoryConfigLive from "#config/repository-config.layer"
@@ -42,7 +41,7 @@ const tagProps = {
 } satisfies MockProcessProps
 
 const ProgramLayer = pipe(
-	PrintRefsLive,
+	PrintRefs.Default,
 	Layer.provide(PrintRefsCommandLive),
 	Layer.provide(CommandExecutorTest([branchProps, tagProps])),
 	Layer.provide(RepositoryConfigLive),

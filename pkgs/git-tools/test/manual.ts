@@ -1,18 +1,18 @@
 import { NodeContext, NodeRuntime } from "@effect/platform-node"
-import { Effect, Layer, ConfigProvider } from "effect"
-import GitLive from "#layer"
+import { Effect, Layer, ConfigProvider, pipe } from "effect"
 import Git from "#service"
-import FetchLive from "#case/fetch.layer"
+import Fetch from "#case/fetch.service"
 import FetchCommandLive from "#git/command/fetch.layer"
-import PrintRefsLive from "#case/print-refs.layer"
+import PrintRefs from "#case/print-refs.service"
 import PrintRefsCommandLive from "#git/command/print-refs.layer"
 import RepositoryConfigLive from "#config/repository-config.layer"
 import FetchDepthLive from "#state/fetch-depth.layer"
 
-const ProgramLive = GitLive.pipe(
-	Layer.provide(FetchLive),
+const ProgramLive = pipe(
+	Git.Default,
+	Layer.provide(Fetch.Default),
 	Layer.provide(FetchCommandLive),
-	Layer.provide(PrintRefsLive),
+	Layer.provide(PrintRefs.Default),
 	Layer.provide(PrintRefsCommandLive),
 	Layer.provide(NodeContext.layer),
 	Layer.provide(FetchDepthLive),
