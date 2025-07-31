@@ -1,21 +1,54 @@
-import { Context } from "effect"
+import { Config, Effect } from "effect"
 import { SERVICE_PREFIX } from "#const"
 import type { Remote } from "#domain/remote"
 
+const DEFAULT_REMOTE_NAME = "origin"
+
+const FETCH = { DEFAULT_DEPTH: 1, DEFAULT_DEEPEN_BY: 512, DEFAULT_MAX_DEPTH: 1024 }
+
+interface FetchConfig {
+	readonly maxDepth: number
+	readonly defaultDepth: number
+	readonly defaultDeepenBy: number
+}
+
 /**
- *	Configuration service for Git tools
+ * Repository configuration service
  */
-class RepositoryConfig extends Context.Tag(`${SERVICE_PREFIX}/repo-config`)<
-	RepositoryConfig,
+class RepositoryConfig extends Effect.Service<RepositoryConfig>()(
+	`${SERVICE_PREFIX}/config/repo-config`,
 	{
-		readonly directory: string
-		readonly defaultRemote: Remote
-		readonly fetch: {
-			maxDepth: number
-			defaultDepth: number
-			defaultDeepenBy: number
-		}
+		effect: Effect.gen(function* () {
+			const defaultRemote: Remote = yield* Config.nested(
+				Config.string("NAME").pipe(Config.withDefault(DEFAULT_REMOTE_NAME)),
+				"DEFAULT_REMOTE"
+			).pipe(
+				Config.map((name) => {
+					return { name }
+				})
+			)
+			const gitDirectory = yield* Config.string("GIT_DIRECTORY")
+
+			const fetch: FetchConfig = yield* Config.nested(
+				Config.all([
+					Config.number("DEFAULT_DEPTH").pipe(Config.withDefault(FETCH.DEFAULT_DEPTH)),
+					Config.number("DEFAULT_DEEPEN_BY").pipe(Config.withDefault(FETCH.DEFAULT_DEEPEN_BY)),
+					Config.number("DEFAULT_MAX_DEPTH").pipe(Config.withDefault(FETCH.DEFAULT_MAX_DEPTH)),
+				]),
+				"FETCH"
+			).pipe(
+				Config.map(([defaultDepth, defaultDeepenBy, maxDepth]) => {
+					return { defaultDepth, defaultDeepenBy, maxDepth }
+				})
+			)
+
+			return {
+				directory: gitDirectory,
+				defaultRemote,
+				fetch,
+			}
+		}),
 	}
->() {}
+) {}
 
 export default RepositoryConfig

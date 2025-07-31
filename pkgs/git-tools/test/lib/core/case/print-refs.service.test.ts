@@ -7,7 +7,7 @@ import { mockDeep } from "vitest-mock-extended"
 import CommandExecutorTest, { type MockProcessProps } from "#mock/command-executor.mock"
 import PrintRefsCommandLive from "#git/command/print-refs.layer"
 import PrintRefs from "#case/print-refs.service"
-import RepositoryConfigLive from "#config/repository-config.layer"
+import RepositoryConfig from "#config/repository-config.service"
 import LoggerTest from "#mock/logger.mock"
 
 const logHandler = vi.fn<() => void>()
@@ -44,7 +44,7 @@ const ProgramLayer = pipe(
 	PrintRefs.Default,
 	Layer.provide(PrintRefsCommandLive),
 	Layer.provide(CommandExecutorTest([branchProps, tagProps])),
-	Layer.provide(RepositoryConfigLive),
+	Layer.provide(RepositoryConfig.Default),
 	Layer.provide(LoggerTest(logHandler))
 )
 

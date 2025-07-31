@@ -54,8 +54,7 @@ class Fetch extends Effect.Service<Fetch>()(`${SERVICE_PREFIX}/case/fetch`, {
 				defaultRemote,
 				fetch: { defaultDepth },
 			},
-			fetchDepth,
-		] = yield* Effect.all([FetchCommand, PrintRefs, RepositoryConfig, FetchDepth], {
+		] = yield* Effect.all([FetchCommand, PrintRefs, RepositoryConfig], {
 			concurrency: "unbounded",
 		})
 
@@ -63,8 +62,13 @@ class Fetch extends Effect.Service<Fetch>()(`${SERVICE_PREFIX}/case/fetch`, {
 			refs,
 			remote = defaultRemote,
 			mode = { mode: FETCH_MODE_DEPTH, value: defaultDepth },
-		}: Arguments): Effect.Effect<WasFound, FetchRefsNotFoundError | FetchDepthExceededError> =>
+		}: Arguments): Effect.Effect<
+			WasFound,
+			FetchRefsNotFoundError | FetchDepthExceededError,
+			FetchDepth
+		> =>
 			Effect.gen(function* () {
+				const fetchDepth = yield* FetchDepth
 				yield* pipe(
 					Match.value(mode),
 					Match.when({ mode: FETCH_MODE_DEPTH }, ({ value }) => fetchDepth.set(value)),

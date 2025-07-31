@@ -5,8 +5,8 @@ import Fetch from "#case/fetch.service"
 import FetchCommandLive from "#git/command/fetch.layer"
 import PrintRefs from "#case/print-refs.service"
 import PrintRefsCommandLive from "#git/command/print-refs.layer"
-import RepositoryConfigLive from "#config/repository-config.layer"
-import FetchDepthLive from "#state/fetch-depth.layer"
+import RepositoryConfig from "#config/repository-config.service"
+import FetchDepthFactory from "#state/fetch-depth-factory.service"
 
 const ProgramLive = pipe(
 	Git.Default,
@@ -15,8 +15,8 @@ const ProgramLive = pipe(
 	Layer.provide(PrintRefs.Default),
 	Layer.provide(PrintRefsCommandLive),
 	Layer.provide(NodeContext.layer),
-	Layer.provide(FetchDepthLive),
-	Layer.provide(RepositoryConfigLive)
+	Layer.provide(FetchDepthFactory.Default),
+	Layer.provide(RepositoryConfig.Default)
 )
 
 const program = Effect.gen(function* () {
