@@ -64,12 +64,6 @@ const custom: MutableConfig = {
 		"@typescript-eslint/no-use-before-define": ["error"],
 		"@typescript-eslint/no-import-type-side-effects": "error",
 		"@typescript-eslint/no-loop-func": "error",
-		"@typescript-eslint/no-magic-numbers": [
-			"error",
-			{
-				ignoreNumericLiteralTypes: true,
-			},
-		],
 		"@typescript-eslint/no-shadow": "error",
 		"@typescript-eslint/prefer-readonly": "error",
 		"@typescript-eslint/no-unsafe-type-assertion": "error",
