@@ -1,0 +1,32 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the
+// README at: https://github.com/devcontainers/templates/tree/main/src/universal
+{
+	"name": "Default Linux Universal",
+	// Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
+	"build": {
+		// Path is relative to the devcontainer.json file.
+		"dockerfile": "Dockerfile"
+	},
+
+	"runArgs": [
+		"--env-file",
+		"${localWorkspaceFolder}/.env"
+	],
+
+	// "features": {},
+
+	// Use 'forwardPorts' to make a list of ports inside the container available locally.
+	// "forwardPorts": [],
+
+	// Use 'postCreateCommand' to run commands after the container is created.
+	"postCreateCommand": "./.devcontainer/scripts/postCreate.sh",
+
+	// User with which to build the container. Safe to use 'root' with rootless docker.
+	"containerUser": "root",
+
+	// User with which to use the container. Safe to use 'root' with rootless docker.
+	"remoteUser": "root"
+
+	// Configure tool-specific properties.
+	// "customizations": {},
+}
