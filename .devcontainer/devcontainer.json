@@ -13,19 +13,65 @@
 		"${localWorkspaceFolder}/.env"
 	],
 
+	"mounts": [
+		// Replace 1000 with your actual user ID. Find it by running 'id -u' on your host.
+		"source=/run/user/1000/docker.sock,target=/var/run/docker.sock,type=bind"
+	],
+
 	// "features": {},
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	// "forwardPorts": [],
 
 	// Use 'postCreateCommand' to run commands after the container is created.
-	"postCreateCommand": "./.devcontainer/scripts/postCreate.sh",
+	// "postCreateCommand": "./.devcontainer/scripts/setup.sh",
 
 	// User with which to build the container. Safe to use 'root' with rootless docker.
 	"containerUser": "root",
 
 	// User with which to use the container. Safe to use 'root' with rootless docker.
-	"remoteUser": "root"
+	"remoteUser": "root",
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"streetsidesoftware.code-spell-checker",
+				"stackbreak.comment-divider",
+				"moshfeu.compare-folders",
+				"ms-azuretools.vscode-containers",
+				"CucumberOpen.cucumber-official",
+				"effectful-tech.effect-vscode",
+				"dbaeumer.vscode-eslint",
+				"PeterSchmalfeldt.explorer-exclude",
+				"github.vscode-github-actions",
+				"GitHub.copilot",
+				"GitHub.copilot-chat",
+				"eamodio.gitlens",
+				"GraphQL.vscode-graphql-execution",
+				"GraphQL.vscode-graphql",
+				"exiasr.hadolint",
+				"hashicorp.terraform",
+				"ms-vscode.hexeditor",
+				"antfu.iconify",
+				"wix.vscode-import-cost",
+				"heaths.vscode-guid",
+				"Postman.postman-for-vscode",
+				"ms-vscode.powershell",
+				"esbenp.prettier-vscode",
+				"timonwong.shellcheck",
+				"Tyriar.sort-lines",
+				"mtxr.sqltools",
+				"stylelint.vscode-stylelint",
+				"Gruntfuggly.todo-tree",
+				"antfu.unocss",
+				"pflannery.vscode-versionlens",
+				"vitest.explorer",
+				"redhat.vscode-yaml",
+				"ziglang.vscode-zig",
+				"ms-playwright.playwright",
+				"mtxr.sqltools-driver-pg"
+			]
+		}
+	}
 
 	// Configure tool-specific properties.
 	// "customizations": {},
