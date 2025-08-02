@@ -1,2 +1,2 @@
 Assumes rootless Docker is set up and running.
-Under no circumstances should this be used with a rootful Docker setup.
+Under no circumstances should this devcontainer be used on rootful Docker host.
