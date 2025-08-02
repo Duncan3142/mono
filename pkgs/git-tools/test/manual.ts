@@ -1,16 +1,20 @@
 import { NodeContext, NodeRuntime } from "@effect/platform-node"
-import { Effect, Layer, ConfigProvider, pipe } from "effect"
+import { Effect, Layer, ConfigProvider, pipe, Console } from "effect"
 import Git from "#service"
 import Fetch from "#case/fetch.service"
 import FetchCommand from "#command/fetch.service"
 import FetchCommandExecutorLive from "#git/command/fetch-executor.layer"
 import PrintRefs from "#case/print-refs.service"
 import PrintRefsCommandExecutorLive from "#git/command/print-refs-executor.layer"
+import MergeBaseCommandExecutorLive from "#git/command/merge-base-executor.layer"
 import RepositoryConfig from "#config/repository-config.service"
 import FetchDepthFactory from "#state/fetch-depth-factory.service"
+import MergeBase from "#case/merge-base.service"
 
 const ProgramLive = pipe(
 	Git.Default,
+	Layer.provide(MergeBase.Default),
+	Layer.provide(MergeBaseCommandExecutorLive),
 	Layer.provide(Fetch.Default),
 	Layer.provide(FetchCommand.Default),
 	Layer.provide(FetchCommandExecutorLive),
@@ -23,10 +27,15 @@ const ProgramLive = pipe(
 
 const program = Effect.gen(function* () {
 	const git = yield* Git
-	return yield* git.printRefs({
-		level: "Info",
-		message: "Print refs test",
-	})
+	return yield* Effect.all([
+		git.printRefs({
+			level: "Info",
+			message: "Print refs test",
+		}),
+		git
+			.mergeBase({ baseRef: { name: "main" }, headRef: { name: "git-effect" } })
+			.pipe(Effect.flatMap((baseSha) => Console.log("Merge base found", baseSha))),
+	])
 }).pipe(
 	Effect.provide(ProgramLive),
 	Effect.withConfigProvider(
