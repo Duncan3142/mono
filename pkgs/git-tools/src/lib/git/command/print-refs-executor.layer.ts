@@ -3,7 +3,6 @@ import type { Array, Duration } from "effect"
 import { Layer, pipe, Effect, Match } from "effect"
 import commandFactory from "./command.ts"
 import { BRANCH, TAG } from "#domain/reference"
-import { GitCommandFailedError } from "#domain/git-command.error"
 import PrintRefsCommandExecutor, { type Arguments } from "#command/print-refs-executor.service"
 import RepositoryConfig from "#config/repository-config.service"
 
@@ -31,21 +30,13 @@ const PrintRefsCommandExecutorLive: Layer.Layer<
 				const [subCommand, ...subArgs] = args
 				const timeout: Duration.DurationInput = "2 seconds"
 				return yield* pipe(
-					commandFactory({
+					commandFactory<never, never>({
 						directory: repoDirectory,
 						subCommand,
 						subArgs,
 						timeout,
+						errorMatcher: Match.value,
 					}),
-					Effect.catchAll((errorCode) =>
-						Effect.die(
-							new GitCommandFailedError({
-								exitCode: errorCode,
-								command: subCommand,
-								args: subArgs,
-							})
-						)
-					),
 					Effect.scoped,
 					Effect.provideService(CommandExecutor.CommandExecutor, executor)
 				)

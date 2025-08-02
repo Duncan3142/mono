@@ -1,13 +1,12 @@
 import { CommandExecutor } from "@effect/platform"
 import type { Duration } from "effect"
 import { Effect, Match, pipe, Layer } from "effect"
-import commandFactory from "./command.ts"
+import commandFactory, { type ErrorCode } from "./command.ts"
 import { FetchRefsNotFoundError } from "#domain/fetch.error"
 import { BASE_10_RADIX } from "#const"
 import { toStrings as refSpecToStrings } from "#domain/reference-spec"
 import type { Arguments } from "#command/fetch-executor.service"
 import RepositoryConfig from "#config/repository-config.service"
-import { GitCommandFailedError } from "#domain/git-command.error"
 import { FETCH_MODE_DEEPEN_BY, FETCH_MODE_DEPTH } from "#domain/fetch-reference"
 import FetchCommandExecutor from "#command/fetch-executor.service"
 
@@ -53,30 +52,18 @@ const FetchCommandExecutorLive: Layer.Layer<
 						subCommand,
 						subArgs,
 						timeout,
+						errorMatcher: (errorCode: ErrorCode) =>
+							pipe(
+								Match.value(errorCode),
+								Match.when(FETCH_NOT_FOUND_CODE, () =>
+									Effect.fail(
+										new FetchRefsNotFoundError({
+											references: refStrings,
+										})
+									)
+								)
+							),
 					}),
-
-					Effect.catchAll((errorCode) =>
-						pipe(
-							Match.value(errorCode),
-							Match.when(FETCH_NOT_FOUND_CODE, () =>
-								Effect.fail(
-									new FetchRefsNotFoundError({
-										references: refStrings,
-									})
-								)
-							)
-						).pipe(
-							Match.orElse((code) =>
-								Effect.die(
-									new GitCommandFailedError({
-										exitCode: code,
-										command: subCommand,
-										args: subArgs,
-									})
-								)
-							)
-						)
-					),
 					Effect.scoped,
 					Effect.provideService(CommandExecutor.CommandExecutor, executor)
 				)

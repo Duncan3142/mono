@@ -1,14 +1,25 @@
 import type { CommandExecutor } from "@effect/platform"
 import { Command } from "@effect/platform"
 import type { Duration, Scope } from "effect"
-import { Effect, Stream, pipe, Console, Chunk } from "effect"
-import { GitCommandTimeoutError } from "#domain/git-command.error"
+import { Effect, Stream, pipe, Console, Chunk, Match } from "effect"
+import { GitCommandFailedError, GitCommandTimeoutError } from "#domain/git-command.error"
 
-interface Arguments {
+type ErrorMatcher<ECode extends ErrorCode, Error> = (
+	ecode: ErrorCode
+) => Match.Matcher<
+	ErrorCode,
+	Match.Types.Without<ECode>,
+	ErrorCode,
+	Effect.Effect<never, Error>,
+	ErrorCode
+>
+
+interface Arguments<ECode extends ErrorCode, Error> {
 	readonly subCommand: string
 	readonly subArgs: ReadonlyArray<string>
 	readonly directory: string
 	readonly timeout: Duration.DurationInput
+	readonly errorMatcher: ErrorMatcher<ECode, Error>
 }
 
 const SUCCESS_CODE = 0
@@ -22,16 +33,18 @@ type ErrorCode = number
  * @param args.subArgs - The arguments to pass to the git subcommand.
  * @param args.directory - The working directory for the git command.
  * @param args.timeout - The timeout for the command execution.
+ * @param args.errorMatcher - A matcher to handle specific error codes.
  * @returns A function that executes the git command and returns an effect.
  */
-const commandFactory = ({
+const commandFactory = <ECode extends ErrorCode, Error>({
 	directory,
 	subCommand,
 	subArgs,
 	timeout,
-}: Arguments): Effect.Effect<
+	errorMatcher,
+}: Arguments<ECode, Error>): Effect.Effect<
 	string,
-	ErrorCode,
+	Error,
 	CommandExecutor.CommandExecutor | Scope.Scope
 > =>
 	pipe(
@@ -54,7 +67,21 @@ const commandFactory = ({
 						}),
 				}),
 				Effect.orDie,
-				Effect.flatMap((code) => (code === SUCCESS_CODE ? Effect.void : Effect.fail(code)))
+				Effect.flatMap((code) =>
+					code === SUCCESS_CODE
+						? Effect.void
+						: errorMatcher(code).pipe(
+								Match.orElse((errCode) =>
+									Effect.die(
+										new GitCommandFailedError({
+											exitCode: errCode,
+											command: subCommand,
+											args: subArgs,
+										})
+									)
+								)
+							)
+				)
 			)
 			return Effect.all(
 				[
@@ -74,3 +101,4 @@ const commandFactory = ({
 	)
 
 export default commandFactory
+export type { ErrorCode, Arguments }
