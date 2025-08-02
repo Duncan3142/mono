@@ -36,7 +36,7 @@ type ErrorCode = number
  * @param args.errorMatcher - A matcher to handle specific error codes.
  * @returns A function that executes the git command and returns an effect.
  */
-const commandFactory = <ECode extends ErrorCode, Error>({
+const commandFactory = <ECode extends ErrorCode = never, Error = never>({
 	directory,
 	subCommand,
 	subArgs,

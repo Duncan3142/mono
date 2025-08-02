@@ -19,8 +19,10 @@ const FetchCommandExecutorLive: Layer.Layer<
 > = Layer.effect(
 	FetchCommandExecutor,
 	Effect.gen(function* () {
-		const { directory: repoDirectory } = yield* RepositoryConfig
-		const executor = yield* CommandExecutor.CommandExecutor
+		const [{ directory }, executor] = yield* Effect.all(
+			[RepositoryConfig, CommandExecutor.CommandExecutor],
+			{ concurrency: "unbounded" }
+		)
 
 		return ({
 			mode: { mode, value: modeValue },
@@ -48,7 +50,7 @@ const FetchCommandExecutorLive: Layer.Layer<
 
 				return yield* pipe(
 					commandFactory({
-						directory: repoDirectory,
+						directory,
 						subCommand,
 						subArgs,
 						timeout,

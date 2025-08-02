@@ -13,8 +13,10 @@ const PrintRefsCommandExecutorLive: Layer.Layer<
 > = Layer.effect(
 	PrintRefsCommandExecutor,
 	Effect.gen(function* () {
-		const executor = yield* CommandExecutor.CommandExecutor
-		const { directory: repoDirectory } = yield* RepositoryConfig
+		const [executor, { directory }] = yield* Effect.all(
+			[CommandExecutor.CommandExecutor, RepositoryConfig],
+			{ concurrency: "unbounded" }
+		)
 
 		return ({ type }: Arguments): Effect.Effect<void> =>
 			Effect.gen(function* () {
@@ -30,8 +32,8 @@ const PrintRefsCommandExecutorLive: Layer.Layer<
 				const [subCommand, ...subArgs] = args
 				const timeout: Duration.DurationInput = "2 seconds"
 				return yield* pipe(
-					commandFactory<never, never>({
-						directory: repoDirectory,
+					commandFactory({
+						directory,
 						subCommand,
 						subArgs,
 						timeout,
