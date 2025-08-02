@@ -14,6 +14,16 @@ interface FetchReference extends Reference {
 	optional?: boolean
 }
 
+const FETCH_MODE_DEPTH = "depth"
+const FETCH_MODE_DEEPEN_BY = "deepen-by"
+
+type FetchMode = typeof FETCH_MODE_DEPTH | typeof FETCH_MODE_DEEPEN_BY
+
+interface FetchModeInput {
+	mode: FetchMode
+	value: number
+}
+
 /**
  * Fetch reference is optional
  * @param reference - Reference to check
@@ -52,7 +62,7 @@ const sortByOptionality: Order.Order<FetchReference> = Order.mapInput(
 	(reference) => isOptional(reference)
 )
 
-export type { WasFound, FetchReference, Optional, Required }
+export type { WasFound, FetchReference, Optional, Required, FetchModeInput }
 export {
 	Found,
 	NotFound,
@@ -62,4 +72,6 @@ export {
 	OPTIONAL,
 	REQUIRED,
 	OPTIONALITY_ORDER_MAP,
+	FETCH_MODE_DEPTH,
+	FETCH_MODE_DEEPEN_BY,
 }

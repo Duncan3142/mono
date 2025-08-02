@@ -7,7 +7,8 @@ const MERGE_BASE_NOT_FOUND_ERROR_TAG = `${SERVICE_PREFIX}/MERGE_BASE_NOT_FOUND_E
  * Fetch Not Found Error
  */
 class MergeBaseNotFoundError extends Data.TaggedError(MERGE_BASE_NOT_FOUND_ERROR_TAG)<{
-	references: ReadonlyArray<string>
+	headRef: string
+	baseRef: string
 }> {}
 
 export { MergeBaseNotFoundError, MERGE_BASE_NOT_FOUND_ERROR_TAG }

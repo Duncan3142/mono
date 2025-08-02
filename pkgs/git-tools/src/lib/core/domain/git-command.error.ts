@@ -8,9 +8,9 @@ const GIT_COMMAND_TIMEOUT_ERROR_TAG = `${SERVICE_PREFIX}/GIT_COMMAND_TIMEOUT_ERR
  * Git Command Timeout Error
  */
 class GitCommandTimeoutError extends Data.TaggedError(GIT_COMMAND_TIMEOUT_ERROR_TAG)<{
-	timeout: Duration.DurationInput
-	command: string
-	args: Array<string>
+	readonly timeout: Duration.DurationInput
+	readonly command: string
+	readonly args: ReadonlyArray<string>
 }> {}
 
 const GIT_COMMAND_FAILED_ERROR_TAG = `${SERVICE_PREFIX}/GIT_COMMAND_FAILED_ERROR`
@@ -19,9 +19,9 @@ const GIT_COMMAND_FAILED_ERROR_TAG = `${SERVICE_PREFIX}/GIT_COMMAND_FAILED_ERROR
  * Git Command Failed Error
  */
 class GitCommandFailedError extends Data.TaggedError(GIT_COMMAND_FAILED_ERROR_TAG)<{
-	exitCode: number
-	command: string
-	args: Array<string>
+	readonly exitCode: number
+	readonly command: string
+	readonly args: ReadonlyArray<string>
 }> {}
 
 export {

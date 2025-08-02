@@ -2,18 +2,20 @@ import { NodeContext, NodeRuntime } from "@effect/platform-node"
 import { Effect, Layer, ConfigProvider, pipe } from "effect"
 import Git from "#service"
 import Fetch from "#case/fetch.service"
-import FetchCommandLive from "#git/command/fetch.layer"
+import FetchCommand from "#command/fetch.service"
+import FetchCommandExecutorLive from "#git/command/fetch-executor.layer"
 import PrintRefs from "#case/print-refs.service"
-import PrintRefsCommandLive from "#git/command/print-refs.layer"
+import PrintRefsCommandExecutorLive from "#git/command/print-refs-executor.layer"
 import RepositoryConfig from "#config/repository-config.service"
 import FetchDepthFactory from "#state/fetch-depth-factory.service"
 
 const ProgramLive = pipe(
 	Git.Default,
 	Layer.provide(Fetch.Default),
-	Layer.provide(FetchCommandLive),
+	Layer.provide(FetchCommand.Default),
+	Layer.provide(FetchCommandExecutorLive),
 	Layer.provide(PrintRefs.Default),
-	Layer.provide(PrintRefsCommandLive),
+	Layer.provide(PrintRefsCommandExecutorLive),
 	Layer.provide(NodeContext.layer),
 	Layer.provide(FetchDepthFactory.Default),
 	Layer.provide(RepositoryConfig.Default)

@@ -1,5 +1,4 @@
 import { Order, Effect, pipe, Record, Match, Array } from "effect"
-import PrintRefs from "./print-refs.service.ts"
 import { SERVICE_PREFIX } from "#const"
 import type { Remote } from "#domain/remote"
 import {
@@ -11,29 +10,31 @@ import {
 	REQUIRED,
 	OPTIONAL,
 	OPTIONALITY_ORDER_MAP,
+	FETCH_MODE_DEPTH,
 } from "#domain/fetch-reference"
 import {
 	type FetchDepthExceededError,
 	type FetchRefsNotFoundError,
 	FETCH_REFS_NOT_FOUND_ERROR_TAG,
 } from "#domain/fetch.error"
-import type { FetchModeInput } from "#command/fetch.service"
-import FetchDepth from "#state/fetch-depth.service"
-import FetchCommand, { FETCH_MODE_DEEPEN_BY, FETCH_MODE_DEPTH } from "#command/fetch.service"
+import type FetchDepth from "#state/fetch-depth.service"
 import type { Reference } from "#domain/reference"
 import RepositoryConfig from "#config/repository-config.service"
+import FetchCommand from "#command/fetch.service"
 
 interface Arguments {
 	remote?: Remote
 	refs: Array.NonEmptyReadonlyArray<FetchReference>
-	mode?: FetchModeInput
+	depth?: number
 }
 
 const handleFound = Effect.as(Found)
 
 const handleRequired = handleFound
 
-const handleOptional = <R>(result: Effect.Effect<void, FetchRefsNotFoundError, R>) =>
+const handleOptional = <R>(
+	result: Effect.Effect<void, FetchRefsNotFoundError | FetchDepthExceededError, R>
+) =>
 	pipe(
 		result,
 		handleFound,
@@ -49,43 +50,38 @@ class Fetch extends Effect.Service<Fetch>()(`${SERVICE_PREFIX}/case/fetch`, {
 	effect: Effect.gen(function* () {
 		const [
 			fetchCommand,
-			printRefs,
 			{
 				defaultRemote,
 				fetch: { defaultDepth },
 			},
-		] = yield* Effect.all([FetchCommand, PrintRefs, RepositoryConfig], {
+		] = yield* Effect.all([FetchCommand, RepositoryConfig], {
 			concurrency: "unbounded",
 		})
 
 		return ({
 			refs,
 			remote = defaultRemote,
-			mode = { mode: FETCH_MODE_DEPTH, value: defaultDepth },
+			depth = defaultDepth,
 		}: Arguments): Effect.Effect<
 			WasFound,
 			FetchRefsNotFoundError | FetchDepthExceededError,
 			FetchDepth
 		> =>
 			Effect.gen(function* () {
-				const fetchDepth = yield* FetchDepth
-				yield* pipe(
-					Match.value(mode),
-					Match.when({ mode: FETCH_MODE_DEPTH }, ({ value }) => fetchDepth.set(value)),
-					Match.when({ mode: FETCH_MODE_DEEPEN_BY }, ({ value }) => fetchDepth.inc(value)),
-					Match.exhaustive
-				)
-
 				const doFetch =
 					<E>(
 						commandHandler: (
-							result: Effect.Effect<void, FetchRefsNotFoundError>
-						) => Effect.Effect<boolean, E>
+							result: Effect.Effect<
+								void,
+								FetchRefsNotFoundError | FetchDepthExceededError,
+								FetchDepth
+							>
+						) => Effect.Effect<boolean, E, FetchDepth>
 					) =>
 					(references: Array.NonEmptyReadonlyArray<Reference>) =>
 						pipe(
 							fetchCommand({
-								mode,
+								mode: { mode: FETCH_MODE_DEPTH, value: depth },
 								remote,
 								refs: references,
 							}),
@@ -111,17 +107,11 @@ class Fetch extends Effect.Service<Fetch>()(`${SERVICE_PREFIX}/case/fetch`, {
 					Array.sortBy(Order.mapInput(Order.number, ([key]) => OPTIONALITY_ORDER_MAP[key])),
 					Array.map(([_, effect]) => effect)
 				)
-				return yield* pipe(
-					printRefs({ level: "Debug", message: "Refs pre fetch" }),
-					Effect.andThen(
-						Effect.reduce(sequence, Found, (accumulator, effect) =>
-							pipe(
-								effect,
-								Effect.map((result) => result && accumulator)
-							)
-						)
-					),
-					Effect.tap(printRefs({ level: "Debug", message: "Refs post fetch" }))
+				return yield* Effect.reduce(sequence, Found, (accumulator, effect) =>
+					pipe(
+						effect,
+						Effect.map((result) => result && accumulator)
+					)
 				)
 			})
 	}),

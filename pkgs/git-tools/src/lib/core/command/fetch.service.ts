@@ -1,19 +1,16 @@
-import type { Array, Effect } from "effect"
-import { Context } from "effect"
-import type { FetchRefsNotFoundError } from "#domain/fetch.error"
+import type { Array } from "effect"
+import { Effect, pipe, Match } from "effect"
+import FetchCommandExecutor from "./fetch-executor.service.ts"
 import { SERVICE_PREFIX } from "#const"
-import type { Reference } from "#domain/reference"
 import type { Remote } from "#domain/remote"
-
-const FETCH_MODE_DEPTH = "depth"
-const FETCH_MODE_DEEPEN_BY = "deepen-by"
-
-type FetchMode = typeof FETCH_MODE_DEPTH | typeof FETCH_MODE_DEEPEN_BY
-
-interface FetchModeInput {
-	mode: FetchMode
-	value: number
-}
+import type { FetchDepthExceededError, FetchRefsNotFoundError } from "#domain/fetch.error"
+import FetchDepth from "#state/fetch-depth.service"
+import type { Reference } from "#domain/reference"
+import {
+	FETCH_MODE_DEEPEN_BY,
+	FETCH_MODE_DEPTH,
+	type FetchModeInput,
+} from "#domain/fetch-reference"
 
 interface Arguments {
 	readonly mode: FetchModeInput
@@ -22,13 +19,40 @@ interface Arguments {
 }
 
 /**
- * Fetch command service
+ * Git fetch service
  */
-class FetchCommand extends Context.Tag(`${SERVICE_PREFIX}/command/fetch`)<
-	FetchCommand,
-	({ mode, remote, refs }: Arguments) => Effect.Effect<void, FetchRefsNotFoundError>
->() {}
+class FetchCommand extends Effect.Service<FetchCommand>()(`${SERVICE_PREFIX}/command/fetch`, {
+	effect: Effect.gen(function* () {
+		const [fetchCommandExecutor] = yield* Effect.all([FetchCommandExecutor], {
+			concurrency: "unbounded",
+		})
+
+		return ({
+			refs,
+			remote,
+			mode,
+		}: Arguments): Effect.Effect<
+			void,
+			FetchRefsNotFoundError | FetchDepthExceededError,
+			FetchDepth
+		> =>
+			Effect.gen(function* () {
+				const fetchDepth = yield* FetchDepth
+				yield* pipe(
+					Match.value(mode),
+					Match.when({ mode: FETCH_MODE_DEPTH }, ({ value }) => fetchDepth.set(value)),
+					Match.when({ mode: FETCH_MODE_DEEPEN_BY }, ({ value }) => fetchDepth.inc(value)),
+					Match.exhaustive
+				)
+
+				return yield* fetchCommandExecutor({
+					mode,
+					remote,
+					refs,
+				})
+			})
+	}),
+}) {}
 
 export default FetchCommand
-export { FETCH_MODE_DEEPEN_BY, FETCH_MODE_DEPTH }
-export type { Arguments, FetchMode, FetchModeInput }
+export type { Arguments }
