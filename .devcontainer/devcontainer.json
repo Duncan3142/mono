@@ -1,36 +1,34 @@
 // For format details, see https://aka.ms/devcontainer.json. For config options, see the
 // README at: https://github.com/devcontainers/templates/tree/main/src/universal
 {
-	"name": "Default Linux Universal",
-	// Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
-	"build": {
-		// Path is relative to the devcontainer.json file.
-		"dockerfile": "Dockerfile"
-	},
+	"name": "Mono DevCon",
 
-	"runArgs": [
-		"--env-file",
-		"${localWorkspaceFolder}/.env"
-	],
+	"dockerComposeFile": "./compose.yml",
+	"service": "mono-devcon",
+	"workspaceFolder": "/workspace",
 
-	"mounts": [
-		// Replace 1000 with your actual user ID. Find it by running 'id -u' on your host.
-		"source=/run/user/1000/docker.sock,target=/var/run/docker.sock,type=bind"
-	],
-
-	// "features": {},
+	// Features
+	"features": {},
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	// "forwardPorts": [],
 
 	// Use 'postCreateCommand' to run commands after the container is created.
-	// "postCreateCommand": "./.devcontainer/scripts/setup.sh",
+	"postCreateCommand": "./.devcontainer/postCreate.sh",
 
-	// User with which to build the container. Safe to use 'root' with rootless docker.
+	// Use 'postCreateCommand' to run commands after the container is created.
+	"postStartCommand": "./.devcontainer/postStart.sh",
+
+	// User with which to build the container
 	"containerUser": "root",
 
-	// User with which to use the container. Safe to use 'root' with rootless docker.
-	"remoteUser": "root",
+	// User with which to run the image
+	"remoteUser": "vscode",
+
+	// Use 'updateRemoteUserUID' to set the UID of the remote user to match the host user.
+	"updateRemoteUserUID": false,
+
+	// Customizations for the container.
 	"customizations": {
 		"vscode": {
 			"extensions": [
