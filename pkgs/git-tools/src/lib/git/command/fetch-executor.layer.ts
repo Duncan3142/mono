@@ -1,6 +1,6 @@
 import { CommandExecutor } from "@effect/platform"
 import type { Duration } from "effect"
-import { Effect, Match, pipe, Layer } from "effect"
+import { Effect, Match, pipe, Layer, Console } from "effect"
 import commandFactory, { type ErrorCode } from "./command.ts"
 import { FetchRefsNotFoundError } from "#domain/fetch.error"
 import { BASE_10_RADIX } from "#const"
@@ -66,6 +66,7 @@ const FetchCommandExecutorLive: Layer.Layer<
 								)
 							),
 					}),
+					Console.log,
 					Effect.scoped,
 					Effect.provideService(CommandExecutor.CommandExecutor, executor)
 				)

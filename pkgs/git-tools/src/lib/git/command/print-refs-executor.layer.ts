@@ -1,6 +1,6 @@
 import { CommandExecutor } from "@effect/platform"
 import type { Array, Duration } from "effect"
-import { Layer, pipe, Effect, Match } from "effect"
+import { Layer, pipe, Effect, Match, Console } from "effect"
 import commandFactory from "./command.ts"
 import { BRANCH, TAG } from "#domain/reference"
 import PrintRefsCommandExecutor, { type Arguments } from "#command/print-refs-executor.service"
@@ -39,6 +39,7 @@ const PrintRefsCommandExecutorLive: Layer.Layer<
 						timeout,
 						errorMatcher: Match.value,
 					}),
+					Console.log,
 					Effect.scoped,
 					Effect.provideService(CommandExecutor.CommandExecutor, executor)
 				)
