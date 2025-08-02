@@ -7,4 +7,4 @@ ENV VOLTA_HOME="/root/.volta"
 ENV PATH="${VOLTA_HOME}/bin:${PATH}"
 RUN /tmp/mono-devcon-setup/volta.sh && \
     /tmp/mono-devcon-setup/docker.sh && \
-		/tmp/mono-devcon-setup/hadolint.sh
+    /tmp/mono-devcon-setup/hadolint.sh
