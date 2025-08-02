@@ -22,9 +22,9 @@ const branchProps = {
 	result: Either.right({
 		exitCode: 0,
 		stdOutLines: [
-			`* effect-test                0468291 [origin/effect-test] abc def`,
-			`  main                       62c5d1a [origin/main] Semver @duncan3142/effect-test (#2)`,
-			`  remotes/origin/HEAD        -> origin/main`,
+			`* effect-test                0468291 [origin/effect-test] abc def\n`,
+			`  main                       62c5d1a [origin/main] Semver @duncan3142/effect-test (#2)\n`,
+			`  remotes/origin/HEAD        -> origin/main\n`,
 			`  remotes/origin/effect-test c6722b4 Semver @duncan3142/effect-test (#1)`,
 		],
 		stdErrLines: [],
@@ -35,7 +35,7 @@ const tagProps = {
 	delay: "1 second",
 	result: Either.right({
 		exitCode: 0,
-		stdOutLines: [`@duncan3142/git-tools@0.0.0`, `@duncan3142/git-tools@0.0.1`],
+		stdOutLines: [`@duncan3142/git-tools@0.0.0\n`, `@duncan3142/git-tools@0.0.1`],
 		stdErrLines: [],
 	}),
 } satisfies MockProcessProps
@@ -76,25 +76,20 @@ describe("Reference Layer", () => {
 					logLevel: expect.objectContaining({ label: "INFO" }),
 				})
 			)
-			expect(mockConsole.log).toHaveBeenCalledTimes(6)
+			expect(mockConsole.log).toHaveBeenCalledTimes(2)
 			expect(mockConsole.log).toHaveBeenNthCalledWith(
 				1,
-				"* effect-test                0468291 [origin/effect-test] abc def"
+				[
+					`* effect-test                0468291 [origin/effect-test] abc def`,
+					`  main                       62c5d1a [origin/main] Semver @duncan3142/effect-test (#2)`,
+					`  remotes/origin/HEAD        -> origin/main`,
+					`  remotes/origin/effect-test c6722b4 Semver @duncan3142/effect-test (#1)`,
+				].join("\n")
 			)
 			expect(mockConsole.log).toHaveBeenNthCalledWith(
 				2,
-				`  main                       62c5d1a [origin/main] Semver @duncan3142/effect-test (#2)`
+				[`@duncan3142/git-tools@0.0.0`, `@duncan3142/git-tools@0.0.1`].join("\n")
 			)
-			expect(mockConsole.log).toHaveBeenNthCalledWith(
-				3,
-				`  remotes/origin/HEAD        -> origin/main`
-			)
-			expect(mockConsole.log).toHaveBeenNthCalledWith(
-				4,
-				`  remotes/origin/effect-test c6722b4 Semver @duncan3142/effect-test (#1)`
-			)
-			expect(mockConsole.log).toHaveBeenNthCalledWith(5, `@duncan3142/git-tools@0.0.0`)
-			expect(mockConsole.log).toHaveBeenNthCalledWith(6, `@duncan3142/git-tools@0.0.1`)
 		}).pipe(
 			Effect.provide(ProgramLayer),
 			Effect.withConsole(mockConsole),

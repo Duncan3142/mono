@@ -39,7 +39,7 @@ const PrintRefsCommandExecutorLive: Layer.Layer<
 						timeout,
 						errorMatcher: Match.value,
 					}),
-					Console.log,
+					Effect.flatMap(Console.log),
 					Effect.scoped,
 					Effect.provideService(CommandExecutor.CommandExecutor, executor)
 				)
