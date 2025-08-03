@@ -7,6 +7,7 @@ import type { CheckoutRefNotFoundError } from "#domain/checkout.error"
 interface Arguments {
 	readonly ref: Reference
 	readonly directory: string
+	readonly createIfNotExists: boolean
 }
 
 /**

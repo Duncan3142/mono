@@ -19,14 +19,16 @@ const CheckoutCommandExecutorLive: Layer.Layer<
 		return ({
 			ref: { name: ref },
 			directory,
+			createIfNotExists,
 		}: Arguments): Effect.Effect<void, CheckoutRefNotFoundError> =>
 			Effect.gen(function* () {
 				const timeout: Duration.DurationInput = "2 seconds"
+				const createBranchArg = createIfNotExists ? ["-b"] : []
 				return yield* pipe(
 					commandFactory({
 						directory,
 						subCommand: "checkout",
-						subArgs: ["--progress", ref],
+						subArgs: ["--progress", ...createBranchArg, ref],
 						timeout,
 						errorMatcher: (errorCode: ErrorCode) =>
 							pipe(
