@@ -1,4 +1,4 @@
-import { Console, Ref, Effect, HashMap } from "effect"
+import { Ref, Effect, HashMap } from "effect"
 import FetchDepth, { type FetchDepthService } from "./fetch-depth.service.ts"
 import { tag } from "#const"
 import RepositoryConfig from "#config/repository-config.service"
@@ -10,7 +10,7 @@ class FetchDepthFactory extends Effect.Service<FetchDepthFactory>()(
 	tag(`state`, `fetch-depth-factory`),
 	{
 		effect: Effect.gen(function* () {
-			yield* Console.trace("CounterFactoryLive initialized")
+			yield* Effect.logTrace("CounterFactoryLive initialized")
 			const [
 				map,
 				{
@@ -24,13 +24,13 @@ class FetchDepthFactory extends Effect.Service<FetchDepthFactory>()(
 			)
 			const acquire = Effect.gen(function* () {
 				const depth = yield* FetchDepth.make({ init: 0, maxDepth })
-				yield* Console.debug("Acquiring FetchDepth:", depth.id)
+				yield* Effect.logDebug("Acquiring FetchDepth:", depth.id)
 				yield* Ref.update(map, (m) => HashMap.set(m, depth.id, depth))
 				return depth
 			})
 			const release = (depth: FetchDepthService) =>
 				Effect.gen(function* () {
-					yield* Console.debug("Releasing FetchDepth:", depth.id)
+					yield* Effect.logDebug("Releasing FetchDepth:", depth.id)
 					return yield* Ref.update(map, (m) => HashMap.remove(m, depth.id))
 				})
 			return Effect.acquireRelease(acquire, release)

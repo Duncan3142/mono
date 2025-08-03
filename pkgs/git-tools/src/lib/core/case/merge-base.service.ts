@@ -1,4 +1,4 @@
-import { Effect, Console } from "effect"
+import { Effect } from "effect"
 import { tag } from "#const"
 import {
 	MERGE_BASE_NOT_FOUND_ERROR_TAG,
@@ -66,7 +66,7 @@ class MergeBase extends Effect.Service<MergeBase>()(tag(`case`, `merge-base`), {
 				}
 			)
 				.pipe(
-					Effect.tapError((err) => Console.error(err)),
+					Effect.tapError((err) => Effect.logError(err)),
 					Effect.timeout("16 seconds"),
 					Effect.catchAll(
 						(err) =>

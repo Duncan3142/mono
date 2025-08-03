@@ -1,5 +1,5 @@
 import { NodeContext, NodeRuntime } from "@effect/platform-node"
-import { Effect, Layer, ConfigProvider, pipe, Console } from "effect"
+import { Effect, Layer, ConfigProvider, pipe, Console, LogLevel, Logger } from "effect"
 import Git from "#service"
 import Fetch from "#case/fetch.service"
 import FetchCommand from "#command/fetch.service"
@@ -51,7 +51,8 @@ const program = Effect.gen(function* () {
 				["GIT_DIRECTORY", process.cwd()],
 			])
 		)
-	)
+	),
+	Logger.withMinimumLogLevel(LogLevel.Trace)
 )
 
 NodeRuntime.runMain(program.pipe(Effect.exit, Effect.tap(console.log)))
