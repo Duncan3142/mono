@@ -65,18 +65,10 @@ describe("Reference Layer", () => {
 
 			expect(result).toStrictEqual(Effect.void)
 
-			expect(logHandler).toHaveBeenCalledTimes(1)
-			expect(logHandler).toHaveBeenNthCalledWith(
-				1,
-				expect.objectContaining({
-					message: ["Testing print references"],
-					// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- returns 'any'
-					logLevel: expect.objectContaining({ label: "INFO" }),
-				})
-			)
-			expect(mockConsole.log).toHaveBeenCalledTimes(2)
+			expect(mockConsole.log).toHaveBeenCalledTimes(4)
+			expect(mockConsole.log).toHaveBeenNthCalledWith(1, "Branches:")
 			expect(mockConsole.log).toHaveBeenNthCalledWith(
-				1,
+				2,
 				[
 					`* effect-test                0468291 [origin/effect-test] abc def`,
 					`  main                       62c5d1a [origin/main] Semver @duncan3142/effect-test (#2)`,
@@ -84,8 +76,10 @@ describe("Reference Layer", () => {
 					`  remotes/origin/effect-test c6722b4 Semver @duncan3142/effect-test (#1)`,
 				].join("\n")
 			)
+
+			expect(mockConsole.log).toHaveBeenNthCalledWith(3, "Tags:")
 			expect(mockConsole.log).toHaveBeenNthCalledWith(
-				2,
+				4,
 				[`@duncan3142/git-tools@0.0.0`, `@duncan3142/git-tools@0.0.1`].join("\n")
 			)
 		}).pipe(

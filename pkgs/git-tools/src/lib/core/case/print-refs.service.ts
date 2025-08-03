@@ -16,7 +16,7 @@ class PrintRefs extends Effect.Service<PrintRefs>()(tag(`case`, `print-refs`), {
 		const commandExecutor = yield* PrintRefsCommand
 
 		return ({ logLevel: level, directory }: Arguments): Effect.Effect<void> =>
-			commandExecutor({ directory }).pipe(Effect.whenLogLevel(level))
+			commandExecutor({ directory }).pipe(Effect.whenLogLevel(level), Effect.asVoid)
 	}),
 }) {}
 
