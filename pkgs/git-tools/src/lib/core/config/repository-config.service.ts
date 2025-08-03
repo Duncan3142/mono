@@ -1,6 +1,6 @@
 import { Config, Effect } from "effect"
 import { tag } from "#const"
-import type { Remote } from "#domain/remote"
+import { Remote } from "#domain/remote"
 
 const DEFAULT_REMOTE_NAME = "origin"
 
@@ -22,11 +22,7 @@ class RepositoryConfig extends Effect.Service<RepositoryConfig>()(
 			const defaultRemote: Remote = yield* Config.nested(
 				Config.string("NAME").pipe(Config.withDefault(DEFAULT_REMOTE_NAME)),
 				"DEFAULT_REMOTE"
-			).pipe(
-				Config.map((name) => {
-					return { name }
-				})
-			)
+			).pipe(Config.map((name) => Remote({ name })))
 			const gitDirectory = yield* Config.string("GIT_DIRECTORY")
 
 			const fetch: FetchConfig = yield* Config.nested(

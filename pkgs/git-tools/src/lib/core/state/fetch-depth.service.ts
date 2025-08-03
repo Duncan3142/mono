@@ -1,8 +1,7 @@
 import { Effect, Ref, Context } from "effect"
 import { tag } from "#const"
 import { FetchDepthExceededError } from "#domain/fetch.error"
-
-type Depth = number
+import type { Depth } from "#domain/fetch"
 
 const handleFetchDepth = (maxDepth: Depth) =>
 	Effect.flatMap((depth: Depth) => {

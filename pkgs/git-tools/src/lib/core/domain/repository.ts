@@ -1,6 +1,13 @@
+import { Data } from "effect"
+import { tag } from "#const"
+
+const REPOSITORY_TAG = tag("domain", "Repository")
+
 interface Repository {
-	directory: string
+	readonly _tag: typeof REPOSITORY_TAG
+	readonly directory: string
 }
 
-// eslint-disable-next-line import-x/prefer-default-export -- Expect more
-export type { Repository }
+const Repository = Data.tagged<Repository>(REPOSITORY_TAG)
+
+export { REPOSITORY_TAG, Repository }

@@ -1,6 +1,14 @@
+import { Data } from "effect"
+import { tag } from "#const"
+
+const HEAD_TAG = tag("domain", "Head")
+
 interface Head {
-	name: "HEAD"
+	readonly _tag: typeof HEAD_TAG
+	readonly name: "HEAD"
 }
 
-// eslint-disable-next-line import-x/prefer-default-export -- Type-only export
+const Head = Data.tagged<Head>(HEAD_TAG)
+
 export type { Head }
+export default Head

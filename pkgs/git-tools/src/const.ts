@@ -1,23 +1,11 @@
-import type { Array } from "effect"
+import { Array } from "effect"
+import type { Join } from "./tuple.ts"
 
 const BASE_10_RADIX = 10
 const SERVICE_PREFIX = "@duncan3142/git-tools"
 
-type TagSegments<
-	Segments extends [...Array<string>],
-	Acc extends string = "",
-> = Segments extends []
-	? Acc
-	: Segments extends [infer Head, ...infer Tail]
-		? Head extends string
-			? Tail extends Array<string>
-				? TagSegments<Tail, `${Acc}/${Head}`>
-				: never
-			: never
-		: never
-
 type Tag<Segments extends [...Array.NonEmptyReadonlyArray<string>]> =
-	`${typeof SERVICE_PREFIX}${TagSegments<Segments>}`
+	`${typeof SERVICE_PREFIX}${Join<[...Segments]>}`
 
 /**
  * Generates a namespaced tag string.
@@ -27,8 +15,7 @@ type Tag<Segments extends [...Array.NonEmptyReadonlyArray<string>]> =
  */
 const tag = <Segments extends [...Array.NonEmptyReadonlyArray<string>]>(
 	...segments: [...Segments]
-): Tag<Segments> =>
-	// eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- TypeScript does not infer the type correctly here
-	`${SERVICE_PREFIX}/${segments.join("/")}` as Tag<Segments>
+	// eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- Typescript does not support variadic generics in this context
+): Tag<Segments> => `${SERVICE_PREFIX}/${Array.join(segments, "/")}` as Tag<Segments>
 
 export { BASE_10_RADIX, tag }

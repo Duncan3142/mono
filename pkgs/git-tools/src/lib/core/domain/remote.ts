@@ -1,6 +1,13 @@
+import { Data } from "effect"
+import { tag } from "#const"
+
+const REMOTE_TAG = tag("domain", "Remote")
+
 interface Remote {
-	name: string
+	readonly _tag: typeof REMOTE_TAG
+	readonly name: string
 }
 
-// eslint-disable-next-line import-x/prefer-default-export -- Expect more
-export type { Remote }
+const Remote = Data.tagged<Remote>(REMOTE_TAG)
+
+export { REMOTE_TAG, Remote }

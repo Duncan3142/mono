@@ -1,46 +1,35 @@
-import { Match, Array, pipe } from "effect"
-import { BRANCH, TAG, type Reference, type as referenceType } from "./reference.ts"
+import { Match, pipe, Data } from "effect"
+import { type Reference, BRANCH_REF_TAG, TAG_REF_TAG } from "./reference.ts"
 import type { Remote } from "./remote.ts"
+import { tag } from "#const"
+
+const REFERENCE_SPEC_TAG = tag("domain", "ReferenceSpec")
 
 interface ReferenceSpec {
-	remote: Remote
-	ref: Reference
+	readonly _tag: typeof REFERENCE_SPEC_TAG
+	readonly remote: Remote
+	readonly ref: Reference
 }
 
-interface ReferenceSpecs {
-	remote: Remote
-	refs: Array.NonEmptyReadonlyArray<Reference>
-}
-
-interface ReferenceSpecsStrings {
-	remote: string
-	refs: Array.NonEmptyReadonlyArray<string>
-}
-
-const toString = ({ remote: { name: remote }, ref }: ReferenceSpec): string => {
-	const { name } = ref
-	const type = referenceType(ref)
-	return pipe(
-		Match.value(type),
-		Match.when(BRANCH, () => `refs/heads/${name}:refs/remotes/${remote}/${name}`),
-		Match.when(TAG, () => `refs/tags/${name}:refs/tags/${name}`),
-		Match.exhaustive
-	)
-}
+const ReferenceSpec = Data.tagged<ReferenceSpec>(REFERENCE_SPEC_TAG)
 
 /**
- * Converts a reference specification to a string format.
- * @param specs - The reference specification
- * @param specs.remote - The remote repository
- * @param specs.refs - The references to fetch
- * @returns The string representation of the reference specification
+ * Reference specification string
+ * @param spec - Reference specification to convert
+ * @param spec.remote - Remote to use
+ * @param spec.remote.name - Name of the remote
+ * @param spec.ref - Reference to convert
+ * @returns Reference specification string
  */
-const toStrings = ({ remote, refs }: ReferenceSpecs): ReferenceSpecsStrings => {
-	return {
-		remote: remote.name,
-		refs: Array.map(refs, (reference) => toString({ remote, ref: reference })),
-	}
-}
+const toString = ({ remote: { name: remote }, ref }: ReferenceSpec): string =>
+	pipe(
+		Match.value(ref),
+		Match.when(
+			{ _tag: BRANCH_REF_TAG },
+			({ name }) => `refs/heads/${name}:refs/remotes/${remote}/${name}`
+		),
+		Match.when({ _tag: TAG_REF_TAG }, ({ name }) => `refs/tags/${name}:refs/tags/${name}`),
+		Match.exhaustive
+	)
 
-export { toStrings }
-export type { ReferenceSpecs, ReferenceSpecsStrings }
+export { toString, REFERENCE_SPEC_TAG, ReferenceSpec }

@@ -9,7 +9,7 @@ import MergeBaseCommandExecutor from "#command/merge-base-executor.service"
 import type { Remote } from "#domain/remote"
 import RepositoryConfig from "#config/repository-config.service"
 import FetchCommand from "#command/fetch.service"
-import { FETCH_MODE_DEEPEN_BY } from "#domain/fetch-reference"
+import { FetchDeepenBy } from "#domain/fetch"
 import type FetchDepth from "#state/fetch-depth.service"
 import {
 	FETCH_DEPTH_EXCEEDED_ERROR_TAG,
@@ -48,7 +48,7 @@ class MergeBase extends Effect.Service<MergeBase>()(tag(`case`, `merge-base`), {
 				}).pipe(
 					Effect.tapErrorTag(MERGE_BASE_NOT_FOUND_ERROR_TAG, () =>
 						fetchCommand({
-							mode: { mode: FETCH_MODE_DEEPEN_BY, value: defaultDeepenBy },
+							mode: FetchDeepenBy({ deepenBy: defaultDeepenBy }),
 							remote,
 							refs: [headRef, baseRef],
 						}).pipe(Effect.catchTag(FETCH_REFS_NOT_FOUND_ERROR_TAG, (err) => Effect.die(err)))

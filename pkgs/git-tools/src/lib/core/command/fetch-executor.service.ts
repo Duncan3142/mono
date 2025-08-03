@@ -4,10 +4,10 @@ import type { FetchRefsNotFoundError } from "#domain/fetch.error"
 import { tag } from "#const"
 import type { Reference } from "#domain/reference"
 import type { Remote } from "#domain/remote"
-import type { FetchModeInput } from "#domain/fetch-reference"
+import type { FetchMode } from "#domain/fetch"
 
 interface Arguments {
-	readonly mode: FetchModeInput
+	readonly mode: FetchMode
 	readonly remote: Remote
 	readonly refs: Array.NonEmptyReadonlyArray<Reference>
 }

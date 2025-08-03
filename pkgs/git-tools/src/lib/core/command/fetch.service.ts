@@ -6,14 +6,10 @@ import type { Remote } from "#domain/remote"
 import type { FetchDepthExceededError, FetchRefsNotFoundError } from "#domain/fetch.error"
 import FetchDepth from "#state/fetch-depth.service"
 import type { Reference } from "#domain/reference"
-import {
-	FETCH_MODE_DEEPEN_BY,
-	FETCH_MODE_DEPTH,
-	type FetchModeInput,
-} from "#domain/fetch-reference"
+import { FETCH_DEEPEN_BY_TAG, FETCH_DEPTH_TAG, type FetchMode } from "#domain/fetch"
 
 interface Arguments {
-	readonly mode: FetchModeInput
+	readonly mode: FetchMode
 	readonly remote: Remote
 	readonly refs: Array.NonEmptyReadonlyArray<Reference>
 }
@@ -40,8 +36,8 @@ class FetchCommand extends Effect.Service<FetchCommand>()(tag(`command`, `fetch`
 				const fetchDepth = yield* FetchDepth
 				yield* pipe(
 					Match.value(mode),
-					Match.when({ mode: FETCH_MODE_DEPTH }, ({ value }) => fetchDepth.set(value)),
-					Match.when({ mode: FETCH_MODE_DEEPEN_BY }, ({ value }) => fetchDepth.inc(value)),
+					Match.when({ _tag: FETCH_DEPTH_TAG }, ({ depth }) => fetchDepth.set(depth)),
+					Match.when({ _tag: FETCH_DEEPEN_BY_TAG }, ({ deepenBy }) => fetchDepth.inc(deepenBy)),
 					Match.exhaustive
 				)
 

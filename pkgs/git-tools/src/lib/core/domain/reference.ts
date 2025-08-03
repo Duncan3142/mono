@@ -1,34 +1,36 @@
-import { Order } from "effect"
+import { Data, Order } from "effect"
+import { tag } from "#const"
 
-const BRANCH = "branch"
-const TAG = "tag"
+const BRANCH_REF_TAG = tag("domain", "BranchRef")
+const TAG_REF_TAG = tag("domain", "TagRef")
 
-type BRANCH_TYPE = typeof BRANCH
+const BRANCH = "BRANCH"
+const TAG = "TAG"
 
-type TAG_TYPE = typeof TAG
+type REF_TYPE = typeof BRANCH | typeof TAG
 
-type REF_TYPE = BRANCH_TYPE | TAG_TYPE
-
-interface Reference {
-	name: string
-	type?: REF_TYPE
+interface BranchRef {
+	readonly _tag: typeof BRANCH_REF_TAG
+	readonly name: string
 }
 
-/**
- * Extracts the type of a reference.
- * @param reference - Reference to check
- * @returns the reference type, defaults to BRANCH if not specified
- */
-const type = (reference: Reference): REF_TYPE => reference.type ?? BRANCH
+const BranchRef = Data.tagged<BranchRef>(BRANCH_REF_TAG)
+
+interface TagRef {
+	readonly _tag: typeof TAG_REF_TAG
+	readonly name: string
+}
+
+const TagRef = Data.tagged<TagRef>(TAG_REF_TAG)
+
+type Reference = BranchRef | TagRef
 
 /**
  * Order reference by type
  * @param reference - Reference to check
  * @returns Reference ordering
  */
-const sortByType: Order.Order<Reference> = Order.mapInput(Order.string, (reference) =>
-	type(reference)
-)
+const sortByTag: Order.Order<Reference> = Order.mapInput(Order.string, ({ _tag }) => _tag)
 
 /**
  * Order reference order by name
@@ -37,5 +39,5 @@ const sortByType: Order.Order<Reference> = Order.mapInput(Order.string, (referen
  */
 const sortByName: Order.Order<Reference> = Order.mapInput(Order.string, ({ name }) => name)
 
-export type { BRANCH_TYPE, TAG_TYPE, REF_TYPE, Reference }
-export { BRANCH, TAG, type, sortByType, sortByName }
+export type { Reference, REF_TYPE }
+export { BRANCH_REF_TAG, BranchRef, TAG_REF_TAG, TagRef, sortByTag, sortByName, BRANCH, TAG }

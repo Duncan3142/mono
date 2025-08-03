@@ -1,7 +1,7 @@
 import { Data } from "effect"
 import { tag } from "#const"
 
-const MERGE_BASE_NOT_FOUND_ERROR_TAG = tag(`MERGE_BASE_NOT_FOUND_ERROR`)
+const MERGE_BASE_NOT_FOUND_ERROR_TAG = tag("domain", `MERGE_BASE_NOT_FOUND_ERROR`)
 
 /**
  * Fetch Not Found Error

@@ -10,6 +10,7 @@ import MergeBaseCommandExecutorLive from "#git/command/merge-base-executor.layer
 import RepositoryConfig from "#config/repository-config.service"
 import FetchDepthFactory from "#state/fetch-depth-factory.service"
 import MergeBase from "#case/merge-base.service"
+import { BranchRef } from "#domain/reference"
 
 const ProgramLive = pipe(
 	Git.Default,
@@ -33,7 +34,10 @@ const program = Effect.gen(function* () {
 			message: "Print refs test",
 		}),
 		git
-			.mergeBase({ baseRef: { name: "main" }, headRef: { name: "git-effect" } })
+			.mergeBase({
+				baseRef: BranchRef({ name: "main" }),
+				headRef: BranchRef({ name: "git-effect" }),
+			})
 			.pipe(Effect.flatMap((baseSha) => Console.log("Merge base found", baseSha))),
 	])
 }).pipe(
