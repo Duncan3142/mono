@@ -14,16 +14,18 @@ import { BranchRef } from "#domain/reference"
 
 const ProgramLive = pipe(
 	Git.Default,
-	Layer.provide(MergeBase.Default),
-	Layer.provide(MergeBaseCommandExecutorLive),
-	Layer.provide(Fetch.Default),
-	Layer.provide(FetchCommand.Default),
-	Layer.provide(FetchCommandExecutorLive),
-	Layer.provide(PrintRefs.Default),
-	Layer.provide(PrintRefsCommandExecutorLive),
-	Layer.provide(NodeContext.layer),
+	Layer.provide(Layer.mergeAll(MergeBase.Default, Fetch.Default, PrintRefs.Default)),
 	Layer.provide(FetchDepthFactory.Default),
-	Layer.provide(RepositoryConfig.Default)
+	Layer.provide(FetchCommand.Default),
+	Layer.provide(
+		Layer.mergeAll(
+			MergeBaseCommandExecutorLive,
+			FetchCommandExecutorLive,
+			PrintRefsCommandExecutorLive
+		)
+	),
+	Layer.provide(RepositoryConfig.Default),
+	Layer.provide(NodeContext.layer)
 )
 
 const program = Effect.gen(function* () {

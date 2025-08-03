@@ -3,11 +3,12 @@ import { Effect } from "effect"
 import { tag } from "#const"
 import type { Remote } from "#domain/remote"
 import type { FetchDepthExceededError, FetchRefsNotFoundError } from "#domain/fetch.error"
-import type FetchDepth from "#state/fetch-depth.service"
+import FetchDepth from "#state/fetch-depth.service"
 import type { Reference } from "#domain/reference"
 import RepositoryConfig from "#config/repository-config.service"
 import FetchCommand from "#command/fetch.service"
 import { FetchDepth as FetchModeDepth } from "#domain/fetch"
+import FetchDepthFactory from "#state/fetch-depth-factory.service"
 
 interface Arguments {
 	remote?: Remote
@@ -26,7 +27,8 @@ class Fetch extends Effect.Service<Fetch>()(tag(`case`, `fetch`), {
 				defaultRemote,
 				fetch: { defaultDepth },
 			},
-		] = yield* Effect.all([FetchCommand, RepositoryConfig], {
+			fetchDepthFactory,
+		] = yield* Effect.all([FetchCommand, RepositoryConfig, FetchDepthFactory], {
 			concurrency: "unbounded",
 		})
 
@@ -34,18 +36,14 @@ class Fetch extends Effect.Service<Fetch>()(tag(`case`, `fetch`), {
 			refs,
 			remote = defaultRemote,
 			depth = defaultDepth,
-		}: Arguments): Effect.Effect<
-			void,
-			FetchRefsNotFoundError | FetchDepthExceededError,
-			FetchDepth
-		> =>
+		}: Arguments): Effect.Effect<void, FetchRefsNotFoundError | FetchDepthExceededError> =>
 			Effect.gen(function* () {
 				return yield* fetchCommand({
 					mode: FetchModeDepth({ depth }),
 					remote,
 					refs,
 				})
-			})
+			}).pipe(Effect.provideServiceEffect(FetchDepth, fetchDepthFactory), Effect.scoped)
 	}),
 }) {}
 

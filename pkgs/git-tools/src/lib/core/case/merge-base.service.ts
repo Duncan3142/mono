@@ -10,11 +10,12 @@ import type { Remote } from "#domain/remote"
 import RepositoryConfig from "#config/repository-config.service"
 import FetchCommand from "#command/fetch.service"
 import { FetchDeepenBy } from "#domain/fetch"
-import type FetchDepth from "#state/fetch-depth.service"
+import FetchDepth from "#state/fetch-depth.service"
 import {
 	FETCH_DEPTH_EXCEEDED_ERROR_TAG,
 	FETCH_REFS_NOT_FOUND_ERROR_TAG,
 } from "#domain/fetch.error"
+import FetchDepthFactory from "#state/fetch-depth-factory.service"
 
 interface Arguments {
 	readonly headRef: Reference
@@ -34,13 +35,19 @@ class MergeBase extends Effect.Service<MergeBase>()(tag(`case`, `merge-base`), {
 				fetch: { defaultDeepenBy },
 			},
 			fetchCommand,
-		] = yield* Effect.all([MergeBaseCommandExecutor, RepositoryConfig, FetchCommand])
+			fetchDepthFactory,
+		] = yield* Effect.all(
+			[MergeBaseCommandExecutor, RepositoryConfig, FetchCommand, FetchDepthFactory],
+			{
+				concurrency: "unbounded",
+			}
+		)
 
 		return ({
 			headRef,
 			baseRef,
 			remote = defaultRemote,
-		}: Arguments): Effect.Effect<string, MergeBaseNotFoundError, FetchDepth> =>
+		}: Arguments): Effect.Effect<string, MergeBaseNotFoundError> =>
 			Effect.retry(
 				mergeBaseCommandExecutor({
 					headRef,
@@ -57,18 +64,20 @@ class MergeBase extends Effect.Service<MergeBase>()(tag(`case`, `merge-base`), {
 				{
 					until: (err) => err._tag === FETCH_DEPTH_EXCEEDED_ERROR_TAG,
 				}
-			).pipe(
-				Effect.tapError((err) => Console.error(err)),
-				Effect.timeout("16 seconds"),
-				Effect.catchAll(
-					(err) =>
-						new MergeBaseNotFoundError({
-							headRef: headRef.name,
-							baseRef: baseRef.name,
-							cause: err,
-						})
-				)
 			)
+				.pipe(
+					Effect.tapError((err) => Console.error(err)),
+					Effect.timeout("16 seconds"),
+					Effect.catchAll(
+						(err) =>
+							new MergeBaseNotFoundError({
+								headRef: headRef.name,
+								baseRef: baseRef.name,
+								cause: err,
+							})
+					)
+				)
+				.pipe(Effect.provideServiceEffect(FetchDepth, fetchDepthFactory), Effect.scoped)
 	}),
 }) {}
 
