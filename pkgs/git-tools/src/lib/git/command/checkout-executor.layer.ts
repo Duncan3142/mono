@@ -1,6 +1,6 @@
 import { CommandExecutor } from "@effect/platform"
 import type { Duration } from "effect"
-import { Layer, pipe, Effect, Match } from "effect"
+import { Layer, pipe, Effect, Match, Console } from "effect"
 import commandFactory, { type ErrorCode } from "./command.ts"
 import CheckoutCommandExecutor, { type Arguments } from "#command/checkout-executor.service"
 import RepositoryConfig from "#config/repository-config.service"
@@ -41,6 +41,7 @@ const CheckoutCommandExecutorLive: Layer.Layer<
 								)
 							),
 					}),
+					Effect.flatMap(Console.log),
 					Effect.scoped,
 					Effect.provideService(CommandExecutor.CommandExecutor, executor)
 				)

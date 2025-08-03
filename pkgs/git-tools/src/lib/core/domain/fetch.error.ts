@@ -1,7 +1,7 @@
 import { Data } from "effect"
-import { SERVICE_PREFIX } from "#const"
+import { tag } from "#const"
 
-const FETCH_REFS_NOT_FOUND_ERROR_TAG = `${SERVICE_PREFIX}/FETCH_REFS_NOT_FOUND_ERROR`
+const FETCH_REFS_NOT_FOUND_ERROR_TAG = tag(`FETCH_REFS_NOT_FOUND_ERROR`)
 
 /**
  * Fetch Not Found Error
@@ -10,7 +10,7 @@ class FetchRefsNotFoundError extends Data.TaggedError(FETCH_REFS_NOT_FOUND_ERROR
 	references: ReadonlyArray<string>
 }> {}
 
-const FETCH_DEPTH_EXCEEDED_ERROR_TAG = `${SERVICE_PREFIX}/FETCH_DEPTH_EXCEEDED_ERROR`
+const FETCH_DEPTH_EXCEEDED_ERROR_TAG = tag(`FETCH_DEPTH_EXCEEDED_ERROR`)
 
 /**
  * Fetch Depth Exceeded Error

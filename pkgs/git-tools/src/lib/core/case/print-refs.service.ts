@@ -1,7 +1,7 @@
 import { Effect, LogLevel, pipe } from "effect"
 import PrintRefsCommandExecutor from "#command/print-refs-executor.service"
 import { type REF_TYPE, TAG, BRANCH } from "#domain/reference"
-import { SERVICE_PREFIX } from "#const"
+import { tag } from "#const"
 
 interface Arguments {
 	level: Exclude<LogLevel.Literal, "None" | "All">
@@ -11,7 +11,7 @@ interface Arguments {
 /**
  * Print refs service
  */
-class PrintRefs extends Effect.Service<PrintRefs>()(`${SERVICE_PREFIX}/case/print-refs`, {
+class PrintRefs extends Effect.Service<PrintRefs>()(tag(`case/print-refs`), {
 	effect: Effect.gen(function* () {
 		const commandExecutor = yield* PrintRefsCommandExecutor
 

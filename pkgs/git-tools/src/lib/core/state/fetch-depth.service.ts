@@ -1,5 +1,5 @@
 import { Effect, Ref, Context } from "effect"
-import { SERVICE_PREFIX } from "#const"
+import { tag } from "#const"
 import { FetchDepthExceededError } from "#domain/fetch.error"
 
 type Depth = number
@@ -15,7 +15,7 @@ const handleFetchDepth = (maxDepth: Depth) =>
 /**
  * Fetch depth service
  */
-class FetchDepth extends Context.Tag(`${SERVICE_PREFIX}/state/fetch-depth`)<
+class FetchDepth extends Context.Tag(tag(`state/fetch-depth`))<
 	FetchDepth,
 	{
 		id: string

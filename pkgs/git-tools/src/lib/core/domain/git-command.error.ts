@@ -1,8 +1,8 @@
 import type { Duration } from "effect"
 import { Data } from "effect"
-import { SERVICE_PREFIX } from "#const"
+import { tag } from "#const"
 
-const GIT_COMMAND_TIMEOUT_ERROR_TAG = `${SERVICE_PREFIX}/GIT_COMMAND_TIMEOUT_ERROR`
+const GIT_COMMAND_TIMEOUT_ERROR_TAG = tag(`GIT_COMMAND_TIMEOUT_ERROR`)
 
 /**
  * Git Command Timeout Error
@@ -13,7 +13,7 @@ class GitCommandTimeoutError extends Data.TaggedError(GIT_COMMAND_TIMEOUT_ERROR_
 	readonly args: ReadonlyArray<string>
 }> {}
 
-const GIT_COMMAND_FAILED_ERROR_TAG = `${SERVICE_PREFIX}/GIT_COMMAND_FAILED_ERROR`
+const GIT_COMMAND_FAILED_ERROR_TAG = tag(`GIT_COMMAND_FAILED_ERROR`)
 
 /**
  * Git Command Failed Error

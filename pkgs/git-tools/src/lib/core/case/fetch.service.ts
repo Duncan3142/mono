@@ -1,5 +1,5 @@
 import { Order, Effect, pipe, Record, Match, Array } from "effect"
-import { SERVICE_PREFIX } from "#const"
+import { tag } from "#const"
 import type { Remote } from "#domain/remote"
 import {
 	type FetchReference,
@@ -46,7 +46,7 @@ const handleOptional = <R>(
 /**
  * Git fetch service
  */
-class Fetch extends Effect.Service<Fetch>()(`${SERVICE_PREFIX}/case/fetch`, {
+class Fetch extends Effect.Service<Fetch>()(tag(`case/fetch`), {
 	effect: Effect.gen(function* () {
 		const [
 			fetchCommand,

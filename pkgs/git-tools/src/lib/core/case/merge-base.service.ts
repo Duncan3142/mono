@@ -1,5 +1,5 @@
 import { Effect, Console } from "effect"
-import { SERVICE_PREFIX } from "#const"
+import { tag } from "#const"
 import {
 	MERGE_BASE_NOT_FOUND_ERROR_TAG,
 	MergeBaseNotFoundError,
@@ -25,7 +25,7 @@ interface Arguments {
 /**
  * Reference service
  */
-class MergeBase extends Effect.Service<MergeBase>()(`${SERVICE_PREFIX}/case/merge-base`, {
+class MergeBase extends Effect.Service<MergeBase>()(tag(`case/merge-base`), {
 	effect: Effect.gen(function* () {
 		const [
 			mergeBaseCommandExecutor,
@@ -60,8 +60,13 @@ class MergeBase extends Effect.Service<MergeBase>()(`${SERVICE_PREFIX}/case/merg
 			).pipe(
 				Effect.tapError((err) => Console.error(err)),
 				Effect.timeout("16 seconds"),
-				Effect.orElseFail(
-					() => new MergeBaseNotFoundError({ headRef: headRef.name, baseRef: baseRef.name })
+				Effect.catchAll(
+					(err) =>
+						new MergeBaseNotFoundError({
+							headRef: headRef.name,
+							baseRef: baseRef.name,
+							cause: err,
+						})
 				)
 			)
 	}),
