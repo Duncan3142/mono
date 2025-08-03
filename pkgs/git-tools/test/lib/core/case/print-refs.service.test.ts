@@ -52,7 +52,7 @@ describe("Reference Layer", () => {
 				const fiber = yield* Effect.fork(
 					Effect.exit(
 						printRefs({
-							level: "Info",
+							logLevel: "Info",
 							message: "Testing print references",
 							directory: "/dummy/path/to/repo", // Use a dummy path for testing
 						})

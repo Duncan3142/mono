@@ -19,7 +19,7 @@ interface Arguments {
 /**
  * Reference service
  */
-class MergeBase extends Effect.Service<MergeBase>()(tag(`case`, `merge-base`), {
+class FindMergeBase extends Effect.Service<FindMergeBase>()(tag(`case`, `find-merge-base`), {
 	effect: Effect.gen(function* () {
 		const [
 			mergeBaseCommand,
@@ -49,5 +49,5 @@ class MergeBase extends Effect.Service<MergeBase>()(tag(`case`, `merge-base`), {
 	}),
 }) {}
 
-export default MergeBase
+export default FindMergeBase
 export type { Arguments }

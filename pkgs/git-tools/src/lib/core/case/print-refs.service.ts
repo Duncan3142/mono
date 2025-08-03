@@ -5,7 +5,7 @@ import { tag } from "#const"
 
 interface Arguments {
 	readonly directory: string
-	readonly level: Exclude<LogLevel.Literal, "None" | "All">
+	readonly logLevel: Exclude<LogLevel.Literal, "None" | "All">
 }
 
 /**
@@ -15,7 +15,7 @@ class PrintRefs extends Effect.Service<PrintRefs>()(tag(`case`, `print-refs`), {
 	effect: Effect.gen(function* () {
 		const commandExecutor = yield* PrintRefsCommand
 
-		return ({ level, directory }: Arguments): Effect.Effect<void> =>
+		return ({ logLevel: level, directory }: Arguments): Effect.Effect<void> =>
 			commandExecutor({ directory }).pipe(Effect.whenLogLevel(level))
 	}),
 }) {}

@@ -20,7 +20,7 @@ interface Arguments {
 /**
  * Git fetch service
  */
-class Fetch extends Effect.Service<Fetch>()(tag(`case`, `fetch`), {
+class FetchRefs extends Effect.Service<FetchRefs>()(tag(`case`, `fetch`), {
 	effect: Effect.gen(function* () {
 		const [
 			fetchCommand,
@@ -50,5 +50,5 @@ class Fetch extends Effect.Service<Fetch>()(tag(`case`, `fetch`), {
 	}),
 }) {}
 
-export default Fetch
+export default FetchRefs
 export type { Arguments }

@@ -36,7 +36,7 @@ const program = Effect.gen(function* () {
 	const directory = process.cwd()
 	return yield* Effect.all([
 		git.printRefs({
-			level: "Info",
+			logLevel: "Info",
 			message: "Print refs test",
 			directory,
 		}),
