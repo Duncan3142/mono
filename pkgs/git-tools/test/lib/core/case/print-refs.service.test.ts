@@ -1,21 +1,17 @@
 /* eslint-disable @typescript-eslint/unbound-method -- Check mock use */
 /* eslint-disable @typescript-eslint/no-magic-numbers -- Check mock use */
 import { expect, describe, it, vi } from "@effect/vitest"
-import type { Console } from "effect"
 import { Effect, Fiber, pipe, ConfigProvider, Layer, TestClock, Either } from "effect"
-import { mockDeep } from "vitest-mock-extended"
 import CommandExecutorTest, { type MockProcessProps } from "#mock/command-executor.mock"
 import PrintRefsCommandExecutorLive from "#git/command/print-refs-executor.layer"
 import PrintRefs from "#case/print-refs.service"
 import RepositoryConfig from "#config/repository-config.service"
 import LoggerTest from "#mock/logger.mock"
+import consoleFactory from "#mock/console.mock"
 
 const logHandler = vi.fn<() => void>()
 
-const mockConsole = mockDeep<Console.Console>()
-
-mockConsole.log.mockImplementation(() => Effect.void)
-mockConsole.error.mockImplementation(() => Effect.void)
+const mockConsole = consoleFactory()
 
 const branchProps = {
 	delay: "1 second",
