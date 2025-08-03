@@ -14,13 +14,12 @@ import {
 	FETCH_DEPTH_EXCEEDED_ERROR_TAG,
 	FETCH_REFS_NOT_FOUND_ERROR_TAG,
 } from "#domain/fetch.error"
-import type { Repository } from "#domain/repository"
 
 interface Arguments {
 	readonly headRef: Reference
 	readonly baseRef: Reference
 	readonly remote: Remote
-	readonly repository: Repository
+	readonly directory: string
 	readonly deepenBy: Depth
 }
 
@@ -42,21 +41,21 @@ class MergeBaseCommand extends Effect.Service<MergeBaseCommand>()(
 				headRef,
 				baseRef,
 				remote,
-				repository,
+				directory,
 				deepenBy,
 			}: Arguments): Effect.Effect<string, MergeBaseNotFoundError, FetchDepth> =>
 				Effect.retry(
 					mergeBaseCommandExecutor({
 						headRef,
 						baseRef,
-						repository,
+						directory,
 					}).pipe(
 						Effect.tapErrorTag(MERGE_BASE_NOT_FOUND_ERROR_TAG, () =>
 							fetchCommand({
 								mode: FetchDeepenBy({ deepenBy }),
 								remote,
 								refs: [headRef, baseRef],
-								repository,
+								directory,
 							}).pipe(Effect.catchTag(FETCH_REFS_NOT_FOUND_ERROR_TAG, (err) => Effect.die(err)))
 						)
 					),

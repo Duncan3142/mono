@@ -2,11 +2,10 @@ import type { Effect } from "effect"
 import { Context } from "effect"
 import type { REF_TYPE } from "#domain/reference"
 import { tag } from "#const"
-import type { Repository } from "#domain/repository"
 
 interface Arguments {
 	readonly type: REF_TYPE
-	readonly repository: Repository
+	readonly directory: string
 }
 
 /**

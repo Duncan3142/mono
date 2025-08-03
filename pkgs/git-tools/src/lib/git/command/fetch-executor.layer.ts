@@ -24,7 +24,7 @@ const FetchCommandExecutorLive: Layer.Layer<
 			mode,
 			remote,
 			refs,
-			repository: { directory },
+			directory,
 		}: Arguments): Effect.Effect<void, FetchRefsNotFoundError> =>
 			Effect.gen(function* () {
 				const { name: remoteName } = remote

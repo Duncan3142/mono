@@ -32,15 +32,18 @@ const ProgramLive = pipe(
 
 const program = Effect.gen(function* () {
 	const git = yield* Git
+	const directory = process.cwd()
 	return yield* Effect.all([
 		git.printRefs({
 			level: "Info",
 			message: "Print refs test",
+			directory,
 		}),
 		git
 			.mergeBase({
 				baseRef: BranchRef({ name: "main" }),
 				headRef: BranchRef({ name: "git-effect" }),
+				directory,
 			})
 			.pipe(Effect.flatMap((baseSha) => Console.log("Merge base found", baseSha))),
 	])

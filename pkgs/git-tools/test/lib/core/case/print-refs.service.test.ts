@@ -54,6 +54,7 @@ describe("Reference Layer", () => {
 						printRefs({
 							level: "Info",
 							message: "Testing print references",
+							directory: "/dummy/path/to/repo", // Use a dummy path for testing
 						})
 					)
 				)

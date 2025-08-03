@@ -9,12 +9,12 @@ import RepositoryConfig from "#config/repository-config.service"
 import FetchCommand from "#command/fetch.service"
 import { FetchDepth as FetchModeDepth } from "#domain/fetch"
 import FetchDepthFactory from "#state/fetch-depth-factory.service"
-import { Repository } from "#domain/repository"
 
 interface Arguments {
-	remote?: Remote
-	refs: Array.NonEmptyReadonlyArray<Reference>
-	depth?: number
+	readonly remote?: Remote
+	readonly directory: string
+	readonly refs: Array.NonEmptyReadonlyArray<Reference>
+	readonly depth?: number
 }
 
 /**
@@ -27,7 +27,6 @@ class Fetch extends Effect.Service<Fetch>()(tag(`case`, `fetch`), {
 			{
 				defaultRemote,
 				fetch: { defaultDepth },
-				directory,
 			},
 			fetchDepthFactory,
 		] = yield* Effect.all([FetchCommand, RepositoryConfig, FetchDepthFactory], {
@@ -36,6 +35,7 @@ class Fetch extends Effect.Service<Fetch>()(tag(`case`, `fetch`), {
 
 		return ({
 			refs,
+			directory,
 			remote = defaultRemote,
 			depth = defaultDepth,
 		}: Arguments): Effect.Effect<void, FetchRefsNotFoundError | FetchDepthExceededError> =>
@@ -44,7 +44,7 @@ class Fetch extends Effect.Service<Fetch>()(tag(`case`, `fetch`), {
 					mode: FetchModeDepth({ depth }),
 					remote,
 					refs,
-					repository: Repository({ directory }),
+					directory,
 				})
 			}).pipe(Effect.provideServiceEffect(FetchDepth, fetchDepthFactory), Effect.scoped)
 	}),

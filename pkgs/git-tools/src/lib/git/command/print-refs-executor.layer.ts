@@ -14,7 +14,7 @@ const PrintRefsCommandExecutorLive: Layer.Layer<
 	Effect.gen(function* () {
 		const executor = yield* CommandExecutor.CommandExecutor
 
-		return ({ type, repository: { directory } }: Arguments): Effect.Effect<void> =>
+		return ({ type, directory }: Arguments): Effect.Effect<void> =>
 			Effect.gen(function* () {
 				const args = pipe(
 					Match.value(type),

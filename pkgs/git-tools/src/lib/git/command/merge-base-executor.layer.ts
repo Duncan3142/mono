@@ -19,7 +19,7 @@ const MergeBaseCommandExecutorLive: Layer.Layer<
 		return ({
 			baseRef: { name: baseRef },
 			headRef: { name: headRef },
-			repository: { directory },
+			directory,
 		}: Arguments): Effect.Effect<string, MergeBaseNotFoundError> =>
 			Effect.gen(function* () {
 				const timeout: Duration.DurationInput = "2 seconds"

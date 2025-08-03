@@ -18,7 +18,7 @@ const CheckoutCommandExecutorLive: Layer.Layer<
 
 		return ({
 			ref: { name: ref },
-			repository: { directory },
+			directory,
 		}: Arguments): Effect.Effect<void, CheckoutRefNotFoundError> =>
 			Effect.gen(function* () {
 				const timeout: Duration.DurationInput = "2 seconds"
