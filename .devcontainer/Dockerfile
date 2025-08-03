@@ -2,7 +2,7 @@ FROM mcr.microsoft.com/devcontainers/base:ubuntu-24.04
 
 # COPY ./profile.d /etc/profile.d
 COPY ./setup /tmp/mono-devcon-setup
-COPY ./config /root/.config
+COPY ./.config /root/.config
 
 ENV VOLTA_HOME="/root/.volta"
 ENV PATH="${VOLTA_HOME}/bin:${PATH}"
