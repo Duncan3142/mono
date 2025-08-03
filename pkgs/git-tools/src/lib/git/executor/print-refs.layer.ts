@@ -1,16 +1,16 @@
 import { CommandExecutor } from "@effect/platform"
 import type { Array, Duration } from "effect"
 import { Layer, pipe, Effect, Match, Console } from "effect"
-import commandFactory from "./command.ts"
+import commandFactory from "./base.ts"
 import { BRANCH, TAG } from "#domain/reference"
-import PrintRefsCommandExecutor, { type Arguments } from "#command/print-refs-executor.service"
+import PrintRefsExecutor, { type Arguments } from "#executor/print-refs.service"
 
-const PrintRefsCommandExecutorLive: Layer.Layer<
-	PrintRefsCommandExecutor,
+const PrintRefsExecutorLive: Layer.Layer<
+	PrintRefsExecutor,
 	never,
 	CommandExecutor.CommandExecutor
 > = Layer.effect(
-	PrintRefsCommandExecutor,
+	PrintRefsExecutor,
 	Effect.gen(function* () {
 		const executor = yield* CommandExecutor.CommandExecutor
 
@@ -43,4 +43,4 @@ const PrintRefsCommandExecutorLive: Layer.Layer<
 	})
 )
 
-export default PrintRefsCommandExecutorLive
+export default PrintRefsExecutorLive

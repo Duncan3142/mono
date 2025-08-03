@@ -15,10 +15,10 @@ type GitSHA = string
 /**
  * Fetch command service
  */
-class MergeBaseCommandExecutor extends Context.Tag(tag(`command`, `merge-base-executor`))<
-	MergeBaseCommandExecutor,
+class MergeBaseExecutor extends Context.Tag(tag(`executor`, `merge-base`))<
+	MergeBaseExecutor,
 	({ headRef, baseRef }: Arguments) => Effect.Effect<GitSHA, MergeBaseNotFoundError>
 >() {}
 
-export default MergeBaseCommandExecutor
+export default MergeBaseExecutor
 export type { Arguments }

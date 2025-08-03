@@ -11,10 +11,10 @@ interface Arguments {
 /**
  * Print refs command service
  */
-class PrintRefsCommandExecutor extends Context.Tag(tag(`command`, `print-refs-executor`))<
-	PrintRefsCommandExecutor,
+class PrintRefsExecutor extends Context.Tag(tag(`executor`, `print-refs`))<
+	PrintRefsExecutor,
 	({ type }: Arguments) => Effect.Effect<void>
 >() {}
 
-export default PrintRefsCommandExecutor
+export default PrintRefsExecutor
 export type { Arguments }

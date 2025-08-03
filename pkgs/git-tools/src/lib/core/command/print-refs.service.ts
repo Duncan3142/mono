@@ -1,5 +1,5 @@
 import { Effect, Console, pipe } from "effect"
-import PrintRefsCommandExecutor from "#command/print-refs-executor.service"
+import PrintRefsExecutor from "#executor/print-refs.service"
 import { TAG, BRANCH } from "#domain/reference"
 import { tag } from "#const"
 
@@ -14,7 +14,7 @@ class PrintRefsCommand extends Effect.Service<PrintRefsCommand>()(
 	tag(`command`, `print-refs`),
 	{
 		effect: Effect.gen(function* () {
-			const commandExecutor = yield* PrintRefsCommandExecutor
+			const commandExecutor = yield* PrintRefsExecutor
 
 			return ({ directory }: Arguments): Effect.Effect<void> =>
 				Effect.gen(function* () {

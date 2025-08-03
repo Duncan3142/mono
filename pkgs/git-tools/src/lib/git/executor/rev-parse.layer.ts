@@ -1,15 +1,15 @@
 import { CommandExecutor } from "@effect/platform"
 import type { Duration } from "effect"
 import { Layer, pipe, Effect, Match } from "effect"
-import commandFactory from "./command.ts"
-import RevParseCommandExecutor, { type Arguments } from "#command/rev-parse-executor.service"
+import commandFactory from "./base.ts"
+import RevParseExecutor, { type Arguments } from "#executor/rev-parse.service"
 
-const RevParseCommandExecutorLive: Layer.Layer<
-	RevParseCommandExecutor,
+const RevParseExecutorLive: Layer.Layer<
+	RevParseExecutor,
 	never,
 	CommandExecutor.CommandExecutor
 > = Layer.effect(
-	RevParseCommandExecutor,
+	RevParseExecutor,
 	Effect.gen(function* () {
 		const executor = yield* CommandExecutor.CommandExecutor
 
@@ -31,4 +31,4 @@ const RevParseCommandExecutorLive: Layer.Layer<
 	})
 )
 
-export default RevParseCommandExecutorLive
+export default RevParseExecutorLive

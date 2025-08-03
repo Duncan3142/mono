@@ -1,18 +1,18 @@
 import { CommandExecutor } from "@effect/platform"
 import type { Duration } from "effect"
 import { Layer, pipe, Effect, Match, Console } from "effect"
-import commandFactory, { type ErrorCode } from "./command.ts"
-import CheckoutCommandExecutor, { type Arguments } from "#command/checkout-executor.service"
+import commandFactory, { type ErrorCode } from "./base.ts"
+import CheckoutExecutor, { type Arguments } from "#executor/checkout.service"
 import { CheckoutRefNotFoundError } from "#domain/checkout.error"
 
 const CHECKOUT_REF_NOT_FOUND_CODE = 1
 
-const CheckoutCommandExecutorLive: Layer.Layer<
-	CheckoutCommandExecutor,
+const CheckoutExecutorLive: Layer.Layer<
+	CheckoutExecutor,
 	never,
 	CommandExecutor.CommandExecutor
 > = Layer.effect(
-	CheckoutCommandExecutor,
+	CheckoutExecutor,
 	Effect.gen(function* () {
 		const executor = yield* CommandExecutor.CommandExecutor
 
@@ -50,4 +50,4 @@ const CheckoutCommandExecutorLive: Layer.Layer<
 	})
 )
 
-export default CheckoutCommandExecutorLive
+export default CheckoutExecutorLive

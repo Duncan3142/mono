@@ -3,7 +3,8 @@
 import { expect, describe, it, vi } from "@effect/vitest"
 import { Effect, Fiber, pipe, ConfigProvider, Layer, TestClock, Either } from "effect"
 import CommandExecutorTest, { type MockProcessProps } from "#mock/command-executor.mock"
-import PrintRefsCommandExecutorLive from "#git/command/print-refs-executor.layer"
+import PrintRefsCommand from "#command/print-refs.service"
+import PrintRefsExecutorLive from "#git/executor/print-refs.layer"
 import PrintRefs from "#case/print-refs.service"
 import RepositoryConfig from "#config/repository-config.service"
 import LoggerTest from "#mock/logger.mock"
@@ -38,7 +39,8 @@ const tagProps = {
 
 const ProgramLayer = pipe(
 	PrintRefs.Default,
-	Layer.provide(PrintRefsCommandExecutorLive),
+	Layer.provide(PrintRefsCommand.Default),
+	Layer.provide(PrintRefsExecutorLive),
 	Layer.provide(CommandExecutorTest([branchProps, tagProps])),
 	Layer.provide(RepositoryConfig.Default),
 	Layer.provide(LoggerTest(logHandler))
@@ -53,7 +55,6 @@ describe("Reference Layer", () => {
 					Effect.exit(
 						printRefs({
 							logLevel: "Info",
-							message: "Testing print references",
 							directory: "/dummy/path/to/repo", // Use a dummy path for testing
 						})
 					)

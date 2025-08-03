@@ -1,18 +1,18 @@
 import { CommandExecutor } from "@effect/platform"
 import type { Duration } from "effect"
 import { Layer, pipe, Effect, Match } from "effect"
-import commandFactory, { type ErrorCode } from "./command.ts"
-import MergeBaseCommandExecutor, { type Arguments } from "#command/merge-base-executor.service"
+import commandFactory, { type ErrorCode } from "./base.ts"
+import MergeBaseExecutor, { type Arguments } from "#executor/merge-base.service"
 import { MergeBaseNotFoundError } from "#domain/merge-base.error"
 
 const MERGE_BASE_NOT_FOUND_CODE = 1
 
-const MergeBaseCommandExecutorLive: Layer.Layer<
-	MergeBaseCommandExecutor,
+const MergeBaseExecutorLive: Layer.Layer<
+	MergeBaseExecutor,
 	never,
 	CommandExecutor.CommandExecutor
 > = Layer.effect(
-	MergeBaseCommandExecutor,
+	MergeBaseExecutor,
 	Effect.gen(function* () {
 		const executor = yield* CommandExecutor.CommandExecutor
 
@@ -49,4 +49,4 @@ const MergeBaseCommandExecutorLive: Layer.Layer<
 	})
 )
 
-export default MergeBaseCommandExecutorLive
+export default MergeBaseExecutorLive

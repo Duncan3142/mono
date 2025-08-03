@@ -13,10 +13,10 @@ interface Arguments {
 /**
  * Checkout command service
  */
-class ResetCommandExecutor extends Context.Tag(tag(`command`, `reset-executor`))<
-	ResetCommandExecutor,
+class ResetExecutor extends Context.Tag(tag(`executor`, `reset`))<
+	ResetExecutor,
 	(args: Arguments) => Effect.Effect<void>
 >() {}
 
-export default ResetCommandExecutor
+export default ResetExecutor
 export type { Arguments }

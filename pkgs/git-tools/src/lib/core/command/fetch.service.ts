@@ -1,6 +1,6 @@
 import type { Array } from "effect"
 import { Effect, pipe, Match } from "effect"
-import FetchCommandExecutor from "./fetch-executor.service.ts"
+import FetchExecutor from "#executor/fetch.service"
 import { tag } from "#const"
 import type { Remote } from "#domain/remote"
 import type { FetchDepthExceededError, FetchRefsNotFoundError } from "#domain/fetch.error"
@@ -20,7 +20,7 @@ interface Arguments {
  */
 class FetchCommand extends Effect.Service<FetchCommand>()(tag(`command`, `fetch`), {
 	effect: Effect.gen(function* () {
-		const fetchCommandExecutor = yield* FetchCommandExecutor
+		const fetchCommandExecutor = yield* FetchExecutor
 
 		return ({
 			refs,

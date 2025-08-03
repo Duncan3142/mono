@@ -12,10 +12,10 @@ interface Arguments {
 /**
  * Checkout command service
  */
-class RevParseCommandExecutor extends Context.Tag(tag(`command`, `rev-parse-executor`))<
-	RevParseCommandExecutor,
+class RevParseExecutor extends Context.Tag(tag(`executor`, `rev-parse`))<
+	RevParseExecutor,
 	(args: Arguments) => Effect.Effect<string>
 >() {}
 
-export default RevParseCommandExecutor
+export default RevParseExecutor
 export type { Arguments }

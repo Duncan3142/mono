@@ -13,10 +13,10 @@ interface Arguments {
 /**
  * Checkout command service
  */
-class CheckoutCommandExecutor extends Context.Tag(tag(`command`, `checkout-executor`))<
-	CheckoutCommandExecutor,
+class CheckoutExecutor extends Context.Tag(tag(`executor`, `checkout`))<
+	CheckoutExecutor,
 	(args: Arguments) => Effect.Effect<void, CheckoutRefNotFoundError>
 >() {}
 
-export default CheckoutCommandExecutor
+export default CheckoutExecutor
 export type { Arguments }

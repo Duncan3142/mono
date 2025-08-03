@@ -1,31 +1,29 @@
 import { NodeContext, NodeRuntime } from "@effect/platform-node"
 import { Effect, Layer, ConfigProvider, pipe, Console, LogLevel, Logger } from "effect"
 import Git from "#service"
-import Fetch from "#case/fetch.service"
+import FetchRefs from "#case/fetch-refs.service"
 import FetchCommand from "#command/fetch.service"
-import FetchCommandExecutorLive from "#git/command/fetch-executor.layer"
+import FetchExecutorLive from "#git/executor/fetch.layer"
 import PrintRefs from "#case/print-refs.service"
-import PrintRefsCommandExecutorLive from "#git/command/print-refs-executor.layer"
-import MergeBaseCommandExecutorLive from "#git/command/merge-base-executor.layer"
+import PrintRefsExecutorLive from "#git/executor/print-refs.layer"
+import MergeBaseExecutorLive from "#git/executor/merge-base.layer"
 import RepositoryConfig from "#config/repository-config.service"
 import FetchDepthFactory from "#state/fetch-depth-factory.service"
-import MergeBase from "#case/merge-base.service"
+import FindMergeBase from "#case/find-merge-base.service"
 import { BranchRef } from "#domain/reference"
 import MergeBaseCommand from "#command/merge-base.service"
+import PrintRefsCommand from "#command/print-refs.service"
 
 const ProgramLive = pipe(
 	Git.Default,
-	Layer.provide(Layer.mergeAll(MergeBase.Default, Fetch.Default, PrintRefs.Default)),
+	Layer.provide(Layer.mergeAll(FindMergeBase.Default, FetchRefs.Default, PrintRefs.Default)),
+	Layer.provide(Layer.mergeAll(FindMergeBase.Default, FetchRefs.Default, PrintRefs.Default)),
 	Layer.provide(FetchDepthFactory.Default),
 	Layer.provide(RepositoryConfig.Default),
 	Layer.provide(MergeBaseCommand.Default),
-	Layer.provide(FetchCommand.Default),
+	Layer.provide(Layer.mergeAll(FetchCommand.Default, PrintRefsCommand.Default)),
 	Layer.provide(
-		Layer.mergeAll(
-			MergeBaseCommandExecutorLive,
-			FetchCommandExecutorLive,
-			PrintRefsCommandExecutorLive
-		)
+		Layer.mergeAll(MergeBaseExecutorLive, FetchExecutorLive, PrintRefsExecutorLive)
 	),
 
 	Layer.provide(NodeContext.layer)
@@ -37,7 +35,6 @@ const program = Effect.gen(function* () {
 	return yield* Effect.all([
 		git.printRefs({
 			logLevel: "Info",
-			message: "Print refs test",
 			directory,
 		}),
 		git

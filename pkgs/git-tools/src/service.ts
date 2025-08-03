@@ -1,7 +1,7 @@
 import { Effect } from "effect"
 import PrintRefs from "#case/print-refs.service"
-import Fetch from "#case/fetch.service"
-import MergeBase from "#case/merge-base.service"
+import Fetch from "#case/fetch-refs.service"
+import MergeBase from "#case/find-merge-base.service"
 import { tag } from "#const"
 
 /**

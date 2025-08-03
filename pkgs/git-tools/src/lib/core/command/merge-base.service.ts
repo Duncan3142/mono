@@ -5,7 +5,7 @@ import {
 	MergeBaseNotFoundError,
 } from "#domain/merge-base.error"
 import type { Reference } from "#domain/reference"
-import MergeBaseCommandExecutor from "#command/merge-base-executor.service"
+import MergeBaseExecutor from "#executor/merge-base.service"
 import type { Remote } from "#domain/remote"
 import FetchCommand from "#command/fetch.service"
 import { FetchDeepenBy, type Depth } from "#domain/fetch"
@@ -31,7 +31,7 @@ class MergeBaseCommand extends Effect.Service<MergeBaseCommand>()(
 	{
 		effect: Effect.gen(function* () {
 			const [mergeBaseCommandExecutor, fetchCommand] = yield* Effect.all(
-				[MergeBaseCommandExecutor, FetchCommand],
+				[MergeBaseExecutor, FetchCommand],
 				{
 					concurrency: "unbounded",
 				}
