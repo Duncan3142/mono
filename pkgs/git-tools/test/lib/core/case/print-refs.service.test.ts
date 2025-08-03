@@ -90,14 +90,7 @@ describe("Reference Layer", () => {
 		}).pipe(
 			Effect.provide(ProgramLayer),
 			Effect.withConsole(mockConsole),
-			Effect.withConfigProvider(
-				ConfigProvider.fromMap(
-					new Map([
-						["DEFAULT_REMOTE_NAME", "origin"],
-						["GIT_DIRECTORY", process.cwd()],
-					])
-				)
-			)
+			Effect.withConfigProvider(ConfigProvider.fromMap(new Map([])))
 		)
 	)
 })

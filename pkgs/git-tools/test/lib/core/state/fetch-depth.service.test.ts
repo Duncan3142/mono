@@ -28,14 +28,7 @@ describe("FetchDepth", () => {
 		}).pipe(
 			Effect.provide(ProgramTest),
 			Effect.withConsole(mockConsole),
-			Effect.withConfigProvider(
-				ConfigProvider.fromMap(
-					new Map([
-						["DEFAULT_REMOTE_NAME", "origin"],
-						["GIT_DIRECTORY", process.cwd()],
-					])
-				)
-			)
+			Effect.withConfigProvider(ConfigProvider.fromMap(new Map([])))
 		)
 	)
 	it.effect("should increment across scopes independently", () =>
@@ -63,14 +56,7 @@ describe("FetchDepth", () => {
 		}).pipe(
 			Effect.provide(ProgramTest),
 			Effect.withConsole(mockConsole),
-			Effect.withConfigProvider(
-				ConfigProvider.fromMap(
-					new Map([
-						["DEFAULT_REMOTE_NAME", "origin"],
-						["GIT_DIRECTORY", process.cwd()],
-					])
-				)
-			)
+			Effect.withConfigProvider(ConfigProvider.fromMap(new Map([])))
 		)
 	)
 	it.scoped("should increment within a scope dependently", () =>
@@ -93,14 +79,7 @@ describe("FetchDepth", () => {
 		}).pipe(
 			Effect.provide(ProgramTest),
 			Effect.withConsole(mockConsole),
-			Effect.withConfigProvider(
-				ConfigProvider.fromMap(
-					new Map([
-						["DEFAULT_REMOTE_NAME", "origin"],
-						["GIT_DIRECTORY", process.cwd()],
-					])
-				)
-			)
+			Effect.withConfigProvider(ConfigProvider.fromMap(new Map([])))
 		)
 	)
 })

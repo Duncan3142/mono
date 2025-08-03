@@ -49,14 +49,7 @@ const program = Effect.gen(function* () {
 	])
 }).pipe(
 	Effect.provide(ProgramLive),
-	Effect.withConfigProvider(
-		ConfigProvider.fromMap(
-			new Map([
-				["DEFAULT_REMOTE_NAME", "origin"],
-				["GIT_DIRECTORY", process.cwd()],
-			])
-		)
-	),
+	Effect.withConfigProvider(ConfigProvider.fromMap(new Map([]))),
 	Logger.withMinimumLogLevel(LogLevel.Trace)
 )
 
