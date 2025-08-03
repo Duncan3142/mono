@@ -6,7 +6,6 @@ import { FetchRefsNotFoundError } from "#domain/fetch.error"
 import { BASE_10_RADIX } from "#const"
 import { ReferenceSpec, toString as refSpecToString } from "#domain/reference-spec"
 import type { Arguments } from "#command/fetch-executor.service"
-import RepositoryConfig from "#config/repository-config.service"
 import { FETCH_DEEPEN_BY_TAG, FETCH_DEPTH_TAG } from "#domain/fetch"
 import FetchCommandExecutor from "#command/fetch-executor.service"
 
@@ -15,16 +14,18 @@ const FETCH_NOT_FOUND_CODE = 128
 const FetchCommandExecutorLive: Layer.Layer<
 	FetchCommandExecutor,
 	never,
-	CommandExecutor.CommandExecutor | RepositoryConfig
+	CommandExecutor.CommandExecutor
 > = Layer.effect(
 	FetchCommandExecutor,
 	Effect.gen(function* () {
-		const [{ directory }, executor] = yield* Effect.all(
-			[RepositoryConfig, CommandExecutor.CommandExecutor],
-			{ concurrency: "unbounded" }
-		)
+		const executor = yield* CommandExecutor.CommandExecutor
 
-		return ({ mode, remote, refs }: Arguments): Effect.Effect<void, FetchRefsNotFoundError> =>
+		return ({
+			mode,
+			remote,
+			refs,
+			repository: { directory },
+		}: Arguments): Effect.Effect<void, FetchRefsNotFoundError> =>
 			Effect.gen(function* () {
 				const { name: remoteName } = remote
 				const refStrings = pipe(

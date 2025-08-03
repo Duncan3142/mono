@@ -4,25 +4,22 @@ import { Layer, pipe, Effect, Match } from "effect"
 import commandFactory, { type ErrorCode } from "./command.ts"
 import MergeBaseCommandExecutor, { type Arguments } from "#command/merge-base-executor.service"
 import { MergeBaseNotFoundError } from "#domain/merge-base.error"
-import RepositoryConfig from "#config/repository-config.service"
 
 const MERGE_BASE_NOT_FOUND_CODE = 1
 
 const MergeBaseCommandExecutorLive: Layer.Layer<
 	MergeBaseCommandExecutor,
 	never,
-	CommandExecutor.CommandExecutor | RepositoryConfig
+	CommandExecutor.CommandExecutor
 > = Layer.effect(
 	MergeBaseCommandExecutor,
 	Effect.gen(function* () {
-		const [executor, { directory }] = yield* Effect.all(
-			[CommandExecutor.CommandExecutor, RepositoryConfig],
-			{ concurrency: "unbounded" }
-		)
+		const executor = yield* CommandExecutor.CommandExecutor
 
 		return ({
 			baseRef: { name: baseRef },
 			headRef: { name: headRef },
+			repository: { directory },
 		}: Arguments): Effect.Effect<string, MergeBaseNotFoundError> =>
 			Effect.gen(function* () {
 				const timeout: Duration.DurationInput = "2 seconds"

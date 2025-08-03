@@ -4,21 +4,17 @@ import { Layer, pipe, Effect, Match, Console } from "effect"
 import commandFactory from "./command.ts"
 import { BRANCH, TAG } from "#domain/reference"
 import PrintRefsCommandExecutor, { type Arguments } from "#command/print-refs-executor.service"
-import RepositoryConfig from "#config/repository-config.service"
 
 const PrintRefsCommandExecutorLive: Layer.Layer<
 	PrintRefsCommandExecutor,
 	never,
-	CommandExecutor.CommandExecutor | RepositoryConfig
+	CommandExecutor.CommandExecutor
 > = Layer.effect(
 	PrintRefsCommandExecutor,
 	Effect.gen(function* () {
-		const [executor, { directory }] = yield* Effect.all(
-			[CommandExecutor.CommandExecutor, RepositoryConfig],
-			{ concurrency: "unbounded" }
-		)
+		const executor = yield* CommandExecutor.CommandExecutor
 
-		return ({ type }: Arguments): Effect.Effect<void> =>
+		return ({ type, repository: { directory } }: Arguments): Effect.Effect<void> =>
 			Effect.gen(function* () {
 				const args = pipe(
 					Match.value(type),

@@ -7,11 +7,13 @@ import type { Remote } from "#domain/remote"
 import RepositoryConfig from "#config/repository-config.service"
 import FetchDepth from "#state/fetch-depth.service"
 import FetchDepthFactory from "#state/fetch-depth-factory.service"
+import { Repository } from "#domain/repository"
 
 interface Arguments {
 	readonly headRef: Reference
 	readonly baseRef: Reference
 	readonly remote?: Remote
+	readonly deepenBy?: number
 }
 
 /**
@@ -19,22 +21,30 @@ interface Arguments {
  */
 class MergeBase extends Effect.Service<MergeBase>()(tag(`case`, `merge-base`), {
 	effect: Effect.gen(function* () {
-		const [mergeBaseCommand, { defaultRemote }, fetchDepthFactory] = yield* Effect.all(
-			[MergeBaseCommand, RepositoryConfig, FetchDepthFactory],
+		const [
+			mergeBaseCommand,
 			{
-				concurrency: "unbounded",
-			}
-		)
+				defaultRemote,
+				directory,
+				fetch: { defaultDeepenBy },
+			},
+			fetchDepthFactory,
+		] = yield* Effect.all([MergeBaseCommand, RepositoryConfig, FetchDepthFactory], {
+			concurrency: "unbounded",
+		})
 
 		return ({
 			headRef,
 			baseRef,
 			remote = defaultRemote,
+			deepenBy = defaultDeepenBy,
 		}: Arguments): Effect.Effect<string, MergeBaseNotFoundError> =>
 			mergeBaseCommand({
 				headRef,
 				baseRef,
 				remote,
+				repository: Repository({ directory }),
+				deepenBy,
 			}).pipe(Effect.provideServiceEffect(FetchDepth, fetchDepthFactory), Effect.scoped)
 	}),
 }) {}

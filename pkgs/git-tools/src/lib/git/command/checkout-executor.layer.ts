@@ -3,7 +3,6 @@ import type { Duration } from "effect"
 import { Layer, pipe, Effect, Match, Console } from "effect"
 import commandFactory, { type ErrorCode } from "./command.ts"
 import CheckoutCommandExecutor, { type Arguments } from "#command/checkout-executor.service"
-import RepositoryConfig from "#config/repository-config.service"
 import { CheckoutRefNotFoundError } from "#domain/checkout.error"
 
 const CHECKOUT_REF_NOT_FOUND_CODE = 1
@@ -11,16 +10,16 @@ const CHECKOUT_REF_NOT_FOUND_CODE = 1
 const CheckoutCommandExecutorLive: Layer.Layer<
 	CheckoutCommandExecutor,
 	never,
-	CommandExecutor.CommandExecutor | RepositoryConfig
+	CommandExecutor.CommandExecutor
 > = Layer.effect(
 	CheckoutCommandExecutor,
 	Effect.gen(function* () {
-		const [executor, { directory }] = yield* Effect.all(
-			[CommandExecutor.CommandExecutor, RepositoryConfig],
-			{ concurrency: "unbounded" }
-		)
+		const executor = yield* CommandExecutor.CommandExecutor
 
-		return ({ ref: { name: ref } }: Arguments): Effect.Effect<void, CheckoutRefNotFoundError> =>
+		return ({
+			ref: { name: ref },
+			repository: { directory },
+		}: Arguments): Effect.Effect<void, CheckoutRefNotFoundError> =>
 			Effect.gen(function* () {
 				const timeout: Duration.DurationInput = "2 seconds"
 				return yield* pipe(

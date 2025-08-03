@@ -7,11 +7,13 @@ import type { FetchDepthExceededError, FetchRefsNotFoundError } from "#domain/fe
 import FetchDepth from "#state/fetch-depth.service"
 import type { Reference } from "#domain/reference"
 import { FETCH_DEEPEN_BY_TAG, FETCH_DEPTH_TAG, type FetchMode } from "#domain/fetch"
+import type { Repository } from "#domain/repository"
 
 interface Arguments {
 	readonly mode: FetchMode
 	readonly remote: Remote
 	readonly refs: Array.NonEmptyReadonlyArray<Reference>
+	readonly repository: Repository
 }
 
 /**
@@ -19,14 +21,13 @@ interface Arguments {
  */
 class FetchCommand extends Effect.Service<FetchCommand>()(tag(`command`, `fetch`), {
 	effect: Effect.gen(function* () {
-		const [fetchCommandExecutor] = yield* Effect.all([FetchCommandExecutor], {
-			concurrency: "unbounded",
-		})
+		const fetchCommandExecutor = yield* FetchCommandExecutor
 
 		return ({
 			refs,
 			remote,
 			mode,
+			repository,
 		}: Arguments): Effect.Effect<
 			void,
 			FetchRefsNotFoundError | FetchDepthExceededError,
@@ -45,6 +46,7 @@ class FetchCommand extends Effect.Service<FetchCommand>()(tag(`command`, `fetch`
 					mode,
 					remote,
 					refs,
+					repository,
 				})
 			})
 	}),

@@ -3,9 +3,11 @@ import { Context } from "effect"
 import type { Reference } from "#domain/reference"
 import { tag } from "#const"
 import type { CheckoutRefNotFoundError } from "#domain/checkout.error"
+import type { Repository } from "#domain/repository"
 
 interface Arguments {
-	ref: Reference
+	readonly ref: Reference
+	readonly repository: Repository
 }
 
 /**

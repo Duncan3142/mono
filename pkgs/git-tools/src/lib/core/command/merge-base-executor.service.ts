@@ -3,10 +3,12 @@ import { Context } from "effect"
 import { tag } from "#const"
 import type { Reference } from "#domain/reference"
 import type { MergeBaseNotFoundError } from "#domain/merge-base.error"
+import type { Repository } from "#domain/repository"
 
 interface Arguments {
 	readonly headRef: Reference
 	readonly baseRef: Reference
+	readonly repository: Repository
 }
 
 type GitSHA = string
