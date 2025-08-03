@@ -11,11 +11,13 @@ import RepositoryConfig from "#config/repository-config.service"
 import FetchDepthFactory from "#state/fetch-depth-factory.service"
 import MergeBase from "#case/merge-base.service"
 import { BranchRef } from "#domain/reference"
+import MergeBaseCommand from "#command/merge-base.service"
 
 const ProgramLive = pipe(
 	Git.Default,
 	Layer.provide(Layer.mergeAll(MergeBase.Default, Fetch.Default, PrintRefs.Default)),
 	Layer.provide(FetchDepthFactory.Default),
+	Layer.provide(MergeBaseCommand.Default),
 	Layer.provide(FetchCommand.Default),
 	Layer.provide(
 		Layer.mergeAll(
