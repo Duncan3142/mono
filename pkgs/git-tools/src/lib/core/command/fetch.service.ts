@@ -21,7 +21,7 @@ interface Arguments {
 /**
  * Git fetch service
  */
-class FetchCommand extends Effect.Service<FetchCommand>()(tag(`command/fetch`), {
+class FetchCommand extends Effect.Service<FetchCommand>()(tag(`command`, `fetch`), {
 	effect: Effect.gen(function* () {
 		const [fetchCommandExecutor] = yield* Effect.all([FetchCommandExecutor], {
 			concurrency: "unbounded",

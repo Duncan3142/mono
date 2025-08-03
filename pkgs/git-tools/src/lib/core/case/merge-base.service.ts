@@ -25,7 +25,7 @@ interface Arguments {
 /**
  * Reference service
  */
-class MergeBase extends Effect.Service<MergeBase>()(tag(`case/merge-base`), {
+class MergeBase extends Effect.Service<MergeBase>()(tag(`case`, `merge-base`), {
 	effect: Effect.gen(function* () {
 		const [
 			mergeBaseCommandExecutor,

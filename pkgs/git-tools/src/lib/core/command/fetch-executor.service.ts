@@ -15,7 +15,7 @@ interface Arguments {
 /**
  * Fetch command service
  */
-class FetchCommandExecutor extends Context.Tag(tag(`command/fetch-executor`))<
+class FetchCommandExecutor extends Context.Tag(tag(`command`, `fetch-executor`))<
 	FetchCommandExecutor,
 	({ mode, remote, refs }: Arguments) => Effect.Effect<void, FetchRefsNotFoundError>
 >() {}

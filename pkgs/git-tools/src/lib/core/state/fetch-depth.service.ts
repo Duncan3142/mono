@@ -15,7 +15,7 @@ const handleFetchDepth = (maxDepth: Depth) =>
 /**
  * Fetch depth service
  */
-class FetchDepth extends Context.Tag(tag(`state/fetch-depth`))<
+class FetchDepth extends Context.Tag(tag(`state`, `fetch-depth`))<
 	FetchDepth,
 	{
 		id: string

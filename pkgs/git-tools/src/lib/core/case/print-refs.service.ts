@@ -11,7 +11,7 @@ interface Arguments {
 /**
  * Print refs service
  */
-class PrintRefs extends Effect.Service<PrintRefs>()(tag(`case/print-refs`), {
+class PrintRefs extends Effect.Service<PrintRefs>()(tag(`case`, `print-refs`), {
 	effect: Effect.gen(function* () {
 		const commandExecutor = yield* PrintRefsCommandExecutor
 

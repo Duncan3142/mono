@@ -46,7 +46,7 @@ const handleOptional = <R>(
 /**
  * Git fetch service
  */
-class Fetch extends Effect.Service<Fetch>()(tag(`case/fetch`), {
+class Fetch extends Effect.Service<Fetch>()(tag(`case`, `fetch`), {
 	effect: Effect.gen(function* () {
 		const [
 			fetchCommand,

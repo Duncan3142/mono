@@ -7,7 +7,7 @@ import RepositoryConfig from "#config/repository-config.service"
  * Fetch depth factory service
  */
 class FetchDepthFactory extends Effect.Service<FetchDepthFactory>()(
-	tag(`state/fetch-depth-factory`),
+	tag(`state`, `fetch-depth-factory`),
 	{
 		effect: Effect.gen(function* () {
 			yield* Console.trace("CounterFactoryLive initialized")
