@@ -17,6 +17,7 @@ const ProgramLive = pipe(
 	Git.Default,
 	Layer.provide(Layer.mergeAll(MergeBase.Default, Fetch.Default, PrintRefs.Default)),
 	Layer.provide(FetchDepthFactory.Default),
+	Layer.provide(RepositoryConfig.Default),
 	Layer.provide(MergeBaseCommand.Default),
 	Layer.provide(FetchCommand.Default),
 	Layer.provide(
@@ -26,7 +27,7 @@ const ProgramLive = pipe(
 			PrintRefsCommandExecutorLive
 		)
 	),
-	Layer.provide(RepositoryConfig.Default),
+
 	Layer.provide(NodeContext.layer)
 )
 

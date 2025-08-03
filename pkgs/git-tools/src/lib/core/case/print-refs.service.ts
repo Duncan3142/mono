@@ -1,12 +1,11 @@
-import { Effect, LogLevel, pipe } from "effect"
-import PrintRefsCommandExecutor from "#command/print-refs-executor.service"
-import { type REF_TYPE, TAG, BRANCH } from "#domain/reference"
+import type { LogLevel } from "effect"
+import { Effect } from "effect"
+import PrintRefsCommand from "#command/print-refs.service"
 import { tag } from "#const"
 
 interface Arguments {
 	readonly directory: string
 	readonly level: Exclude<LogLevel.Literal, "None" | "All">
-	readonly message: string
 }
 
 /**
@@ -14,19 +13,10 @@ interface Arguments {
  */
 class PrintRefs extends Effect.Service<PrintRefs>()(tag(`case`, `print-refs`), {
 	effect: Effect.gen(function* () {
-		const commandExecutor = yield* PrintRefsCommandExecutor
+		const commandExecutor = yield* PrintRefsCommand
 
-		return ({ message, level: logLevelLiteral, directory }: Arguments): Effect.Effect<void> =>
-			Effect.gen(function* () {
-				const doPrint = (type: REF_TYPE) => commandExecutor({ type, directory })
-				const logLevel = LogLevel.fromLiteral(logLevelLiteral)
-				yield* pipe(
-					Effect.all([Effect.logWithLevel(logLevel, message), doPrint(BRANCH), doPrint(TAG)], {
-						discard: true,
-					}),
-					Effect.whenLogLevel(logLevel)
-				)
-			})
+		return ({ level, directory }: Arguments): Effect.Effect<void> =>
+			commandExecutor({ directory }).pipe(Effect.whenLogLevel(level))
 	}),
 }) {}
 
