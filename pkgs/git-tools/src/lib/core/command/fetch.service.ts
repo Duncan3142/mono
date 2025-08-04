@@ -16,9 +16,9 @@ import RepositoryConfig from "#config/repository-config.service"
 import Repository from "#context/repository.service"
 
 interface Arguments {
+	readonly refs: Array.NonEmptyReadonlyArray<Reference>
 	readonly mode?: FetchMode
 	readonly remote?: Remote
-	readonly refs: Array.NonEmptyReadonlyArray<Reference>
 	readonly timeout?: Duration.DurationInput
 }
 
