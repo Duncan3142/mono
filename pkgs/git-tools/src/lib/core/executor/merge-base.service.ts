@@ -1,4 +1,4 @@
-import type { Effect } from "effect"
+import type { Duration, Effect } from "effect"
 import { Context } from "effect"
 import { tag } from "#const"
 import type { Reference } from "#domain/reference"
@@ -8,6 +8,7 @@ interface Arguments {
 	readonly headRef: Reference
 	readonly baseRef: Reference
 	readonly directory: string
+	readonly timeout: Duration.DurationInput
 }
 
 type GitSHA = string
@@ -17,7 +18,7 @@ type GitSHA = string
  */
 class MergeBaseExecutor extends Context.Tag(tag(`executor`, `merge-base`))<
 	MergeBaseExecutor,
-	({ headRef, baseRef }: Arguments) => Effect.Effect<GitSHA, MergeBaseNotFoundError>
+	(args: Arguments) => Effect.Effect<GitSHA, MergeBaseNotFoundError>
 >() {}
 
 export default MergeBaseExecutor

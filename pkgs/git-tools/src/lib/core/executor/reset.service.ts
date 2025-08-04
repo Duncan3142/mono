@@ -1,4 +1,4 @@
-import type { Effect } from "effect"
+import type { Duration, Effect } from "effect"
 import { Context } from "effect"
 import type { Reference } from "#domain/reference"
 import { tag } from "#const"
@@ -8,6 +8,7 @@ interface Arguments {
 	readonly ref: Reference
 	readonly directory: string
 	readonly mode: ResetMode
+	readonly timeout: Duration.DurationInput
 }
 
 /**

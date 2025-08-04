@@ -6,20 +6,20 @@ type Depth = number
 const FETCH_DEPTH_TAG = tag("domain", "fetch-depth")
 const FETCH_DEEPEN_BY_TAG = tag("domain", "fetch-deepen-by")
 
-interface FetchDepth {
+interface FetchModeDepth {
 	readonly _tag: typeof FETCH_DEPTH_TAG
 	readonly depth: Depth
 }
 
-const FetchDepth = Data.tagged<FetchDepth>(FETCH_DEPTH_TAG)
+const FetchModeDepth = Data.tagged<FetchModeDepth>(FETCH_DEPTH_TAG)
 
-interface FetchDeepenBy {
+interface FetchModeDeepenBy {
 	readonly _tag: typeof FETCH_DEEPEN_BY_TAG
 	readonly deepenBy: Depth
 }
-const FetchDeepenBy = Data.tagged<FetchDeepenBy>(FETCH_DEEPEN_BY_TAG)
+const FetchModeDeepenBy = Data.tagged<FetchModeDeepenBy>(FETCH_DEEPEN_BY_TAG)
 
-type FetchMode = FetchDeepenBy | FetchDepth
+type FetchMode = FetchModeDeepenBy | FetchModeDepth
 
 export type { FetchMode, Depth }
-export { FETCH_DEPTH_TAG, FetchDepth, FETCH_DEEPEN_BY_TAG, FetchDeepenBy }
+export { FETCH_DEPTH_TAG, FetchModeDepth, FETCH_DEEPEN_BY_TAG, FetchModeDeepenBy }

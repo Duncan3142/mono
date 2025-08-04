@@ -1,12 +1,12 @@
-import type { Effect } from "effect"
+import type { Duration, Effect } from "effect"
 import { Context } from "effect"
 import type { Reference } from "#domain/reference"
 import { tag } from "#const"
-import type Head from "#domain/head"
 
 interface Arguments {
-	readonly rev: Reference | Head
+	readonly ref: Reference
 	readonly directory: string
+	readonly timeout: Duration.DurationInput
 }
 
 /**

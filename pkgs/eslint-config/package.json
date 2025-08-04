@@ -63,12 +63,12 @@
 		"eslint-config-prettier": "^10.1.8",
 		"eslint-import-resolver-typescript": "^4.4.4",
 		"eslint-plugin-import-x": "^4.16.1",
-		"eslint-plugin-jsdoc": "^51.4.1",
+		"eslint-plugin-jsdoc": "^52.0.2",
 		"eslint-plugin-no-secrets": "^2.2.1",
 		"eslint-plugin-prefer-arrow-functions": "^3.6.2",
 		"eslint-plugin-promise": "^7.2.1",
 		"remeda": "^2.28.0",
-		"typescript-eslint": "^8.38.0"
+		"typescript-eslint": "^8.39.0"
 	},
 	"devDependencies": {
 		"@changesets/cli": "^2.29.5",
@@ -79,7 +79,7 @@
 		"@types/eslint-config-prettier": "^6.11.3",
 		"eslint": "^9.32.0",
 		"prettier": "^3.6.2",
-		"typescript": "^5.8.3"
+		"typescript": "^5.9.2"
 	},
 	"volta": {
 		"node": "22.18.0",

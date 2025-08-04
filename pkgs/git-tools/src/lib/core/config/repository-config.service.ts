@@ -3,7 +3,7 @@ import { tag } from "#const"
 import { Remote } from "#domain/remote"
 
 const DEFAULT_REMOTE_NAME = "origin"
-
+const DEFAULT_BRANCH = "main"
 const FETCH = { DEFAULT_DEPTH: 1, DEFAULT_DEEPEN_BY: 512, DEFAULT_MAX_DEPTH: 1024 }
 
 interface FetchConfig {
@@ -19,7 +19,7 @@ class RepositoryConfig extends Effect.Service<RepositoryConfig>()(
 	tag(`config`, `repo-config`),
 	{
 		effect: Effect.gen(function* () {
-			const [defaultRemote, fetch] = yield* Config.nested(
+			const [defaultRemote, fetch, defaultBranch] = yield* Config.nested(
 				Config.all([
 					Config.nested(
 						Config.string("NAME").pipe(Config.withDefault(DEFAULT_REMOTE_NAME)),
@@ -41,12 +41,14 @@ class RepositoryConfig extends Effect.Service<RepositoryConfig>()(
 							return { defaultDepth, defaultDeepenBy, maxDepth }
 						})
 					),
+					Config.string("DEFAULT_BRANCH").pipe(Config.withDefault(DEFAULT_BRANCH)),
 				]),
 				"GIT_TOOLS"
 			)
 
 			return {
 				defaultRemote,
+				defaultBranch,
 				fetch,
 			}
 		}),

@@ -1,4 +1,4 @@
-import type { Effect } from "effect"
+import type { Duration, Effect } from "effect"
 import { Context } from "effect"
 import type { REF_TYPE } from "#domain/reference"
 import { tag } from "#const"
@@ -6,6 +6,7 @@ import { tag } from "#const"
 interface Arguments {
 	readonly type: REF_TYPE
 	readonly directory: string
+	readonly timeout: Duration.DurationInput
 }
 
 /**
@@ -13,7 +14,7 @@ interface Arguments {
  */
 class PrintRefsExecutor extends Context.Tag(tag(`executor`, `print-refs`))<
 	PrintRefsExecutor,
-	({ type }: Arguments) => Effect.Effect<void>
+	(args: Arguments) => Effect.Effect<void>
 >() {}
 
 export default PrintRefsExecutor

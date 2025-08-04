@@ -1,4 +1,4 @@
-import type { Array, Effect } from "effect"
+import type { Array, Duration, Effect } from "effect"
 import { Context } from "effect"
 import type { FetchRefsNotFoundError } from "#domain/fetch.error"
 import { tag } from "#const"
@@ -11,6 +11,7 @@ interface Arguments {
 	readonly remote: Remote
 	readonly refs: Array.NonEmptyReadonlyArray<Reference>
 	readonly directory: string
+	readonly timeout: Duration.DurationInput
 }
 
 /**
@@ -18,7 +19,7 @@ interface Arguments {
  */
 class FetchExecutor extends Context.Tag(tag(`executor`, `fetch`))<
 	FetchExecutor,
-	({ mode, remote, refs }: Arguments) => Effect.Effect<void, FetchRefsNotFoundError>
+	(args: Arguments) => Effect.Effect<void, FetchRefsNotFoundError>
 >() {}
 
 export default FetchExecutor

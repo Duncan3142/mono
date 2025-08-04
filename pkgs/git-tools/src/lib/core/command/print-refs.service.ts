@@ -1,10 +1,13 @@
-import { Effect, Console, pipe } from "effect"
+import type { Duration } from "effect"
+import { Effect } from "effect"
 import PrintRefsExecutor from "#executor/print-refs.service"
-import { TAG, BRANCH } from "#domain/reference"
+import { BRANCH, type REF_TYPE } from "#domain/reference"
 import { tag } from "#const"
+import Repository from "#context/repository.service"
 
 interface Arguments {
-	readonly directory: string
+	readonly type?: REF_TYPE
+	readonly timeout?: Duration.DurationInput
 }
 
 /**
@@ -14,24 +17,12 @@ class PrintRefsCommand extends Effect.Service<PrintRefsCommand>()(
 	tag(`command`, `print-refs`),
 	{
 		effect: Effect.gen(function* () {
-			const commandExecutor = yield* PrintRefsExecutor
+			const [executor, { directory }] = yield* Effect.all([PrintRefsExecutor, Repository], {
+				concurrency: "unbounded",
+			})
 
-			return ({ directory }: Arguments): Effect.Effect<void> =>
-				Effect.gen(function* () {
-					yield* pipe(
-						Effect.all(
-							[
-								Console.log("Branches:"),
-								commandExecutor({ type: BRANCH, directory }),
-								Console.log("Tags:"),
-								commandExecutor({ type: TAG, directory }),
-							],
-							{
-								discard: true,
-							}
-						)
-					)
-				})
+			return ({ type = BRANCH, timeout = "2 seconds" }: Arguments = {}): Effect.Effect<void> =>
+				executor({ type, directory, timeout })
 		}),
 	}
 ) {}

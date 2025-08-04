@@ -23,7 +23,16 @@ interface TagRef {
 
 const TagRef = Data.tagged<TagRef>(TAG_REF_TAG)
 
-type Reference = BranchRef | TagRef
+const HEAD_REF_TAG = tag("domain", "Head")
+
+interface HeadRef {
+	readonly _tag: typeof HEAD_REF_TAG
+	readonly name: "HEAD"
+}
+
+const HeadRef = Data.tagged<HeadRef>(HEAD_REF_TAG)
+
+type Reference = BranchRef | TagRef | HeadRef
 
 /**
  * Order reference by type
@@ -40,4 +49,15 @@ const sortByTag: Order.Order<Reference> = Order.mapInput(Order.string, ({ _tag }
 const sortByName: Order.Order<Reference> = Order.mapInput(Order.string, ({ name }) => name)
 
 export type { Reference, REF_TYPE }
-export { BRANCH_REF_TAG, BranchRef, TAG_REF_TAG, TagRef, sortByTag, sortByName, BRANCH, TAG }
+export {
+	BRANCH_REF_TAG,
+	BranchRef,
+	TAG_REF_TAG,
+	TagRef,
+	HEAD_REF_TAG,
+	HeadRef,
+	sortByTag,
+	sortByName,
+	BRANCH,
+	TAG,
+}

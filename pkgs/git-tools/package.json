@@ -26,6 +26,7 @@
 		"#config/*": "./.tsc/dist/lib/core/config/*.js",
 		"#case/*": "./.tsc/dist/lib/core/case/*.js",
 		"#state/*": "./.tsc/dist/lib/core/state/*.js",
+		"#context/*": "./.tsc/dist/lib/core/context/*.js",
 		"#command/*": "./.tsc/dist/lib/core/command/*.js",
 		"#executor/*": "./.tsc/dist/lib/core/executor/*.js",
 		"#domain/*": "./.tsc/dist/lib/core/domain/*.js",
