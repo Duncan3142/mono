@@ -1,9 +1,9 @@
 import { CommandExecutor } from "@effect/platform"
-import type { Duration } from "effect"
 import { Layer, pipe, Effect, Match } from "effect"
 import commandFactory, { type ErrorCode } from "./base.ts"
 import MergeBaseExecutor, { type Arguments } from "#executor/merge-base.service"
 import { MergeBaseNotFoundError } from "#domain/merge-base.error"
+import type { GitCommandFailedError, GitCommandTimeoutError } from "#domain/git-command.error"
 
 const MERGE_BASE_NOT_FOUND_CODE = 1
 
@@ -20,9 +20,12 @@ const MergeBaseExecutorLive: Layer.Layer<
 			baseRef: { name: baseRef },
 			headRef: { name: headRef },
 			directory,
-		}: Arguments): Effect.Effect<string, MergeBaseNotFoundError> =>
+			timeout,
+		}: Arguments): Effect.Effect<
+			string,
+			MergeBaseNotFoundError | GitCommandFailedError | GitCommandTimeoutError
+		> =>
 			Effect.gen(function* () {
-				const timeout: Duration.DurationInput = "2 seconds"
 				return yield* pipe(
 					commandFactory({
 						directory,

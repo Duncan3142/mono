@@ -2,6 +2,7 @@ import type { Duration, Effect } from "effect"
 import { Context } from "effect"
 import type { Reference } from "#domain/reference"
 import { tag } from "#const"
+import type { GitCommandFailedError, GitCommandTimeoutError } from "#domain/git-command.error"
 
 interface Arguments {
 	readonly ref: Reference
@@ -14,7 +15,7 @@ interface Arguments {
  */
 class RevParseExecutor extends Context.Tag(tag(`executor`, `rev-parse`))<
 	RevParseExecutor,
-	(args: Arguments) => Effect.Effect<string>
+	(args: Arguments) => Effect.Effect<string, GitCommandFailedError | GitCommandTimeoutError>
 >() {}
 
 export default RevParseExecutor

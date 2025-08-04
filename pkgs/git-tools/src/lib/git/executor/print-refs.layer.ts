@@ -1,9 +1,10 @@
 import { CommandExecutor } from "@effect/platform"
-import type { Array, Duration } from "effect"
+import type { Array } from "effect"
 import { Layer, pipe, Effect, Match, Console } from "effect"
 import commandFactory from "./base.ts"
 import { BRANCH, TAG } from "#domain/reference"
 import PrintRefsExecutor, { type Arguments } from "#executor/print-refs.service"
+import type { GitCommandFailedError, GitCommandTimeoutError } from "#domain/git-command.error"
 
 const PrintRefsExecutorLive: Layer.Layer<
 	PrintRefsExecutor,
@@ -14,7 +15,11 @@ const PrintRefsExecutorLive: Layer.Layer<
 	Effect.gen(function* () {
 		const executor = yield* CommandExecutor.CommandExecutor
 
-		return ({ type, directory }: Arguments): Effect.Effect<void> =>
+		return ({
+			type,
+			directory,
+			timeout,
+		}: Arguments): Effect.Effect<void, GitCommandFailedError | GitCommandTimeoutError> =>
 			Effect.gen(function* () {
 				const args = pipe(
 					Match.value(type),
@@ -26,7 +31,7 @@ const PrintRefsExecutorLive: Layer.Layer<
 					Match.exhaustive
 				)
 				const [subCommand, ...subArgs] = args
-				const timeout: Duration.DurationInput = "2 seconds"
+
 				return yield* pipe(
 					commandFactory({
 						directory,

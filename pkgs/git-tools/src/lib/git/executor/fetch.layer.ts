@@ -1,5 +1,4 @@
 import { CommandExecutor } from "@effect/platform"
-import type { Duration } from "effect"
 import { Effect, Match, pipe, Layer, Console, Array } from "effect"
 import commandFactory, { type ErrorCode } from "./base.ts"
 import { FetchRefsNotFoundError } from "#domain/fetch.error"
@@ -8,6 +7,7 @@ import { ReferenceSpec, toString as refSpecToString } from "#domain/reference-sp
 import type { Arguments } from "#executor/fetch.service"
 import { FETCH_DEEPEN_BY_TAG, FETCH_DEPTH_TAG } from "#domain/fetch"
 import FetchExecutor from "#executor/fetch.service"
+import type { GitCommandFailedError, GitCommandTimeoutError } from "#domain/git-command.error"
 
 const FETCH_NOT_FOUND_CODE = 128
 
@@ -22,7 +22,11 @@ const FetchExecutorLive: Layer.Layer<FetchExecutor, never, CommandExecutor.Comma
 				remote,
 				refs,
 				directory,
-			}: Arguments): Effect.Effect<void, FetchRefsNotFoundError> =>
+				timeout,
+			}: Arguments): Effect.Effect<
+				void,
+				FetchRefsNotFoundError | GitCommandFailedError | GitCommandTimeoutError
+			> =>
 				Effect.gen(function* () {
 					const { name: remoteName } = remote
 					const refStrings = pipe(
@@ -47,7 +51,6 @@ const FetchExecutorLive: Layer.Layer<FetchExecutor, never, CommandExecutor.Comma
 
 					const subCommand = "fetch"
 					const subArgs = [modeArg, remoteName, ...refStrings]
-					const timeout: Duration.DurationInput = "8 seconds"
 
 					return yield* pipe(
 						commandFactory({

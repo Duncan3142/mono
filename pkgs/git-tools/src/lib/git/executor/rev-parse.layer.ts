@@ -1,8 +1,8 @@
 import { CommandExecutor } from "@effect/platform"
-import type { Duration } from "effect"
 import { Layer, pipe, Effect, Match } from "effect"
 import commandFactory from "./base.ts"
 import RevParseExecutor, { type Arguments } from "#executor/rev-parse.service"
+import type { GitCommandFailedError, GitCommandTimeoutError } from "#domain/git-command.error"
 
 const RevParseExecutorLive: Layer.Layer<
 	RevParseExecutor,
@@ -13,9 +13,12 @@ const RevParseExecutorLive: Layer.Layer<
 	Effect.gen(function* () {
 		const executor = yield* CommandExecutor.CommandExecutor
 
-		return ({ rev: { name: rev }, directory }: Arguments): Effect.Effect<string> =>
+		return ({
+			ref: { name: rev },
+			directory,
+			timeout,
+		}: Arguments): Effect.Effect<string, GitCommandFailedError | GitCommandTimeoutError> =>
 			Effect.gen(function* () {
-				const timeout: Duration.DurationInput = "2 seconds"
 				return yield* pipe(
 					commandFactory({
 						directory,

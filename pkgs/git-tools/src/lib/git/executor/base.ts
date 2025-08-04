@@ -1,7 +1,7 @@
 import type { CommandExecutor } from "@effect/platform"
 import { Command } from "@effect/platform"
 import type { Duration, Scope } from "effect"
-import { Effect, Stream, pipe, Console, Chunk, Match } from "effect"
+import { Effect, Stream, pipe, Console, Chunk, Match, Option } from "effect"
 import { GitCommandFailedError, GitCommandTimeoutError } from "#domain/git-command.error"
 
 type ErrorMatcher<ECode extends ErrorCode, Error> = (
@@ -44,7 +44,7 @@ const commandFactory = <ECode extends ErrorCode = never, Error = never>({
 	errorMatcher,
 }: Arguments<ECode, Error>): Effect.Effect<
 	string,
-	Error,
+	Error | GitCommandFailedError | GitCommandTimeoutError,
 	CommandExecutor.CommandExecutor | Scope.Scope
 > =>
 	pipe(
@@ -57,6 +57,16 @@ const commandFactory = <ECode extends ErrorCode = never, Error = never>({
 		Effect.flatMap(({ exitCode, stdout, stderr }) => {
 			const result = pipe(
 				exitCode,
+				Effect.catchAll((error) =>
+					Effect.fail(
+						new GitCommandFailedError({
+							exitCode: Option.none(),
+							command: subCommand,
+							args: subArgs,
+							cause: error,
+						})
+					)
+				),
 				Effect.timeoutFail({
 					duration: timeout,
 					onTimeout: () =>
@@ -66,15 +76,15 @@ const commandFactory = <ECode extends ErrorCode = never, Error = never>({
 							args: subArgs,
 						}),
 				}),
-				Effect.orDie,
+
 				Effect.flatMap((code) =>
 					code === SUCCESS_CODE
 						? Effect.void
 						: errorMatcher(code).pipe(
 								Match.orElse((errCode) =>
-									Effect.die(
+									Effect.fail(
 										new GitCommandFailedError({
-											exitCode: errCode,
+											exitCode: Option.some(errCode),
 											command: subCommand,
 											args: subArgs,
 										})

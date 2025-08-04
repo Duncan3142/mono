@@ -1,4 +1,4 @@
-import type { Duration } from "effect"
+import type { Duration, Option } from "effect"
 import { Data } from "effect"
 import { tag } from "#const"
 
@@ -19,9 +19,10 @@ const GIT_COMMAND_FAILED_ERROR_TAG = tag("domain", `GIT_COMMAND_FAILED_ERROR`)
  * Git Command Failed Error
  */
 class GitCommandFailedError extends Data.TaggedError(GIT_COMMAND_FAILED_ERROR_TAG)<{
-	readonly exitCode: number
+	readonly exitCode: Option.Option<number>
 	readonly command: string
 	readonly args: ReadonlyArray<string>
+	readonly cause?: Error
 }> {}
 
 export {

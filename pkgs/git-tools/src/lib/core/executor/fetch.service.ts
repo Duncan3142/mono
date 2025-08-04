@@ -5,6 +5,7 @@ import { tag } from "#const"
 import type { Reference } from "#domain/reference"
 import type { Remote } from "#domain/remote"
 import type { FetchMode } from "#domain/fetch"
+import type { GitCommandFailedError, GitCommandTimeoutError } from "#domain/git-command.error"
 
 interface Arguments {
 	readonly mode: FetchMode
@@ -19,7 +20,12 @@ interface Arguments {
  */
 class FetchExecutor extends Context.Tag(tag(`executor`, `fetch`))<
 	FetchExecutor,
-	(args: Arguments) => Effect.Effect<void, FetchRefsNotFoundError>
+	(
+		args: Arguments
+	) => Effect.Effect<
+		void,
+		FetchRefsNotFoundError | GitCommandFailedError | GitCommandTimeoutError
+	>
 >() {}
 
 export default FetchExecutor

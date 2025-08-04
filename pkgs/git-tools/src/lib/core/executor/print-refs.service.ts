@@ -2,6 +2,7 @@ import type { Duration, Effect } from "effect"
 import { Context } from "effect"
 import type { REF_TYPE } from "#domain/reference"
 import { tag } from "#const"
+import type { GitCommandFailedError, GitCommandTimeoutError } from "#domain/git-command.error"
 
 interface Arguments {
 	readonly type: REF_TYPE
@@ -14,7 +15,7 @@ interface Arguments {
  */
 class PrintRefsExecutor extends Context.Tag(tag(`executor`, `print-refs`))<
 	PrintRefsExecutor,
-	(args: Arguments) => Effect.Effect<void>
+	(args: Arguments) => Effect.Effect<void, GitCommandFailedError | GitCommandTimeoutError>
 >() {}
 
 export default PrintRefsExecutor
