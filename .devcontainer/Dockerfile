@@ -15,4 +15,5 @@ ENV PATH="/root/.local/bin:${PATH}"
 RUN /tmp/mono-devcon-setup/volta.sh && \
     /tmp/mono-devcon-setup/docker.sh && \
     /tmp/mono-devcon-setup/hadolint.sh && \
-    /tmp/mono-devcon-setup/dotnet.sh
+    /tmp/mono-devcon-setup/dotnet.sh && \
+    /tmp/mono-devcon-setup/gh-cli.sh
