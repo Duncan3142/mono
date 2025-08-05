@@ -3,6 +3,7 @@ import { Context } from "effect"
 import type { Reference } from "#domain/reference"
 import { tag } from "#const"
 import type { ResetMode } from "#domain/reset"
+import type { GitCommandFailedError, GitCommandTimeoutError } from "#domain/git-command.error"
 
 interface Arguments {
 	readonly ref: Reference
@@ -16,7 +17,7 @@ interface Arguments {
  */
 class ResetExecutor extends Context.Tag(tag(`executor`, `reset`))<
 	ResetExecutor,
-	(args: Arguments) => Effect.Effect<void>
+	(args: Arguments) => Effect.Effect<void, GitCommandFailedError | GitCommandTimeoutError>
 >() {}
 
 export default ResetExecutor

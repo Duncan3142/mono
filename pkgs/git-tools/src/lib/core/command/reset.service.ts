@@ -5,6 +5,7 @@ import { tag } from "#const"
 import Repository from "#context/repository.service"
 import { RESET_MODE_HARD, type ResetMode } from "#domain/reset"
 import ResetExecutor from "#executor/reset.service"
+import type { GitCommandFailedError, GitCommandTimeoutError } from "#domain/git-command.error"
 
 interface Arguments {
 	readonly ref: Reference
@@ -25,7 +26,8 @@ class ResetCommand extends Effect.Service<ResetCommand>()(tag(`command`, `reset`
 			ref,
 			mode = RESET_MODE_HARD,
 			timeout = "2 seconds",
-		}: Arguments): Effect.Effect<void> => executor({ ref, mode, directory, timeout })
+		}: Arguments): Effect.Effect<void, GitCommandFailedError | GitCommandTimeoutError> =>
+			executor({ ref, mode, directory, timeout })
 	}),
 }) {}
 

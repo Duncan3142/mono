@@ -3,6 +3,7 @@ import { Console, Layer, pipe, Effect, Match } from "effect"
 import commandFactory from "./base.ts"
 import ResetExecutor, { type Arguments } from "#executor/reset.service"
 import { RESET_MODE_HARD, RESET_MODE_MIXED, RESET_MODE_SOFT } from "#domain/reset"
+import type { GitCommandFailedError, GitCommandTimeoutError } from "#domain/git-command.error"
 
 const ResetExecutorLive: Layer.Layer<ResetExecutor, never, CommandExecutor.CommandExecutor> =
 	Layer.effect(
@@ -10,7 +11,12 @@ const ResetExecutorLive: Layer.Layer<ResetExecutor, never, CommandExecutor.Comma
 		Effect.gen(function* () {
 			const executor = yield* CommandExecutor.CommandExecutor
 
-			return ({ ref, directory, mode, timeout }: Arguments): Effect.Effect<void> =>
+			return ({
+				ref,
+				directory,
+				mode,
+				timeout,
+			}: Arguments): Effect.Effect<void, GitCommandFailedError | GitCommandTimeoutError> =>
 				Effect.gen(function* () {
 					const modeArg = Match.value(mode).pipe(
 						Match.when(RESET_MODE_HARD, () => "--hard"),
@@ -19,7 +25,7 @@ const ResetExecutorLive: Layer.Layer<ResetExecutor, never, CommandExecutor.Comma
 						Match.exhaustive
 					)
 
-					return yield* pipe(
+					const res = pipe(
 						commandFactory({
 							directory,
 							subCommand: "reset",
@@ -28,9 +34,10 @@ const ResetExecutorLive: Layer.Layer<ResetExecutor, never, CommandExecutor.Comma
 							errorMatcher: Match.value,
 						}),
 						Effect.scoped,
-						Console.log,
+						Effect.flatMap(Console.log),
 						Effect.provideService(CommandExecutor.CommandExecutor, executor)
 					)
+					return yield* res
 				})
 		})
 	)

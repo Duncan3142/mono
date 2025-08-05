@@ -1,6 +1,8 @@
 import { Data, Order } from "effect"
 import { tag } from "#const"
 
+type GitSHA = string
+
 const BRANCH_REF_TAG = tag("domain", "BranchRef")
 const TAG_REF_TAG = tag("domain", "TagRef")
 
@@ -48,7 +50,7 @@ const sortByTag: Order.Order<Reference> = Order.mapInput(Order.string, ({ _tag }
  */
 const sortByName: Order.Order<Reference> = Order.mapInput(Order.string, ({ name }) => name)
 
-export type { Reference, REF_TYPE }
+export type { Reference, REF_TYPE, GitSHA }
 export {
 	BRANCH_REF_TAG,
 	BranchRef,

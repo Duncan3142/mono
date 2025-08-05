@@ -14,6 +14,7 @@ import {
 } from "#domain/fetch"
 import RepositoryConfig from "#config/repository-config.service"
 import Repository from "#context/repository.service"
+import type { GitCommandFailedError, GitCommandTimeoutError } from "#domain/git-command.error"
 
 interface Arguments {
 	readonly refs: Array.NonEmptyReadonlyArray<Reference>
@@ -45,7 +46,10 @@ class FetchCommand extends Effect.Service<FetchCommand>()(tag(`command`, `fetch`
 			timeout = "4 seconds",
 		}: Arguments): Effect.Effect<
 			void,
-			FetchRefsNotFoundError | FetchDepthExceededError,
+			| FetchDepthExceededError
+			| FetchRefsNotFoundError
+			| GitCommandFailedError
+			| GitCommandTimeoutError,
 			FetchDepth
 		> =>
 			Effect.gen(function* () {

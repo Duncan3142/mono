@@ -1,14 +1,15 @@
 /* eslint-disable @typescript-eslint/unbound-method -- Check mock use */
 /* eslint-disable @typescript-eslint/no-magic-numbers -- Check mock use */
 import { expect, describe, it, vi } from "@effect/vitest"
-import { Effect, Fiber, pipe, ConfigProvider, Layer, TestClock, Either } from "effect"
+import { Effect, Fiber, ConfigProvider, Layer, TestClock, Either } from "effect"
 import CommandExecutorTest, { type MockProcessProps } from "#mock/command-executor.mock"
 import PrintRefsCommand from "#command/print-refs.service"
 import PrintRefsExecutorLive from "#git/executor/print-refs.layer"
-import PrintRefs from "#case/print-refs.service"
 import RepositoryConfig from "#config/repository-config.service"
 import LoggerTest from "#mock/logger.mock"
 import consoleFactory from "#mock/console.mock"
+import Repository from "#context/repository.service"
+import { Repository as RepositoryData } from "#domain/repository"
 
 const logHandler = vi.fn<() => void>()
 
@@ -37,9 +38,7 @@ const tagProps = {
 	}),
 } satisfies MockProcessProps
 
-const ProgramLayer = pipe(
-	PrintRefs.Default,
-	Layer.provide(PrintRefsCommand.Default),
+const ProgramLayer = PrintRefsCommand.Default.pipe(
 	Layer.provide(PrintRefsExecutorLive),
 	Layer.provide(CommandExecutorTest([branchProps, tagProps])),
 	Layer.provide(RepositoryConfig.Default),
@@ -50,22 +49,15 @@ describe("Reference Layer", () => {
 	it.effect("prints references", () =>
 		Effect.gen(function* () {
 			const result = yield* Effect.gen(function* () {
-				const printRefs = yield* PrintRefs
-				const fiber = yield* Effect.fork(
-					Effect.exit(
-						printRefs({
-							logLevel: "Info",
-							directory: "/dummy/path/to/repo", // Use a dummy path for testing
-						})
-					)
-				)
+				const printRefs = yield* PrintRefsCommand
+				const fiber = yield* Effect.fork(Effect.exit(printRefs()))
 				yield* TestClock.adjust("3 seconds")
 				return yield* Fiber.join(fiber)
 			})
 
 			expect(result).toStrictEqual(Effect.void)
 
-			expect(mockConsole.log).toHaveBeenCalledTimes(4)
+			expect(mockConsole.log).toHaveBeenCalledTimes(1)
 			expect(mockConsole.log).toHaveBeenNthCalledWith(1, "Branches:")
 			expect(mockConsole.log).toHaveBeenNthCalledWith(
 				2,
@@ -84,6 +76,7 @@ describe("Reference Layer", () => {
 			)
 		}).pipe(
 			Effect.provide(ProgramLayer),
+			Effect.provideService(Repository, RepositoryData({ directory: process.cwd() })),
 			Effect.withConsole(mockConsole),
 			Effect.withConfigProvider(ConfigProvider.fromMap(new Map([])))
 		)

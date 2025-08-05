@@ -1,52 +1,29 @@
 import { NodeContext, NodeRuntime } from "@effect/platform-node"
-import { Effect, Layer, ConfigProvider, pipe, Console, LogLevel, Logger } from "effect"
-import Git from "#service"
-import FetchRefs from "#case/fetch-refs.service"
-import FetchCommand from "#command/fetch.service"
-import FetchExecutorLive from "#git/executor/fetch.layer"
-import PrintRefs from "#case/print-refs.service"
-import PrintRefsExecutorLive from "#git/executor/print-refs.layer"
-import MergeBaseExecutorLive from "#git/executor/merge-base.layer"
-import RepositoryConfig from "#config/repository-config.service"
-import FetchDepthFactory from "#state/fetch-depth-factory.service"
-import FindMergeBase from "#case/find-merge-base.service"
+import { Effect, Layer, ConfigProvider, Console, LogLevel, Logger } from "effect"
+import GitToolsLive from "#layer"
+
 import { BranchRef } from "#domain/reference"
-import MergeBaseCommand from "#command/merge-base.service"
 import PrintRefsCommand from "#command/print-refs.service"
+import MergeBaseCommand from "#command/merge-base.service"
+import { Repository as RepositoryData } from "#domain/repository"
+import Repository from "#context/repository.service"
 
-const ProgramLive = pipe(
-	Git.Default,
-	Layer.provide(Layer.mergeAll(FindMergeBase.Default, FetchRefs.Default, PrintRefs.Default)),
-	Layer.provide(Layer.mergeAll(FindMergeBase.Default, FetchRefs.Default, PrintRefs.Default)),
-	Layer.provide(FetchDepthFactory.Default),
-	Layer.provide(RepositoryConfig.Default),
-	Layer.provide(MergeBaseCommand.Default),
-	Layer.provide(Layer.mergeAll(FetchCommand.Default, PrintRefsCommand.Default)),
-	Layer.provide(
-		Layer.mergeAll(MergeBaseExecutorLive, FetchExecutorLive, PrintRefsExecutorLive)
-	),
-
-	Layer.provide(NodeContext.layer)
-)
+const ProgramLive = GitToolsLive.pipe(Layer.provide(NodeContext.layer))
 
 const program = Effect.gen(function* () {
-	const git = yield* Git
-	const directory = process.cwd()
+	const [printRefs, mergeBase] = yield* Effect.all([PrintRefsCommand, MergeBaseCommand], {
+		concurrency: "unbounded",
+	})
 	return yield* Effect.all([
-		git.printRefs({
-			logLevel: "Info",
-			directory,
-		}),
-		git
-			.mergeBase({
-				baseRef: BranchRef({ name: "main" }),
-				headRef: BranchRef({ name: "git-effect" }),
-				directory,
-			})
-			.pipe(Effect.flatMap((baseSha) => Console.log("Merge base found", baseSha))),
+		printRefs(),
+		mergeBase({
+			baseRef: BranchRef({ name: "main" }),
+			headRef: BranchRef({ name: "git-effect" }),
+		}).pipe(Effect.flatMap((baseSha) => Console.log("Merge base found", baseSha))),
 	])
 }).pipe(
 	Effect.provide(ProgramLive),
+	Effect.provideService(Repository, RepositoryData({ directory: process.cwd() })),
 	Effect.withConfigProvider(ConfigProvider.fromMap(new Map([]))),
 	Logger.withMinimumLogLevel(LogLevel.Trace)
 )

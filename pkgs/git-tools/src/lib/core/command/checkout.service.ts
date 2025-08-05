@@ -5,6 +5,7 @@ import { tag } from "#const"
 import Repository from "#context/repository.service"
 import CheckoutExecutor from "#executor/checkout.service"
 import type { CheckoutRefNotFoundError } from "#domain/checkout.error"
+import type { GitCommandFailedError, GitCommandTimeoutError } from "#domain/git-command.error"
 
 interface Arguments {
 	readonly ref: Reference
@@ -25,8 +26,10 @@ class CheckoutCommand extends Effect.Service<CheckoutCommand>()(tag(`command`, `
 			ref,
 			createIfNotExists = false,
 			timeout = "2 seconds",
-		}: Arguments): Effect.Effect<void, CheckoutRefNotFoundError> =>
-			executor({ ref, directory, createIfNotExists, timeout })
+		}: Arguments): Effect.Effect<
+			void,
+			CheckoutRefNotFoundError | GitCommandFailedError | GitCommandTimeoutError
+		> => executor({ ref, directory, createIfNotExists, timeout })
 	}),
 }) {}
 

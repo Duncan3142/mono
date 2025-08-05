@@ -4,6 +4,7 @@ import PrintRefsExecutor from "#executor/print-refs.service"
 import { BRANCH, type REF_TYPE } from "#domain/reference"
 import { tag } from "#const"
 import Repository from "#context/repository.service"
+import type { GitCommandFailedError, GitCommandTimeoutError } from "#domain/git-command.error"
 
 interface Arguments {
 	readonly type?: REF_TYPE
@@ -21,8 +22,10 @@ class PrintRefsCommand extends Effect.Service<PrintRefsCommand>()(
 				concurrency: "unbounded",
 			})
 
-			return ({ type = BRANCH, timeout = "2 seconds" }: Arguments = {}): Effect.Effect<void> =>
-				executor({ type, directory, timeout })
+			return ({ type = BRANCH, timeout = "2 seconds" }: Arguments = {}): Effect.Effect<
+				void,
+				GitCommandFailedError | GitCommandTimeoutError
+			> => executor({ type, directory, timeout })
 		}),
 	}
 ) {}

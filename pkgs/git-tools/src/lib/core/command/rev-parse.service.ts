@@ -4,6 +4,7 @@ import type { Reference } from "#domain/reference"
 import { tag } from "#const"
 import Repository from "#context/repository.service"
 import RevParseExecutor from "#executor/rev-parse.service"
+import type { GitCommandFailedError, GitCommandTimeoutError } from "#domain/git-command.error"
 
 interface Arguments {
 	readonly ref: Reference
@@ -19,7 +20,10 @@ class RevParseCommand extends Effect.Service<RevParseCommand>()(tag(`command`, `
 			concurrency: "unbounded",
 		})
 
-		return ({ ref, timeout = "2 seconds" }: Arguments): Effect.Effect<void> =>
+		return ({
+			ref,
+			timeout = "2 seconds",
+		}: Arguments): Effect.Effect<string, GitCommandFailedError | GitCommandTimeoutError> =>
 			executor({ ref, directory, timeout })
 	}),
 }) {}

@@ -4,6 +4,7 @@ import commandFactory, { type ErrorCode } from "./base.ts"
 import MergeBaseExecutor, { type Arguments } from "#executor/merge-base.service"
 import { MergeBaseNotFoundError } from "#domain/merge-base.error"
 import type { GitCommandFailedError, GitCommandTimeoutError } from "#domain/git-command.error"
+import type { GitSHA } from "#domain/reference"
 
 const MERGE_BASE_NOT_FOUND_CODE = 1
 
@@ -22,7 +23,7 @@ const MergeBaseExecutorLive: Layer.Layer<
 			directory,
 			timeout,
 		}: Arguments): Effect.Effect<
-			string,
+			GitSHA,
 			MergeBaseNotFoundError | GitCommandFailedError | GitCommandTimeoutError
 		> =>
 			Effect.gen(function* () {
