@@ -1,9 +1,8 @@
-import type { Duration } from "effect"
-import { Layer, Effect, Array, Either, Deferred, Ref, Stream, pipe } from "effect"
-import type { Error as PlatformError } from "@effect/platform"
+import type { Duration, Scope } from "effect"
+import { Effect, Array, Either, Deferred, Ref, Stream, pipe } from "effect"
+import type { Command, Error as PlatformError } from "@effect/platform"
 import { CommandExecutor } from "@effect/platform"
 import { mockDeep } from "vitest-mock-extended"
-import { vi } from "@effect/vitest"
 
 interface MockProcessProps {
 	delay: Duration.DurationInput
@@ -13,6 +12,13 @@ interface MockProcessProps {
 	>
 }
 
+/**
+ * Generates a mock process that simulates the behavior of a command executor process.
+ * @param props - The properties to configure the mock process.
+ * @param props.delay - The delay before the process settles.
+ * @param props.result - The result of the process execution.
+ * @returns An Effect that produces a mock CommandExecutor.Process.
+ */
 const mockProcessGenerator = ({
 	delay,
 	result,
@@ -69,35 +75,9 @@ const mockProcessGenerator = ({
 			}),
 	})
 
-/**
- * CommandExecutor mock properties for testing.
- */
-type CommandExecutorMockProps = [branch: MockProcessProps, tag: MockProcessProps]
+type Start = (
+	command: Command.Command
+) => Effect.Effect<CommandExecutor.Process, PlatformError.PlatformError, Scope.Scope>
 
-/**
- * Creates a mock CommandExecutor layer for testing.
- * @param props - The properties for the command executor mock
- * @param props."0" - Properties for the branch command
- * @param props."1" - Properties for the tag command
- * @returns A layer that provides a mocked CommandExecutor
- */
-const CommandExecutorTest: (
-	props: CommandExecutorMockProps
-) => Layer.Layer<CommandExecutor.CommandExecutor> = ([
-	branchProps,
-	tagProps,
-]: CommandExecutorMockProps) =>
-	Layer.effect(
-		CommandExecutor.CommandExecutor,
-		Effect.gen(function* (_) {
-			const start = vi.fn()
-			const branchProcess = yield* mockProcessGenerator(branchProps)
-			start.mockReturnValueOnce(Effect.succeed(branchProcess))
-			const tagProcess = yield* mockProcessGenerator(tagProps)
-			start.mockReturnValueOnce(Effect.succeed(tagProcess))
-			return CommandExecutor.makeExecutor(start)
-		})
-	)
-
-export default CommandExecutorTest
-export type { MockProcessProps, CommandExecutorMockProps }
+export default mockProcessGenerator
+export type { MockProcessProps, Start }
