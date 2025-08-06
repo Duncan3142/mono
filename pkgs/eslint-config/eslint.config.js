@@ -19,7 +19,7 @@ const configs = compose(
 	ignored(),
 	base,
 	comments,
-	typescript(),
+	typescript(when),
 	importX(when),
 	promise,
 	arrow,
