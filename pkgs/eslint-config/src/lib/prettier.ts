@@ -1,7 +1,7 @@
 import prettier from "eslint-config-prettier"
-import { compose, type MutableConfigs } from "./core.ts"
+import { compose, type Configs } from "./core.ts"
 
-const config: MutableConfigs = compose(prettier, {
+const config: Configs = compose(prettier, {
 	rules: {
 		curly: "error",
 	},

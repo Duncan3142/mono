@@ -1,9 +1,9 @@
 import arrow from "eslint-plugin-prefer-arrow-functions"
-import { filePatterns, jstsExtensions, type MutableConfig } from "./core.ts"
+import { filePatterns, jstsExtensions, type Config } from "./core.ts"
 
 const { rules } = arrow
 
-const custom: MutableConfig = {
+const custom: Config = {
 	name: "@duncan3142/eslint-config/prefer-arrow-functions",
 	files: filePatterns(...jstsExtensions),
 	plugins: { "prefer-arrow-functions": { rules } },

@@ -7,20 +7,20 @@ import {
 	jsonExtensions,
 	jstsExtensions,
 	nodeExtensions,
-	type MutableConfig,
-	type MutableConfigs,
+	type Config,
+	type Configs,
 	type Parser,
 	type Path,
-	type MutablePatterns,
+	type Patterns,
 } from "#lib/core"
 
 const TS_CONFIG_DEFAULT: Path = "tsconfig.json"
 
 const parser: Parser = tseslint.parser
 
-const extraExtensions: MutablePatterns = [...jsonExtensions, ...nodeExtensions]
+const extraExtensions: Patterns = [...jsonExtensions, ...nodeExtensions]
 
-const custom: MutableConfig = {
+const custom: Config = {
 	name: "@duncan3142/eslint-config/typescipt/custom",
 	languageOptions: {
 		sourceType: "module",
@@ -66,6 +66,7 @@ const custom: MutableConfig = {
 		"@typescript-eslint/no-loop-func": "error",
 		"@typescript-eslint/no-shadow": "error",
 		"@typescript-eslint/prefer-readonly": "error",
+		"@typescript-eslint/prefer-readonly-parameter-types": "error",
 		"@typescript-eslint/no-unsafe-type-assertion": "error",
 		"@typescript-eslint/ban-ts-comment": [
 			"error",
@@ -102,13 +103,13 @@ const custom: MutableConfig = {
 	},
 }
 
-const typed: MutableConfigs = compose({
+const typed: Configs = compose({
 	name: "@duncan3142/eslint-config/typescipt",
 	files: filePatterns(...jstsExtensions),
 	extends: [tseslint.configs.strictTypeChecked, tseslint.configs.stylisticTypeChecked, custom],
 })
 
-const untyped: MutableConfigs = compose({
+const untyped: Configs = compose({
 	name: "@duncan3142/eslint-config/untyped",
 	files: filePatterns(...jsExtensions),
 	extends: [tseslint.configs.disableTypeChecked],
@@ -121,6 +122,6 @@ const untyped: MutableConfigs = compose({
  * TypeScript ESLint config
  * @returns ESLint config
  */
-const configs = (): MutableConfigs => compose(typed, untyped)
+const configs = (): Configs => compose(typed, untyped)
 
 export default configs

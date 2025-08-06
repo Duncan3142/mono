@@ -1,19 +1,13 @@
 import { importX } from "eslint-plugin-import-x"
 
-import {
-	compose,
-	filePatterns,
-	jstsExtensions,
-	type MutableConfig,
-	type MutableConfigs,
-} from "./core.ts"
+import { compose, filePatterns, jstsExtensions, type Config, type Configs } from "./core.ts"
 import type { Guards } from "#context/lint-level"
 
 /* -------------------------------------------------------------------------- */
 /*                                   Configs                                  */
 /* -------------------------------------------------------------------------- */
 
-const custom: (guard: Guards) => MutableConfig = (guard) => {
+const custom: (guard: Guards) => Config = (guard) => {
 	return {
 		name: "@duncan3142/eslint-config/import/custom",
 		rules: {
@@ -55,7 +49,7 @@ const custom: (guard: Guards) => MutableConfig = (guard) => {
  * @param guard - Guards
  * @returns Configs
  */
-const configs: (guard: Guards) => MutableConfigs = (guard) =>
+const configs: (guard: Guards) => Configs = (guard) =>
 	compose({
 		name: "@duncan3142/eslint-config/import",
 		files: filePatterns(...jstsExtensions),
