@@ -35,6 +35,7 @@ const PrintRefsExecutorLive: Layer.Layer<
 				return yield* pipe(
 					commandFactory({
 						directory,
+						noPager: true,
 						subCommand,
 						subArgs,
 						timeout,

@@ -19,6 +19,7 @@ interface Arguments<ECode extends ErrorCode, Error> {
 	readonly subArgs: ReadonlyArray<string>
 	readonly directory: string
 	readonly timeout: Duration.DurationInput
+	readonly noPager?: boolean
 	readonly errorMatcher: ErrorMatcher<ECode, Error>
 }
 
@@ -34,6 +35,7 @@ type ErrorCode = number
  * @param args.directory - The working directory for the git command.
  * @param args.timeout - The timeout for the command execution.
  * @param args.errorMatcher - A matcher to handle specific error codes.
+ * @param args.noPager - Whether to disable the pager for git commands.
  * @returns A function that executes the git command and returns an effect.
  */
 const commandFactory = <ECode extends ErrorCode = never, Error = never>({
@@ -42,13 +44,15 @@ const commandFactory = <ECode extends ErrorCode = never, Error = never>({
 	subArgs,
 	timeout,
 	errorMatcher,
+	noPager = false,
 }: Arguments<ECode, Error>): Effect.Effect<
 	string,
 	Error | GitCommandFailedError | GitCommandTimeoutError,
 	CommandExecutor.CommandExecutor | Scope.Scope
-> =>
-	pipe(
-		Command.make("git", "--no-pager", subCommand, ...subArgs),
+> => {
+	const options = noPager ? ["--no-pager"] : []
+	return pipe(
+		Command.make("git", ...options, subCommand, ...subArgs),
 		Command.workingDirectory(directory),
 		Command.stdout("pipe"),
 		Command.stderr("pipe"),
@@ -61,6 +65,7 @@ const commandFactory = <ECode extends ErrorCode = never, Error = never>({
 					Effect.fail(
 						new GitCommandFailedError({
 							exitCode: Option.none(),
+							options,
 							command: subCommand,
 							args: subArgs,
 							cause: error,
@@ -72,6 +77,7 @@ const commandFactory = <ECode extends ErrorCode = never, Error = never>({
 					onTimeout: () =>
 						new GitCommandTimeoutError({
 							timeout,
+							options,
 							command: subCommand,
 							args: subArgs,
 						}),
@@ -85,6 +91,7 @@ const commandFactory = <ECode extends ErrorCode = never, Error = never>({
 									Effect.fail(
 										new GitCommandFailedError({
 											exitCode: Option.some(errCode),
+											options,
 											command: subCommand,
 											args: subArgs,
 										})
@@ -109,6 +116,7 @@ const commandFactory = <ECode extends ErrorCode = never, Error = never>({
 			).pipe(Effect.map(([stdOut]) => stdOut))
 		})
 	)
+}
 
 export default commandFactory
 export type { ErrorCode, Arguments }
