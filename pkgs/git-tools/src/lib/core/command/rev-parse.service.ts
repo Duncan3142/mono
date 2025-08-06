@@ -4,7 +4,7 @@ import type { Reference } from "#domain/reference"
 import { tag } from "#const"
 import Repository from "#context/repository.service"
 import RevParseExecutor from "#executor/rev-parse.service"
-import type { GitCommandFailedError, GitCommandTimeoutError } from "#domain/git-command.error"
+import type { GitCommandFailedError, GitCommandTimeoutError } from "#domain/git.error"
 
 interface Arguments {
 	readonly ref: Reference

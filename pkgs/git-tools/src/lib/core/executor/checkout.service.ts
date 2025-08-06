@@ -3,7 +3,7 @@ import { Context } from "effect"
 import type { Reference } from "#domain/reference"
 import { tag } from "#const"
 import type { CheckoutRefNotFoundError } from "#domain/checkout.error"
-import type { GitCommandFailedError, GitCommandTimeoutError } from "#domain/git-command.error"
+import type { GitCommandFailedError, GitCommandTimeoutError } from "#domain/git.error"
 
 interface Arguments {
 	readonly ref: Reference

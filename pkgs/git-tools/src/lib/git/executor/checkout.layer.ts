@@ -3,7 +3,7 @@ import { Layer, pipe, Effect, Match, Console } from "effect"
 import commandFactory, { type ErrorCode } from "./base.ts"
 import CheckoutExecutor, { type Arguments } from "#executor/checkout.service"
 import { CheckoutRefNotFoundError } from "#domain/checkout.error"
-import type { GitCommandFailedError, GitCommandTimeoutError } from "#domain/git-command.error"
+import type { GitCommandFailedError, GitCommandTimeoutError } from "#domain/git.error"
 
 const CHECKOUT_REF_NOT_FOUND_CODE = 1
 

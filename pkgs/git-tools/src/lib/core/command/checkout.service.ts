@@ -5,7 +5,7 @@ import { tag } from "#const"
 import Repository from "#context/repository.service"
 import CheckoutExecutor from "#executor/checkout.service"
 import type { CheckoutRefNotFoundError } from "#domain/checkout.error"
-import type { GitCommandFailedError, GitCommandTimeoutError } from "#domain/git-command.error"
+import type { GitCommandFailedError, GitCommandTimeoutError } from "#domain/git.error"
 
 interface Arguments {
 	readonly ref: Reference

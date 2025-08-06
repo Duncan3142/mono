@@ -1,22 +1,21 @@
 import type { Duration, Effect } from "effect"
 import { Context } from "effect"
-import type { REF_TYPE } from "#domain/reference"
 import { tag } from "#const"
-import type { GitCommandFailedError, GitCommandTimeoutError } from "#domain/git-command.error"
+import type { GitCommandFailedError, GitCommandTimeoutError } from "#domain/git.error"
 
 interface Arguments {
-	readonly type: REF_TYPE
 	readonly directory: string
+	readonly forceWithLease: boolean
 	readonly timeout: Duration.DurationInput
 }
 
 /**
- * Print refs command service
+ * Checkout command service
  */
-class PrintRefsExecutor extends Context.Tag(tag(`executor`, `print-refs`))<
-	PrintRefsExecutor,
+class PushExecutor extends Context.Tag(tag(`executor`, `push`))<
+	PushExecutor,
 	(args: Arguments) => Effect.Effect<void, GitCommandFailedError | GitCommandTimeoutError>
 >() {}
 
-export default PrintRefsExecutor
+export default PushExecutor
 export type { Arguments }

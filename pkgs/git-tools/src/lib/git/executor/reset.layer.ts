@@ -3,7 +3,7 @@ import { Console, Layer, pipe, Effect, Match } from "effect"
 import commandFactory from "./base.ts"
 import ResetExecutor, { type Arguments } from "#executor/reset.service"
 import { RESET_MODE_HARD, RESET_MODE_MIXED, RESET_MODE_SOFT } from "#domain/reset"
-import type { GitCommandFailedError, GitCommandTimeoutError } from "#domain/git-command.error"
+import type { GitCommandFailedError, GitCommandTimeoutError } from "#domain/git.error"
 
 const ResetExecutorLive: Layer.Layer<ResetExecutor, never, CommandExecutor.CommandExecutor> =
 	Layer.effect(

@@ -4,17 +4,16 @@ import { tag } from "#const"
 import type { GitCommandFailedError, GitCommandTimeoutError } from "#domain/git.error"
 
 interface Arguments {
-	readonly directory: string
 	readonly timeout: Duration.DurationInput
 }
 
 /**
  * Checkout command service
  */
-class InitExecutor extends Context.Tag(tag(`executor`, `init`))<
-	InitExecutor,
+class CommitExecutor extends Context.Tag(tag(`executor`, `commit`))<
+	CommitExecutor,
 	(args: Arguments) => Effect.Effect<void, GitCommandFailedError | GitCommandTimeoutError>
 >() {}
 
-export default InitExecutor
+export default CommitExecutor
 export type { Arguments }

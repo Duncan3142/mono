@@ -4,7 +4,7 @@ import PrintRefsExecutor from "#executor/print-refs.service"
 import { BRANCH, type REF_TYPE } from "#domain/reference"
 import { tag } from "#const"
 import Repository from "#context/repository.service"
-import type { GitCommandFailedError, GitCommandTimeoutError } from "#domain/git-command.error"
+import type { GitCommandFailedError, GitCommandTimeoutError } from "#domain/git.error"
 
 interface Arguments {
 	readonly type?: REF_TYPE

@@ -14,7 +14,7 @@ import {
 } from "#domain/fetch"
 import RepositoryConfig from "#config/repository-config.service"
 import Repository from "#context/repository.service"
-import type { GitCommandFailedError, GitCommandTimeoutError } from "#domain/git-command.error"
+import type { GitCommandFailedError, GitCommandTimeoutError } from "#domain/git.error"
 
 interface Arguments {
 	readonly refs: Array.NonEmptyReadonlyArray<Reference>

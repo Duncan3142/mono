@@ -1,5 +1,5 @@
 import { Match, pipe, Data } from "effect"
-import { type Reference, BRANCH_REF_TAG, HEAD_REF_TAG, TAG_REF_TAG } from "./reference.ts"
+import type * as Reference from "./reference.ts"
 import type { Remote } from "./remote.ts"
 import { tag } from "#const"
 
@@ -8,7 +8,7 @@ const REFERENCE_SPEC_TAG = tag("domain", "ReferenceSpec")
 interface ReferenceSpec {
 	readonly _tag: typeof REFERENCE_SPEC_TAG
 	readonly remote: Remote
-	readonly ref: Reference
+	readonly ref: Reference.Reference
 }
 
 const ReferenceSpec = Data.tagged<ReferenceSpec>(REFERENCE_SPEC_TAG)
@@ -23,13 +23,15 @@ const ReferenceSpec = Data.tagged<ReferenceSpec>(REFERENCE_SPEC_TAG)
  */
 const toString = ({ remote: { name: remote }, ref }: ReferenceSpec): string =>
 	pipe(
+		// Reference.$match,
+		// Reference.$is('Branch', ),
 		Match.value(ref),
 		Match.whenOr(
-			{ _tag: BRANCH_REF_TAG },
-			{ _tag: HEAD_REF_TAG },
+			{ _tag: "Branch" },
+			{ _tag: "Head" },
 			({ name }) => `refs/heads/${name}:refs/remotes/${remote}/${name}`
 		),
-		Match.when({ _tag: TAG_REF_TAG }, ({ name }) => `refs/tags/${name}:refs/tags/${name}`),
+		Match.when({ _tag: "Tag" }, ({ name }) => `refs/tags/${name}:refs/tags/${name}`),
 		Match.exhaustive
 	)
 

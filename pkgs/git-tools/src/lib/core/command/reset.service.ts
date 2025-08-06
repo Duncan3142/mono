@@ -5,7 +5,7 @@ import { tag } from "#const"
 import Repository from "#context/repository.service"
 import { RESET_MODE_HARD, type ResetMode } from "#domain/reset"
 import ResetExecutor from "#executor/reset.service"
-import type { GitCommandFailedError, GitCommandTimeoutError } from "#domain/git-command.error"
+import type { GitCommandFailedError, GitCommandTimeoutError } from "#domain/git.error"
 
 interface Arguments {
 	readonly ref: Reference

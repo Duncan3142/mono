@@ -4,7 +4,7 @@ import { Layer, pipe, Effect, Match, Console } from "effect"
 import commandFactory from "./base.ts"
 import { BRANCH, TAG } from "#domain/reference"
 import PrintRefsExecutor, { type Arguments } from "#executor/print-refs.service"
-import type { GitCommandFailedError, GitCommandTimeoutError } from "#domain/git-command.error"
+import type { GitCommandFailedError, GitCommandTimeoutError } from "#domain/git.error"
 
 const PrintRefsExecutorLive: Layer.Layer<
 	PrintRefsExecutor,

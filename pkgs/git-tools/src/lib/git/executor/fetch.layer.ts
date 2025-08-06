@@ -7,7 +7,7 @@ import { ReferenceSpec, toString as refSpecToString } from "#domain/reference-sp
 import type { Arguments } from "#executor/fetch.service"
 import { FETCH_DEEPEN_BY_TAG, FETCH_DEPTH_TAG } from "#domain/fetch"
 import FetchExecutor from "#executor/fetch.service"
-import type { GitCommandFailedError, GitCommandTimeoutError } from "#domain/git-command.error"
+import type { GitCommandFailedError, GitCommandTimeoutError } from "#domain/git.error"
 
 const FETCH_NOT_FOUND_CODE = 128
 

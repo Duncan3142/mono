@@ -3,7 +3,7 @@ import { Context } from "effect"
 import { tag } from "#const"
 import type { GitSHA, Reference } from "#domain/reference"
 import type { MergeBaseNotFoundError } from "#domain/merge-base.error"
-import type { GitCommandFailedError, GitCommandTimeoutError } from "#domain/git-command.error"
+import type { GitCommandFailedError, GitCommandTimeoutError } from "#domain/git.error"
 
 interface Arguments {
 	readonly headRef: Reference

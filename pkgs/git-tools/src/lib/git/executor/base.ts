@@ -2,7 +2,7 @@ import type { CommandExecutor } from "@effect/platform"
 import { Command } from "@effect/platform"
 import type { Duration, Scope } from "effect"
 import { Effect, Stream, pipe, Console, Chunk, Match, Option } from "effect"
-import { GitCommandFailedError, GitCommandTimeoutError } from "#domain/git-command.error"
+import { GitCommandFailedError, GitCommandTimeoutError } from "#domain/git.error"
 
 type ErrorMatcher<ECode extends ErrorCode, Error> = (
 	ecode: ErrorCode

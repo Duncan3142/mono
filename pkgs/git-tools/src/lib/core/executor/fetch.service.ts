@@ -1,11 +1,17 @@
-import type { Array, Duration, Effect } from "effect"
+import { Data, type Array, type Duration, type Effect } from "effect"
 import { Context } from "effect"
 import type { FetchRefsNotFoundError } from "#domain/fetch.error"
 import { tag } from "#const"
 import type { Reference } from "#domain/reference"
 import type { Remote } from "#domain/remote"
-import type { FetchMode } from "#domain/fetch"
-import type { GitCommandFailedError, GitCommandTimeoutError } from "#domain/git-command.error"
+import type { GitCommandFailedError, GitCommandTimeoutError } from "#domain/git.error"
+
+type FetchMode = Data.TaggedEnum<{
+	Depth: { readonly depth: number }
+	DeepenBy: { readonly deepenBy: number }
+}>
+
+const { Depth, DeepenBy, $is, $match } = Data.taggedEnum<FetchMode>()
 
 interface Arguments {
 	readonly mode: FetchMode
@@ -29,4 +35,5 @@ class FetchExecutor extends Context.Tag(tag(`executor`, `fetch`))<
 >() {}
 
 export default FetchExecutor
+export { Depth, DeepenBy, $is, $match }
 export type { Arguments }
