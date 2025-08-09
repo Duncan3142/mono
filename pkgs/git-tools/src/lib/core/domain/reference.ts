@@ -8,7 +8,7 @@ type Reference = Data.TaggedEnum<{
 	Head: { readonly name: "HEAD" }
 }>
 
-const { Branch, Head, Tag, $is, $match } = Data.taggedEnum<Reference>()
+const Reference = Data.taggedEnum<Reference>()
 
 interface Sort {
 	byName: Order.Order<Reference>
@@ -31,5 +31,5 @@ const Sort: Sort = {
 	byName: Order.mapInput(Order.string, ({ name }) => name),
 }
 
-export type { Reference, SHA }
-export { Branch, Tag, Head, $is, $match, Sort }
+export type { SHA }
+export { Reference, Sort }
