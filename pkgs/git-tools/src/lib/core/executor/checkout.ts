@@ -1,9 +1,7 @@
 import type { Duration, Effect } from "effect"
 import { Context } from "effect"
-import * as Reference from "#domain/reference"
+import { Reference, GitCommandError, CheckoutError } from "#domain"
 import * as Const from "#const"
-import * as CheckoutError from "#domain/checkout.error"
-import * as GitCommandError from "#domain/git-command.error"
 import * as BranchMode from "./checkout.mode.ts"
 
 interface Arguments {

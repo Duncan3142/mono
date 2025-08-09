@@ -1,11 +1,9 @@
 import type { Duration, Effect } from "effect"
 import { Context } from "effect"
 import * as Const from "#const"
-import * as GitCommandError from "#domain/git-command.error"
-import * as Mode from "./tag.mode.ts"
+import { GitCommandError } from "#domain"
 
 interface Arguments {
-	readonly mode: Mode.Mode
 	readonly directory: string
 	readonly timeout: Duration.DurationInput
 }
@@ -13,10 +11,10 @@ interface Arguments {
 /**
  * Checkout command service
  */
-class Tag extends Context.Tag(Const.tag(`executor`, `tag`))<
+class Tag extends Context.Tag(Const.tag(`executor`, `init`))<
 	Tag,
 	(args: Arguments) => Effect.Effect<void, GitCommandError.Failed | GitCommandError.Timeout>
 >() {}
 
-export { Tag, Mode }
+export { Tag }
 export type { Arguments }

@@ -1,9 +1,7 @@
 import type { Duration, Effect } from "effect"
 import { Context } from "effect"
 import * as Const from "#const"
-import * as Reference from "#domain/reference"
-import * as MergeBaseError from "#domain/merge-base.error"
-import * as GitCommandError from "#domain/git-command.error"
+import { GitCommandError, Reference, MergeBaseError } from "#domain"
 
 interface Arguments {
 	readonly headRef: Reference.Reference

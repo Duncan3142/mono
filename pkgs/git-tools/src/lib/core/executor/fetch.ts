@@ -1,10 +1,7 @@
 import type { Array, Duration, Effect } from "effect"
 import { Context } from "effect"
-import * as FetchError from "#domain/fetch.error"
+import { FetchError, Reference, Remote, GitCommandError } from "#domain"
 import * as Const from "#const"
-import * as Reference from "#domain/reference"
-import * as Remote from "#domain/remote"
-import * as GitCommandError from "#domain/git-command.error"
 import * as Mode from "./fetch.mode.ts"
 
 interface Arguments {

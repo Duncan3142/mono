@@ -1,8 +1,7 @@
 import type { Duration, Effect } from "effect"
 import { Context } from "effect"
-import * as Reference from "#domain/reference"
+import { Reference, GitCommandError } from "#domain"
 import * as Const from "#const"
-import * as GitCommandError from "#domain/git-command.error"
 
 interface Arguments {
 	readonly ref: Reference.Reference
