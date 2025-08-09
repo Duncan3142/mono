@@ -1,13 +1,13 @@
 import { Context } from "effect"
-import { tag } from "#const"
-import type { Repository as RepositoryData } from "#domain/repository"
+import * as Const from "#const"
+import * as Repo from "#domain/repository"
 
 /**
  * Repository context service
  */
-class Repository extends Context.Tag(tag(`context`, `repository`))<
+class Repository extends Context.Tag(Const.tag(`context`, `repository`))<
 	Repository,
-	RepositoryData
+	Repo.Repository
 >() {}
 
 export default Repository

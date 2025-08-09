@@ -1,14 +1,14 @@
 import { Data, type Duration, type Effect } from "effect"
 import { Context } from "effect"
-import { tag } from "#const"
-import type { GitCommandFailedError, GitCommandTimeoutError } from "#domain/git.error"
+import * as Const from "#const"
+import * as GitCommandError from "#domain/git-command.error"
 
 type TagMode = Data.TaggedEnum<{
 	Print: object
 	Create: { readonly name: string }
 }>
 
-const { Print, Create, $is, $match } = Data.taggedEnum<TagMode>()
+const TagMode = Data.taggedEnum<TagMode>()
 
 interface Arguments {
 	readonly mode: TagMode
@@ -19,11 +19,10 @@ interface Arguments {
 /**
  * Checkout command service
  */
-class TagExecutor extends Context.Tag(tag(`executor`, `tag`))<
+class TagExecutor extends Context.Tag(Const.tag(`executor`, `tag`))<
 	TagExecutor,
-	(args: Arguments) => Effect.Effect<void, GitCommandFailedError | GitCommandTimeoutError>
+	(args: Arguments) => Effect.Effect<void, GitCommandError.Failed | GitCommandError.Timeout>
 >() {}
 
-export default TagExecutor
-export { Print, Create, $is, $match }
+export { TagExecutor, TagMode }
 export type { Arguments }

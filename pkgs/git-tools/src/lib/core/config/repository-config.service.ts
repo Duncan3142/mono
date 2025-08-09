@@ -1,30 +1,34 @@
 import { Config, Effect } from "effect"
-import { tag } from "#const"
-import { Remote } from "#domain/remote"
+import * as Const from "#const"
+import * as Remote from "#domain/remote"
+import * as Fetch from "#domain/fetch"
 
 const DEFAULT_REMOTE_NAME = "origin"
 const DEFAULT_BRANCH = "main"
 const FETCH = { DEFAULT_DEPTH: 1, DEFAULT_DEEPEN_BY: 512, DEFAULT_MAX_DEPTH: 1024 }
 
 interface FetchConfig {
-	readonly maxDepth: number
-	readonly defaultDepth: number
-	readonly defaultDeepenBy: number
+	readonly maxDepth: Fetch.Depth
+	readonly defaultDepth: Fetch.Depth
+	readonly defaultDeepenBy: Fetch.Depth
 }
 
 /**
  * Repository configuration service
  */
 class RepositoryConfig extends Effect.Service<RepositoryConfig>()(
-	tag(`config`, `repo-config`),
+	Const.tag(`config`, `repo-config`),
 	{
 		effect: Effect.gen(function* () {
 			const [defaultRemote, fetch, defaultBranch] = yield* Config.nested(
 				Config.all([
 					Config.nested(
-						Config.string("NAME").pipe(Config.withDefault(DEFAULT_REMOTE_NAME)),
+						Config.all([
+							Config.string("NAME").pipe(Config.withDefault(DEFAULT_REMOTE_NAME)),
+							Config.string("URL"),
+						]),
 						"DEFAULT_REMOTE"
-					).pipe(Config.map((name) => Remote({ name }))),
+					).pipe(Config.map(([name, url]) => Remote.Remote({ name, url }))),
 					Config.nested(
 						Config.all([
 							Config.number("DEFAULT_DEPTH").pipe(Config.withDefault(FETCH.DEFAULT_DEPTH)),
@@ -55,4 +59,4 @@ class RepositoryConfig extends Effect.Service<RepositoryConfig>()(
 	}
 ) {}
 
-export default RepositoryConfig
+export { RepositoryConfig }

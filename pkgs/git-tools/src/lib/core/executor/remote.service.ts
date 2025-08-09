@@ -1,14 +1,14 @@
 import { Data, type Duration, type Effect } from "effect"
 import { Context } from "effect"
-import { tag } from "#const"
-import type { GitCommandFailedError, GitCommandTimeoutError } from "#domain/git.error"
-import type { Remote } from "#domain/remote"
+import * as Const from "#const"
+import * as GitCommandError from "#domain/git-command.error"
+import * as Remote from "#domain/remote"
 
 type RemoteMode = Data.TaggedEnum<{
-	Add: { readonly remote: Remote }
+	Add: { readonly remote: Remote.Remote }
 }>
 
-const { Add, $is, $match } = Data.taggedEnum<RemoteMode>()
+const RemoteMode = Data.taggedEnum<RemoteMode>()
 
 interface Arguments {
 	readonly mode: RemoteMode
@@ -19,13 +19,10 @@ interface Arguments {
 /**
  * Checkout command service
  */
-class RemoteExecutor extends Context.Tag(tag(`executor`, `remote`))<
+class RemoteExecutor extends Context.Tag(Const.tag(`executor`, `remote`))<
 	RemoteExecutor,
-	(args: Arguments) => Effect.Effect<void, GitCommandFailedError | GitCommandTimeoutError>
+	(args: Arguments) => Effect.Effect<void, GitCommandError.Failed | GitCommandError.Timeout>
 >() {}
 
-export default RemoteExecutor
-
-export { Add, $is, $match }
-
+export { RemoteExecutor, RemoteMode }
 export type { Arguments }

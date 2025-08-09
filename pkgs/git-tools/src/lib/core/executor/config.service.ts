@@ -1,7 +1,7 @@
 import { Data, type Duration, type Effect } from "effect"
 import { Context } from "effect"
-import { tag } from "#const"
-import type { GitCommandFailedError, GitCommandTimeoutError } from "#domain/git.error"
+import * as Const from "#const"
+import * as GitCommandError from "#domain/git-command.error"
 
 interface ConfigKV {
 	readonly key: string
@@ -14,25 +14,14 @@ type ConfigInput = Data.TaggedEnum<{
 	Add: ConfigKV
 }>
 
-const {
-	List,
-	Set,
-	Add,
-	$is: $isConfigInput,
-	$match: $matchConfigInput,
-} = Data.taggedEnum<ConfigInput>()
+const ConfigInput = Data.taggedEnum<ConfigInput>()
 
 type ConfigScope = Data.TaggedEnum<{
 	Global: object
 	Local: { readonly directory: string }
 }>
 
-const {
-	Global,
-	Local,
-	$is: $isConfigScope,
-	$match: $matchConfigScope,
-} = Data.taggedEnum<ConfigScope>()
+const ConfigScope = Data.taggedEnum<ConfigScope>()
 
 interface Arguments {
 	readonly scope: ConfigScope
@@ -43,21 +32,10 @@ interface Arguments {
 /**
  * Checkout command service
  */
-class ConfigExecutor extends Context.Tag(tag(`executor`, `config`))<
+class ConfigExecutor extends Context.Tag(Const.tag(`executor`, `config`))<
 	ConfigExecutor,
-	(args: Arguments) => Effect.Effect<void, GitCommandFailedError | GitCommandTimeoutError>
+	(args: Arguments) => Effect.Effect<void, GitCommandError.Failed | GitCommandError.Timeout>
 >() {}
 
-export default ConfigExecutor
-export {
-	Set,
-	Add,
-	List,
-	$isConfigInput,
-	$matchConfigInput,
-	Global,
-	Local,
-	$isConfigScope,
-	$matchConfigScope,
-}
+export { ConfigExecutor, ConfigInput, ConfigScope }
 export type { Arguments }

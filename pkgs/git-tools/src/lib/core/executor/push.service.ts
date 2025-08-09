@@ -1,7 +1,7 @@
 import type { Duration, Effect } from "effect"
 import { Context } from "effect"
-import { tag } from "#const"
-import type { GitCommandFailedError, GitCommandTimeoutError } from "#domain/git.error"
+import * as Const from "#const"
+import * as GitCommandError from "#domain/git-command.error"
 
 interface Arguments {
 	readonly directory: string
@@ -12,10 +12,10 @@ interface Arguments {
 /**
  * Checkout command service
  */
-class PushExecutor extends Context.Tag(tag(`executor`, `push`))<
+class PushExecutor extends Context.Tag(Const.tag(`executor`, `push`))<
 	PushExecutor,
-	(args: Arguments) => Effect.Effect<void, GitCommandFailedError | GitCommandTimeoutError>
+	(args: Arguments) => Effect.Effect<void, GitCommandError.Failed | GitCommandError.Timeout>
 >() {}
 
-export default PushExecutor
+export { PushExecutor }
 export type { Arguments }

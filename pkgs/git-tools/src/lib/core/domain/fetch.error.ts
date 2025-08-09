@@ -1,5 +1,6 @@
 import { Data } from "effect"
 import * as Const from "#const"
+import * as Fetch from "./fetch.ts"
 
 const FETCH_REFS_NOT_FOUND_ERROR_TAG = Const.tag("domain", `FETCH_REFS_NOT_FOUND_ERROR`)
 
@@ -16,8 +17,8 @@ const FETCH_DEPTH_EXCEEDED_ERROR_TAG = Const.tag("domain", `FETCH_DEPTH_EXCEEDED
  * Fetch Depth Exceeded Error
  */
 class DepthExceeded extends Data.TaggedError(FETCH_DEPTH_EXCEEDED_ERROR_TAG)<{
-	requestedDepth: number
-	maxDepth: number
+	requestedDepth: Fetch.Depth
+	maxDepth: Fetch.Depth
 }> {}
 
 export {

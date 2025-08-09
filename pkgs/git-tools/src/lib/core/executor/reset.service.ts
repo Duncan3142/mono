@@ -1,8 +1,8 @@
 import { Data, type Duration, type Effect } from "effect"
 import { Context } from "effect"
-import type { Reference } from "#domain/reference"
-import { tag } from "#const"
-import type { GitCommandFailedError, GitCommandTimeoutError } from "#domain/git.error"
+import * as Reference from "#domain/reference"
+import * as Const from "#const"
+import * as GitCommandError from "#domain/git-command.error"
 
 type ResetMode = Data.TaggedEnum<{
 	Hard: object
@@ -10,10 +10,10 @@ type ResetMode = Data.TaggedEnum<{
 	Soft: object
 }>
 
-const { Hard, Mixed, Soft, $is, $match } = Data.taggedEnum<ResetMode>()
+const ResetMode = Data.taggedEnum<ResetMode>()
 
 interface Arguments {
-	readonly ref: Reference
+	readonly ref: Reference.Reference
 	readonly mode: ResetMode
 	readonly directory: string
 	readonly timeout: Duration.DurationInput
@@ -22,11 +22,10 @@ interface Arguments {
 /**
  * Checkout command service
  */
-class ResetExecutor extends Context.Tag(tag(`executor`, `reset`))<
+class ResetExecutor extends Context.Tag(Const.tag(`executor`, `reset`))<
 	ResetExecutor,
-	(args: Arguments) => Effect.Effect<void, GitCommandFailedError | GitCommandTimeoutError>
+	(args: Arguments) => Effect.Effect<void, GitCommandError.Failed | GitCommandError.Timeout>
 >() {}
 
-export default ResetExecutor
-export { Hard, Mixed, Soft, $is, $match }
-export type { Arguments, ResetMode }
+export { ResetExecutor, ResetMode }
+export type { Arguments }

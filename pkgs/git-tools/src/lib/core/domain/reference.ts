@@ -15,7 +15,7 @@ interface Sort {
 	byTag: Order.Order<Reference>
 }
 
-const sort: Sort = {
+const Sort: Sort = {
 	/**
 	 * Order reference by type
 	 * @param reference - Reference to check
@@ -31,5 +31,5 @@ const sort: Sort = {
 	byName: Order.mapInput(Order.string, ({ name }) => name),
 }
 
-export type { Reference, SHA, Sort }
-export { Branch, Tag, Head, $is, $match, sort }
+export type { Reference, SHA }
+export { Branch, Tag, Head, $is, $match, Sort }

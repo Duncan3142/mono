@@ -1,19 +1,19 @@
 import { Data, type Duration, type Effect } from "effect"
 import { Context } from "effect"
-import type { Reference } from "#domain/reference"
-import { tag } from "#const"
-import type { CheckoutRefNotFoundError } from "#domain/checkout.error"
-import type { GitCommandFailedError, GitCommandTimeoutError } from "#domain/git.error"
+import * as Reference from "#domain/reference"
+import * as Const from "#const"
+import * as CheckoutError from "#domain/checkout.error"
+import * as GitCommandError from "#domain/git-command.error"
 
 type CheckoutMode = Data.TaggedEnum<{
 	Create: object
 	Standard: object
 }>
 
-const { Create, Standard, $is, $match } = Data.taggedEnum<CheckoutMode>()
+const CheckoutMode = Data.taggedEnum<CheckoutMode>()
 
 interface Arguments {
-	readonly ref: Reference
+	readonly ref: Reference.Reference
 	readonly directory: string
 	readonly mode: CheckoutMode
 	readonly timeout: Duration.DurationInput
@@ -22,16 +22,15 @@ interface Arguments {
 /**
  * Checkout command service
  */
-class CheckoutExecutor extends Context.Tag(tag(`executor`, `checkout`))<
+class CheckoutExecutor extends Context.Tag(Const.tag(`executor`, `checkout`))<
 	CheckoutExecutor,
 	(
 		args: Arguments
 	) => Effect.Effect<
 		void,
-		CheckoutRefNotFoundError | GitCommandFailedError | GitCommandTimeoutError
+		CheckoutError.RefNotFound | GitCommandError.Failed | GitCommandError.Timeout
 	>
 >() {}
 
-export default CheckoutExecutor
-export { Create, Standard, $is, $match }
+export { CheckoutExecutor, CheckoutMode }
 export type { Arguments }
