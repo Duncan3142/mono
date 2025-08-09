@@ -1,7 +1,7 @@
 import { Data } from "effect"
-import { tag } from "#const"
+import * as Const from "#const"
 
-const REPOSITORY_TAG = tag("domain", "Repository")
+const REPOSITORY_TAG = Const.tag("domain", "Repository")
 
 interface Repository {
 	readonly _tag: typeof REPOSITORY_TAG

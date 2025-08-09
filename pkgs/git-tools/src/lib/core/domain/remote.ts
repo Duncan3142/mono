@@ -1,7 +1,7 @@
 import { Data } from "effect"
-import { tag } from "#const"
+import * as Const from "#const"
 
-const REMOTE_TAG = tag("domain", "Remote")
+const REMOTE_TAG = Const.tag("domain", "Remote")
 
 interface Remote {
 	readonly _tag: typeof REMOTE_TAG
