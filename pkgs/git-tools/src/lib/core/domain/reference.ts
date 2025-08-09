@@ -1,6 +1,6 @@
 import { Data, Order } from "effect"
 
-type GitSHA = string
+type SHA = string
 
 type Reference = Data.TaggedEnum<{
 	Branch: { readonly name: string }
@@ -15,7 +15,7 @@ interface Sort {
 	byTag: Order.Order<Reference>
 }
 
-const Sort: Sort = {
+const sort: Sort = {
 	/**
 	 * Order reference by type
 	 * @param reference - Reference to check
@@ -31,5 +31,5 @@ const Sort: Sort = {
 	byName: Order.mapInput(Order.string, ({ name }) => name),
 }
 
-export type { Reference, GitSHA }
-export { Branch, Tag, Head, $is, $match, Sort }
+export type { Reference, SHA, Sort }
+export { Branch, Tag, Head, $is, $match, sort }

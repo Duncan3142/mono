@@ -6,10 +6,10 @@ const MERGE_BASE_NOT_FOUND_ERROR_TAG = Const.tag("domain", `MERGE_BASE_NOT_FOUND
 /**
  * Fetch Not Found Error
  */
-class MergeBaseNotFoundError extends Data.TaggedError(MERGE_BASE_NOT_FOUND_ERROR_TAG)<{
+class NotFound extends Data.TaggedError(MERGE_BASE_NOT_FOUND_ERROR_TAG)<{
 	headRef: string
 	baseRef: string
 	cause?: Error
 }> {}
 
-export { MergeBaseNotFoundError, MERGE_BASE_NOT_FOUND_ERROR_TAG }
+export { NotFound, MERGE_BASE_NOT_FOUND_ERROR_TAG }

@@ -6,7 +6,7 @@ const FETCH_REFS_NOT_FOUND_ERROR_TAG = Const.tag("domain", `FETCH_REFS_NOT_FOUND
 /**
  * Fetch Not Found Error
  */
-class FetchRefsNotFoundError extends Data.TaggedError(FETCH_REFS_NOT_FOUND_ERROR_TAG)<{
+class RefsNotFound extends Data.TaggedError(FETCH_REFS_NOT_FOUND_ERROR_TAG)<{
 	references: ReadonlyArray<string>
 }> {}
 
@@ -15,14 +15,14 @@ const FETCH_DEPTH_EXCEEDED_ERROR_TAG = Const.tag("domain", `FETCH_DEPTH_EXCEEDED
 /**
  * Fetch Depth Exceeded Error
  */
-class FetchDepthExceededError extends Data.TaggedError(FETCH_DEPTH_EXCEEDED_ERROR_TAG)<{
+class DepthExceeded extends Data.TaggedError(FETCH_DEPTH_EXCEEDED_ERROR_TAG)<{
 	requestedDepth: number
 	maxDepth: number
 }> {}
 
 export {
-	FetchRefsNotFoundError,
+	RefsNotFound,
 	FETCH_REFS_NOT_FOUND_ERROR_TAG,
-	FetchDepthExceededError,
+	DepthExceeded,
 	FETCH_DEPTH_EXCEEDED_ERROR_TAG,
 }

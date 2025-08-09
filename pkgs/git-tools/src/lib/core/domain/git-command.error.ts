@@ -7,7 +7,7 @@ const GIT_COMMAND_TIMEOUT_ERROR_TAG = Const.tag("domain", `GIT_COMMAND_TIMEOUT_E
 /**
  * Git Command Timeout Error
  */
-class GitCommandTimeoutError extends Data.TaggedError(GIT_COMMAND_TIMEOUT_ERROR_TAG)<{
+class Timeout extends Data.TaggedError(GIT_COMMAND_TIMEOUT_ERROR_TAG)<{
 	readonly timeout: Duration.DurationInput
 	readonly options: ReadonlyArray<string>
 	readonly command: string
@@ -19,7 +19,7 @@ const GIT_COMMAND_FAILED_ERROR_TAG = Const.tag("domain", `GIT_COMMAND_FAILED_ERR
 /**
  * Git Command Failed Error
  */
-class GitCommandFailedError extends Data.TaggedError(GIT_COMMAND_FAILED_ERROR_TAG)<{
+class Failed extends Data.TaggedError(GIT_COMMAND_FAILED_ERROR_TAG)<{
 	readonly exitCode: Option.Option<number>
 	readonly options: ReadonlyArray<string>
 	readonly command: string
@@ -27,9 +27,4 @@ class GitCommandFailedError extends Data.TaggedError(GIT_COMMAND_FAILED_ERROR_TA
 	readonly cause?: Error
 }> {}
 
-export {
-	GitCommandTimeoutError,
-	GIT_COMMAND_TIMEOUT_ERROR_TAG,
-	GitCommandFailedError,
-	GIT_COMMAND_FAILED_ERROR_TAG,
-}
+export { Timeout, GIT_COMMAND_TIMEOUT_ERROR_TAG, Failed, GIT_COMMAND_FAILED_ERROR_TAG }
