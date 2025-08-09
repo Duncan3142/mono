@@ -1,0 +1,19 @@
+services:
+  mono-devcon:
+    # Build from the Dockerfile and tag the resulting image
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    image: mono-devcon:latest
+
+    # Keep the container running indefinitely
+    command: sleep infinity
+
+    # Mount the project folder and the rootless Docker socket
+    volumes:
+      - ..:/workspace
+      - ${XDG_RUNTIME_DIR}/docker.sock:/var/run/docker.sock
+
+    # Load variables from the specified .env file
+    env_file:
+      - ./.env

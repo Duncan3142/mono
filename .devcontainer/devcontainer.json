@@ -1,0 +1,73 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the
+// README at: https://github.com/devcontainers/templates/tree/main/src/universal
+{
+	"name": "Mono DevCon",
+
+	"dockerComposeFile": "./compose.yml",
+	"service": "mono-devcon",
+	"workspaceFolder": "/workspace",
+
+	// Features
+	"features": {},
+
+	// Use 'forwardPorts' to make a list of ports inside the container available locally.
+	// "forwardPorts": [],
+
+	// Use 'postCreateCommand' to run commands after the container is created.
+	// "postCreateCommand": "./.devcontainer/postCreate.sh",
+
+	// Use 'postCreateCommand' to run commands after the container is created.
+	// "postStartCommand": "./.devcontainer/postStart.sh",
+
+	// User with which to build the container
+	"containerUser": "root",
+
+	// User with which to run the image
+	"remoteUser": "root",
+
+	// Use 'updateRemoteUserUID' to set the UID of the remote user to match the host user.
+	"updateRemoteUserUID": true,
+
+	// Configure tool-specific properties.
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"streetsidesoftware.code-spell-checker",
+				"stackbreak.comment-divider",
+				"moshfeu.compare-folders",
+				"ms-azuretools.vscode-containers",
+				"CucumberOpen.cucumber-official",
+				"effectful-tech.effect-vscode",
+				"dbaeumer.vscode-eslint",
+				"PeterSchmalfeldt.explorer-exclude",
+				"github.vscode-github-actions",
+				"GitHub.copilot",
+				"GitHub.copilot-chat",
+				"eamodio.gitlens",
+				"GraphQL.vscode-graphql-execution",
+				"GraphQL.vscode-graphql",
+				"exiasr.hadolint",
+				"hashicorp.terraform",
+				"ms-vscode.hexeditor",
+				"antfu.iconify",
+				"wix.vscode-import-cost",
+				"heaths.vscode-guid",
+				"Postman.postman-for-vscode",
+				"ms-vscode.powershell",
+				"esbenp.prettier-vscode",
+				"timonwong.shellcheck",
+				"Tyriar.sort-lines",
+				"mtxr.sqltools",
+				"stylelint.vscode-stylelint",
+				"Gruntfuggly.todo-tree",
+				"antfu.unocss",
+				"pflannery.vscode-versionlens",
+				"vitest.explorer",
+				"redhat.vscode-yaml",
+				"ziglang.vscode-zig",
+				"ms-playwright.playwright",
+				"mtxr.sqltools-driver-pg"
+			]
+		}
+	}
+}

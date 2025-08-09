@@ -1,6 +1,6 @@
 import { resolve } from "node:path"
 import { includeIgnoreFile } from "@eslint/compat"
-import { compose, type MutableConfigs, type Paths } from "./core.ts"
+import { compose, type Configs, type Paths } from "./core.ts"
 
 const GIT_IGNORE = ".gitignore"
 const PRETTIER_IGNORE = ".prettierignore"
@@ -24,15 +24,12 @@ const defaultOptions: Options = {
  * @param opts.ignoreFiles - Ignore files
  * @returns Ignored files config
  */
-const ignored = ({
-	ignoreFiles = IGNORE_FILES_DEFAULT,
-}: Options = defaultOptions): MutableConfigs =>
+const config = ({ ignoreFiles = IGNORE_FILES_DEFAULT }: Options = defaultOptions): Configs =>
 	compose(
 		ignoreFiles.map(
-			(path): MutableConfigs =>
+			(path): Configs =>
 				compose({ name: `Ignore '${path}' files`, extends: [includeIgnoreFile(resolve(path))] })
 		)
 	)
 
-export { IGNORE_FILES_DEFAULT }
-export default ignored
+export { config, IGNORE_FILES_DEFAULT }

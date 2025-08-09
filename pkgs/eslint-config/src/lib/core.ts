@@ -15,12 +15,12 @@ type Paths = ReadonlyArray<Path>
 /**
  * ESLint config
  */
-type MutableConfig = FlatConfig.Config
+type Config = FlatConfig.Config
 
 /**
  * ESLint configs
  */
-type MutableConfigs = Array<MutableConfig>
+type Configs = Array<Config>
 
 /**
  * ESLint plugin
@@ -40,56 +40,57 @@ type Pattern = string
 /**
  * Patterns array
  */
-type MutablePatterns = Array<Pattern>
+type Patterns = ReadonlyArray<Pattern>
 
 /**
  * JavaScript file extension pattern
  */
-const jsExtensions: MutablePatterns = [".js", ".jsx"]
+const jsExtensions: Patterns = [".js", ".jsx"]
 
 /**
  * TypeScript file extension pattern
  */
-const tsExtensions: MutablePatterns = [".ts", ".tsx"]
+const tsExtensions: Patterns = [".ts", ".tsx"]
 
 /**
  * Node file extension pattern
  */
-const nodeExtensions: MutablePatterns = [".node"]
+const nodeExtensions: Patterns = [".node"]
 
 /**
  * JSON file extension pattern
  */
-const jsonExtensions: MutablePatterns = [".json", ".jsonc"]
+const jsonExtensions: Patterns = [".json", ".jsonc"]
 
 /**
  * CSS file extension pattern
  */
-const cssExtensions: MutablePatterns = [".css"]
+const cssExtensions: Patterns = [".css"]
 
 /**
  * HTML file extension pattern
  */
-const htmlExtensions: MutablePatterns = [".html"]
+const htmlExtensions: Patterns = [".html"]
 
 /**
  * JavaScript / TypeScript file extension pattern
  */
-const jstsExtensions: MutablePatterns = [...jsExtensions, ...tsExtensions]
+const jstsExtensions: Patterns = [...jsExtensions, ...tsExtensions]
 
 /**
  * Factory function for creating file patterns array
  * @param extensionPatterns - Array of file extension patterns
  * @returns Array of file patterns
  */
-const filePatterns = (...extensionPatterns: MutablePatterns): MutablePatterns =>
+const filePatterns = (...extensionPatterns: Patterns): Array<Pattern> =>
 	extensionPatterns.map((pattern) => `**/*${pattern}`)
 
-type MutableConfigWithExtendsArray = Array<InfiniteDepthConfigWithExtends>
+type ConfigWithExtendsArray = ReadonlyArray<InfiniteDepthConfigWithExtends>
 
-const compose: (...configs: MutableConfigWithExtendsArray) => MutableConfigs = tseslint.config
+// eslint-disable-next-line @typescript-eslint/prefer-readonly-parameter-types -- TypeScript ESLint does not support readonly config
+const compose: (...configs: ConfigWithExtendsArray) => Configs = tseslint.config
 
-const core: MutableConfig = {
+const config: Config = {
 	name: "@duncan3142/eslint-config/core",
 	linterOptions: {
 		reportUnusedDisableDirectives: "error",
@@ -97,18 +98,10 @@ const core: MutableConfig = {
 	},
 }
 
-export type {
-	Path,
-	Paths,
-	Pattern,
-	MutablePatterns,
-	MutableConfig,
-	MutableConfigs,
-	Plugin,
-	Parser,
-}
+export type { Path, Paths, Pattern, Patterns as Patterns, Config, Configs, Plugin, Parser }
 export {
 	compose,
+	config,
 	filePatterns,
 	jstsExtensions,
 	jsExtensions,
@@ -118,5 +111,3 @@ export {
 	cssExtensions,
 	htmlExtensions,
 }
-
-export default core

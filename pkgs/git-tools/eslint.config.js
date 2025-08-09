@@ -11,7 +11,7 @@ import prettier from "@duncan3142/eslint-config/prettier"
 import comments from "@duncan3142/eslint-config/comments"
 import context from "@duncan3142/eslint-config/context"
 import core, { compose } from "@duncan3142/eslint-config/core"
-import vitest from "@vitest/eslint-plugin"
+import vitest from "@duncan3142/eslint-config/vitest"
 
 const { when } = context()
 
@@ -25,10 +25,7 @@ const configs = compose(
 	promise,
 	jsdoc,
 	secrets,
-	{
-		files: ["test/**/*.test.ts"],
-		extends: [vitest.configs.recommended],
-	},
+	vitest,
 	prettier
 )
 

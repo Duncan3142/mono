@@ -1,4 +1,4 @@
-import environmentVariables from "./environment.ts"
+import * as EnvVars from "./environment.ts"
 import { type Guards, LINT_LEVEL as LINT_LEVEL_ENUM, when } from "#context/lint-level"
 
 interface Context {
@@ -9,12 +9,12 @@ interface Context {
  * Create context
  * @returns Context
  */
-const context = (): Context => {
-	const { LINT_LEVEL } = environmentVariables()
+const factory = (): Context => {
+	const { LINT_LEVEL } = EnvVars.parse()
 
 	return {
 		when: when(LINT_LEVEL_ENUM[LINT_LEVEL]),
 	}
 }
 
-export default context
+export { factory }

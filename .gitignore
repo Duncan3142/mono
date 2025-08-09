@@ -4,6 +4,9 @@ node_modules
 # Hidden
 .*
 
+# Config
+!.config/
+
 # GitHub
 !.github/
 
@@ -14,8 +17,14 @@ node_modules
 # VS Code
 !.vscode/
 
+# Dev Container
+!.devcontainer/
+
 # Git
 !.gitignore
+
+# Env Example
+!.env.example
 
 # NPM
 !.npmrc

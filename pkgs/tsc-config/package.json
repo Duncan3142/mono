@@ -6,7 +6,7 @@
 	},
 	"publishConfig": {
 		"registry": "https://npm.pkg.github.com",
-		"access": "restricted"
+		"access": "public"
 	},
 	"description": "TypeScript config",
 	"keywords": [],
@@ -31,16 +31,16 @@
 		"format:fix": "prettier --write --cache --cache-location='.prettier/cache' --cache-strategy content ."
 	},
 	"peerDependencies": {
-		"@types/node": "^22.16.4",
-		"typescript": "^5.8.3"
+		"@types/node": "^22.17.1",
+		"typescript": "^5.9.2"
 	},
 	"devDependencies": {
 		"@changesets/cli": "^2.29.5",
-		"@duncan3142/prettier-config": "^0.1.4",
+		"@duncan3142/prettier-config": "^0.1.5",
 		"prettier": "^3.6.2"
 	},
 	"volta": {
-		"node": "22.13.1",
-		"npm": "11.1.0"
+		"node": "22.18.0",
+		"npm": "11.5.2"
 	}
 }

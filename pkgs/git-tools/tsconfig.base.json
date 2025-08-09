@@ -4,12 +4,24 @@
 	"compilerOptions": {
 		"paths": {
 			"#const": ["./src/const.ts"],
-			"#fetch/*": ["./src/lib/fetch/*.ts"],
-			"#reference/*": ["./src/lib/reference/*.ts"],
-			"#reference-spec/*": ["./src/lib/reference-spec/*.ts"],
-			"#remote/*": ["./src/lib/remote/*.ts"]
+			"#layer": ["./src/layer.ts"],
+			"#service": ["./src/service.ts"],
+			"#config/*": ["./src/lib/core/config/*.ts"],
+			"#case/*": ["./src/lib/core/case/*.ts"],
+			"#state/*": ["./src/lib/core/state/*.ts"],
+			"#context/*": ["./src/lib/core/context/*.ts"],
+			"#command/*": ["./src/lib/core/command/*.ts"],
+			"#executor/*": ["./src/lib/core/executor/*.ts"],
+			"#domain/*": ["./src/lib/core/domain/*.ts"],
+			"#git/*": ["./src/lib/git/*.ts"],
+			"#mock/*": ["./test/mock/*.ts"]
 		},
-		"isolatedDeclarations": false
+		"isolatedDeclarations": false,
+		"plugins": [
+			{
+				"name": "@effect/language-service"
+			}
+		]
 	},
 	"include": []
 }

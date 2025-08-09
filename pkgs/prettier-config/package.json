@@ -6,7 +6,7 @@
 	},
 	"publishConfig": {
 		"registry": "https://npm.pkg.github.com",
-		"access": "restricted"
+		"access": "public"
 	},
 	"description": "Prettier config",
 	"keywords": [],
@@ -41,7 +41,7 @@
 		"prettier": "^3.6.2"
 	},
 	"volta": {
-		"node": "22.13.1",
-		"npm": "11.1.0"
+		"node": "22.18.0",
+		"npm": "11.5.2"
 	}
 }
