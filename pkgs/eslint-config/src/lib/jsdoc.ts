@@ -31,10 +31,10 @@ const custom: Config = {
 	},
 }
 
-const configs: Configs = compose({
+const config: Configs = compose({
 	name: "@duncan3142/eslint-config/jsdoc",
 	files: filePatterns(...jstsExtensions),
 	extends: [jsdoc.configs["flat/recommended-typescript-error"], custom],
 })
 
-export default configs
+export { config }

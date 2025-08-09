@@ -7,4 +7,4 @@ const config: Configs = compose(prettier, {
 	},
 })
 
-export default config
+export { config }

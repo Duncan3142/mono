@@ -14,18 +14,18 @@ const custom: (guard: Guards) => Config = (guard) => {
 			"import-x/named": "off", // tsc config
 			"import-x/namespace": "off", // tsc config
 			"import-x/default": "off", // tsc config
+			"import-x/no-anonymous-default-export": "off",
+			"import-x/no-default-export": "error",
 			"import-x/no-named-as-default-member": "off", // tsc config
+			"import-x/no-named-as-default": guard.all,
+			"import-x/prefer-default-export": "off",
 			"import-x/no-unresolved": "off", // tsc config
 			"import-x/extensions": "off", // tsc config
-			"import-x/no-default-export": "off",
 			"import-x/no-relative-parent-imports": "off", // Investigate further
 			"import-x/no-internal-modules": "off", // Investigate further
 			"import-x/no-extraneous-dependencies": "off", // Investigate further
-			"import-x/no-named-as-default": guard.all,
-			"import-x/prefer-default-export": "error",
 			"import-x/no-empty-named-blocks": "error",
 			"import-x/no-unassigned-import": "error",
-			"import-x/no-anonymous-default-export": "error",
 			"import-x/no-cycle": guard.all,
 			"import-x/no-unused-modules": guard.all,
 			"import-x/no-deprecated": guard.all,
@@ -49,11 +49,11 @@ const custom: (guard: Guards) => Config = (guard) => {
  * @param guard - Guards
  * @returns Configs
  */
-const configs: (guard: Guards) => Configs = (guard) =>
+const config: (guard: Guards) => Configs = (guard) =>
 	compose({
 		name: "@duncan3142/eslint-config/import",
 		files: filePatterns(...jstsExtensions),
 		extends: [importX.flatConfigs.recommended, importX.flatConfigs.typescript, custom(guard)],
 	})
 
-export default configs
+export { config }

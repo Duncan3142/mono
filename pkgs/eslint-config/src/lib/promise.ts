@@ -9,7 +9,7 @@ const custom: Config = {
 	},
 }
 
-const configs: Configs = compose({
+const config: Configs = compose({
 	name: "@duncan3142/eslint-config/promise",
 	files: filePatterns(...jstsExtensions),
 	// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Package lacks types
@@ -20,4 +20,4 @@ const configs: Configs = compose({
 	],
 })
 
-export default configs
+export { config }

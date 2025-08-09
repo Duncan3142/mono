@@ -2,13 +2,13 @@ import { env } from "node:process"
 import { type } from "arktype"
 import { type LintLevelKey, lintLevels, standard } from "#context/lint-level"
 
-const EnvironmentVariablesSchema = type({
+const EnvVarsSchema = type({
 	LINT_LEVEL: type("string.lower")
 		.pipe(type.enumerated(...lintLevels))
 		.default(standard),
 })
 
-interface EnvironmentVariables {
+interface EnvVars {
 	readonly LINT_LEVEL: LintLevelKey
 }
 
@@ -16,13 +16,13 @@ interface EnvironmentVariables {
  * Extract config from environment variables
  * @returns Environment config
  */
-const environmentVariables = (): EnvironmentVariables => {
-	const parseResult = EnvironmentVariablesSchema(env)
+const parse = (): EnvVars => {
+	const parseResult = EnvVarsSchema(env)
 	if (parseResult instanceof type.errors) {
 		throw new TypeError(parseResult.summary)
 	}
 	return parseResult
 }
 
-export type { EnvironmentVariables }
-export default environmentVariables
+export type { EnvVars }
+export { parse }

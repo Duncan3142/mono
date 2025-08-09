@@ -1,7 +1,7 @@
 import noSecrets from "eslint-plugin-no-secrets"
 import type { Config } from "./core.ts"
 
-const secrets: Config = {
+const config: Config = {
 	name: "@duncan3142/eslint-config/secrets",
 	plugins: { "no-secrets": noSecrets },
 	rules: {
@@ -9,4 +9,4 @@ const secrets: Config = {
 	},
 }
 
-export default secrets
+export { config }

@@ -3,7 +3,7 @@ import { filePatterns, jstsExtensions, type Config } from "./core.ts"
 
 const { rules } = arrow
 
-const custom: Config = {
+const config: Config = {
 	name: "@duncan3142/eslint-config/prefer-arrow-functions",
 	files: filePatterns(...jstsExtensions),
 	plugins: { "prefer-arrow-functions": { rules } },
@@ -12,4 +12,4 @@ const custom: Config = {
 	},
 }
 
-export default custom
+export { config }

@@ -62,6 +62,7 @@ const custom: (guard: Guards) => Config = (guard) => {
 					requireDefaultForNonUnion: true,
 				},
 			],
+			"@typescript-eslint/no-deprecated": guard.all,
 			"@typescript-eslint/array-type": ["error", { default: "generic" }],
 			"@typescript-eslint/no-use-before-define": ["error"],
 			"@typescript-eslint/no-import-type-side-effects": "error",
@@ -133,6 +134,6 @@ const untyped: Configs = compose({
  * @param guard - Guard to determine if the config should be typed or untyped
  * @returns ESLint config
  */
-const configs: (guard: Guards) => Configs = (guard) => compose(typed(guard), untyped)
+const config: (guard: Guards) => Configs = (guard) => compose(typed(guard), untyped)
 
-export default configs
+export { config }

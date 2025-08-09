@@ -43,10 +43,10 @@ const custom: Config = {
 	},
 }
 
-const base: Configs = compose({
+const config: Configs = compose({
 	name: "@duncan3142/eslint-config/base",
 	files: filePatterns(...jstsExtensions),
 	extends: [eslintjs.configs.recommended, custom],
 })
 
-export default base
+export { config }

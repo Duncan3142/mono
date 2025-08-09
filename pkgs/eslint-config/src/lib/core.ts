@@ -90,7 +90,7 @@ type ConfigWithExtendsArray = ReadonlyArray<InfiniteDepthConfigWithExtends>
 // eslint-disable-next-line @typescript-eslint/prefer-readonly-parameter-types -- TypeScript ESLint does not support readonly config
 const compose: (...configs: ConfigWithExtendsArray) => Configs = tseslint.config
 
-const core: Config = {
+const config: Config = {
 	name: "@duncan3142/eslint-config/core",
 	linterOptions: {
 		reportUnusedDisableDirectives: "error",
@@ -101,6 +101,7 @@ const core: Config = {
 export type { Path, Paths, Pattern, Patterns as Patterns, Config, Configs, Plugin, Parser }
 export {
 	compose,
+	config,
 	filePatterns,
 	jstsExtensions,
 	jsExtensions,
@@ -110,5 +111,3 @@ export {
 	cssExtensions,
 	htmlExtensions,
 }
-
-export default core
