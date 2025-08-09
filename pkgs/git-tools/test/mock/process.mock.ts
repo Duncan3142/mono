@@ -19,10 +19,7 @@ interface MockProcessProps {
  * @param props.result - The result of the process execution.
  * @returns An Effect that produces a mock CommandExecutor.Process.
  */
-const mockProcessGenerator = ({
-	delay,
-	result,
-}: MockProcessProps): Effect.Effect<CommandExecutor.Process> =>
+const make = ({ delay, result }: MockProcessProps): Effect.Effect<CommandExecutor.Process> =>
 	Either.match(result, {
 		onLeft: (err) =>
 			Effect.succeed(
@@ -79,5 +76,5 @@ type Start = (
 	command: Command.Command
 ) => Effect.Effect<CommandExecutor.Process, PlatformError.PlatformError, Scope.Scope>
 
-export default mockProcessGenerator
+export { make }
 export type { MockProcessProps, Start }

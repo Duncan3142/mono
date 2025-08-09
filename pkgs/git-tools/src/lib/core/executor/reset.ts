@@ -19,5 +19,5 @@ class Tag extends Context.Tag(TagFactory.make(`executor`, `reset`))<
 	(args: Arguments) => Effect.Effect<void, GitCommandError.Failed | GitCommandError.Timeout>
 >() {}
 
-export { Tag, Mode }
+export { Tag }
 export type { Arguments }

@@ -25,5 +25,5 @@ class Tag extends Context.Tag(TagFactory.make(`executor`, `fetch`))<
 	>
 >() {}
 
-export { Tag, Mode }
+export { Tag }
 export type { Arguments }

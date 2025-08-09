@@ -1,18 +1,20 @@
 import { describe, it, expect } from "@effect/vitest"
 import { ConfigProvider, Effect, Layer, pipe } from "effect"
-import FetchDepth from "#state/fetch-depth.service"
-import FetchDepthFactory from "#state/fetch-depth-factory.service"
-import RepositoryConfig from "#config/repository-config.service"
-import consoleFactory from "#mock/console.mock"
+import { FetchDepth, FetchDepthFactory } from "#state"
+import { RepositoryConfig } from "#config"
+import { Console } from "#mock"
 
-const ProgramTest = pipe(FetchDepthFactory.Default, Layer.provide(RepositoryConfig.Default))
+const ProgramTest = pipe(
+	FetchDepthFactory.Service.Default,
+	Layer.provide(RepositoryConfig.Service.Default)
+)
 
-const mockConsole = consoleFactory()
+const mockConsole = Console.make()
 
 describe("FetchDepth", () => {
 	it.scoped("should increment", () =>
 		Effect.gen(function* () {
-			const fetchDepthFactory = yield* FetchDepthFactory
+			const fetchDepthFactory = yield* FetchDepthFactory.Service
 			const fetchDepth = yield* fetchDepthFactory
 			const depth = yield* fetchDepth.get
 			const ZERO = 0
@@ -33,10 +35,10 @@ describe("FetchDepth", () => {
 	)
 	it.effect("should increment across scopes independently", () =>
 		Effect.gen(function* () {
-			const fetchDepthFactory = yield* FetchDepthFactory
+			const fetchDepthFactory = yield* FetchDepthFactory.Service
 			const program = (incBy: number) =>
 				Effect.gen(function* () {
-					const fetchDepth = yield* FetchDepth
+					const fetchDepth = yield* FetchDepth.Tag
 
 					yield* fetchDepth.inc(incBy)
 					return yield* fetchDepth.get
@@ -44,11 +46,11 @@ describe("FetchDepth", () => {
 			const EIGHT = 8
 			const NINE = 9
 			const eight = yield* program(EIGHT).pipe(
-				Effect.provideServiceEffect(FetchDepth, fetchDepthFactory),
+				Effect.provideServiceEffect(FetchDepth.Tag, fetchDepthFactory),
 				Effect.scoped
 			)
 			const nine = yield* program(NINE).pipe(
-				Effect.provideServiceEffect(FetchDepth, fetchDepthFactory),
+				Effect.provideServiceEffect(FetchDepth.Tag, fetchDepthFactory),
 				Effect.scoped
 			)
 			expect(eight).toBe(EIGHT)
@@ -61,19 +63,23 @@ describe("FetchDepth", () => {
 	)
 	it.scoped("should increment within a scope dependently", () =>
 		Effect.gen(function* () {
-			const fetchDepthFactory = yield* FetchDepthFactory
+			const fetchDepthFactory = yield* FetchDepthFactory.Service
 			const fetchDepth = yield* fetchDepthFactory
 			const program = (incBy: number) =>
 				Effect.gen(function* () {
-					const innerFetchDepth = yield* FetchDepth
+					const innerFetchDepth = yield* FetchDepth.Tag
 					yield* innerFetchDepth.inc(incBy)
 					return yield* innerFetchDepth.get
 				})
 			const EIGHT = 8
 			const NINE = 9
 			const SEVENTEEN = 17
-			const eight = yield* program(EIGHT).pipe(Effect.provideService(FetchDepth, fetchDepth))
-			const seventeen = yield* program(NINE).pipe(Effect.provideService(FetchDepth, fetchDepth))
+			const eight = yield* program(EIGHT).pipe(
+				Effect.provideService(FetchDepth.Tag, fetchDepth)
+			)
+			const seventeen = yield* program(NINE).pipe(
+				Effect.provideService(FetchDepth.Tag, fetchDepth)
+			)
 			expect(eight).toBe(EIGHT)
 			expect(seventeen).toBe(SEVENTEEN)
 		}).pipe(
