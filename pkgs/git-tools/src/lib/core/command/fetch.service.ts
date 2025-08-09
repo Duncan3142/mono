@@ -1,32 +1,23 @@
 import type { Array, Duration } from "effect"
-import { Effect, pipe, Match } from "effect"
-import FetchExecutor from "#executor/fetch.service"
-import { Tag } from "#const"
-import type { Remote } from "#domain/remote"
-import type { FetchDepthExceededError, FetchRefsNotFoundError } from "#domain/fetch.error"
-import FetchDepth from "#state/fetch-depth.service"
-import type { Reference } from "#domain/reference"
-import {
-	FETCH_DEEPEN_BY_TAG,
-	FETCH_DEPTH_TAG,
-	type FetchMode,
-	FetchModeDepth,
-} from "#domain/fetch"
-import RepositoryConfig from "#config/repository-config.service"
-import Tag from "#context/repository.service"
-import * as GitCommandError from "#domain/git-command.error"
+import { Effect } from "effect"
+import { FetchExecutor, FetchMode } from "#executor"
+import { Tag as TagFactory } from "#const"
+import { Remote, FetchError, Reference, GitCommandError } from "#domain"
+import { FetchDepth } from "#state"
+import { RepositoryConfig } from "#config"
+import { RepositoryContext } from "#context"
 
 interface Arguments {
-	readonly refs: Array.NonEmptyReadonlyArray<Reference>
-	readonly mode?: FetchMode
-	readonly remote?: Remote
+	readonly refs: Array.NonEmptyReadonlyArray<Reference.Reference>
+	readonly mode?: FetchMode.Mode
+	readonly remote?: Remote.Remote
 	readonly timeout?: Duration.DurationInput
 }
 
 /**
  * Git fetch service
  */
-class FetchCommand extends Effect.Service<FetchCommand>()(tag(`command`, `fetch`), {
+class Service extends Effect.Service<Service>()(TagFactory.make(`command`, `fetch`), {
 	effect: Effect.gen(function* () {
 		const [
 			executor,
@@ -35,31 +26,32 @@ class FetchCommand extends Effect.Service<FetchCommand>()(tag(`command`, `fetch`
 				fetch: { defaultDepth },
 			},
 			{ directory },
-		] = yield* Effect.all([FetchExecutor, RepositoryConfig, Tag], {
-			concurrency: "unbounded",
-		})
+		] = yield* Effect.all(
+			[FetchExecutor.Tag, RepositoryConfig.Service, RepositoryContext.Tag],
+			{
+				concurrency: "unbounded",
+			}
+		)
 
 		return ({
 			refs,
 			remote = defaultRemote,
-			mode = FetchModeDepth({ depth: defaultDepth }),
+			mode = FetchMode.Depth({ depth: defaultDepth }),
 			timeout = "4 seconds",
 		}: Arguments): Effect.Effect<
 			void,
-			| FetchDepthExceededError
-			| FetchRefsNotFoundError
-			| GitCommandFailedError
-			| GitCommandTimeoutError,
-			FetchDepth
+			| FetchError.DepthExceeded
+			| FetchError.RefsNotFound
+			| GitCommandError.Failed
+			| GitCommandError.Timeout,
+			FetchDepth.Tag
 		> =>
 			Effect.gen(function* () {
-				const fetchDepth = yield* FetchDepth
-				yield* pipe(
-					Match.value(mode),
-					Match.when({ _tag: FETCH_DEPTH_TAG }, ({ depth }) => fetchDepth.set(depth)),
-					Match.when({ _tag: FETCH_DEEPEN_BY_TAG }, ({ deepenBy }) => fetchDepth.inc(deepenBy)),
-					Match.exhaustive
-				)
+				const fetchDepth = yield* FetchDepth.Tag
+				yield* FetchMode.$match(mode, {
+					Depth: ({ depth }) => fetchDepth.set(depth),
+					DeepenBy: ({ deepenBy }) => fetchDepth.inc(deepenBy),
+				})
 
 				return yield* executor({
 					mode,
@@ -72,5 +64,5 @@ class FetchCommand extends Effect.Service<FetchCommand>()(tag(`command`, `fetch`
 	}),
 }) {}
 
-export default FetchCommand
+export { Service }
 export type { Arguments }
