@@ -3,7 +3,7 @@ import { Effect } from "effect"
 import { Reference } from "#domain"
 import { Tag as TagFactory } from "#const"
 import { RepositoryContext } from "#context"
-import { Checkout, CheckoutMode } from "#executor"
+import { CheckoutExecutor, CheckoutMode } from "#executor"
 import { CheckoutError, GitCommandError } from "#domain"
 
 interface Arguments {
@@ -17,9 +17,12 @@ interface Arguments {
  */
 class Service extends Effect.Service<Service>()(TagFactory.make(`command`, `checkout`), {
 	effect: Effect.gen(function* () {
-		const [executor, { directory }] = yield* Effect.all([Checkout.Tag, RepositoryContext.Tag], {
-			concurrency: "unbounded",
-		})
+		const [executor, { directory }] = yield* Effect.all(
+			[CheckoutExecutor.Tag, RepositoryContext.Tag],
+			{
+				concurrency: "unbounded",
+			}
+		)
 
 		return ({
 			ref,

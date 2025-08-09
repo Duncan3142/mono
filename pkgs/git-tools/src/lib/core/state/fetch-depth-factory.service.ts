@@ -1,5 +1,5 @@
 import { Ref, Effect, HashMap } from "effect"
-import * as FetchDepth from "./fetch-depth.service.ts"
+import * as FetchDepth from "./fetch-depth.tag.ts"
 import { Tag } from "#const"
 import { RepositoryConfig } from "#config"
 
