@@ -1,5 +1,12 @@
 # @duncan3142/eslint-config
 
+## 0.1.14
+
+### Patch Changes
+
+- b16cb82: update deps
+- b16cb82: prefer inline import
+
 ## 0.1.13
 
 ### Patch Changes
