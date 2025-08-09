@@ -1,12 +1,11 @@
 import { Effect, Ref, Context } from "effect"
-import * as Const from "#const"
-import * as FetchError from "#domain/fetch.error"
-import * as Fetch from "#domain/fetch"
+import { Tag as TagFactory } from "#const"
+import { FetchError, Fetch } from "#domain"
 
 /**
  * Fetch depth service
  */
-class Tag extends Context.Tag(Const.tag(`state`, `fetch-depth`))<
+class Tag extends Context.Tag(TagFactory.make(`state`, `fetch-depth`))<
 	Tag,
 	{
 		id: string

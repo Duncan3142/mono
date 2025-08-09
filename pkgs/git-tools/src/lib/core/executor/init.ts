@@ -1,6 +1,6 @@
 import type { Duration, Effect } from "effect"
 import { Context } from "effect"
-import * as Const from "#const"
+import { Tag as TagFactory } from "#const"
 import { GitCommandError } from "#domain"
 
 interface Arguments {
@@ -11,7 +11,7 @@ interface Arguments {
 /**
  * Checkout command service
  */
-class Tag extends Context.Tag(Const.tag(`executor`, `init`))<
+class Tag extends Context.Tag(TagFactory.make(`executor`, `init`))<
 	Tag,
 	(args: Arguments) => Effect.Effect<void, GitCommandError.Failed | GitCommandError.Timeout>
 >() {}

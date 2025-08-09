@@ -1,6 +1,6 @@
 import type { Duration, Effect } from "effect"
 import { Context } from "effect"
-import * as Const from "#const"
+import { Tag as TagFactory } from "#const"
 import { GitCommandError, Reference, MergeBaseError } from "#domain"
 
 interface Arguments {
@@ -13,7 +13,7 @@ interface Arguments {
 /**
  * Fetch command service
  */
-class Tag extends Context.Tag(Const.tag(`executor`, `merge-base`))<
+class Tag extends Context.Tag(TagFactory.make(`executor`, `merge-base`))<
 	Tag,
 	(
 		args: Arguments

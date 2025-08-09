@@ -1,10 +1,13 @@
 import { Context } from "effect"
-import * as Const from "#const"
-import * as Repo from "#domain/repository"
+import { Tag as TagFactory } from "#const"
+import { Repository } from "#domain"
 
 /**
  * Repository context service
  */
-class Tag extends Context.Tag(Const.tag(`context`, `repository`))<Tag, Repo.Repository>() {}
+class Tag extends Context.Tag(TagFactory.make(`context`, `repository`))<
+	Tag,
+	Repository.Repository
+>() {}
 
-export { Tag}
+export { Tag }

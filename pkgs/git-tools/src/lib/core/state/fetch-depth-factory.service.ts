@@ -1,12 +1,12 @@
 import { Ref, Effect, HashMap } from "effect"
 import * as FetchDepth from "./fetch-depth.service.ts"
-import * as Const from "#const"
-import * as RepositoryConfig from "#config/repository-config.service"
+import { Tag } from "#const"
+import { RepositoryConfig } from "#config"
 
 /**
  * Fetch depth factory service
  */
-class Service extends Effect.Service<Service>()(Const.tag(`state`, `fetch-depth-factory`), {
+class Service extends Effect.Service<Service>()(Tag.make(`state`, `fetch-depth-factory`), {
 	effect: Effect.gen(function* () {
 		yield* Effect.logTrace("CounterFactoryLive initialized")
 		const [

@@ -1,7 +1,6 @@
 import { Config, Effect } from "effect"
-import * as Const from "#const"
-import * as Remote from "#domain/remote"
-import * as Fetch from "#domain/fetch"
+import { Tag } from "#const"
+import { Remote, Fetch } from "#domain"
 
 const DEFAULT_REMOTE_NAME = "origin"
 const DEFAULT_BRANCH = "main"
@@ -16,7 +15,7 @@ interface FetchConfig {
 /**
  * Repository configuration service
  */
-class Service extends Effect.Service<Service>()(Const.tag(`config`, `repo-config`), {
+class Service extends Effect.Service<Service>()(Tag.make(`config`, `repo-config`), {
 	effect: Effect.gen(function* () {
 		const [defaultRemote, fetch, defaultBranch] = yield* Config.nested(
 			Config.all([

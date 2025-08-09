@@ -1,9 +1,9 @@
 import { Match, pipe, Data } from "effect"
 import type * as Reference from "./reference.ts"
 import * as Remote from "./remote.ts"
-import * as Const from "#const"
+import { Tag } from "#const"
 
-const REFERENCE_SPEC_TAG = Const.tag("domain", "ReferenceSpec")
+const REFERENCE_SPEC_TAG = Tag.make("domain", "ReferenceSpec")
 
 interface ReferenceSpec {
 	readonly _tag: typeof REFERENCE_SPEC_TAG

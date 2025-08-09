@@ -1,7 +1,7 @@
 import type { Array, Duration, Effect } from "effect"
 import { Context } from "effect"
 import { FetchError, Reference, Remote, GitCommandError } from "#domain"
-import * as Const from "#const"
+import { Tag as TagFactory } from "#const"
 import * as Mode from "./fetch.mode.ts"
 
 interface Arguments {
@@ -15,7 +15,7 @@ interface Arguments {
 /**
  * Fetch command service
  */
-class Tag extends Context.Tag(Const.tag(`executor`, `fetch`))<
+class Tag extends Context.Tag(TagFactory.make(`executor`, `fetch`))<
 	Tag,
 	(
 		args: Arguments
