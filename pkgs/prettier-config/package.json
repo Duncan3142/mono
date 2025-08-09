@@ -6,7 +6,7 @@
 	},
 	"publishConfig": {
 		"registry": "https://npm.pkg.github.com",
-		"access": "restricted"
+		"access": "public"
 	},
 	"description": "Prettier config",
 	"keywords": [],
