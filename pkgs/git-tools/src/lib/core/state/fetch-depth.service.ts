@@ -14,8 +14,8 @@ const handleFetchDepth = (maxDepth: Fetch.Depth) =>
 /**
  * Fetch depth service
  */
-class FetchDepth extends Context.Tag(Const.tag(`state`, `fetch-depth`))<
-	FetchDepth,
+class Tag extends Context.Tag(Const.tag(`state`, `fetch-depth`))<
+	Tag,
 	{
 		id: string
 		inc: (by: Fetch.Depth) => Effect.Effect<void, FetchError.DepthExceeded>
@@ -29,12 +29,12 @@ class FetchDepth extends Context.Tag(Const.tag(`state`, `fetch-depth`))<
 	}: {
 		init: Fetch.Depth
 		maxDepth: Fetch.Depth
-	}): Effect.Effect<FetchDepthService> =>
+	}): Effect.Effect<Service> =>
 		Effect.gen(function* () {
 			const id = crypto.randomUUID()
 			const ref = yield* Ref.make(init)
 
-			return FetchDepth.of({
+			return Tag.of({
 				id,
 				inc: (by: Fetch.Depth) =>
 					Ref.updateAndGet(ref, (n) => n + by).pipe(handleFetchDepth(maxDepth)),
@@ -44,7 +44,7 @@ class FetchDepth extends Context.Tag(Const.tag(`state`, `fetch-depth`))<
 		})
 }
 
-type FetchDepthService = Context.Tag.Service<FetchDepth>
+type Service = Context.Tag.Service<Tag>
 
-export { FetchDepth }
-export type { FetchDepthService }
+export { Tag }
+export type { Service }

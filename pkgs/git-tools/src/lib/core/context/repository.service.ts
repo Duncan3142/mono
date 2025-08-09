@@ -5,9 +5,6 @@ import * as Repo from "#domain/repository"
 /**
  * Repository context service
  */
-class Repository extends Context.Tag(Const.tag(`context`, `repository`))<
-	Repository,
-	Repo.Repository
->() {}
+class Tag extends Context.Tag(Const.tag(`context`, `repository`))<Tag, Repo.Repository>() {}
 
-export default Repository
+export { Tag}
