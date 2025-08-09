@@ -3,64 +3,67 @@ import { Effect, Match, pipe, Layer, Console, Array } from "effect"
 import * as Base from "./base.ts"
 import { Number as Const } from "#const"
 import { ReferenceSpec, FetchError, GitCommandError } from "#domain"
-import { Fetch, FetchMode } from "#executor"
+import { FetchExecutor, FetchMode } from "#executor"
 
 const FETCH_NOT_FOUND_CODE = 128
 
-const Live: Layer.Layer<Fetch.Tag, never, CommandExecutor.CommandExecutor> = Layer.effect(
-	Fetch.Tag,
-	Effect.gen(function* () {
-		const executor = yield* CommandExecutor.CommandExecutor
+const Live: Layer.Layer<FetchExecutor.Tag, never, CommandExecutor.CommandExecutor> =
+	Layer.effect(
+		FetchExecutor.Tag,
+		Effect.gen(function* () {
+			const executor = yield* CommandExecutor.CommandExecutor
 
-		return ({
-			mode,
-			remote,
-			refs,
-			directory,
-			timeout,
-		}: Fetch.Arguments): Effect.Effect<
-			void,
-			FetchError.RefsNotFound | GitCommandError.Failed | GitCommandError.Timeout
-		> => {
-			const { name: remoteName } = remote
-			const refStrings = pipe(
+			return ({
+				mode,
+				remote,
 				refs,
-				Array.map((ref) => ReferenceSpec.toString(ReferenceSpec.ReferenceSpec({ ref, remote })))
-			)
-
-			const numberToString = (num: number) => num.toString(Const.BASE_10_RADIX)
-
-			const modeArg = FetchMode.$match(mode, {
-				DeepenBy: ({ deepenBy }) => `--deepen=${numberToString(deepenBy)}`,
-				Depth: ({ depth }) => `--depth=${numberToString(depth)}`,
-			})
-
-			const subCommand = "fetch"
-			const subArgs = [modeArg, remoteName, ...refStrings]
-
-			return Base.make({
 				directory,
-				subCommand,
-				subArgs,
 				timeout,
-				errorMatcher: (errorCode: Base.ErrorCode) =>
-					pipe(
-						Match.value(errorCode),
-						Match.when(FETCH_NOT_FOUND_CODE, () =>
-							Effect.fail(
-								new FetchError.RefsNotFound({
-									references: refStrings,
-								})
+			}: FetchExecutor.Arguments): Effect.Effect<
+				void,
+				FetchError.RefsNotFound | GitCommandError.Failed | GitCommandError.Timeout
+			> => {
+				const { name: remoteName } = remote
+				const refStrings = pipe(
+					refs,
+					Array.map((ref) =>
+						ReferenceSpec.toString(ReferenceSpec.ReferenceSpec({ ref, remote }))
+					)
+				)
+
+				const numberToString = (num: number) => num.toString(Const.BASE_10_RADIX)
+
+				const modeArg = FetchMode.$match(mode, {
+					DeepenBy: ({ deepenBy }) => `--deepen=${numberToString(deepenBy)}`,
+					Depth: ({ depth }) => `--depth=${numberToString(depth)}`,
+				})
+
+				const subCommand = "fetch"
+				const subArgs = [modeArg, remoteName, ...refStrings]
+
+				return Base.make({
+					directory,
+					subCommand,
+					subArgs,
+					timeout,
+					errorMatcher: (errorCode: Base.ErrorCode) =>
+						pipe(
+							Match.value(errorCode),
+							Match.when(FETCH_NOT_FOUND_CODE, () =>
+								Effect.fail(
+									new FetchError.RefsNotFound({
+										references: refStrings,
+									})
+								)
 							)
-						)
-					),
-			}).pipe(
-				Effect.flatMap(Console.log),
-				Effect.scoped,
-				Effect.provideService(CommandExecutor.CommandExecutor, executor)
-			)
-		}
-	})
-)
+						),
+				}).pipe(
+					Effect.flatMap(Console.log),
+					Effect.scoped,
+					Effect.provideService(CommandExecutor.CommandExecutor, executor)
+				)
+			}
+		})
+	)
 
 export { Live }

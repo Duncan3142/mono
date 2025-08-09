@@ -1,37 +1,36 @@
 import type { Duration } from "effect"
 import { Effect } from "effect"
-import type { Reference } from "#domain/reference"
-import { Tag } from "#const"
-import Tag from "#context/repository.service"
-import CheckoutExecutor from "#executor/checkout.service"
-import type { CheckoutRefNotFoundError } from "#domain/checkout.error"
-import * as GitCommandError from "#domain/git-command.error"
+import { Reference } from "#domain"
+import { Tag as TagFactory } from "#const"
+import { RepositoryContext } from "#context"
+import { Checkout, CheckoutMode } from "#executor"
+import { CheckoutError, GitCommandError } from "#domain"
 
 interface Arguments {
-	readonly ref: Reference
-	readonly createIfNotExists?: boolean
+	readonly ref: Reference.Reference
+	readonly mode?: CheckoutMode.Mode
 	readonly timeout?: Duration.DurationInput
 }
 
 /**
  * Print refs service
  */
-class CheckoutCommand extends Effect.Service<CheckoutCommand>()(tag(`command`, `checkout`), {
+class Service extends Effect.Service<Service>()(TagFactory.make(`command`, `checkout`), {
 	effect: Effect.gen(function* () {
-		const [executor, { directory }] = yield* Effect.all([CheckoutExecutor, Tag], {
+		const [executor, { directory }] = yield* Effect.all([Checkout.Tag, RepositoryContext.Tag], {
 			concurrency: "unbounded",
 		})
 
 		return ({
 			ref,
-			createIfNotExists = false,
+			mode = CheckoutMode.Standard(),
 			timeout = "2 seconds",
 		}: Arguments): Effect.Effect<
 			void,
-			CheckoutRefNotFoundError | GitCommandFailedError | GitCommandTimeoutError
-		> => executor({ ref, directory, createIfNotExists, timeout })
+			CheckoutError.RefNotFound | GitCommandError.Failed | GitCommandError.Timeout
+		> => executor({ ref, directory, mode, timeout })
 	}),
 }) {}
 
-export default CheckoutCommand
+export { Service }
 export type { Arguments }
