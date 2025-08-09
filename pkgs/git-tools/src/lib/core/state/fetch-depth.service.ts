@@ -3,14 +3,6 @@ import * as Const from "#const"
 import * as FetchError from "#domain/fetch.error"
 import * as Fetch from "#domain/fetch"
 
-const handleFetchDepth = (maxDepth: Fetch.Depth) =>
-	Effect.flatMap((depth: Fetch.Depth) => {
-		if (depth > maxDepth) {
-			return Effect.fail(new FetchError.DepthExceeded({ maxDepth, requestedDepth: depth }))
-		}
-		return Effect.void
-	})
-
 /**
  * Fetch depth service
  */
@@ -34,11 +26,17 @@ class Tag extends Context.Tag(Const.tag(`state`, `fetch-depth`))<
 			const id = crypto.randomUUID()
 			const ref = yield* Ref.make(init)
 
+			const depthHandler = Effect.flatMap((depth: Fetch.Depth) => {
+				if (depth > maxDepth) {
+					return Effect.fail(new FetchError.DepthExceeded({ maxDepth, requestedDepth: depth }))
+				}
+				return Effect.void
+			})
+
 			return Tag.of({
 				id,
-				inc: (by: Fetch.Depth) =>
-					Ref.updateAndGet(ref, (n) => n + by).pipe(handleFetchDepth(maxDepth)),
-				set: (value: Fetch.Depth) => Ref.setAndGet(ref, value).pipe(handleFetchDepth(maxDepth)),
+				inc: (by: Fetch.Depth) => Ref.updateAndGet(ref, (n) => n + by).pipe(depthHandler),
+				set: (value: Fetch.Depth) => Ref.setAndGet(ref, value).pipe(depthHandler),
 				get: Ref.get(ref),
 			})
 		})
