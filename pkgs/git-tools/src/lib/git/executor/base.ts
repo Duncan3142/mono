@@ -2,7 +2,7 @@ import type { CommandExecutor } from "@effect/platform"
 import { Command } from "@effect/platform"
 import type { Duration, Scope } from "effect"
 import { Effect, Stream, pipe, Console, Chunk, Match, Option } from "effect"
-import { GitCommandFailedError, GitCommandTimeoutError } from "#domain/git.error"
+import * as GitCommandError from "#domain/git-command.error"
 
 type ErrorMatcher<ECode extends ErrorCode, Error> = (
 	ecode: ErrorCode
@@ -38,7 +38,7 @@ type ErrorCode = number
  * @param args.noPager - Whether to disable the pager for git commands.
  * @returns A function that executes the git command and returns an effect.
  */
-const commandFactory = <ECode extends ErrorCode = never, Error = never>({
+const make = <ECode extends ErrorCode = never, Error = never>({
 	directory,
 	subCommand,
 	subArgs,
@@ -47,7 +47,7 @@ const commandFactory = <ECode extends ErrorCode = never, Error = never>({
 	noPager = false,
 }: Arguments<ECode, Error>): Effect.Effect<
 	string,
-	Error | GitCommandFailedError | GitCommandTimeoutError,
+	Error | GitCommandError.Failed | GitCommandError.Timeout,
 	CommandExecutor.CommandExecutor | Scope.Scope
 > => {
 	const options = noPager ? ["--no-pager"] : []
@@ -63,7 +63,7 @@ const commandFactory = <ECode extends ErrorCode = never, Error = never>({
 				exitCode,
 				Effect.catchAll((error) =>
 					Effect.fail(
-						new GitCommandFailedError({
+						new GitCommandError.Failed({
 							exitCode: Option.none(),
 							options,
 							command: subCommand,
@@ -75,7 +75,7 @@ const commandFactory = <ECode extends ErrorCode = never, Error = never>({
 				Effect.timeoutFail({
 					duration: timeout,
 					onTimeout: () =>
-						new GitCommandTimeoutError({
+						new GitCommandError.Timeout({
 							timeout,
 							options,
 							command: subCommand,
@@ -89,7 +89,7 @@ const commandFactory = <ECode extends ErrorCode = never, Error = never>({
 						: errorMatcher(code).pipe(
 								Match.orElse((errCode) =>
 									Effect.fail(
-										new GitCommandFailedError({
+										new GitCommandError.Failed({
 											exitCode: Option.some(errCode),
 											options,
 											command: subCommand,
@@ -118,5 +118,5 @@ const commandFactory = <ECode extends ErrorCode = never, Error = never>({
 	)
 }
 
-export default commandFactory
+export { make }
 export type { ErrorCode, Arguments }

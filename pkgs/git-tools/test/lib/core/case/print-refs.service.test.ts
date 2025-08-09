@@ -8,7 +8,7 @@ import PrintRefsExecutorLive from "#git/executor/print-refs.layer"
 import RepositoryConfig from "#config/repository-config.service"
 import LoggerTest from "#mock/logger.mock"
 import consoleFactory from "#mock/console.mock"
-import Repository from "#context/repository.service"
+import Tag from "#context/repository.service"
 import { Repository as RepositoryData } from "#domain/repository"
 import mockProcessGenerator, { type MockProcessProps, type Start } from "#mock/process.mock"
 
@@ -65,7 +65,7 @@ describe("Reference Layer", () => {
 			)
 		}).pipe(
 			Effect.provide(ProgramLayer),
-			Effect.provideService(Repository, RepositoryData({ directory: process.cwd() })),
+			Effect.provideService(Tag, RepositoryData({ directory: process.cwd() })),
 			Effect.provideService(
 				CommandExecutor.CommandExecutor,
 				CommandExecutor.makeExecutor(start)

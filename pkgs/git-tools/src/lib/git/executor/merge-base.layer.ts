@@ -3,7 +3,7 @@ import { Layer, pipe, Effect, Match } from "effect"
 import commandFactory, { type ErrorCode } from "./base.ts"
 import MergeBaseExecutor, { type Arguments } from "#executor/merge-base.service"
 import { MergeBaseNotFoundError } from "#domain/merge-base.error"
-import type { GitCommandFailedError, GitCommandTimeoutError } from "#domain/git.error"
+import * as GitCommandError from "#domain/git-command.error"
 import type { GitSHA } from "#domain/reference"
 
 const MERGE_BASE_NOT_FOUND_CODE = 1

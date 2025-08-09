@@ -20,17 +20,16 @@
 	},
 	"main": "./.tsc/dist/index.js",
 	"imports": {
-		"#const": "./.tsc/dist/const.js",
 		"#layer": "./.tsc/dist/layer.js",
-		"#service": "./.tsc/dist/service.js",
-		"#config/*": "./.tsc/dist/lib/core/config/*.js",
-		"#case/*": "./.tsc/dist/lib/core/case/*.js",
-		"#state/*": "./.tsc/dist/lib/core/state/*.js",
-		"#context/*": "./.tsc/dist/lib/core/context/*.js",
-		"#command/*": "./.tsc/dist/lib/core/command/*.js",
-		"#executor/*": "./.tsc/dist/lib/core/executor/*.js",
-		"#domain/*": "./.tsc/dist/lib/core/domain/*.js",
-		"#git/*": "./.tsc/dist/lib/git/*.js"
+		"#const": "./.tsc/dist/lib/core/const/index.js",
+		"#config": "./.tsc/dist/lib/core/config/index.js",
+		"#case": "./.tsc/dist/lib/core/case/index.js",
+		"#state": "./.tsc/dist/lib/core/state/index.js",
+		"#context": "./.tsc/dist/lib/core/context/index.js",
+		"#command": "./.tsc/dist/lib/core/command/index.js",
+		"#executor": "./.tsc/dist/lib/core/executor/index.js",
+		"#domain": "./.tsc/dist/lib/core/domain/index.js",
+		"#git": "./.tsc/dist/lib/git/index.js"
 	},
 	"exports": {
 		"./*": {

@@ -1,11 +1,11 @@
 import type { Duration } from "effect"
 import { Effect } from "effect"
 import type { Reference } from "#domain/reference"
-import { tag } from "#const"
-import Repository from "#context/repository.service"
+import { Tag } from "#const"
+import Tag from "#context/repository.service"
 import { RESET_MODE_HARD, type ResetMode } from "#domain/reset"
 import ResetExecutor from "#executor/reset.service"
-import type { GitCommandFailedError, GitCommandTimeoutError } from "#domain/git.error"
+import * as GitCommandError from "#domain/git-command.error"
 
 interface Arguments {
 	readonly ref: Reference
@@ -18,7 +18,7 @@ interface Arguments {
  */
 class ResetCommand extends Effect.Service<ResetCommand>()(tag(`command`, `reset`), {
 	effect: Effect.gen(function* () {
-		const [executor, { directory }] = yield* Effect.all([ResetExecutor, Repository], {
+		const [executor, { directory }] = yield* Effect.all([ResetExecutor, Tag], {
 			concurrency: "unbounded",
 		})
 

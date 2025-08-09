@@ -2,7 +2,7 @@ import { CommandExecutor } from "@effect/platform"
 import { Layer, pipe, Effect, Match } from "effect"
 import commandFactory from "./base.ts"
 import RevParseExecutor, { type Arguments } from "#executor/rev-parse.service"
-import type { GitCommandFailedError, GitCommandTimeoutError } from "#domain/git.error"
+import * as GitCommandError from "#domain/git-command.error"
 
 const RevParseExecutorLive: Layer.Layer<
 	RevParseExecutor,

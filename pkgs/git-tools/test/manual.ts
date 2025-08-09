@@ -6,7 +6,7 @@ import { BranchRef } from "#domain/reference"
 import PrintRefsCommand from "#command/print-refs.service"
 import MergeBaseCommand from "#command/merge-base.service"
 import { Repository as RepositoryData } from "#domain/repository"
-import Repository from "#context/repository.service"
+import Tag from "#context/repository.service"
 
 const ProgramLive = GitToolsLive.pipe(Layer.provide(NodeContext.layer))
 
@@ -23,7 +23,7 @@ const program = Effect.gen(function* () {
 	])
 }).pipe(
 	Effect.provide(ProgramLive),
-	Effect.provideService(Repository, RepositoryData({ directory: process.cwd() })),
+	Effect.provideService(Tag, RepositoryData({ directory: process.cwd() })),
 	Effect.withConfigProvider(ConfigProvider.fromMap(new Map([]))),
 	Logger.withMinimumLogLevel(LogLevel.Trace)
 )

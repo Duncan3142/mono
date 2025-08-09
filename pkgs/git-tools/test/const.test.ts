@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest"
-import { tag } from "#const"
+import { Tag } from "#const"
 
 describe("tag", () => {
 	it("should generate a namespaced tag string", () => {

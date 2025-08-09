@@ -1,10 +1,10 @@
 import type { Duration } from "effect"
 import { Effect } from "effect"
 import type { Reference } from "#domain/reference"
-import { tag } from "#const"
-import Repository from "#context/repository.service"
+import { Tag } from "#const"
+import Tag from "#context/repository.service"
 import RevParseExecutor from "#executor/rev-parse.service"
-import type { GitCommandFailedError, GitCommandTimeoutError } from "#domain/git.error"
+import * as GitCommandError from "#domain/git-command.error"
 
 interface Arguments {
 	readonly ref: Reference
@@ -16,7 +16,7 @@ interface Arguments {
  */
 class RevParseCommand extends Effect.Service<RevParseCommand>()(tag(`command`, `rev-parse`), {
 	effect: Effect.gen(function* () {
-		const [executor, { directory }] = yield* Effect.all([RevParseExecutor, Repository], {
+		const [executor, { directory }] = yield* Effect.all([RevParseExecutor, Tag], {
 			concurrency: "unbounded",
 		})
 

@@ -1,7 +1,7 @@
 import type { Array, Duration } from "effect"
 import { Effect, pipe, Match } from "effect"
 import FetchExecutor from "#executor/fetch.service"
-import { tag } from "#const"
+import { Tag } from "#const"
 import type { Remote } from "#domain/remote"
 import type { FetchDepthExceededError, FetchRefsNotFoundError } from "#domain/fetch.error"
 import FetchDepth from "#state/fetch-depth.service"
@@ -13,8 +13,8 @@ import {
 	FetchModeDepth,
 } from "#domain/fetch"
 import RepositoryConfig from "#config/repository-config.service"
-import Repository from "#context/repository.service"
-import type { GitCommandFailedError, GitCommandTimeoutError } from "#domain/git.error"
+import Tag from "#context/repository.service"
+import * as GitCommandError from "#domain/git-command.error"
 
 interface Arguments {
 	readonly refs: Array.NonEmptyReadonlyArray<Reference>
@@ -35,7 +35,7 @@ class FetchCommand extends Effect.Service<FetchCommand>()(tag(`command`, `fetch`
 				fetch: { defaultDepth },
 			},
 			{ directory },
-		] = yield* Effect.all([FetchExecutor, RepositoryConfig, Repository], {
+		] = yield* Effect.all([FetchExecutor, RepositoryConfig, Tag], {
 			concurrency: "unbounded",
 		})
 
