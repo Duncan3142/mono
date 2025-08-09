@@ -5,25 +5,25 @@ import * as Const from "#const"
 import * as CheckoutError from "#domain/checkout.error"
 import * as GitCommandError from "#domain/git-command.error"
 
-type CheckoutMode = Data.TaggedEnum<{
+type Mode = Data.TaggedEnum<{
 	Create: object
 	Standard: object
 }>
 
-const CheckoutMode = Data.taggedEnum<CheckoutMode>()
+const Mode = Data.taggedEnum<Mode>()
 
 interface Arguments {
 	readonly ref: Reference.Reference
 	readonly directory: string
-	readonly mode: CheckoutMode
+	readonly mode: Mode
 	readonly timeout: Duration.DurationInput
 }
 
 /**
  * Checkout command service
  */
-class CheckoutExecutor extends Context.Tag(Const.tag(`executor`, `checkout`))<
-	CheckoutExecutor,
+class Tag extends Context.Tag(Const.tag(`executor`, `checkout`))<
+	Tag,
 	(
 		args: Arguments
 	) => Effect.Effect<
@@ -32,5 +32,5 @@ class CheckoutExecutor extends Context.Tag(Const.tag(`executor`, `checkout`))<
 	>
 >() {}
 
-export { CheckoutExecutor, CheckoutMode }
+export { Tag, Mode }
 export type { Arguments }

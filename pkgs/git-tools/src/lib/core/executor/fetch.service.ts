@@ -6,15 +6,15 @@ import * as Reference from "#domain/reference"
 import * as Remote from "#domain/remote"
 import * as GitCommandError from "#domain/git-command.error"
 
-type FetchMode = Data.TaggedEnum<{
+type Mode = Data.TaggedEnum<{
 	Depth: { readonly depth: number }
 	DeepenBy: { readonly deepenBy: number }
 }>
 
-const FetchMode = Data.taggedEnum<FetchMode>()
+const Mode = Data.taggedEnum<Mode>()
 
 interface Arguments {
-	readonly mode: FetchMode
+	readonly mode: Mode
 	readonly remote: Remote.Remote
 	readonly refs: Array.NonEmptyReadonlyArray<Reference.Reference>
 	readonly directory: string
@@ -24,8 +24,8 @@ interface Arguments {
 /**
  * Fetch command service
  */
-class FetchExecutor extends Context.Tag(Const.tag(`executor`, `fetch`))<
-	FetchExecutor,
+class Tag extends Context.Tag(Const.tag(`executor`, `fetch`))<
+	Tag,
 	(
 		args: Arguments
 	) => Effect.Effect<
@@ -34,5 +34,5 @@ class FetchExecutor extends Context.Tag(Const.tag(`executor`, `fetch`))<
 	>
 >() {}
 
-export { FetchExecutor, FetchMode }
+export { Tag, Mode }
 export type { Arguments }

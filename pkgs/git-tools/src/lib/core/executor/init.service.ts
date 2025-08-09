@@ -11,10 +11,10 @@ interface Arguments {
 /**
  * Checkout command service
  */
-class InitExecutor extends Context.Tag(Const.tag(`executor`, `init`))<
-	InitExecutor,
+class Tag extends Context.Tag(Const.tag(`executor`, `init`))<
+	Tag,
 	(args: Arguments) => Effect.Effect<void, GitCommandError.Failed | GitCommandError.Timeout>
 >() {}
 
-export { InitExecutor }
+export { Tag }
 export type { Arguments }

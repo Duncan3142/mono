@@ -15,8 +15,8 @@ interface Arguments {
 /**
  * Fetch command service
  */
-class MergeBaseExecutor extends Context.Tag(Const.tag(`executor`, `merge-base`))<
-	MergeBaseExecutor,
+class Tag extends Context.Tag(Const.tag(`executor`, `merge-base`))<
+	Tag,
 	(
 		args: Arguments
 	) => Effect.Effect<
@@ -25,5 +25,5 @@ class MergeBaseExecutor extends Context.Tag(Const.tag(`executor`, `merge-base`))
 	>
 >() {}
 
-export { MergeBaseExecutor }
+export { Tag }
 export type { Arguments }

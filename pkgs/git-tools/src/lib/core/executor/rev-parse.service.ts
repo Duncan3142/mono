@@ -13,10 +13,10 @@ interface Arguments {
 /**
  * Checkout command service
  */
-class RevParseExecutor extends Context.Tag(Const.tag(`executor`, `rev-parse`))<
-	RevParseExecutor,
+class Tag extends Context.Tag(Const.tag(`executor`, `rev-parse`))<
+	Tag,
 	(args: Arguments) => Effect.Effect<string, GitCommandError.Failed | GitCommandError.Timeout>
 >() {}
 
-export { RevParseExecutor }
+export { Tag }
 export type { Arguments }

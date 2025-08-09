@@ -8,34 +8,34 @@ interface ConfigKV {
 	readonly value: string
 }
 
-type ConfigInput = Data.TaggedEnum<{
+type Mode = Data.TaggedEnum<{
 	List: object
 	Set: ConfigKV
 	Add: ConfigKV
 }>
 
-const ConfigInput = Data.taggedEnum<ConfigInput>()
+const Mode = Data.taggedEnum<Mode>()
 
-type ConfigScope = Data.TaggedEnum<{
+type Scope = Data.TaggedEnum<{
 	Global: object
 	Local: { readonly directory: string }
 }>
 
-const ConfigScope = Data.taggedEnum<ConfigScope>()
+const Scope = Data.taggedEnum<Scope>()
 
 interface Arguments {
-	readonly scope: ConfigScope
-	readonly input: ConfigInput
+	readonly scope: Scope
+	readonly input: Mode
 	readonly timeout: Duration.DurationInput
 }
 
 /**
  * Checkout command service
  */
-class ConfigExecutor extends Context.Tag(Const.tag(`executor`, `config`))<
-	ConfigExecutor,
+class Tag extends Context.Tag(Const.tag(`executor`, `config`))<
+	Tag,
 	(args: Arguments) => Effect.Effect<void, GitCommandError.Failed | GitCommandError.Timeout>
 >() {}
 
-export { ConfigExecutor, ConfigInput, ConfigScope }
+export { Tag, Mode, Scope }
 export type { Arguments }
