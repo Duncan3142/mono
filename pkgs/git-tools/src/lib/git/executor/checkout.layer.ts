@@ -1,7 +1,7 @@
 import { CommandExecutor } from "@effect/platform"
 import { Layer, pipe, Effect, Match, Console } from "effect"
-import commandFactory, { type ErrorCode } from "./base.ts"
-import CheckoutExecutor, { type Arguments } from "#executor/checkout.service"
+import commandFactory, { type ErrorCode } from "./executor.ts"
+import CheckoutExecutor, { type Arguments, $match } from "#executor/checkout.service"
 import { CheckoutRefNotFoundError } from "#domain/checkout.error"
 import type { GitCommandFailedError, GitCommandTimeoutError } from "#domain/git.error"
 
@@ -19,14 +19,18 @@ const CheckoutExecutorLive: Layer.Layer<
 		return ({
 			ref: { name: ref },
 			directory,
-			createIfNotExists,
+			mode,
 			timeout,
 		}: Arguments): Effect.Effect<
 			void,
 			CheckoutRefNotFoundError | GitCommandFailedError | GitCommandTimeoutError
 		> =>
 			Effect.gen(function* () {
-				const createBranchArg = createIfNotExists ? ["-b"] : []
+				const createBranchArg = $match(mode, {
+					Create: () => ["-b"],
+					Standard: () => [],
+				})
+
 				return yield* pipe(
 					commandFactory({
 						directory,
