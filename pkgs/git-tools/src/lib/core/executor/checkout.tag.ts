@@ -1,21 +1,15 @@
-import { Data, type Duration, type Effect } from "effect"
+import type { Duration, Effect } from "effect"
 import { Context } from "effect"
 import * as Reference from "#domain/reference"
 import * as Const from "#const"
 import * as CheckoutError from "#domain/checkout.error"
 import * as GitCommandError from "#domain/git-command.error"
-
-type Mode = Data.TaggedEnum<{
-	Create: object
-	Standard: object
-}>
-
-const Mode = Data.taggedEnum<Mode>()
+import * as BranchMode from "./checkout.mode.ts"
 
 interface Arguments {
 	readonly ref: Reference.Reference
 	readonly directory: string
-	readonly mode: Mode
+	readonly mode: BranchMode.Mode
 	readonly timeout: Duration.DurationInput
 }
 
@@ -32,5 +26,5 @@ class Tag extends Context.Tag(Const.tag(`executor`, `checkout`))<
 	>
 >() {}
 
-export { Tag, Mode }
+export { Tag }
 export type { Arguments }

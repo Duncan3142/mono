@@ -1,31 +1,13 @@
-import { Data, type Duration, type Effect } from "effect"
+import type { Duration, Effect } from "effect"
 import { Context } from "effect"
 import * as Const from "#const"
 import * as GitCommandError from "#domain/git-command.error"
-
-interface ConfigKV {
-	readonly key: string
-	readonly value: string
-}
-
-type Mode = Data.TaggedEnum<{
-	List: object
-	Set: ConfigKV
-	Add: ConfigKV
-}>
-
-const Mode = Data.taggedEnum<Mode>()
-
-type Scope = Data.TaggedEnum<{
-	Global: object
-	Local: { readonly directory: string }
-}>
-
-const Scope = Data.taggedEnum<Scope>()
+import * as Mode from "./config.mode.ts"
+import * as Scope from "./config.scope.ts"
 
 interface Arguments {
-	readonly scope: Scope
-	readonly input: Mode
+	readonly scope: Scope.Scope
+	readonly input: Mode.Mode
 	readonly timeout: Duration.DurationInput
 }
 

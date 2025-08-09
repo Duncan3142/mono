@@ -1,17 +1,11 @@
-import { Data, type Duration, type Effect } from "effect"
+import type { Duration, Effect } from "effect"
 import { Context } from "effect"
 import * as Const from "#const"
 import * as GitCommandError from "#domain/git-command.error"
-import * as Remote from "#domain/remote"
-
-type Mode = Data.TaggedEnum<{
-	Add: { readonly remote: Remote.Remote }
-}>
-
-const Mode = Data.taggedEnum<Mode>()
+import * as Mode from "./remote.mode.ts"
 
 interface Arguments {
-	readonly mode: Mode
+	readonly mode: Mode.Mode
 	readonly directory: string
 	readonly timeout: Duration.DurationInput
 }

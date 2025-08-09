@@ -1,20 +1,14 @@
-import { Data, type Array, type Duration, type Effect } from "effect"
+import type { Array, Duration, Effect } from "effect"
 import { Context } from "effect"
 import * as FetchError from "#domain/fetch.error"
 import * as Const from "#const"
 import * as Reference from "#domain/reference"
 import * as Remote from "#domain/remote"
 import * as GitCommandError from "#domain/git-command.error"
-
-type Mode = Data.TaggedEnum<{
-	Depth: { readonly depth: number }
-	DeepenBy: { readonly deepenBy: number }
-}>
-
-const Mode = Data.taggedEnum<Mode>()
+import * as Mode from "./fetch.mode.ts"
 
 interface Arguments {
-	readonly mode: Mode
+	readonly mode: Mode.Mode
 	readonly remote: Remote.Remote
 	readonly refs: Array.NonEmptyReadonlyArray<Reference.Reference>
 	readonly directory: string

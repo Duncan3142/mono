@@ -1,16 +1,11 @@
 import type { Duration, Effect } from "effect"
-import { Context, Data } from "effect"
+import { Context } from "effect"
 import * as Const from "#const"
 import * as GitCommandError from "#domain/git-command.error"
-
-type Mode = Data.TaggedEnum<{
-	Print: object
-}>
-
-const Mode = Data.taggedEnum<Mode>()
+import * as BranchMode from "./branch.mode.ts"
 
 interface Arguments {
-	readonly mode: Mode
+	readonly mode: BranchMode.Mode
 	readonly directory: string
 	readonly timeout: Duration.DurationInput
 }
@@ -23,5 +18,5 @@ class Tag extends Context.Tag(Const.tag(`executor`, `branch`))<
 	(args: Arguments) => Effect.Effect<void, GitCommandError.Failed | GitCommandError.Timeout>
 >() {}
 
-export { Tag, Mode }
+export { Tag }
 export type { Arguments }
