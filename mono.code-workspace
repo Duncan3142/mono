@@ -5,6 +5,10 @@
 			"path": "."
 		},
 		{
+			"name": ".devcontainer",
+			"path": ".devcontainer"
+		},
+		{
 			"name": "workflows",
 			"path": ".github/workflows"
 		},
