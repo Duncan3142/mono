@@ -4,28 +4,31 @@ import * as Base from "./base.ts"
 import { RevParseExecutor } from "#duncan3142/git-tools/executor"
 import type { GitCommandError } from "#duncan3142/git-tools/domain"
 
-const Live: Layer.Layer<RevParseExecutor.Tag, never, CommandExecutor.CommandExecutor> =
-	Layer.effect(
-		RevParseExecutor.Tag,
-		Effect.gen(function* () {
-			const executor = yield* CommandExecutor.CommandExecutor
+const Live: Layer.Layer<
+	RevParseExecutor.RevParseExecutor,
+	never,
+	CommandExecutor.CommandExecutor
+> = Layer.effect(
+	RevParseExecutor.RevParseExecutor,
+	Effect.gen(function* () {
+		const executor = yield* CommandExecutor.CommandExecutor
 
-			return ({
-				ref: { name: rev },
+		return ({
+			ref: { name: rev },
+			directory,
+			timeout,
+		}: RevParseExecutor.Arguments): Effect.Effect<
+			string,
+			GitCommandError.GitCommandFailed | GitCommandError.GitCommandTimeout
+		> =>
+			Base.make({
 				directory,
+				subCommand: "rev-parse",
+				subArgs: [rev],
 				timeout,
-			}: RevParseExecutor.Arguments): Effect.Effect<
-				string,
-				GitCommandError.Failed | GitCommandError.Timeout
-			> =>
-				Base.make({
-					directory,
-					subCommand: "rev-parse",
-					subArgs: [rev],
-					timeout,
-					errorMatcher: Match.value,
-				}).pipe(Effect.scoped, Effect.provideService(CommandExecutor.CommandExecutor, executor))
-		})
-	)
+				errorMatcher: Match.value,
+			}).pipe(Effect.scoped, Effect.provideService(CommandExecutor.CommandExecutor, executor))
+	})
+)
 
 export { Live }

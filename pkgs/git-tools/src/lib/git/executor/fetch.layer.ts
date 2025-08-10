@@ -12,9 +12,9 @@ import { FetchExecutor } from "#duncan3142/git-tools/executor"
 
 const FETCH_NOT_FOUND_CODE = 128
 
-const Live: Layer.Layer<FetchExecutor.Tag, never, CommandExecutor.CommandExecutor> =
+const Live: Layer.Layer<FetchExecutor.FetchExecutor, never, CommandExecutor.CommandExecutor> =
 	Layer.effect(
-		FetchExecutor.Tag,
+		FetchExecutor.FetchExecutor,
 		Effect.gen(function* () {
 			const executor = yield* CommandExecutor.CommandExecutor
 
@@ -26,7 +26,9 @@ const Live: Layer.Layer<FetchExecutor.Tag, never, CommandExecutor.CommandExecuto
 				timeout,
 			}: FetchExecutor.Arguments): Effect.Effect<
 				void,
-				FetchError.RefsNotFound | GitCommandError.Failed | GitCommandError.Timeout
+				| FetchError.FetchRefsNotFound
+				| GitCommandError.GitCommandFailed
+				| GitCommandError.GitCommandTimeout
 			> => {
 				const { name: remoteName } = remote
 				const refStrings = pipe(
@@ -56,7 +58,7 @@ const Live: Layer.Layer<FetchExecutor.Tag, never, CommandExecutor.CommandExecuto
 							Match.value(errorCode),
 							Match.when(FETCH_NOT_FOUND_CODE, () =>
 								Effect.fail(
-									new FetchError.RefsNotFound({
+									new FetchError.FetchRefsNotFound({
 										references: refStrings,
 									})
 								)

@@ -5,9 +5,9 @@ import type { Repository } from "#duncan3142/git-tools/domain"
 /**
  * Repository context service
  */
-class Tag extends Context.Tag(TagFactory.make(`context`, `repository`))<
-	Tag,
+class RepositoryContext extends Context.Tag(TagFactory.make(`context`, `repository`))<
+	RepositoryContext,
 	Repository.Repository
 >() {}
 
-export { Tag }
+export { RepositoryContext }

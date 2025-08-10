@@ -5,31 +5,36 @@ import { TagFactory } from "#duncan3142/git-tools/const"
 import { RepositoryContext } from "#duncan3142/git-tools/context"
 
 interface Arguments {
-	readonly mode?: BranchMode.Mode
+	readonly mode?: BranchMode.BranchMode
 	readonly timeout?: Duration.DurationInput
 }
 
 /**
  * Print refs service
  */
-class Service extends Effect.Service<Service>()(TagFactory.make(`command`, `print-refs`), {
-	effect: Effect.gen(function* () {
-		const [executor, { directory }] = yield* Effect.all(
-			[BranchExecutor.Tag, RepositoryContext.Tag],
-			{
-				concurrency: "unbounded",
-			}
-		)
+class BranchCommand extends Effect.Service<BranchCommand>()(
+	TagFactory.make(`command`, `branch`),
+	{
+		effect: Effect.gen(function* () {
+			const [executor, { directory }] = yield* Effect.all(
+				[BranchExecutor.BranchExecutor, RepositoryContext.RepositoryContext],
+				{
+					concurrency: "unbounded",
+				}
+			)
 
-		return ({
-			mode = BranchMode.Print(),
-			timeout = "2 seconds",
-		}: Arguments = {}): Effect.Effect<void, GitCommandError.Failed | GitCommandError.Timeout> =>
-			executor({ mode, directory, timeout })
-	}),
-}) {}
+			return ({
+				mode = BranchMode.Print(),
+				timeout = "2 seconds",
+			}: Arguments = {}): Effect.Effect<
+				void,
+				GitCommandError.GitCommandFailed | GitCommandError.GitCommandTimeout
+			> => executor({ mode, directory, timeout })
+		}),
+	}
+) {}
 
-const { Default } = Service
+const { Default } = BranchCommand
 
-export { Service, Default }
+export { BranchCommand, Default }
 export type { Arguments }

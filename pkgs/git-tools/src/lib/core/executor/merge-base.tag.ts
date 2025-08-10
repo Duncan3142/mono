@@ -12,15 +12,17 @@ interface Arguments {
 /**
  * Fetch command service
  */
-class Tag extends Context.Tag(TagFactory.make(`executor`, `merge-base`))<
-	Tag,
+class MergeBaseExecutor extends Context.Tag(TagFactory.make(`executor`, `merge-base`))<
+	MergeBaseExecutor,
 	(
 		args: Arguments
 	) => Effect.Effect<
 		Reference.SHA,
-		MergeBaseError.NotFound | GitCommandError.Failed | GitCommandError.Timeout
+		| MergeBaseError.MergeBaseNotFound
+		| GitCommandError.GitCommandFailed
+		| GitCommandError.GitCommandTimeout
 	>
 >() {}
 
-export { Tag }
+export { MergeBaseExecutor }
 export type { Arguments }

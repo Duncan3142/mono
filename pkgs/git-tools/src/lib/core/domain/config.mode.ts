@@ -5,13 +5,13 @@ interface ConfigKV {
 	readonly value: string
 }
 
-type Mode = Data.TaggedEnum<{
+type ConfigMode = Data.TaggedEnum<{
 	List: object
 	Set: ConfigKV
 	Add: ConfigKV
 }>
 
-const { $is, $match, Add, List, Set } = Data.taggedEnum<Mode>()
+const { $is, $match, Add, List, Set } = Data.taggedEnum<ConfigMode>()
 
 export { $is, $match, Add, List, Set }
-export type { Mode, ConfigKV }
+export type { ConfigMode, ConfigKV }

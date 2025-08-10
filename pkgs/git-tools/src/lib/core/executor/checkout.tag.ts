@@ -10,22 +10,24 @@ import { TagFactory } from "#duncan3142/git-tools/const"
 interface Arguments {
 	readonly ref: Reference.Reference
 	readonly directory: string
-	readonly mode: CheckoutMode.Mode
+	readonly mode: CheckoutMode.CheckoutMode
 	readonly timeout: Duration.DurationInput
 }
 
 /**
  * Checkout command service
  */
-class Tag extends Context.Tag(TagFactory.make(`executor`, `checkout`))<
-	Tag,
+class CheckoutExecutor extends Context.Tag(TagFactory.make(`executor`, `checkout`))<
+	CheckoutExecutor,
 	(
 		args: Arguments
 	) => Effect.Effect<
 		void,
-		CheckoutError.RefNotFound | GitCommandError.Failed | GitCommandError.Timeout
+		| CheckoutError.CheckoutRefNotFound
+		| GitCommandError.GitCommandFailed
+		| GitCommandError.GitCommandTimeout
 	>
 >() {}
 
-export { Tag }
+export { CheckoutExecutor }
 export type { Arguments }

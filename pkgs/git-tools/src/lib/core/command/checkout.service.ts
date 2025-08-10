@@ -11,34 +11,39 @@ import { CheckoutExecutor } from "#duncan3142/git-tools/executor"
 
 interface Arguments {
 	readonly ref: Reference.Reference
-	readonly mode?: CheckoutMode.Mode
+	readonly mode?: CheckoutMode.CheckoutMode
 	readonly timeout?: Duration.DurationInput
 }
 
 /**
  * Print refs service
  */
-class Service extends Effect.Service<Service>()(TagFactory.make(`command`, `checkout`), {
-	effect: Effect.gen(function* () {
-		const [executor, { directory }] = yield* Effect.all(
-			[CheckoutExecutor.Tag, RepositoryContext.Tag],
-			{
-				concurrency: "unbounded",
-			}
-		)
+class CheckoutCommand extends Effect.Service<CheckoutCommand>()(
+	TagFactory.make(`command`, `checkout`),
+	{
+		effect: Effect.gen(function* () {
+			const [executor, { directory }] = yield* Effect.all(
+				[CheckoutExecutor.CheckoutExecutor, RepositoryContext.RepositoryContext],
+				{
+					concurrency: "unbounded",
+				}
+			)
 
-		return ({
-			ref,
-			mode = CheckoutMode.Standard(),
-			timeout = "2 seconds",
-		}: Arguments): Effect.Effect<
-			void,
-			CheckoutError.RefNotFound | GitCommandError.Failed | GitCommandError.Timeout
-		> => executor({ ref, directory, mode, timeout })
-	}),
-}) {}
+			return ({
+				ref,
+				mode = CheckoutMode.Standard(),
+				timeout = "2 seconds",
+			}: Arguments): Effect.Effect<
+				void,
+				| CheckoutError.CheckoutRefNotFound
+				| GitCommandError.GitCommandFailed
+				| GitCommandError.GitCommandTimeout
+			> => executor({ ref, directory, mode, timeout })
+		}),
+	}
+) {}
 
-const { Default } = Service
+const { Default } = CheckoutCommand
 
-export { Service, Default }
+export { CheckoutCommand, Default }
 export type { Arguments }

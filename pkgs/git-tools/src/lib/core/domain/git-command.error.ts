@@ -6,7 +6,7 @@ const GIT_COMMAND_TIMEOUT_ERROR_TAG = TagFactory.make("domain", `GIT_COMMAND_TIM
 /**
  * Git Command Timeout Error
  */
-class Timeout extends Data.TaggedError(GIT_COMMAND_TIMEOUT_ERROR_TAG)<{
+class GitCommandTimeout extends Data.TaggedError(GIT_COMMAND_TIMEOUT_ERROR_TAG)<{
 	readonly timeout: Duration.DurationInput
 	readonly options: ReadonlyArray<string>
 	readonly command: string
@@ -18,7 +18,7 @@ const GIT_COMMAND_FAILED_ERROR_TAG = TagFactory.make("domain", `GIT_COMMAND_FAIL
 /**
  * Git Command Failed Error
  */
-class Failed extends Data.TaggedError(GIT_COMMAND_FAILED_ERROR_TAG)<{
+class GitCommandFailed extends Data.TaggedError(GIT_COMMAND_FAILED_ERROR_TAG)<{
 	readonly exitCode: Option.Option<number>
 	readonly options: ReadonlyArray<string>
 	readonly command: string
@@ -26,4 +26,9 @@ class Failed extends Data.TaggedError(GIT_COMMAND_FAILED_ERROR_TAG)<{
 	readonly cause?: Error
 }> {}
 
-export { Timeout, GIT_COMMAND_TIMEOUT_ERROR_TAG, Failed, GIT_COMMAND_FAILED_ERROR_TAG }
+export {
+	GitCommandTimeout,
+	GIT_COMMAND_TIMEOUT_ERROR_TAG,
+	GitCommandFailed,
+	GIT_COMMAND_FAILED_ERROR_TAG,
+}

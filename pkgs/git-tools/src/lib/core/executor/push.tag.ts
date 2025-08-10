@@ -11,10 +11,12 @@ interface Arguments {
 /**
  * Checkout command service
  */
-class Tag extends Context.Tag(TagFactory.make(`executor`, `push`))<
-	Tag,
-	(args: Arguments) => Effect.Effect<void, GitCommandError.Failed | GitCommandError.Timeout>
+class PushExecutor extends Context.Tag(TagFactory.make(`executor`, `push`))<
+	PushExecutor,
+	(
+		args: Arguments
+	) => Effect.Effect<void, GitCommandError.GitCommandFailed | GitCommandError.GitCommandTimeout>
 >() {}
 
-export { Tag }
+export { PushExecutor }
 export type { Arguments }

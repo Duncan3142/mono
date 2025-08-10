@@ -14,7 +14,7 @@ import { RepositoryContext } from "#duncan3142/git-tools/context"
 
 interface Arguments {
 	readonly refs: Array.NonEmptyReadonlyArray<Reference.Reference>
-	readonly mode?: FetchMode.Mode
+	readonly mode?: FetchMode.FetchMode
 	readonly remote?: Remote.Remote
 	readonly timeout?: Duration.DurationInput
 }
@@ -22,7 +22,7 @@ interface Arguments {
 /**
  * Git fetch service
  */
-class Service extends Effect.Service<Service>()(TagFactory.make(`command`, `fetch`), {
+class FetchCommand extends Effect.Service<FetchCommand>()(TagFactory.make(`command`, `fetch`), {
 	effect: Effect.gen(function* () {
 		const [
 			executor,
@@ -32,7 +32,11 @@ class Service extends Effect.Service<Service>()(TagFactory.make(`command`, `fetc
 			},
 			{ directory },
 		] = yield* Effect.all(
-			[FetchExecutor.Tag, RepositoryConfig.Service, RepositoryContext.Tag],
+			[
+				FetchExecutor.FetchExecutor,
+				RepositoryConfig.RepositoryConfig,
+				RepositoryContext.RepositoryContext,
+			],
 			{
 				concurrency: "unbounded",
 			}
@@ -45,14 +49,14 @@ class Service extends Effect.Service<Service>()(TagFactory.make(`command`, `fetc
 			timeout = "4 seconds",
 		}: Arguments): Effect.Effect<
 			void,
-			| FetchError.DepthExceeded
-			| FetchError.RefsNotFound
-			| GitCommandError.Failed
-			| GitCommandError.Timeout,
-			FetchDepth.Tag
+			| FetchError.FetchDepthExceeded
+			| FetchError.FetchRefsNotFound
+			| GitCommandError.GitCommandFailed
+			| GitCommandError.GitCommandTimeout,
+			FetchDepth.FetchDepth
 		> =>
 			Effect.gen(function* () {
-				const fetchDepth = yield* FetchDepth.Tag
+				const fetchDepth = yield* FetchDepth.FetchDepth
 				yield* FetchMode.$match(mode, {
 					Depth: ({ depth }) => fetchDepth.set(depth),
 					DeepenBy: ({ deepenBy }) => fetchDepth.inc(deepenBy),
@@ -69,7 +73,7 @@ class Service extends Effect.Service<Service>()(TagFactory.make(`command`, `fetc
 	}),
 }) {}
 
-const { Default } = Service
+const { Default } = FetchCommand
 
-export { Service, Default }
+export { FetchCommand, Default }
 export type { Arguments }

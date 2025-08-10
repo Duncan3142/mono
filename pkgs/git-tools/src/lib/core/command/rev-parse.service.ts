@@ -12,26 +12,29 @@ interface Arguments {
 /**
  * Print refs service
  */
-class Service extends Effect.Service<Service>()(TagFactory.make(`command`, `rev-parse`), {
-	effect: Effect.gen(function* () {
-		const [executor, { directory }] = yield* Effect.all(
-			[RevParseExecutor.Tag, RepositoryContext.Tag],
-			{
-				concurrency: "unbounded",
-			}
-		)
+class RevParseCommand extends Effect.Service<RevParseCommand>()(
+	TagFactory.make(`command`, `rev-parse`),
+	{
+		effect: Effect.gen(function* () {
+			const [executor, { directory }] = yield* Effect.all(
+				[RevParseExecutor.RevParseExecutor, RepositoryContext.RepositoryContext],
+				{
+					concurrency: "unbounded",
+				}
+			)
 
-		return ({
-			ref,
-			timeout = "2 seconds",
-		}: Arguments): Effect.Effect<
-			Reference.SHA,
-			GitCommandError.Failed | GitCommandError.Timeout
-		> => executor({ ref, directory, timeout })
-	}),
-}) {}
+			return ({
+				ref,
+				timeout = "2 seconds",
+			}: Arguments): Effect.Effect<
+				Reference.SHA,
+				GitCommandError.GitCommandFailed | GitCommandError.GitCommandTimeout
+			> => executor({ ref, directory, timeout })
+		}),
+	}
+) {}
 
-const { Default } = Service
+const { Default } = RevParseCommand
 
-export { Service, Default }
+export { RevParseCommand, Default }
 export type { Arguments }

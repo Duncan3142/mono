@@ -4,9 +4,9 @@ import * as Base from "./base.ts"
 import { ResetExecutor } from "#duncan3142/git-tools/executor"
 import { type GitCommandError, ResetMode } from "#duncan3142/git-tools/domain"
 
-const Live: Layer.Layer<ResetExecutor.Tag, never, CommandExecutor.CommandExecutor> =
+const Live: Layer.Layer<ResetExecutor.ResetExecutor, never, CommandExecutor.CommandExecutor> =
 	Layer.effect(
-		ResetExecutor.Tag,
+		ResetExecutor.ResetExecutor,
 		Effect.gen(function* () {
 			const executor = yield* CommandExecutor.CommandExecutor
 
@@ -17,7 +17,7 @@ const Live: Layer.Layer<ResetExecutor.Tag, never, CommandExecutor.CommandExecuto
 				timeout,
 			}: ResetExecutor.Arguments): Effect.Effect<
 				void,
-				GitCommandError.Failed | GitCommandError.Timeout
+				GitCommandError.GitCommandFailed | GitCommandError.GitCommandTimeout
 			> => {
 				const modeArg = ResetMode.$match(mode, {
 					Hard: () => "--hard",

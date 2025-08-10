@@ -4,9 +4,9 @@ import * as Base from "./base.ts"
 import { BranchExecutor } from "#duncan3142/git-tools/executor"
 import { type GitCommandError, BranchMode } from "#duncan3142/git-tools/domain"
 
-const Live: Layer.Layer<BranchExecutor.Tag, never, CommandExecutor.CommandExecutor> =
+const Live: Layer.Layer<BranchExecutor.BranchExecutor, never, CommandExecutor.CommandExecutor> =
 	Layer.effect(
-		BranchExecutor.Tag,
+		BranchExecutor.BranchExecutor,
 		Effect.gen(function* () {
 			const executor = yield* CommandExecutor.CommandExecutor
 
@@ -16,7 +16,7 @@ const Live: Layer.Layer<BranchExecutor.Tag, never, CommandExecutor.CommandExecut
 				timeout,
 			}: BranchExecutor.Arguments): Effect.Effect<
 				void,
-				GitCommandError.Failed | GitCommandError.Timeout
+				GitCommandError.GitCommandFailed | GitCommandError.GitCommandTimeout
 			> => {
 				const subArgs = BranchMode.$match(mode, {
 					Print: () => ["-a", "-v", "-v"],

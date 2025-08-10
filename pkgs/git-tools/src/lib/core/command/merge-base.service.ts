@@ -13,33 +13,38 @@ interface Arguments {
 /**
  * Reference service
  */
-class Service extends Effect.Service<Service>()(TagFactory.make(`command`, `merge-base`), {
-	effect: Effect.gen(function* () {
-		const [executor, { directory }] = yield* Effect.all(
-			[MergeBaseExecutor.Tag, RepositoryContext.Tag],
-			{
-				concurrency: "unbounded",
-			}
-		)
+class MergeBaseCommand extends Effect.Service<MergeBaseCommand>()(
+	TagFactory.make(`command`, `merge-base`),
+	{
+		effect: Effect.gen(function* () {
+			const [executor, { directory }] = yield* Effect.all(
+				[MergeBaseExecutor.MergeBaseExecutor, RepositoryContext.RepositoryContext],
+				{
+					concurrency: "unbounded",
+				}
+			)
 
-		return ({
-			headRef,
-			baseRef,
-			timeout = "2 seconds",
-		}: Arguments): Effect.Effect<
-			Reference.SHA,
-			GitCommandError.Failed | GitCommandError.Timeout | MergeBaseError.NotFound
-		> =>
-			executor({
+			return ({
 				headRef,
 				baseRef,
-				directory,
-				timeout,
-			})
-	}),
-}) {}
+				timeout = "2 seconds",
+			}: Arguments): Effect.Effect<
+				Reference.SHA,
+				| GitCommandError.GitCommandFailed
+				| GitCommandError.GitCommandTimeout
+				| MergeBaseError.MergeBaseNotFound
+			> =>
+				executor({
+					headRef,
+					baseRef,
+					directory,
+					timeout,
+				})
+		}),
+	}
+) {}
 
-const { Default } = Service
+const { Default } = MergeBaseCommand
 
-export { Service, Default }
+export { MergeBaseCommand, Default }
 export type { Arguments }

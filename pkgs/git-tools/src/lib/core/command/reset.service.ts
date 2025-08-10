@@ -6,17 +6,17 @@ import { ResetExecutor } from "#duncan3142/git-tools/executor"
 
 interface Arguments {
 	readonly ref: Reference.Reference
-	readonly mode?: ResetMode.Mode
+	readonly mode?: ResetMode.ResetMode
 	readonly timeout?: Duration.DurationInput
 }
 
 /**
  * Print refs service
  */
-class Service extends Effect.Service<Service>()(TagFactory.make(`command`, `reset`), {
+class ResetCommand extends Effect.Service<ResetCommand>()(TagFactory.make(`command`, `reset`), {
 	effect: Effect.gen(function* () {
 		const [executor, { directory }] = yield* Effect.all(
-			[ResetExecutor.Tag, RepositoryContext.Tag],
+			[ResetExecutor.ResetExecutor, RepositoryContext.RepositoryContext],
 			{
 				concurrency: "unbounded",
 			}
@@ -26,12 +26,14 @@ class Service extends Effect.Service<Service>()(TagFactory.make(`command`, `rese
 			ref,
 			mode = ResetMode.Hard(),
 			timeout = "2 seconds",
-		}: Arguments): Effect.Effect<void, GitCommandError.Failed | GitCommandError.Timeout> =>
-			executor({ ref, mode, directory, timeout })
+		}: Arguments): Effect.Effect<
+			void,
+			GitCommandError.GitCommandFailed | GitCommandError.GitCommandTimeout
+		> => executor({ ref, mode, directory, timeout })
 	}),
 }) {}
 
-const { Default } = Service
+const { Default } = ResetCommand
 
-export { Service, Default }
+export { ResetCommand, Default }
 export type { Arguments }

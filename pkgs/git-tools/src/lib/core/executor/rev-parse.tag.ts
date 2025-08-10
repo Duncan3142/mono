@@ -11,10 +11,15 @@ interface Arguments {
 /**
  * Checkout command service
  */
-class Tag extends Context.Tag(TagFactory.make(`executor`, `rev-parse`))<
-	Tag,
-	(args: Arguments) => Effect.Effect<string, GitCommandError.Failed | GitCommandError.Timeout>
+class RevParseExecutor extends Context.Tag(TagFactory.make(`executor`, `rev-parse`))<
+	RevParseExecutor,
+	(
+		args: Arguments
+	) => Effect.Effect<
+		string,
+		GitCommandError.GitCommandFailed | GitCommandError.GitCommandTimeout
+	>
 >() {}
 
-export { Tag }
+export { RevParseExecutor }
 export type { Arguments }

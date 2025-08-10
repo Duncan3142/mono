@@ -3,7 +3,7 @@ import { TagFactory } from "#duncan3142/git-tools/const"
 import type { GitCommandError, BranchMode } from "#duncan3142/git-tools/domain"
 
 interface Arguments {
-	readonly mode: BranchMode.Mode
+	readonly mode: BranchMode.BranchMode
 	readonly directory: string
 	readonly timeout: Duration.DurationInput
 }
@@ -11,10 +11,12 @@ interface Arguments {
 /**
  * Checkout command service
  */
-class Tag extends Context.Tag(TagFactory.make(`executor`, `branch`))<
-	Tag,
-	(args: Arguments) => Effect.Effect<void, GitCommandError.Failed | GitCommandError.Timeout>
+class BranchExecutor extends Context.Tag(TagFactory.make(`executor`, `branch`))<
+	BranchExecutor,
+	(
+		args: Arguments
+	) => Effect.Effect<void, GitCommandError.GitCommandFailed | GitCommandError.GitCommandTimeout>
 >() {}
 
-export { Tag }
+export { BranchExecutor }
 export type { Arguments }

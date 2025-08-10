@@ -1,11 +1,11 @@
 import { Data } from "effect"
 
-type Scope = Data.TaggedEnum<{
+type ConfigScope = Data.TaggedEnum<{
 	Global: object
 	Local: { readonly directory: string }
 }>
 
-const { $is, $match, Global, Local } = Data.taggedEnum<Scope>()
+const { $is, $match, Global, Local } = Data.taggedEnum<ConfigScope>()
 
 export { $is, $match, Global, Local }
-export type { Scope }
+export type { ConfigScope }

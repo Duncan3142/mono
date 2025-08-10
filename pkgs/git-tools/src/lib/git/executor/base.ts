@@ -55,7 +55,7 @@ const make = <ECode extends ErrorCode = never, Error = never>({
 	noPager = false,
 }: Arguments<ECode, Error>): Effect.Effect<
 	string,
-	Error | GitCommandError.Failed | GitCommandError.Timeout,
+	Error | GitCommandError.GitCommandFailed | GitCommandError.GitCommandTimeout,
 	CommandExecutor.CommandExecutor | Scope.Scope
 > => {
 	const options = noPager ? ["--no-pager"] : []
@@ -71,7 +71,7 @@ const make = <ECode extends ErrorCode = never, Error = never>({
 				exitCode,
 				Effect.catchAll((error) =>
 					Effect.fail(
-						new GitCommandError.Failed({
+						new GitCommandError.GitCommandFailed({
 							exitCode: Option.none(),
 							options,
 							command: subCommand,
@@ -83,7 +83,7 @@ const make = <ECode extends ErrorCode = never, Error = never>({
 				Effect.timeoutFail({
 					duration: timeout,
 					onTimeout: () =>
-						new GitCommandError.Timeout({
+						new GitCommandError.GitCommandTimeout({
 							timeout,
 							options,
 							command: subCommand,
@@ -97,7 +97,7 @@ const make = <ECode extends ErrorCode = never, Error = never>({
 						: errorMatcher(code).pipe(
 								Match.orElse((errCode) =>
 									Effect.fail(
-										new GitCommandError.Failed({
+										new GitCommandError.GitCommandFailed({
 											exitCode: Option.some(errCode),
 											options,
 											command: subCommand,

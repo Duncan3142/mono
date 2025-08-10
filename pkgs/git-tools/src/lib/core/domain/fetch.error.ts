@@ -1,13 +1,13 @@
 import { Data } from "effect"
+import type * as Fetch from "./fetch.ts"
 import { TagFactory } from "#duncan3142/git-tools/const"
-import type { Fetch } from "#duncan3142/git-tools/domain"
 
 const FETCH_REFS_NOT_FOUND_ERROR_TAG = TagFactory.make("domain", `FETCH_REFS_NOT_FOUND_ERROR`)
 
 /**
  * Fetch Not Found Error
  */
-class RefsNotFound extends Data.TaggedError(FETCH_REFS_NOT_FOUND_ERROR_TAG)<{
+class FetchRefsNotFound extends Data.TaggedError(FETCH_REFS_NOT_FOUND_ERROR_TAG)<{
 	references: ReadonlyArray<string>
 }> {}
 
@@ -16,14 +16,14 @@ const FETCH_DEPTH_EXCEEDED_ERROR_TAG = TagFactory.make("domain", `FETCH_DEPTH_EX
 /**
  * Fetch Depth Exceeded Error
  */
-class DepthExceeded extends Data.TaggedError(FETCH_DEPTH_EXCEEDED_ERROR_TAG)<{
-	requestedDepth: Fetch.Depth
-	maxDepth: Fetch.Depth
+class FetchDepthExceeded extends Data.TaggedError(FETCH_DEPTH_EXCEEDED_ERROR_TAG)<{
+	requestedDepth: Fetch.FetchDepth
+	maxDepth: Fetch.FetchDepth
 }> {}
 
 export {
-	RefsNotFound,
+	FetchRefsNotFound,
 	FETCH_REFS_NOT_FOUND_ERROR_TAG,
-	DepthExceeded,
+	FetchDepthExceeded,
 	FETCH_DEPTH_EXCEEDED_ERROR_TAG,
 }
