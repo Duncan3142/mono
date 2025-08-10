@@ -2,14 +2,14 @@ import { describe, it, expect } from "@effect/vitest"
 import { ConfigProvider, Effect, Layer, pipe } from "effect"
 import { FetchDepth, FetchDepthFactory } from "#state"
 import { RepositoryConfig } from "#config"
-import { Console } from "#mock"
+import { MockConsole } from "#mock"
 
 const ProgramTest = pipe(
 	FetchDepthFactory.Service.Default,
 	Layer.provide(RepositoryConfig.Service.Default)
 )
 
-const mockConsole = Console.make()
+const mockConsole = MockConsole.make()
 
 describe("FetchDepth", () => {
 	it.scoped("should increment", () =>

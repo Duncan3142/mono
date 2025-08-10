@@ -64,5 +64,7 @@ class Service extends Effect.Service<Service>()(TagFactory.make(`command`, `fetc
 	}),
 }) {}
 
-export { Service }
+const Default = Service.Default
+
+export { Service, Default }
 export type { Arguments }

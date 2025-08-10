@@ -1,5 +1,5 @@
 import { Context } from "effect"
-import { Tag as TagFactory } from "#const"
+import { TagFactory } from "#const"
 import { Repository } from "#domain"
 
 /**

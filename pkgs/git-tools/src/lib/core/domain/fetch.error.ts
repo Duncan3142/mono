@@ -1,6 +1,6 @@
 import { Data } from "effect"
 import { TagFactory } from "#const"
-import * as Fetch from "./fetch.ts"
+import { Fetch } from "#domain"
 
 const FETCH_REFS_NOT_FOUND_ERROR_TAG = TagFactory.make("domain", `FETCH_REFS_NOT_FOUND_ERROR`)
 

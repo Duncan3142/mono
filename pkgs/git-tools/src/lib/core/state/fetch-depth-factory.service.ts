@@ -1,5 +1,5 @@
 import { Ref, Effect, HashMap } from "effect"
-import * as FetchDepth from "./fetch-depth.tag.ts"
+import { FetchDepth } from "#state"
 import { TagFactory } from "#const"
 import { RepositoryConfig } from "#config"
 
@@ -38,4 +38,6 @@ class Service extends Effect.Service<Service>()(
 	}
 ) {}
 
-export { Service }
+const Default = Service.Default
+
+export { Service, Default }

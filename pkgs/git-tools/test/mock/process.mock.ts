@@ -4,7 +4,7 @@ import type { Command, Error as PlatformError } from "@effect/platform"
 import { CommandExecutor } from "@effect/platform"
 import { mockDeep } from "vitest-mock-extended"
 
-interface MockProcessProps {
+interface Props {
 	delay: Duration.DurationInput
 	result: Either.Either<
 		{ exitCode: number; stdOutLines: Array<string>; stdErrLines: Array<string> },
@@ -19,7 +19,7 @@ interface MockProcessProps {
  * @param props.result - The result of the process execution.
  * @returns An Effect that produces a mock CommandExecutor.Process.
  */
-const make = ({ delay, result }: MockProcessProps): Effect.Effect<CommandExecutor.Process> =>
+const make = ({ delay, result }: Props): Effect.Effect<CommandExecutor.Process> =>
 	Either.match(result, {
 		onLeft: (err) =>
 			Effect.succeed(
@@ -77,4 +77,4 @@ type Start = (
 ) => Effect.Effect<CommandExecutor.Process, PlatformError.PlatformError, Scope.Scope>
 
 export { make }
-export type { MockProcessProps, Start }
+export type { Props, Start }

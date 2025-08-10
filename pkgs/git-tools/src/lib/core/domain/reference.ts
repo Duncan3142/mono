@@ -8,7 +8,7 @@ type Reference = Data.TaggedEnum<{
 	Head: { readonly name: "HEAD" }
 }>
 
-const Reference = Data.taggedEnum<Reference>()
+const { $is, $match, Branch, Head, Tag } = Data.taggedEnum<Reference>()
 
-export type { SHA }
-export { Reference }
+export type { SHA, Reference }
+export { $is, $match, Branch, Head, Tag }

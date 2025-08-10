@@ -30,5 +30,7 @@ class Service extends Effect.Service<Service>()(TagFactory.make(`command`, `prin
 	}),
 }) {}
 
-export { Service }
+const Default = Service.Default
+
+export { Service, Default }
 export type { Arguments }

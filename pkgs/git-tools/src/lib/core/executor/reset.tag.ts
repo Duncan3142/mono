@@ -1,7 +1,7 @@
 import type { Duration, Effect } from "effect"
 import { Context } from "effect"
 import { Reference, GitCommandError, ResetMode } from "#domain"
-import { Tag as TagFactory } from "#const"
+import { TagFactory } from "#const"
 
 interface Arguments {
 	readonly ref: Reference.Reference

@@ -1,7 +1,7 @@
 import type { Array, Duration, Effect } from "effect"
 import { Context } from "effect"
 import { FetchError, Reference, Remote, GitCommandError, FetchMode } from "#domain"
-import { Tag as TagFactory } from "#const"
+import { TagFactory } from "#const"
 
 interface Arguments {
 	readonly mode: FetchMode.Mode

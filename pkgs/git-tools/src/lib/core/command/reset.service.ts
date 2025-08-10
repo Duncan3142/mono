@@ -1,35 +1,39 @@
 import type { Duration } from "effect"
 import { Effect } from "effect"
-import type { Reference } from "#domain/reference"
+import { Reference, GitCommandError } from "#domain"
 import { TagFactory } from "#const"
-import Tag from "#context/repository.service"
-import { RESET_MODE_HARD, type ResetMode } from "#domain/reset"
-import ResetExecutor from "#executor/reset.service"
-import * as GitCommandError from "#domain/git-command.error"
+import { RepositoryContext } from "#context"
+import { ResetMode } from "#domain"
+import { ResetExecutor } from "#executor"
 
 interface Arguments {
-	readonly ref: Reference
-	readonly mode?: ResetMode
+	readonly ref: Reference.Reference
+	readonly mode?: ResetMode.Mode
 	readonly timeout?: Duration.DurationInput
 }
 
 /**
  * Print refs service
  */
-class ResetCommand extends Effect.Service<ResetCommand>()(tag(`command`, `reset`), {
+class Service extends Effect.Service<Service>()(TagFactory.make(`command`, `reset`), {
 	effect: Effect.gen(function* () {
-		const [executor, { directory }] = yield* Effect.all([ResetExecutor, Tag], {
-			concurrency: "unbounded",
-		})
+		const [executor, { directory }] = yield* Effect.all(
+			[ResetExecutor.Tag, RepositoryContext.Tag],
+			{
+				concurrency: "unbounded",
+			}
+		)
 
 		return ({
 			ref,
-			mode = RESET_MODE_HARD,
+			mode = ResetMode.Hard(),
 			timeout = "2 seconds",
-		}: Arguments): Effect.Effect<void, GitCommandFailedError | GitCommandTimeoutError> =>
+		}: Arguments): Effect.Effect<void, GitCommandError.Failed | GitCommandError.Timeout> =>
 			executor({ ref, mode, directory, timeout })
 	}),
 }) {}
 
-export default ResetCommand
+const Default = Service.Default
+
+export { Service, Default }
 export type { Arguments }

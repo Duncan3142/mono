@@ -1,6 +1,6 @@
 import type { Duration, Effect } from "effect"
 import { Context } from "effect"
-import { Tag as TagFactory } from "#const"
+import { TagFactory } from "#const"
 import { GitCommandError, TagMode } from "#domain"
 
 interface Arguments {
