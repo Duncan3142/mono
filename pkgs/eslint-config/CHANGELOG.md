@@ -1,5 +1,11 @@
 # @duncan3142/eslint-config
 
+## 0.1.15
+
+### Patch Changes
+
+- 8593f58: update deps
+
 ## 0.1.14
 
 ### Patch Changes
