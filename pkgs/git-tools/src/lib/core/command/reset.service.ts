@@ -1,7 +1,7 @@
 import type { Duration } from "effect"
 import { Effect } from "effect"
 import type { Reference } from "#domain/reference"
-import { Tag } from "#const"
+import { TagFactory } from "#const"
 import Tag from "#context/repository.service"
 import { RESET_MODE_HARD, type ResetMode } from "#domain/reset"
 import ResetExecutor from "#executor/reset.service"

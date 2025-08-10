@@ -1,7 +1,7 @@
 import type { Duration } from "effect"
 import { Effect } from "effect"
 import type { Reference } from "#domain/reference"
-import { Tag } from "#const"
+import { TagFactory } from "#const"
 import Tag from "#context/repository.service"
 import RevParseExecutor from "#executor/rev-parse.service"
 import * as GitCommandError from "#domain/git-command.error"

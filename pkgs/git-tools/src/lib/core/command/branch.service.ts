@@ -2,7 +2,7 @@ import type { Duration } from "effect"
 import { Effect } from "effect"
 import { BranchExecutor } from "#executor"
 import { BranchMode, GitCommandError } from "#domain"
-import { Tag } from "#const"
+import { TagFactory } from "#const"
 import { RepositoryContext } from "#context"
 
 interface Arguments {
@@ -13,7 +13,7 @@ interface Arguments {
 /**
  * Print refs service
  */
-class Service extends Effect.Service<Service>()(Tag.make(`command`, `print-refs`), {
+class Service extends Effect.Service<Service>()(TagFactory.make(`command`, `print-refs`), {
 	effect: Effect.gen(function* () {
 		const [executor, { directory }] = yield* Effect.all(
 			[BranchExecutor.Tag, RepositoryContext.Tag],

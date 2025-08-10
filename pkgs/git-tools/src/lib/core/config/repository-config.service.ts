@@ -1,5 +1,5 @@
 import { Config, Effect } from "effect"
-import { Tag } from "#const"
+import { TagFactory } from "#const"
 import { Remote, Fetch } from "#domain"
 
 const DEFAULT_REMOTE_NAME = "origin"
@@ -15,7 +15,7 @@ interface FetchConfig {
 /**
  * Repository configuration service
  */
-class Service extends Effect.Service<Service>()(Tag.make(`config`, `repo-config`), {
+class Service extends Effect.Service<Service>()(TagFactory.make(`config`, `repo-config`), {
 	effect: Effect.gen(function* () {
 		const [defaultRemote, fetch, defaultBranch] = yield* Config.nested(
 			Config.all([

@@ -1,8 +1,8 @@
 import { Data } from "effect"
-import { Tag } from "#const"
+import { TagFactory } from "#const"
 import * as Fetch from "./fetch.ts"
 
-const FETCH_REFS_NOT_FOUND_ERROR_TAG = Tag.make("domain", `FETCH_REFS_NOT_FOUND_ERROR`)
+const FETCH_REFS_NOT_FOUND_ERROR_TAG = TagFactory.make("domain", `FETCH_REFS_NOT_FOUND_ERROR`)
 
 /**
  * Fetch Not Found Error
@@ -11,7 +11,7 @@ class RefsNotFound extends Data.TaggedError(FETCH_REFS_NOT_FOUND_ERROR_TAG)<{
 	references: ReadonlyArray<string>
 }> {}
 
-const FETCH_DEPTH_EXCEEDED_ERROR_TAG = Tag.make("domain", `FETCH_DEPTH_EXCEEDED_ERROR`)
+const FETCH_DEPTH_EXCEEDED_ERROR_TAG = TagFactory.make("domain", `FETCH_DEPTH_EXCEEDED_ERROR`)
 
 /**
  * Fetch Depth Exceeded Error

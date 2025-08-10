@@ -1,6 +1,6 @@
 import type { Duration } from "effect"
 import { Effect } from "effect"
-import { Tag } from "#const"
+import { TagFactory } from "#const"
 import { MergeBaseError, Reference, GitCommandError } from "#domain"
 import { MergeBaseExecutor } from "#executor"
 import { RepositoryContext } from "#context"
@@ -14,7 +14,7 @@ interface Arguments {
 /**
  * Reference service
  */
-class Service extends Effect.Service<Service>()(Tag.make(`command`, `merge-base`), {
+class Service extends Effect.Service<Service>()(TagFactory.make(`command`, `merge-base`), {
 	effect: Effect.gen(function* () {
 		const [executor, { directory }] = yield* Effect.all(
 			[MergeBaseExecutor.Tag, RepositoryContext.Tag],

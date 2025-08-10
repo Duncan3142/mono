@@ -1,7 +1,10 @@
 import { Data } from "effect"
-import { Tag } from "#const"
+import { TagFactory } from "#const"
 
-const CHECKOUT_REF_NOT_FOUND_ERROR_TAG = Tag.make("domain", `CHECKOUT_REF_NOT_FOUND_ERROR`)
+const CHECKOUT_REF_NOT_FOUND_ERROR_TAG = TagFactory.make(
+	"domain",
+	`CHECKOUT_REF_NOT_FOUND_ERROR`
+)
 
 /**
  * Checkout Ref Not Found Error

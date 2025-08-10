@@ -21,14 +21,14 @@
 	"main": "./.tsc/dist/index.js",
 	"imports": {
 		"#layer": "./.tsc/dist/layer.js",
-		"#const": "./.tsc/dist/lib/core/const/index.js",
-		"#config": "./.tsc/dist/lib/core/config/index.js",
-		"#case": "./.tsc/dist/lib/core/case/index.js",
-		"#state": "./.tsc/dist/lib/core/state/index.js",
-		"#context": "./.tsc/dist/lib/core/context/index.js",
 		"#command": "./.tsc/dist/lib/core/command/index.js",
-		"#executor": "./.tsc/dist/lib/core/executor/index.js",
+		"#config": "./.tsc/dist/lib/core/config/index.js",
+		"#const": "./.tsc/dist/lib/core/const/index.js",
+		"#context": "./.tsc/dist/lib/core/context/index.js",
 		"#domain": "./.tsc/dist/lib/core/domain/index.js",
+		"#executor": "./.tsc/dist/lib/core/executor/index.js",
+		"#state": "./.tsc/dist/lib/core/state/index.js",
+		"#core": "./.tsc/dist/lib/core/index.js",
 		"#git": "./.tsc/dist/lib/git/index.js"
 	},
 	"exports": {

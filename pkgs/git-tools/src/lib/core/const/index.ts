@@ -1,2 +1,2 @@
 export * as Number from "./number.ts"
-export * as Tag from "./tag.ts"
+export * as TagFactory from "./tag.ts"

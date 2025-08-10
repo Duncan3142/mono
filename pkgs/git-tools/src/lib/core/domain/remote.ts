@@ -1,7 +1,7 @@
 import { Data } from "effect"
-import { Tag } from "#const"
+import { TagFactory } from "#const"
 
-const REMOTE_TAG = Tag.make("domain", "Remote")
+const REMOTE_TAG = TagFactory.make("domain", "Remote")
 
 interface Remote {
 	readonly _tag: typeof REMOTE_TAG

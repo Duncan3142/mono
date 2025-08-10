@@ -4,14 +4,14 @@
 	"compilerOptions": {
 		"paths": {
 			"#layer": ["./src/layer.ts"],
-			"#const": ["./src/lib/core/const/index.ts"],
-			"#config": ["./src/lib/core/config/index.ts"],
-			"#case": ["./src/lib/core/case/index.ts"],
-			"#state": ["./src/lib/core/state/index.ts"],
-			"#context": ["./src/lib/core/context/index.ts"],
 			"#command": ["./src/lib/core/command/index.ts"],
-			"#executor": ["./src/lib/core/executor/index.ts"],
+			"#config": ["./src/lib/core/config/index.ts"],
+			"#const": ["./src/lib/core/const/index.ts"],
+			"#context": ["./src/lib/core/context/index.ts"],
 			"#domain": ["./src/lib/core/domain/index.ts"],
+			"#executor": ["./src/lib/core/executor/index.ts"],
+			"#state": ["./src/lib/core/state/index.ts"],
+			"#core": ["./src/lib/core/index.ts"],
 			"#git": ["./src/lib/git/index.ts"],
 			"#mock": ["./test/mock/index.ts"]
 		},
