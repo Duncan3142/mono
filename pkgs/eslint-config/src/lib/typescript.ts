@@ -69,7 +69,10 @@ const custom: (guard: LintLevel.Guards) => Config = (guard) => {
 			"@typescript-eslint/no-loop-func": "error",
 			"@typescript-eslint/no-shadow": "error",
 			"@typescript-eslint/prefer-readonly": "error",
-			"@typescript-eslint/prefer-readonly-parameter-types": "error",
+			"@typescript-eslint/prefer-readonly-parameter-types": [
+				"error",
+				{ ignoreInferredTypes: true, treatMethodsAsReadonly: true },
+			],
 			"@typescript-eslint/no-unsafe-type-assertion": "error",
 			"@typescript-eslint/no-unsafe-assignment": guard.standard,
 			"@typescript-eslint/no-misused-promises": guard.standard,
@@ -125,6 +128,8 @@ const untyped: Configs = compose({
 	files: filePatterns(...jsExtensions),
 	extends: [tseslint.configs.disableTypeChecked],
 	rules: {
+		"@typescript-eslint/prefer-readonly": "off",
+		"@typescript-eslint/prefer-readonly-parameter-types": "off",
 		"@typescript-eslint/explicit-module-boundary-types": "off",
 	},
 })

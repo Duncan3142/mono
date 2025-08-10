@@ -1,12 +1,20 @@
-import type { Duration, Scope } from "effect"
-import { Effect, Array, Either, Deferred, Ref, Stream, pipe } from "effect"
-import type { Command, Error as PlatformError } from "@effect/platform"
-import { CommandExecutor } from "@effect/platform"
+import {
+	type Duration,
+	type Scope,
+	Effect,
+	Array,
+	Either,
+	Deferred,
+	Ref,
+	Stream,
+	pipe,
+} from "effect"
+import type { Command, Error as PlatformError, CommandExecutor } from "@effect/platform"
 import { mockDeep } from "vitest-mock-extended"
 
 interface Props {
-	delay: Duration.DurationInput
-	result: Either.Either<
+	readonly delay: Duration.DurationInput
+	readonly result: Either.Either<
 		{ exitCode: number; stdOutLines: Array<string>; stdErrLines: Array<string> },
 		PlatformError.PlatformError
 	>
@@ -55,7 +63,7 @@ const make = ({ delay, result }: Props): Effect.Effect<CommandExecutor.Process> 
 				const exitCode = Deferred.await(exitCodeDeferred)
 
 				const encoder = new TextEncoder()
-				const lineToByteStream = (lines: Array<string>) =>
+				const lineToByteStream = (lines: ReadonlyArray<string>) =>
 					pipe(
 						Array.map(lines, (line) => encoder.encode(line)),
 						Stream.fromIterable
