@@ -1,13 +1,13 @@
 import { importX } from "eslint-plugin-import-x"
 
 import { compose, filePatterns, jstsExtensions, type Config, type Configs } from "./core.ts"
-import type { Guards } from "#context/lint-level"
+import type { LintLevel } from "#context"
 
 /* -------------------------------------------------------------------------- */
 /*                                   Configs                                  */
 /* -------------------------------------------------------------------------- */
 
-const custom: (guard: Guards) => Config = (guard) => {
+const custom: (guard: LintLevel.Guards) => Config = (guard) => {
 	return {
 		name: "@duncan3142/eslint-config/import/custom",
 		rules: {
@@ -49,7 +49,7 @@ const custom: (guard: Guards) => Config = (guard) => {
  * @param guard - Guards
  * @returns Configs
  */
-const config: (guard: Guards) => Configs = (guard) =>
+const config: (guard: LintLevel.Guards) => Configs = (guard) =>
 	compose({
 		name: "@duncan3142/eslint-config/import",
 		files: filePatterns(...jstsExtensions),

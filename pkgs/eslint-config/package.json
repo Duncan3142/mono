@@ -19,18 +19,13 @@
 		"npm": ">=11"
 	},
 	"imports": {
-		"#lib/*": "./.tsc/dist/lib/*.js",
-		"#context/*": "./.tsc/dist/context/*.js",
-		"#context": "./.tsc/dist/context.js"
+		"#lib": "./.tsc/dist/lib/index.js",
+		"#context": "./.tsc/dist/context/index.js"
 	},
 	"exports": {
-		"./context": {
-			"import": "./.tsc/dist/context.js",
-			"types": "./.tsc/dist/context.d.ts"
-		},
-		"./*": {
-			"import": "./.tsc/dist/lib/*.js",
-			"types": "./.tsc/dist/lib/*.d.ts"
+		"/": {
+			"import": "./.tsc/dist/index.js",
+			"types": "./.tsc/dist/index.d.ts"
 		}
 	},
 	"files": [

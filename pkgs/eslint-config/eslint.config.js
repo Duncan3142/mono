@@ -1,18 +1,21 @@
-import * as Base from "#lib/base"
-import * as JsDoc from "#lib/jsdoc"
-import * as Secrets from "#lib/secrets"
-import * as Promise from "#lib/promise"
-import * as TypeScript from "#lib/typescript"
-import * as Ignored from "#lib/ignored"
-import * as ImportX from "#lib/import-x"
-import * as Prettier from "#lib/prettier"
-import * as Comments from "#lib/comments"
-import * as Core from "#lib/core"
-import * as Arrow from "#lib/arrow-functions"
-import * as Vitest from "#lib/vitest"
-import * as Context from "#context"
+import {
+	Base,
+	JSDoc,
+	Secrets,
+	Promise,
+	TypeScript,
+	Ignored,
+	ImportX,
+	Prettier,
+	Comments,
+	Core,
+	Arrow,
+	Vitest,
+} from "#lib"
 
-const { when } = Context.factory()
+import { Context } from "#context"
+
+const { when } = Context.make()
 
 const configs = Core.compose(
 	Core.config,
@@ -23,7 +26,7 @@ const configs = Core.compose(
 	ImportX.config(when),
 	Promise.config,
 	Arrow.config,
-	JsDoc.config,
+	JSDoc.config,
 	Secrets.config,
 	Vitest.config,
 	Prettier.config

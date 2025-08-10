@@ -1,5 +1,5 @@
 import * as EnvVars from "./environment.ts"
-import { type Guards, LINT_LEVEL as LINT_LEVEL_ENUM, when } from "#context/lint-level"
+import { type Guards, LINT_LEVEL as LINT_LEVEL_ENUM, when } from "./lint-level.ts"
 
 interface Context {
 	readonly when: Guards
@@ -9,7 +9,7 @@ interface Context {
  * Create context
  * @returns Context
  */
-const factory = (): Context => {
+const make = (): Context => {
 	const { LINT_LEVEL } = EnvVars.parse()
 
 	return {
@@ -17,4 +17,4 @@ const factory = (): Context => {
 	}
 }
 
-export { factory }
+export { make }
