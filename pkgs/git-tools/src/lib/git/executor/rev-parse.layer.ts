@@ -17,7 +17,8 @@ const Live: Layer.Layer<RevParseExecutor.Tag, never, CommandExecutor.CommandExec
 			}: RevParseExecutor.Arguments): Effect.Effect<
 				string,
 				GitCommandError.Failed | GitCommandError.Timeout
-			> => Base.make({
+			> =>
+				Base.make({
 					directory,
 					subCommand: "rev-parse",
 					subArgs: [rev],

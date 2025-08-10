@@ -1,5 +1,5 @@
 import { Ref, Effect, HashMap } from "effect"
-import { FetchDepth } from "#duncan3142/git-tools/state"
+import * as FetchDepth from "./fetch-depth.tag.ts"
 import { TagFactory } from "#duncan3142/git-tools/const"
 import { RepositoryConfig } from "#duncan3142/git-tools/config"
 
@@ -38,6 +38,6 @@ class Service extends Effect.Service<Service>()(
 	}
 ) {}
 
-const {Default} = Service
+const { Default } = Service
 
 export { Service, Default }

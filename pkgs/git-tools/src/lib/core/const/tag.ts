@@ -13,7 +13,7 @@ type Tag<Segments extends [...Array.NonEmptyReadonlyArray<string>]> =
  * @returns A namespaced tag string in the format `@duncan3142/git-tools[/<segments>]`.
  */
 const make = <Segments extends [...Array.NonEmptyReadonlyArray<string>]>(
-	...segments: [...Segments]
+	...segments: readonly [...Segments]
 	// eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- Typescript does not support variadic generics in this context
 ): Tag<Segments> => `${SERVICE_PREFIX}/${Array.join(segments, "/")}` as Tag<Segments>
 

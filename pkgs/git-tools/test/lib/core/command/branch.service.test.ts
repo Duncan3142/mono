@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/unbound-method -- Check mock use */
- 
+
 import { expect, describe, it, vi } from "@effect/vitest"
 import { Effect, Fiber, ConfigProvider, Layer, TestClock, Either } from "effect"
 import { CommandExecutor } from "@effect/platform"
@@ -72,9 +72,12 @@ describe("BranchCommand", () => {
 				CommandExecutor.makeExecutor(start)
 			),
 			Effect.withConsole(console),
-			Effect.withConfigProvider(ConfigProvider.fromMap(new Map([])))
+			Effect.withConfigProvider(
+				ConfigProvider.fromMap(
+					new Map([["GIT_TOOLS.DEFAULT_REMOTE.URL", "https://cloudgit.com/user/repo.git"]])
+				)
+			)
 		)
 	)
 })
 /* eslint-enable @typescript-eslint/unbound-method -- Check mock use */
- 

@@ -1,4 +1,4 @@
-import { type Duration, Effect  } from "effect"
+import { type Duration, Effect } from "effect"
 import type { Reference, GitCommandError } from "#duncan3142/git-tools/domain"
 import { TagFactory } from "#duncan3142/git-tools/const"
 import { RepositoryContext } from "#duncan3142/git-tools/context"
@@ -31,7 +31,7 @@ class Service extends Effect.Service<Service>()(TagFactory.make(`command`, `rev-
 	}),
 }) {}
 
-const {Default} = Service
+const { Default } = Service
 
 export { Service, Default }
 export type { Arguments }

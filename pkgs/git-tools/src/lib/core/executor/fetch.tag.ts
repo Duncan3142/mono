@@ -1,4 +1,4 @@
-import { type Array, type Duration, type Effect, Context  } from "effect"
+import { type Array, type Duration, type Effect, Context } from "effect"
 import type {
 	FetchError,
 	Reference,

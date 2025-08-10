@@ -1,5 +1,15 @@
-import { type CommandExecutor, Command  } from "@effect/platform"
-import { type Duration, type Scope, Effect, Stream, pipe, Console, Chunk, Match, Option  } from "effect"
+import { type CommandExecutor, Command } from "@effect/platform"
+import {
+	type Duration,
+	type Scope,
+	Effect,
+	Stream,
+	pipe,
+	Console,
+	Chunk,
+	Match,
+	Option,
+} from "effect"
 import { GitCommandError } from "#duncan3142/git-tools/domain"
 
 type ErrorMatcher<ECode extends ErrorCode, Error> = (

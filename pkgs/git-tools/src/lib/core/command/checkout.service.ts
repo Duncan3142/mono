@@ -1,5 +1,10 @@
-import { type Duration, Effect  } from "effect"
-import type { Reference, CheckoutError, GitCommandError, CheckoutMode  } from "#duncan3142/git-tools/domain"
+import { type Duration, Effect } from "effect"
+import {
+	type Reference,
+	type CheckoutError,
+	type GitCommandError,
+	CheckoutMode,
+} from "#duncan3142/git-tools/domain"
 import { TagFactory } from "#duncan3142/git-tools/const"
 import { RepositoryContext } from "#duncan3142/git-tools/context"
 import { CheckoutExecutor } from "#duncan3142/git-tools/executor"
@@ -33,7 +38,7 @@ class Service extends Effect.Service<Service>()(TagFactory.make(`command`, `chec
 	}),
 }) {}
 
-const {Default} = Service
+const { Default } = Service
 
 export { Service, Default }
 export type { Arguments }

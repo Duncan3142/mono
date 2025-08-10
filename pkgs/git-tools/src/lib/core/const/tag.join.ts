@@ -12,5 +12,4 @@ type Join<
 			: never
 		: never
 
- 
 export type { Join }

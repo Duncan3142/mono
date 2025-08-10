@@ -1,4 +1,4 @@
-import { type Duration, type Effect, Context  } from "effect"
+import { type Duration, type Effect, Context } from "effect"
 import { TagFactory } from "#duncan3142/git-tools/const"
 import type { GitCommandError, ConfigMode, ConfigScope } from "#duncan3142/git-tools/domain"
 

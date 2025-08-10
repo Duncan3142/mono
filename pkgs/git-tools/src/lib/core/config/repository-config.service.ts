@@ -1,6 +1,6 @@
 import { Config, Effect } from "effect"
 import { TagFactory } from "#duncan3142/git-tools/const"
-import { type Fetch, Remote  } from "#duncan3142/git-tools/domain";
+import { type Fetch, Remote } from "#duncan3142/git-tools/domain"
 
 const DEFAULT_REMOTE_NAME = "origin"
 const DEFAULT_BRANCH = "main"
@@ -55,6 +55,6 @@ class Service extends Effect.Service<Service>()(TagFactory.make(`config`, `repo-
 	}),
 }) {}
 
-const {Default} = Service
+const { Default } = Service
 
 export { Service, Default }

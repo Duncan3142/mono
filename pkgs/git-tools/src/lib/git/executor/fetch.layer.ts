@@ -6,8 +6,8 @@ import {
 	type GitCommandError,
 	ReferenceSpec,
 	FetchError,
-	FetchMode
-} from "#duncan3142/git-tools/domain";
+	FetchMode,
+} from "#duncan3142/git-tools/domain"
 import { FetchExecutor } from "#duncan3142/git-tools/executor"
 
 const FETCH_NOT_FOUND_CODE = 128

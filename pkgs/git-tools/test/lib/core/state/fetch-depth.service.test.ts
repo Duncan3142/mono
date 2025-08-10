@@ -30,7 +30,11 @@ describe("FetchDepth", () => {
 		}).pipe(
 			Effect.provide(ProgramTest),
 			Effect.withConsole(mockConsole),
-			Effect.withConfigProvider(ConfigProvider.fromMap(new Map([])))
+			Effect.withConfigProvider(
+				ConfigProvider.fromMap(
+					new Map([["GIT_TOOLS.DEFAULT_REMOTE.URL", "https://cloudgit.com/user/repo.git"]])
+				)
+			)
 		)
 	)
 	it.effect("should increment across scopes independently", () =>
@@ -58,7 +62,11 @@ describe("FetchDepth", () => {
 		}).pipe(
 			Effect.provide(ProgramTest),
 			Effect.withConsole(mockConsole),
-			Effect.withConfigProvider(ConfigProvider.fromMap(new Map([])))
+			Effect.withConfigProvider(
+				ConfigProvider.fromMap(
+					new Map([["GIT_TOOLS.DEFAULT_REMOTE.URL", "https://cloudgit.com/user/repo.git"]])
+				)
+			)
 		)
 	)
 	it.scoped("should increment within a scope dependently", () =>
@@ -85,7 +93,11 @@ describe("FetchDepth", () => {
 		}).pipe(
 			Effect.provide(ProgramTest),
 			Effect.withConsole(mockConsole),
-			Effect.withConfigProvider(ConfigProvider.fromMap(new Map([])))
+			Effect.withConfigProvider(
+				ConfigProvider.fromMap(
+					new Map([["GIT_TOOLS.DEFAULT_REMOTE.URL", "https://cloudgit.com/user/repo.git"]])
+				)
+			)
 		)
 	)
 })
