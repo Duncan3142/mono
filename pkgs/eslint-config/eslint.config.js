@@ -11,9 +11,9 @@ import {
 	Core,
 	Arrow,
 	Vitest,
-} from "#lib"
+} from "#duncan3142/eslint-config/lib"
 
-import { Context } from "#context"
+import { Context } from "#duncan3142/eslint-config/context"
 
 const { when } = Context.make()
 

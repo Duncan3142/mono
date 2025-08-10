@@ -1,7 +1,7 @@
 import { importX } from "eslint-plugin-import-x"
 
 import { compose, filePatterns, jstsExtensions, type Config, type Configs } from "./core.ts"
-import type { LintLevel } from "#context"
+import type { LintLevel } from "#duncan3142/eslint-config/context"
 
 /* -------------------------------------------------------------------------- */
 /*                                   Configs                                  */

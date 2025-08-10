@@ -19,8 +19,8 @@
 		"npm": ">=11"
 	},
 	"imports": {
-		"#lib": "./.tsc/dist/lib/index.js",
-		"#context": "./.tsc/dist/context/index.js"
+		"#duncan3142/eslint-config/lib": "./.tsc/dist/lib/index.js",
+		"#duncan3142/eslint-config/context": "./.tsc/dist/context/index.js"
 	},
 	"exports": {
 		".": {
