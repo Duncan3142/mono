@@ -11,7 +11,7 @@ import {
 	MockConsole,
 	MockLogger,
 	MockProcess,
-} from "#duncan3142/git-tools/mock"
+} from "#duncan3142/git-tools/test-mock"
 import { RepositoryContext } from "#duncan3142/git-tools/context"
 import { Repository } from "#duncan3142/git-tools/domain"
 
@@ -23,12 +23,7 @@ const processProps = {
 	delay: "1 second",
 	result: Either.right({
 		exitCode: 0,
-		stdOutLines: [
-			`* effect-test                0468291 [origin/effect-test] abc def\n`,
-			`  main                       62c5d1a [origin/main] Semver @duncan3142/effect-test (#2)\n`,
-			`  remotes/origin/HEAD        -> origin/main\n`,
-			`  remotes/origin/effect-test c6722b4 Semver @duncan3142/effect-test (#1)`,
-		],
+		stdOutLines: [`alpha\n`, `beta`],
 		stdErrLines: [],
 	}),
 } satisfies MockProcess.Props
@@ -57,20 +52,12 @@ describe("BranchCommand", () => {
 
 			expect(console.log).toHaveBeenCalledTimes(1)
 
-			expect(console.log).toHaveBeenNthCalledWith(
-				1,
-				[
-					`* effect-test                0468291 [origin/effect-test] abc def`,
-					`  main                       62c5d1a [origin/main] Semver @duncan3142/effect-test (#2)`,
-					`  remotes/origin/HEAD        -> origin/main`,
-					`  remotes/origin/effect-test c6722b4 Semver @duncan3142/effect-test (#1)`,
-				].join("\n")
-			)
+			expect(console.log).toHaveBeenNthCalledWith(1, [`alpha`, `beta`].join("\n"))
 		}).pipe(
 			Effect.provide(ProgramLayer),
 			Effect.provideService(
 				RepositoryContext.RepositoryContext,
-				Repository.Repository({ directory: process.cwd() })
+				Repository.Repository({ directory: "dummy" })
 			),
 			Effect.provideService(
 				CommandExecutor.CommandExecutor,
@@ -81,4 +68,5 @@ describe("BranchCommand", () => {
 		)
 	)
 })
+
 /* eslint-enable @typescript-eslint/unbound-method -- Check mock use */

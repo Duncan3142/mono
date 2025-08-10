@@ -6,6 +6,7 @@ import { RepositoryContext } from "#duncan3142/git-tools/context"
 
 interface Arguments {
 	readonly bare?: boolean
+	readonly initBranch?: string
 	readonly timeout?: Duration.DurationInput
 }
 
@@ -21,10 +22,14 @@ class InitCommand extends Effect.Service<InitCommand>()(TagFactory.make(`command
 			}
 		)
 
-		return ({ bare = false, timeout = "2 seconds" }: Arguments = {}): Effect.Effect<
+		return ({
+			bare = false,
+			initBranch = "main",
+			timeout = "2 seconds",
+		}: Arguments = {}): Effect.Effect<
 			void,
 			GitCommandError.GitCommandFailed | GitCommandError.GitCommandTimeout
-		> => executor({ directory, timeout, bare })
+		> => executor({ directory, timeout, bare, initBranch })
 	}),
 }) {}
 

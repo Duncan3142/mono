@@ -45,7 +45,8 @@ const GitToolsLive = Layer.mergeAll(
 	InitCommand.Default,
 	PushCommand.Default,
 	RemoteCommand.Default,
-	TagCommand.Default
+	TagCommand.Default,
+	FetchDepthFactory.Default
 ).pipe(
 	Layer.provide(
 		Layer.mergeAll(
@@ -64,7 +65,6 @@ const GitToolsLive = Layer.mergeAll(
 			TagExecutor.Live
 		)
 	),
-	Layer.provide(FetchDepthFactory.Default),
 	Layer.provide(RepositoryConfig.Default)
 )
 

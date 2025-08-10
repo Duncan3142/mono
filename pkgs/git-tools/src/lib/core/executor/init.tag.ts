@@ -5,6 +5,7 @@ import type { GitCommandError } from "#duncan3142/git-tools/domain"
 interface Arguments {
 	readonly directory: string
 	readonly bare: boolean
+	readonly initBranch: string
 	readonly timeout: Duration.DurationInput
 }
 

@@ -13,6 +13,7 @@ const Live: Layer.Layer<InitExecutor.InitExecutor, never, CommandExecutor.Comman
 				directory,
 				bare,
 				timeout,
+				initBranch,
 			}: InitExecutor.Arguments): Effect.Effect<
 				void,
 				GitCommandError.GitCommandFailed | GitCommandError.GitCommandTimeout
@@ -21,7 +22,7 @@ const Live: Layer.Layer<InitExecutor.InitExecutor, never, CommandExecutor.Comman
 				return Base.make({
 					directory,
 					subCommand: "init",
-					subArgs: [...bareArg],
+					subArgs: [...bareArg, `--initial-branch=${initBranch}`],
 					timeout,
 					errorMatcher: Match.value,
 				}).pipe(

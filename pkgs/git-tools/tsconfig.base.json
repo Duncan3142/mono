@@ -13,7 +13,8 @@
 			"#duncan3142/git-tools/state": ["./src/lib/core/state/index.ts"],
 			"#duncan3142/git-tools/core": ["./src/lib/core/index.ts"],
 			"#duncan3142/git-tools/git": ["./src/lib/git/index.ts"],
-			"#duncan3142/git-tools/mock": ["./test/mock/index.ts"]
+			"#duncan3142/git-tools/test-mock": ["./test/mock/index.ts"],
+			"#duncan3142/git-tools/test-setup": ["./test/setup/index.ts"]
 		},
 		"isolatedDeclarations": false,
 		"plugins": [
