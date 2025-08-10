@@ -1,0 +1,38 @@
+import { CommandExecutor } from "@effect/platform"
+import { Layer, Effect, Match, Console } from "effect"
+import * as Base from "./base.ts"
+import { RemoteExecutor } from "#duncan3142/git-tools/executor"
+import { type GitCommandError, RemoteMode } from "#duncan3142/git-tools/domain"
+
+const Live: Layer.Layer<RemoteExecutor.RemoteExecutor, never, CommandExecutor.CommandExecutor> =
+	Layer.effect(
+		RemoteExecutor.RemoteExecutor,
+		Effect.gen(function* () {
+			const executor = yield* CommandExecutor.CommandExecutor
+			return ({
+				directory,
+				timeout,
+				mode,
+			}: RemoteExecutor.Arguments): Effect.Effect<
+				void,
+				GitCommandError.GitCommandFailed | GitCommandError.GitCommandTimeout
+			> => {
+				const subArgs = RemoteMode.$match(mode, {
+					Add: ({ remote: { name, url } }) => ["add", name, url],
+				})
+				return Base.make({
+					directory,
+					subCommand: "remote",
+					subArgs,
+					timeout,
+					errorMatcher: Match.value,
+				}).pipe(
+					Effect.flatMap(Console.log),
+					Effect.scoped,
+					Effect.provideService(CommandExecutor.CommandExecutor, executor)
+				)
+			}
+		})
+	)
+
+export { Live }
