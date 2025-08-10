@@ -19,8 +19,8 @@ const program = Effect.gen(function* () {
 		printRefs(),
 		mergeBase({
 			baseRef: Reference.Branch({ name: "main" }),
-			headRef: Reference.Branch({ name: "git-effect" }),
-		}).pipe(Effect.flatMap((baseSha) => Console.log("Merge base found", baseSha))),
+			headRef: Reference.Tag({ name: "@duncan3142/eslint-config@0.1.4" }),
+		}).pipe(Effect.flatMap((baseSha) => Console.log("Merge base found:", baseSha))),
 	])
 }).pipe(
 	Effect.provide(ProgramLive),
@@ -28,7 +28,11 @@ const program = Effect.gen(function* () {
 		RepositoryContext.Tag,
 		Repository.Repository({ directory: process.cwd() })
 	),
-	Effect.withConfigProvider(ConfigProvider.fromMap(new Map([]))),
+	Effect.withConfigProvider(
+		ConfigProvider.fromMap(
+			new Map([["GIT_TOOLS.DEFAULT_REMOTE.URL", "https://cloudgit.com/user/repo.git"]])
+		)
+	),
 	Logger.withMinimumLogLevel(LogLevel.Trace)
 )
 
