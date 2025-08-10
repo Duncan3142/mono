@@ -13,7 +13,7 @@ const make = (
 ): Effect.Effect<void, Cause.UnknownException, RepositoryContext.RepositoryContext> =>
 	Effect.gen(function* () {
 		const { directory } = yield* RepositoryContext.RepositoryContext
-		Effect.tryPromise(() => writeFile(join(directory, name), ""))
+		return yield* Effect.tryPromise(() => writeFile(join(directory, name), ""))
 	})
 
 export { make }
