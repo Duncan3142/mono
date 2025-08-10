@@ -1,8 +1,8 @@
 import { CommandExecutor } from "@effect/platform"
 import { Layer, Effect, Match } from "effect"
 import * as Base from "./base.ts"
-import { RevParseExecutor } from "#executor"
-import { GitCommandError } from "#domain"
+import { RevParseExecutor } from "#duncan3142/git-tools/executor"
+import { GitCommandError } from "#duncan3142/git-tools/domain"
 
 const Live: Layer.Layer<RevParseExecutor.Tag, never, CommandExecutor.CommandExecutor> =
 	Layer.effect(

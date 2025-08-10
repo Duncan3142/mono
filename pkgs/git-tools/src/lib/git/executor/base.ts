@@ -2,7 +2,7 @@ import type { CommandExecutor } from "@effect/platform"
 import { Command } from "@effect/platform"
 import type { Duration, Scope } from "effect"
 import { Effect, Stream, pipe, Console, Chunk, Match, Option } from "effect"
-import { GitCommandError } from "#domain"
+import { GitCommandError } from "#duncan3142/git-tools/domain"
 
 type ErrorMatcher<ECode extends ErrorCode, Error> = (
 	ecode: ErrorCode

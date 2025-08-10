@@ -1,6 +1,6 @@
 import { Config, Effect } from "effect"
-import { TagFactory } from "#const"
-import { Remote, Fetch } from "#domain"
+import { TagFactory } from "#duncan3142/git-tools/const"
+import { Remote, Fetch } from "#duncan3142/git-tools/domain"
 
 const DEFAULT_REMOTE_NAME = "origin"
 const DEFAULT_BRANCH = "main"

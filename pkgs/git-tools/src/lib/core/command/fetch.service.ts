@@ -1,11 +1,17 @@
 import type { Array, Duration } from "effect"
 import { Effect } from "effect"
-import { FetchExecutor } from "#executor"
-import { TagFactory } from "#const"
-import { Remote, FetchError, FetchMode, Reference, GitCommandError } from "#domain"
-import { FetchDepth } from "#state"
-import { RepositoryConfig } from "#config"
-import { RepositoryContext } from "#context"
+import { FetchExecutor } from "#duncan3142/git-tools/executor"
+import { TagFactory } from "#duncan3142/git-tools/const"
+import {
+	Remote,
+	FetchError,
+	FetchMode,
+	Reference,
+	GitCommandError,
+} from "#duncan3142/git-tools/domain"
+import { FetchDepth } from "#duncan3142/git-tools/state"
+import { RepositoryConfig } from "#duncan3142/git-tools/config"
+import { RepositoryContext } from "#duncan3142/git-tools/context"
 
 interface Arguments {
 	readonly refs: Array.NonEmptyReadonlyArray<Reference.Reference>

@@ -1,7 +1,12 @@
 import type { Duration, Effect } from "effect"
 import { Context } from "effect"
-import { Reference, GitCommandError, CheckoutError, CheckoutMode } from "#domain"
-import { TagFactory } from "#const"
+import {
+	Reference,
+	GitCommandError,
+	CheckoutError,
+	CheckoutMode,
+} from "#duncan3142/git-tools/domain"
+import { TagFactory } from "#duncan3142/git-tools/const"
 
 interface Arguments {
 	readonly ref: Reference.Reference

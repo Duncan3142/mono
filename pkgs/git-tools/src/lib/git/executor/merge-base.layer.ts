@@ -1,8 +1,8 @@
 import { CommandExecutor } from "@effect/platform"
 import { Layer, pipe, Effect, Match } from "effect"
 import * as Base from "./base.ts"
-import { MergeBaseExecutor } from "#executor"
-import { MergeBaseError, GitCommandError, Reference } from "#domain"
+import { MergeBaseExecutor } from "#duncan3142/git-tools/executor"
+import { MergeBaseError, GitCommandError, Reference } from "#duncan3142/git-tools/domain"
 
 const MERGE_BASE_NOT_FOUND_CODE = 1
 

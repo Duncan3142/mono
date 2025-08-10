@@ -1,5 +1,5 @@
 import { Data } from "effect"
-import { Remote } from "#domain"
+import { Remote } from "#duncan3142/git-tools/domain"
 
 type Mode = Data.TaggedEnum<{
 	Add: { readonly remote: Remote.Remote }

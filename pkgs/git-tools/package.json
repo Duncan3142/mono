@@ -20,16 +20,16 @@
 	},
 	"main": "./.tsc/dist/index.js",
 	"imports": {
-		"#layer": "./.tsc/dist/layer.js",
-		"#command": "./.tsc/dist/lib/core/command/index.js",
-		"#config": "./.tsc/dist/lib/core/config/index.js",
-		"#const": "./.tsc/dist/lib/core/const/index.js",
-		"#context": "./.tsc/dist/lib/core/context/index.js",
-		"#domain": "./.tsc/dist/lib/core/domain/index.js",
-		"#executor": "./.tsc/dist/lib/core/executor/index.js",
-		"#state": "./.tsc/dist/lib/core/state/index.js",
-		"#core": "./.tsc/dist/lib/core/index.js",
-		"#git": "./.tsc/dist/lib/git/index.js"
+		"#duncan3142/git-tools/layer": "./.tsc/dist/layer.js",
+		"#duncan3142/git-tools/command": "./.tsc/dist/lib/core/command/index.js",
+		"#duncan3142/git-tools/config": "./.tsc/dist/lib/core/config/index.js",
+		"#duncan3142/git-tools/const": "./.tsc/dist/lib/core/const/index.js",
+		"#duncan3142/git-tools/context": "./.tsc/dist/lib/core/context/index.js",
+		"#duncan3142/git-tools/domain": "./.tsc/dist/lib/core/domain/index.js",
+		"#duncan3142/git-tools/executor": "./.tsc/dist/lib/core/executor/index.js",
+		"#duncan3142/git-tools/state": "./.tsc/dist/lib/core/state/index.js",
+		"#duncan3142/git-tools/core": "./.tsc/dist/lib/core/index.js",
+		"#duncan3142/git-tools/git": "./.tsc/dist/lib/git/index.js"
 	},
 	"exports": {
 		"./*": {
@@ -57,7 +57,7 @@
 	},
 	"devDependencies": {
 		"@changesets/cli": "^2.29.5",
-		"@duncan3142/eslint-config": "^0.1.16",
+		"@duncan3142/eslint-config": "^0.1.17",
 		"@duncan3142/prettier-config": "^0.1.7",
 		"@duncan3142/tsc-config": "^0.1.10",
 		"@effect/language-service": "^0.35.2",

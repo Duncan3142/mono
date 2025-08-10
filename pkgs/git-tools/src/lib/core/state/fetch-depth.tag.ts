@@ -1,6 +1,6 @@
 import { Effect, Ref, Context } from "effect"
-import { TagFactory } from "#const"
-import { FetchError, Fetch } from "#domain"
+import { TagFactory } from "#duncan3142/git-tools/const"
+import { FetchError, Fetch } from "#duncan3142/git-tools/domain"
 
 /**
  * Fetch depth service

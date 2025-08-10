@@ -6,8 +6,8 @@ import {
 	CheckoutCommand,
 	ResetCommand,
 	RevParseCommand,
-} from "#command"
-import { RepositoryConfig } from "#config"
+} from "#duncan3142/git-tools/command"
+import { RepositoryConfig } from "#duncan3142/git-tools/config"
 import {
 	FetchExecutor,
 	BranchExecutor,
@@ -15,8 +15,8 @@ import {
 	MergeBaseExecutor,
 	ResetExecutor,
 	RevParseExecutor,
-} from "#git"
-import { FetchDepthFactory } from "#state"
+} from "#duncan3142/git-tools/git"
+import { FetchDepthFactory } from "#duncan3142/git-tools/state"
 
 const GitToolsLive = Layer.mergeAll(
 	FetchCommand.Default,

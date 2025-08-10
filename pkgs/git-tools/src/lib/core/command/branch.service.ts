@@ -1,9 +1,9 @@
 import type { Duration } from "effect"
 import { Effect } from "effect"
-import { BranchExecutor } from "#executor"
-import { BranchMode, GitCommandError } from "#domain"
-import { TagFactory } from "#const"
-import { RepositoryContext } from "#context"
+import { BranchExecutor } from "#duncan3142/git-tools/executor"
+import { BranchMode, GitCommandError } from "#duncan3142/git-tools/domain"
+import { TagFactory } from "#duncan3142/git-tools/const"
+import { RepositoryContext } from "#duncan3142/git-tools/context"
 
 interface Arguments {
 	readonly mode?: BranchMode.Mode

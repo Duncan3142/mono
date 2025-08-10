@@ -1,9 +1,9 @@
 import type { Duration } from "effect"
 import { Effect } from "effect"
-import { TagFactory } from "#const"
-import { MergeBaseError, Reference, GitCommandError } from "#domain"
-import { MergeBaseExecutor } from "#executor"
-import { RepositoryContext } from "#context"
+import { TagFactory } from "#duncan3142/git-tools/const"
+import { MergeBaseError, Reference, GitCommandError } from "#duncan3142/git-tools/domain"
+import { MergeBaseExecutor } from "#duncan3142/git-tools/executor"
+import { RepositoryContext } from "#duncan3142/git-tools/context"
 
 interface Arguments {
 	readonly headRef: Reference.Reference

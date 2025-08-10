@@ -1,7 +1,13 @@
 import type { Array, Duration, Effect } from "effect"
 import { Context } from "effect"
-import { FetchError, Reference, Remote, GitCommandError, FetchMode } from "#domain"
-import { TagFactory } from "#const"
+import {
+	FetchError,
+	Reference,
+	Remote,
+	GitCommandError,
+	FetchMode,
+} from "#duncan3142/git-tools/domain"
+import { TagFactory } from "#duncan3142/git-tools/const"
 
 interface Arguments {
 	readonly mode: FetchMode.Mode

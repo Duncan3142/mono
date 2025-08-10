@@ -1,8 +1,8 @@
 import { describe, it, expect } from "@effect/vitest"
 import { ConfigProvider, Effect, Layer, pipe } from "effect"
-import { FetchDepth, FetchDepthFactory } from "#state"
-import { RepositoryConfig } from "#config"
-import { MockConsole } from "#mock"
+import { FetchDepth, FetchDepthFactory } from "#duncan3142/git-tools/state"
+import { RepositoryConfig } from "#duncan3142/git-tools/config"
+import { MockConsole } from "#duncan3142/git-tools/mock"
 
 const ProgramTest = pipe(
 	FetchDepthFactory.Service.Default,

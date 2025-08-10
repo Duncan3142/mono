@@ -1,7 +1,7 @@
 import type { Duration, Effect } from "effect"
 import { Context } from "effect"
-import { TagFactory } from "#const"
-import { GitCommandError } from "#domain"
+import { TagFactory } from "#duncan3142/git-tools/const"
+import { GitCommandError } from "#duncan3142/git-tools/domain"
 
 interface Arguments {
 	readonly timeout: Duration.DurationInput
