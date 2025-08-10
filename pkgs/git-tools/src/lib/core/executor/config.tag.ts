@@ -3,8 +3,9 @@ import { TagFactory } from "#duncan3142/git-tools/const"
 import type { GitCommandError, ConfigMode, ConfigScope } from "#duncan3142/git-tools/domain"
 
 interface Arguments {
+	readonly directory: string
 	readonly scope: ConfigScope.ConfigScope
-	readonly input: ConfigMode.ConfigMode
+	readonly mode: ConfigMode.ConfigMode
 	readonly timeout: Duration.DurationInput
 }
 

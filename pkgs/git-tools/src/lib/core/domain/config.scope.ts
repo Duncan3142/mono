@@ -2,7 +2,7 @@ import { Data } from "effect"
 
 type ConfigScope = Data.TaggedEnum<{
 	Global: object
-	Local: { readonly directory: string }
+	Local: object
 }>
 
 const { $is, $match, Global, Local } = Data.taggedEnum<ConfigScope>()
