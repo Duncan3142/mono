@@ -5,13 +5,12 @@ import { GitToolsLive } from "#duncan3142/git-tools/layer"
 import { Reference, Repository } from "#duncan3142/git-tools/domain"
 import { MergeBaseCommand, BranchCommand } from "#duncan3142/git-tools/command"
 import { RepositoryContext } from "#duncan3142/git-tools/context"
-import { MockConfigProvider } from "#duncan3142/git-tools/mock"
 
 const ProgramLive = GitToolsLive.pipe(Layer.provide(NodeContext.layer))
 
 const program = Effect.gen(function* () {
 	const [printRefs, mergeBase] = yield* Effect.all(
-		[BranchCommand.Service, MergeBaseCommand.Service],
+		[BranchCommand.BranchCommand, MergeBaseCommand.MergeBaseCommand],
 		{
 			concurrency: "unbounded",
 		}
@@ -26,10 +25,9 @@ const program = Effect.gen(function* () {
 }).pipe(
 	Effect.provide(ProgramLive),
 	Effect.provideService(
-		RepositoryContext.Tag,
+		RepositoryContext.RepositoryContext,
 		Repository.Repository({ directory: process.cwd() })
 	),
-	Effect.withConfigProvider(MockConfigProvider.Test),
 	Logger.withMinimumLogLevel(LogLevel.Trace)
 )
 

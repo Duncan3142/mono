@@ -47,7 +47,7 @@ describe("BranchCommand", () => {
 	it.effect("prints", () =>
 		Effect.gen(function* () {
 			const result = yield* Effect.gen(function* () {
-				const printRefs = yield* BranchCommand.Service
+				const printRefs = yield* BranchCommand.BranchCommand
 				const fiber = yield* Effect.fork(Effect.exit(printRefs()))
 				yield* TestClock.adjust("3 seconds")
 				return yield* Fiber.join(fiber)
@@ -69,7 +69,7 @@ describe("BranchCommand", () => {
 		}).pipe(
 			Effect.provide(ProgramLayer),
 			Effect.provideService(
-				RepositoryContext.Tag,
+				RepositoryContext.RepositoryContext,
 				Repository.Repository({ directory: process.cwd() })
 			),
 			Effect.provideService(
