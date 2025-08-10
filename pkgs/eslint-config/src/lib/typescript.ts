@@ -13,7 +13,7 @@ import {
 	type Path,
 	type Patterns,
 } from "./core.ts"
-import type { LintLevel } from "#context"
+import type { LintLevel } from "#duncan3142/eslint-config/context"
 
 const TS_CONFIG_DEFAULT: Path = "tsconfig.json"
 

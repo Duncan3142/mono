@@ -3,8 +3,8 @@
 	"extends": ["@duncan3142/tsc-config/base"],
 	"compilerOptions": {
 		"paths": {
-			"#lib": ["./src/lib/index.ts"],
-			"#context": ["./src/context/index.ts"]
+			"#duncan3142/eslint-config/lib": ["./src/lib/index.ts"],
+			"#duncan3142/eslint-config/context": ["./src/context/index.ts"]
 		}
 	},
 	"include": []

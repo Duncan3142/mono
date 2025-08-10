@@ -1,2 +1,2 @@
-export * from "#lib"
-export * from "#context"
+export * from "#duncan3142/eslint-config/lib"
+export * from "#duncan3142/eslint-config/context"
