@@ -1,6 +1,5 @@
-import type { Duration, Effect } from "effect"
-import { Context } from "effect"
-import {
+import { type Duration, type Effect, Context  } from "effect"
+import type {
 	Reference,
 	GitCommandError,
 	CheckoutError,

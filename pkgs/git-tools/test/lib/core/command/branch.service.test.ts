@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/unbound-method -- Check mock use */
-/* eslint-disable @typescript-eslint/no-magic-numbers -- Check mock use */
+ 
 import { expect, describe, it, vi } from "@effect/vitest"
 import { Effect, Fiber, ConfigProvider, Layer, TestClock, Either } from "effect"
 import { CommandExecutor } from "@effect/platform"
@@ -77,4 +77,4 @@ describe("BranchCommand", () => {
 	)
 })
 /* eslint-enable @typescript-eslint/unbound-method -- Check mock use */
-/* eslint-enable @typescript-eslint/no-magic-numbers -- Check mock use */
+ 

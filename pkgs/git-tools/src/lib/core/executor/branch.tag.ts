@@ -1,7 +1,6 @@
-import type { Duration, Effect } from "effect"
-import { Context } from "effect"
+import { type Duration, type Effect, Context  } from "effect"
 import { TagFactory } from "#duncan3142/git-tools/const"
-import { GitCommandError, BranchMode } from "#duncan3142/git-tools/domain"
+import type { GitCommandError, BranchMode } from "#duncan3142/git-tools/domain"
 
 interface Arguments {
 	readonly mode: BranchMode.Mode

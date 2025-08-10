@@ -1,6 +1,5 @@
-import type { Array, Duration, Effect } from "effect"
-import { Context } from "effect"
-import {
+import { type Array, type Duration, type Effect, Context  } from "effect"
+import type {
 	FetchError,
 	Reference,
 	Remote,

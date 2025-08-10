@@ -2,9 +2,8 @@ import { NodeContext, NodeRuntime } from "@effect/platform-node"
 import { Effect, Layer, ConfigProvider, Console, LogLevel, Logger } from "effect"
 import { GitToolsLive } from "#duncan3142/git-tools/layer"
 
-import { Reference } from "#duncan3142/git-tools/domain"
+import { Reference, Repository  } from "#duncan3142/git-tools/domain"
 import { MergeBaseCommand, BranchCommand } from "#duncan3142/git-tools/command"
-import { Repository } from "#duncan3142/git-tools/domain"
 import { RepositoryContext } from "#duncan3142/git-tools/context"
 
 const ProgramLive = GitToolsLive.pipe(Layer.provide(NodeContext.layer))

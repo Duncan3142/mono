@@ -3,11 +3,11 @@ import { Effect, Match, pipe, Layer, Console, Array } from "effect"
 import * as Base from "./base.ts"
 import { Number as Const } from "#duncan3142/git-tools/const"
 import {
+	type GitCommandError,
 	ReferenceSpec,
 	FetchError,
-	FetchMode,
-	GitCommandError,
-} from "#duncan3142/git-tools/domain"
+	FetchMode
+} from "#duncan3142/git-tools/domain";
 import { FetchExecutor } from "#duncan3142/git-tools/executor"
 
 const FETCH_NOT_FOUND_CODE = 128

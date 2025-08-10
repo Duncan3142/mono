@@ -1,6 +1,6 @@
 import { Effect, Ref, Context } from "effect"
 import { TagFactory } from "#duncan3142/git-tools/const"
-import { FetchError, Fetch } from "#duncan3142/git-tools/domain"
+import { type Fetch, FetchError  } from "#duncan3142/git-tools/domain";
 
 /**
  * Fetch depth service
@@ -15,6 +15,11 @@ class Tag extends Context.Tag(TagFactory.make(`state`, `fetch-depth`))<
 	}
 >() {}
 
+/**
+ * @param root0
+ * @param root0.init
+ * @param root0.maxDepth
+ */
 const make = ({
 	init,
 	maxDepth,

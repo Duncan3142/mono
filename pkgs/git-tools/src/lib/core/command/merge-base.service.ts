@@ -1,7 +1,6 @@
-import type { Duration } from "effect"
-import { Effect } from "effect"
+import { type Duration, Effect  } from "effect"
 import { TagFactory } from "#duncan3142/git-tools/const"
-import { MergeBaseError, Reference, GitCommandError } from "#duncan3142/git-tools/domain"
+import type { MergeBaseError, Reference, GitCommandError } from "#duncan3142/git-tools/domain"
 import { MergeBaseExecutor } from "#duncan3142/git-tools/executor"
 import { RepositoryContext } from "#duncan3142/git-tools/context"
 
@@ -40,7 +39,7 @@ class Service extends Effect.Service<Service>()(TagFactory.make(`command`, `merg
 	}),
 }) {}
 
-const Default = Service.Default
+const {Default} = Service
 
 export { Service, Default }
 export type { Arguments }

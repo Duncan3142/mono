@@ -1,6 +1,6 @@
 import { Context } from "effect"
 import { TagFactory } from "#duncan3142/git-tools/const"
-import { Repository } from "#duncan3142/git-tools/domain"
+import type { Repository } from "#duncan3142/git-tools/domain"
 
 /**
  * Repository context service

@@ -2,7 +2,7 @@ import { CommandExecutor } from "@effect/platform"
 import { Console, Layer, Effect, Match } from "effect"
 import * as Base from "./base.ts"
 import { ResetExecutor } from "#duncan3142/git-tools/executor"
-import { GitCommandError, ResetMode } from "#duncan3142/git-tools/domain"
+import { type GitCommandError, ResetMode } from "#duncan3142/git-tools/domain";
 
 const Live: Layer.Layer<ResetExecutor.Tag, never, CommandExecutor.CommandExecutor> =
 	Layer.effect(

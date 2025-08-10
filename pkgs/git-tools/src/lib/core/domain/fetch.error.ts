@@ -1,6 +1,6 @@
 import { Data } from "effect"
 import { TagFactory } from "#duncan3142/git-tools/const"
-import { Fetch } from "#duncan3142/git-tools/domain"
+import type { Fetch } from "#duncan3142/git-tools/domain"
 
 const FETCH_REFS_NOT_FOUND_ERROR_TAG = TagFactory.make("domain", `FETCH_REFS_NOT_FOUND_ERROR`)
 

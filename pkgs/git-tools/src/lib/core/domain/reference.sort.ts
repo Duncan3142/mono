@@ -1,5 +1,5 @@
 import { Order } from "effect"
-import { Reference } from "#duncan3142/git-tools/domain"
+import type { Reference } from "#duncan3142/git-tools/domain"
 
 /**
  * Order reference by type

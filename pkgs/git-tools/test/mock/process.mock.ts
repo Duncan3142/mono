@@ -9,7 +9,7 @@ import {
 	Stream,
 	pipe,
 } from "effect"
-import type { Command, Error as PlatformError, CommandExecutor } from "@effect/platform"
+import { type Command, type Error as PlatformError, CommandExecutor } from "@effect/platform"
 import { mockDeep } from "vitest-mock-extended"
 
 interface Props {

@@ -2,7 +2,7 @@ import { CommandExecutor } from "@effect/platform"
 import { Layer, pipe, Effect, Match } from "effect"
 import * as Base from "./base.ts"
 import { MergeBaseExecutor } from "#duncan3142/git-tools/executor"
-import { MergeBaseError, GitCommandError, Reference } from "#duncan3142/git-tools/domain"
+import { type GitCommandError, type Reference, MergeBaseError  } from "#duncan3142/git-tools/domain";
 
 const MERGE_BASE_NOT_FOUND_CODE = 1
 
@@ -20,8 +20,7 @@ const Live: Layer.Layer<MergeBaseExecutor.Tag, never, CommandExecutor.CommandExe
 			}: MergeBaseExecutor.Arguments): Effect.Effect<
 				Reference.SHA,
 				MergeBaseError.NotFound | GitCommandError.Failed | GitCommandError.Timeout
-			> => {
-				return Base.make({
+			> => Base.make({
 					directory,
 					subCommand: "merge-base",
 					subArgs: [baseRef, headRef],
@@ -39,7 +38,6 @@ const Live: Layer.Layer<MergeBaseExecutor.Tag, never, CommandExecutor.CommandExe
 							)
 						),
 				}).pipe(Effect.scoped, Effect.provideService(CommandExecutor.CommandExecutor, executor))
-			}
 		})
 	)
 

@@ -1,5 +1,4 @@
-import type { Console } from "effect"
-import { Effect } from "effect"
+import { type Console, Effect  } from "effect"
 import { mockDeep, type DeepMockProxy } from "vitest-mock-extended"
 
 /**

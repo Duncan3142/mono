@@ -1,5 +1,5 @@
 import { Match, pipe, Data } from "effect"
-import { Remote, Reference } from "#duncan3142/git-tools/domain"
+import type { Remote, Reference } from "#duncan3142/git-tools/domain"
 import { TagFactory } from "#duncan3142/git-tools/const"
 
 const REFERENCE_SPEC_TAG = TagFactory.make("domain", "ReferenceSpec")

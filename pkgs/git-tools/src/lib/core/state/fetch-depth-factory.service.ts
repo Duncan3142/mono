@@ -38,6 +38,6 @@ class Service extends Effect.Service<Service>()(
 	}
 ) {}
 
-const Default = Service.Default
+const {Default} = Service
 
 export { Service, Default }
