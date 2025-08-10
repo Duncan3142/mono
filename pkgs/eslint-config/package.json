@@ -23,7 +23,7 @@
 		"#context": "./.tsc/dist/context/index.js"
 	},
 	"exports": {
-		"/": {
+		".": {
 			"import": "./.tsc/dist/index.js",
 			"types": "./.tsc/dist/index.d.ts"
 		}
@@ -67,8 +67,8 @@
 	},
 	"devDependencies": {
 		"@changesets/cli": "^2.29.5",
-		"@duncan3142/prettier-config": "^0.1.6",
-		"@duncan3142/tsc-config": "^0.1.9",
+		"@duncan3142/prettier-config": "^0.1.7",
+		"@duncan3142/tsc-config": "^0.1.10",
 		"@eslint/config-inspector": "^1.1.0",
 		"@types/eslint": "^9.6.1",
 		"@types/eslint-config-prettier": "^6.11.3",
