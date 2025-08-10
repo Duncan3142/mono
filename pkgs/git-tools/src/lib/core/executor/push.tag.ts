@@ -1,10 +1,12 @@
 import { type Duration, type Effect, Context } from "effect"
 import { TagFactory } from "#duncan3142/git-tools/const"
-import type { GitCommandError } from "#duncan3142/git-tools/domain"
+import type { GitCommandError, Reference, Remote } from "#duncan3142/git-tools/domain"
 
 interface Arguments {
 	readonly directory: string
 	readonly forceWithLease: boolean
+	readonly remote: Remote.Remote
+	readonly ref: Reference.Reference
 	readonly timeout: Duration.DurationInput
 }
 
