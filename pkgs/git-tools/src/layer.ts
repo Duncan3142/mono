@@ -6,6 +6,13 @@ import {
 	CheckoutCommand,
 	ResetCommand,
 	RevParseCommand,
+	AddCommand,
+	CommitCommand,
+	ConfigCommand,
+	InitCommand,
+	PushCommand,
+	RemoteCommand,
+	TagCommand,
 } from "#duncan3142/git-tools/command"
 import { RepositoryConfig } from "#duncan3142/git-tools/config"
 import {
@@ -15,6 +22,13 @@ import {
 	MergeBaseExecutor,
 	ResetExecutor,
 	RevParseExecutor,
+	AddExecutor,
+	CommitExecutor,
+	ConfigExecutor,
+	InitExecutor,
+	PushExecutor,
+	RemoteExecutor,
+	TagExecutor,
 } from "#duncan3142/git-tools/git"
 import { FetchDepthFactory } from "#duncan3142/git-tools/state"
 
@@ -24,7 +38,14 @@ const GitToolsLive = Layer.mergeAll(
 	BranchCommand.Default,
 	CheckoutCommand.Default,
 	ResetCommand.Default,
-	RevParseCommand.Default
+	RevParseCommand.Default,
+	AddCommand.Default,
+	CommitCommand.Default,
+	ConfigCommand.Default,
+	InitCommand.Default,
+	PushCommand.Default,
+	RemoteCommand.Default,
+	TagCommand.Default
 ).pipe(
 	Layer.provide(
 		Layer.mergeAll(
@@ -33,7 +54,14 @@ const GitToolsLive = Layer.mergeAll(
 			BranchExecutor.Live,
 			CheckoutExecutor.Live,
 			ResetExecutor.Live,
-			RevParseExecutor.Live
+			RevParseExecutor.Live,
+			AddExecutor.Live,
+			CommitExecutor.Live,
+			ConfigExecutor.Live,
+			InitExecutor.Live,
+			PushExecutor.Live,
+			RemoteExecutor.Live,
+			TagExecutor.Live
 		)
 	),
 	Layer.provide(FetchDepthFactory.Default),
