@@ -1,3 +1,4 @@
+export * as AddExecutor from "./add.tag.ts"
 export * as BranchExecutor from "./branch.tag.ts"
 export * as CheckoutExecutor from "./checkout.tag.ts"
 export * as CommitExecutor from "./commit.tag.ts"
