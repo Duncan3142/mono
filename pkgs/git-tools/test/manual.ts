@@ -1,10 +1,11 @@
 import { NodeContext, NodeRuntime } from "@effect/platform-node"
-import { Effect, Layer, ConfigProvider, Console, LogLevel, Logger } from "effect"
+import { Effect, Layer, Console, LogLevel, Logger } from "effect"
 import { GitToolsLive } from "#duncan3142/git-tools/layer"
 
 import { Reference, Repository } from "#duncan3142/git-tools/domain"
 import { MergeBaseCommand, BranchCommand } from "#duncan3142/git-tools/command"
 import { RepositoryContext } from "#duncan3142/git-tools/context"
+import { MockConfigProvider } from "#duncan3142/git-tools/mock"
 
 const ProgramLive = GitToolsLive.pipe(Layer.provide(NodeContext.layer))
 
@@ -28,11 +29,7 @@ const program = Effect.gen(function* () {
 		RepositoryContext.Tag,
 		Repository.Repository({ directory: process.cwd() })
 	),
-	Effect.withConfigProvider(
-		ConfigProvider.fromMap(
-			new Map([["GIT_TOOLS.DEFAULT_REMOTE.URL", "https://cloudgit.com/user/repo.git"]])
-		)
-	),
+	Effect.withConfigProvider(MockConfigProvider.Test),
 	Logger.withMinimumLogLevel(LogLevel.Trace)
 )
 

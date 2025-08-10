@@ -1,8 +1,8 @@
 import { describe, it, expect } from "@effect/vitest"
-import { ConfigProvider, Effect, Layer, pipe } from "effect"
+import { Effect, Layer, pipe } from "effect"
 import { FetchDepth, FetchDepthFactory } from "#duncan3142/git-tools/state"
 import { RepositoryConfig } from "#duncan3142/git-tools/config"
-import { MockConsole } from "#duncan3142/git-tools/mock"
+import { MockConsole, MockConfigProvider } from "#duncan3142/git-tools/mock"
 
 const ProgramTest = pipe(
 	FetchDepthFactory.Service.Default,
@@ -30,11 +30,7 @@ describe("FetchDepth", () => {
 		}).pipe(
 			Effect.provide(ProgramTest),
 			Effect.withConsole(mockConsole),
-			Effect.withConfigProvider(
-				ConfigProvider.fromMap(
-					new Map([["GIT_TOOLS.DEFAULT_REMOTE.URL", "https://cloudgit.com/user/repo.git"]])
-				)
-			)
+			Effect.withConfigProvider(MockConfigProvider.Test)
 		)
 	)
 	it.effect("should increment across scopes independently", () =>
@@ -62,11 +58,7 @@ describe("FetchDepth", () => {
 		}).pipe(
 			Effect.provide(ProgramTest),
 			Effect.withConsole(mockConsole),
-			Effect.withConfigProvider(
-				ConfigProvider.fromMap(
-					new Map([["GIT_TOOLS.DEFAULT_REMOTE.URL", "https://cloudgit.com/user/repo.git"]])
-				)
-			)
+			Effect.withConfigProvider(MockConfigProvider.Test)
 		)
 	)
 	it.scoped("should increment within a scope dependently", () =>
@@ -93,11 +85,7 @@ describe("FetchDepth", () => {
 		}).pipe(
 			Effect.provide(ProgramTest),
 			Effect.withConsole(mockConsole),
-			Effect.withConfigProvider(
-				ConfigProvider.fromMap(
-					new Map([["GIT_TOOLS.DEFAULT_REMOTE.URL", "https://cloudgit.com/user/repo.git"]])
-				)
-			)
+			Effect.withConfigProvider(MockConfigProvider.Test)
 		)
 	)
 })

@@ -1,12 +1,17 @@
 /* eslint-disable @typescript-eslint/unbound-method -- Check mock use */
 
 import { expect, describe, it, vi } from "@effect/vitest"
-import { Effect, Fiber, ConfigProvider, Layer, TestClock, Either } from "effect"
+import { Effect, Fiber, Layer, TestClock, Either } from "effect"
 import { CommandExecutor } from "@effect/platform"
 import { BranchCommand } from "#duncan3142/git-tools/command"
 import { BranchExecutor } from "#duncan3142/git-tools/git"
 import { RepositoryConfig } from "#duncan3142/git-tools/config"
-import { MockConsole, MockLogger, MockProcess } from "#duncan3142/git-tools/mock"
+import {
+	MockConfigProvider,
+	MockConsole,
+	MockLogger,
+	MockProcess,
+} from "#duncan3142/git-tools/mock"
 import { RepositoryContext } from "#duncan3142/git-tools/context"
 import { Repository } from "#duncan3142/git-tools/domain"
 
@@ -72,11 +77,7 @@ describe("BranchCommand", () => {
 				CommandExecutor.makeExecutor(start)
 			),
 			Effect.withConsole(console),
-			Effect.withConfigProvider(
-				ConfigProvider.fromMap(
-					new Map([["GIT_TOOLS.DEFAULT_REMOTE.URL", "https://cloudgit.com/user/repo.git"]])
-				)
-			)
+			Effect.withConfigProvider(MockConfigProvider.Test)
 		)
 	)
 })
