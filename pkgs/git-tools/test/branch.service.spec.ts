@@ -1,6 +1,6 @@
 import { expect, describe, it } from "@effect/vitest"
 import { NodeContext } from "@effect/platform-node"
-import { Effect, Layer } from "effect"
+import { ConfigProvider, Effect, Layer } from "effect"
 import { GitToolsLive } from "#duncan3142/git-tools/layer"
 import {
 	TagMode,
@@ -94,8 +94,8 @@ const setupLocal = Effect.gen(function* () {
 	yield* push({ ref: Reference.Branch({ name: "feature" }) })
 }).pipe(Effect.provide(ProgramLive))
 
-describe("BranchCommand", () => {
-	it.scoped("prints", () =>
+describe("Integration", () => {
+	it.scopedLive("executes", () =>
 		Effect.gen(function* () {
 			const remoteDir = yield* TestRepoDir.make
 
@@ -103,6 +103,11 @@ describe("BranchCommand", () => {
 				Effect.provideService(
 					RepositoryContext.RepositoryContext,
 					Repository.Repository({ directory: remoteDir })
+				),
+				Effect.withConfigProvider(
+					ConfigProvider.fromMap(
+						new Map([["GIT_TOOLS.DEFAULT_REMOTE.URL", "https://cloudgit.com/user/repo.git"]])
+					)
 				)
 			)
 
@@ -112,6 +117,11 @@ describe("BranchCommand", () => {
 				Effect.provideService(
 					RepositoryContext.RepositoryContext,
 					Repository.Repository({ directory: localDir })
+				),
+				Effect.withConfigProvider(
+					ConfigProvider.fromMap(
+						new Map([["GIT_TOOLS.DEFAULT_REMOTE.URL", "https://cloudgit.com/user/repo.git"]])
+					)
 				)
 			)
 
@@ -127,6 +137,9 @@ describe("BranchCommand", () => {
 				Effect.provideService(
 					RepositoryContext.RepositoryContext,
 					Repository.Repository({ directory: localDir })
+				),
+				Effect.withConfigProvider(
+					ConfigProvider.fromMap(new Map([["GIT_TOOLS.DEFAULT_REMOTE.URL", remoteDir]]))
 				)
 			)
 

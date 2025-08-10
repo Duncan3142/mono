@@ -1,6 +1,6 @@
 import { tmpdir } from "node:os"
 import { join } from "node:path"
-import { mkdtemp, rmdir } from "node:fs/promises"
+import { mkdtemp, rm } from "node:fs/promises"
 import { Effect } from "effect"
 
 /**
@@ -10,7 +10,7 @@ import { Effect } from "effect"
 const acquire = Effect.tryPromise(() => mkdtemp(join(tmpdir(), "test-repo-")))
 
 const release = (dir: string) =>
-	Effect.promise(() => rmdir(dir, { recursive: true }).catch(console.error))
+	Effect.promise(() => rm(dir, { recursive: true }).catch(console.error))
 
 const make = Effect.acquireRelease(acquire, release)
 
