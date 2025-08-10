@@ -1,0 +1,6 @@
+export * as BranchCommand from "./branch.service.ts"
+export * as CheckoutCommand from "./checkout.service.ts"
+export * as FetchCommand from "./fetch.service.ts"
+export * as MergeBaseCommand from "./merge-base.service.ts"
+export * as ResetCommand from "./reset.service.ts"
+export * as RevParseCommand from "./rev-parse.service.ts"

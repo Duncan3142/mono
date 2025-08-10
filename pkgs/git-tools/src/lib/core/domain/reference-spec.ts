@@ -1,13 +1,12 @@
 import { Match, pipe, Data } from "effect"
-import type * as Reference from "./reference.ts"
-import type { Remote } from "./remote.ts"
-import { tag } from "#const"
+import { Remote, Reference } from "#domain"
+import { TagFactory } from "#const"
 
-const REFERENCE_SPEC_TAG = tag("domain", "ReferenceSpec")
+const REFERENCE_SPEC_TAG = TagFactory.make("domain", "ReferenceSpec")
 
 interface ReferenceSpec {
 	readonly _tag: typeof REFERENCE_SPEC_TAG
-	readonly remote: Remote
+	readonly remote: Remote.Remote
 	readonly ref: Reference.Reference
 }
 

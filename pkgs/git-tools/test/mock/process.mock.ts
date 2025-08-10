@@ -1,12 +1,20 @@
-import type { Duration, Scope } from "effect"
-import { Effect, Array, Either, Deferred, Ref, Stream, pipe } from "effect"
-import type { Command, Error as PlatformError } from "@effect/platform"
-import { CommandExecutor } from "@effect/platform"
+import {
+	type Duration,
+	type Scope,
+	Effect,
+	Array,
+	Either,
+	Deferred,
+	Ref,
+	Stream,
+	pipe,
+} from "effect"
+import type { Command, Error as PlatformError, CommandExecutor } from "@effect/platform"
 import { mockDeep } from "vitest-mock-extended"
 
-interface MockProcessProps {
-	delay: Duration.DurationInput
-	result: Either.Either<
+interface Props {
+	readonly delay: Duration.DurationInput
+	readonly result: Either.Either<
 		{ exitCode: number; stdOutLines: Array<string>; stdErrLines: Array<string> },
 		PlatformError.PlatformError
 	>
@@ -19,10 +27,7 @@ interface MockProcessProps {
  * @param props.result - The result of the process execution.
  * @returns An Effect that produces a mock CommandExecutor.Process.
  */
-const mockProcessGenerator = ({
-	delay,
-	result,
-}: MockProcessProps): Effect.Effect<CommandExecutor.Process> =>
+const make = ({ delay, result }: Props): Effect.Effect<CommandExecutor.Process> =>
 	Either.match(result, {
 		onLeft: (err) =>
 			Effect.succeed(
@@ -58,7 +63,7 @@ const mockProcessGenerator = ({
 				const exitCode = Deferred.await(exitCodeDeferred)
 
 				const encoder = new TextEncoder()
-				const lineToByteStream = (lines: Array<string>) =>
+				const lineToByteStream = (lines: ReadonlyArray<string>) =>
 					pipe(
 						Array.map(lines, (line) => encoder.encode(line)),
 						Stream.fromIterable
@@ -79,5 +84,5 @@ type Start = (
 	command: Command.Command
 ) => Effect.Effect<CommandExecutor.Process, PlatformError.PlatformError, Scope.Scope>
 
-export default mockProcessGenerator
-export type { MockProcessProps, Start }
+export { make }
+export type { Props, Start }

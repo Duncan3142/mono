@@ -57,7 +57,6 @@
 				"esbenp.prettier-vscode",
 				"timonwong.shellcheck",
 				"Tyriar.sort-lines",
-				"mtxr.sqltools",
 				"stylelint.vscode-stylelint",
 				"Gruntfuggly.todo-tree",
 				"antfu.unocss",
@@ -66,7 +65,7 @@
 				"redhat.vscode-yaml",
 				"ziglang.vscode-zig",
 				"ms-playwright.playwright",
-				"mtxr.sqltools-driver-pg"
+				"ms-ossdata.vscode-pgsql"
 			]
 		}
 	}

@@ -6,7 +6,7 @@ import { mockDeep, type DeepMockProxy } from "vitest-mock-extended"
  * Creates a mocked Console instance.
  * @returns A mocked Console instance.
  */
-const factory = (): DeepMockProxy<Console.Console> => {
+const make = (): DeepMockProxy<Console.Console> => {
 	const mock = mockDeep<Console.Console>()
 	mock.log.mockImplementation(() => Effect.void)
 	mock.info.mockImplementation(() => Effect.void)
@@ -17,4 +17,4 @@ const factory = (): DeepMockProxy<Console.Console> => {
 	return mock
 }
 
-export default factory
+export { make }

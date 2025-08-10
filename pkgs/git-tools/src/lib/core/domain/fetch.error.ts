@@ -1,28 +1,29 @@
 import { Data } from "effect"
-import { tag } from "#const"
+import { TagFactory } from "#const"
+import { Fetch } from "#domain"
 
-const FETCH_REFS_NOT_FOUND_ERROR_TAG = tag("domain", `FETCH_REFS_NOT_FOUND_ERROR`)
+const FETCH_REFS_NOT_FOUND_ERROR_TAG = TagFactory.make("domain", `FETCH_REFS_NOT_FOUND_ERROR`)
 
 /**
  * Fetch Not Found Error
  */
-class FetchRefsNotFoundError extends Data.TaggedError(FETCH_REFS_NOT_FOUND_ERROR_TAG)<{
+class RefsNotFound extends Data.TaggedError(FETCH_REFS_NOT_FOUND_ERROR_TAG)<{
 	references: ReadonlyArray<string>
 }> {}
 
-const FETCH_DEPTH_EXCEEDED_ERROR_TAG = tag("domain", `FETCH_DEPTH_EXCEEDED_ERROR`)
+const FETCH_DEPTH_EXCEEDED_ERROR_TAG = TagFactory.make("domain", `FETCH_DEPTH_EXCEEDED_ERROR`)
 
 /**
  * Fetch Depth Exceeded Error
  */
-class FetchDepthExceededError extends Data.TaggedError(FETCH_DEPTH_EXCEEDED_ERROR_TAG)<{
-	requestedDepth: number
-	maxDepth: number
+class DepthExceeded extends Data.TaggedError(FETCH_DEPTH_EXCEEDED_ERROR_TAG)<{
+	requestedDepth: Fetch.Depth
+	maxDepth: Fetch.Depth
 }> {}
 
 export {
-	FetchRefsNotFoundError,
+	RefsNotFound,
 	FETCH_REFS_NOT_FOUND_ERROR_TAG,
-	FetchDepthExceededError,
+	DepthExceeded,
 	FETCH_DEPTH_EXCEEDED_ERROR_TAG,
 }

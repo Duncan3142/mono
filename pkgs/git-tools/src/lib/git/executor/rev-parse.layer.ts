@@ -1,37 +1,32 @@
 import { CommandExecutor } from "@effect/platform"
-import { Layer, pipe, Effect, Match } from "effect"
-import commandFactory from "./base.ts"
-import RevParseExecutor, { type Arguments } from "#executor/rev-parse.service"
-import type { GitCommandFailedError, GitCommandTimeoutError } from "#domain/git.error"
+import { Layer, Effect, Match } from "effect"
+import * as Base from "./base.ts"
+import { RevParseExecutor } from "#executor"
+import { GitCommandError } from "#domain"
 
-const RevParseExecutorLive: Layer.Layer<
-	RevParseExecutor,
-	never,
-	CommandExecutor.CommandExecutor
-> = Layer.effect(
-	RevParseExecutor,
-	Effect.gen(function* () {
-		const executor = yield* CommandExecutor.CommandExecutor
+const Live: Layer.Layer<RevParseExecutor.Tag, never, CommandExecutor.CommandExecutor> =
+	Layer.effect(
+		RevParseExecutor.Tag,
+		Effect.gen(function* () {
+			const executor = yield* CommandExecutor.CommandExecutor
 
-		return ({
-			ref: { name: rev },
-			directory,
-			timeout,
-		}: Arguments): Effect.Effect<string, GitCommandFailedError | GitCommandTimeoutError> =>
-			Effect.gen(function* () {
-				return yield* pipe(
-					commandFactory({
-						directory,
-						subCommand: "rev-parse",
-						subArgs: [rev],
-						timeout,
-						errorMatcher: Match.value,
-					}),
-					Effect.scoped,
-					Effect.provideService(CommandExecutor.CommandExecutor, executor)
-				)
-			})
-	})
-)
+			return ({
+				ref: { name: rev },
+				directory,
+				timeout,
+			}: RevParseExecutor.Arguments): Effect.Effect<
+				string,
+				GitCommandError.Failed | GitCommandError.Timeout
+			> => {
+				return Base.make({
+					directory,
+					subCommand: "rev-parse",
+					subArgs: [rev],
+					timeout,
+					errorMatcher: Match.value,
+				}).pipe(Effect.scoped, Effect.provideService(CommandExecutor.CommandExecutor, executor))
+			}
+		})
+	)
 
-export default RevParseExecutorLive
+export { Live }

@@ -1,23 +1,43 @@
 import { Layer } from "effect"
-import FetchCommand from "#command/fetch.service"
-import MergeBaseCommand from "#command/merge-base.service"
-import PrintRefsCommand from "#command/print-refs.service"
-import RepositoryConfig from "#config/repository-config.service"
-import FetchExecutorLive from "#git/executor/fetch.layer"
-import MergeBaseExecutorLive from "#git/executor/merge-base.layer"
-import PrintRefsExecutorLive from "#git/executor/print-refs.layer"
-import FetchDepthFactory from "#state/fetch-depth-factory.service"
+import {
+	FetchCommand,
+	MergeBaseCommand,
+	BranchCommand,
+	CheckoutCommand,
+	ResetCommand,
+	RevParseCommand,
+} from "#command"
+import { RepositoryConfig } from "#config"
+import {
+	FetchExecutor,
+	BranchExecutor,
+	CheckoutExecutor,
+	MergeBaseExecutor,
+	ResetExecutor,
+	RevParseExecutor,
+} from "#git"
+import { FetchDepthFactory } from "#state"
 
 const GitToolsLive = Layer.mergeAll(
 	FetchCommand.Default,
 	MergeBaseCommand.Default,
-	PrintRefsCommand.Default
+	BranchCommand.Default,
+	CheckoutCommand.Default,
+	ResetCommand.Default,
+	RevParseCommand.Default
 ).pipe(
 	Layer.provide(
-		Layer.mergeAll(FetchExecutorLive, MergeBaseExecutorLive, PrintRefsExecutorLive)
+		Layer.mergeAll(
+			FetchExecutor.Live,
+			MergeBaseExecutor.Live,
+			BranchExecutor.Live,
+			CheckoutExecutor.Live,
+			ResetExecutor.Live,
+			RevParseExecutor.Live
+		)
 	),
 	Layer.provide(FetchDepthFactory.Default),
 	Layer.provide(RepositoryConfig.Default)
 )
 
-export default GitToolsLive
+export { GitToolsLive }

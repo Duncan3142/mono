@@ -1,45 +1,43 @@
 import { CommandExecutor } from "@effect/platform"
-import { Console, Layer, pipe, Effect, Match } from "effect"
-import commandFactory from "./base.ts"
-import ResetExecutor, { type Arguments } from "#executor/reset.service"
-import { RESET_MODE_HARD, RESET_MODE_MIXED, RESET_MODE_SOFT } from "#domain/reset"
-import type { GitCommandFailedError, GitCommandTimeoutError } from "#domain/git.error"
+import { Console, Layer, Effect, Match } from "effect"
+import * as Base from "./base.ts"
+import { ResetExecutor } from "#executor"
+import { GitCommandError, ResetMode } from "#domain"
 
-const ResetExecutorLive: Layer.Layer<ResetExecutor, never, CommandExecutor.CommandExecutor> =
+const Live: Layer.Layer<ResetExecutor.Tag, never, CommandExecutor.CommandExecutor> =
 	Layer.effect(
-		ResetExecutor,
+		ResetExecutor.Tag,
 		Effect.gen(function* () {
 			const executor = yield* CommandExecutor.CommandExecutor
 
 			return ({
-				ref,
+				ref: { name: ref },
 				directory,
 				mode,
 				timeout,
-			}: Arguments): Effect.Effect<void, GitCommandFailedError | GitCommandTimeoutError> =>
-				Effect.gen(function* () {
-					const modeArg = Match.value(mode).pipe(
-						Match.when(RESET_MODE_HARD, () => "--hard"),
-						Match.when(RESET_MODE_MIXED, () => "--mixed"),
-						Match.when(RESET_MODE_SOFT, () => "--soft"),
-						Match.exhaustive
-					)
-
-					const res = pipe(
-						commandFactory({
-							directory,
-							subCommand: "reset",
-							subArgs: [modeArg, ref.name],
-							timeout,
-							errorMatcher: Match.value,
-						}),
-						Effect.scoped,
-						Effect.flatMap(Console.log),
-						Effect.provideService(CommandExecutor.CommandExecutor, executor)
-					)
-					return yield* res
+			}: ResetExecutor.Arguments): Effect.Effect<
+				void,
+				GitCommandError.Failed | GitCommandError.Timeout
+			> => {
+				const modeArg = ResetMode.$match(mode, {
+					Hard: () => "--hard",
+					Mixed: () => "--mixed",
+					Soft: () => "--soft",
 				})
+
+				return Base.make({
+					directory,
+					subCommand: "reset",
+					subArgs: [modeArg, ref],
+					timeout,
+					errorMatcher: Match.value,
+				}).pipe(
+					Effect.flatMap(Console.log),
+					Effect.scoped,
+					Effect.provideService(CommandExecutor.CommandExecutor, executor)
+				)
+			}
 		})
 	)
 
-export default ResetExecutorLive
+export { Live }

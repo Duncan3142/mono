@@ -12,8 +12,8 @@ import {
 	type Parser,
 	type Path,
 	type Patterns,
-} from "#lib/core"
-import type { Guards } from "#context/lint-level"
+} from "./core.ts"
+import type { LintLevel } from "#context"
 
 const TS_CONFIG_DEFAULT: Path = "tsconfig.json"
 
@@ -21,7 +21,7 @@ const parser: Parser = tseslint.parser
 
 const extraExtensions: Patterns = [...jsonExtensions, ...nodeExtensions]
 
-const custom: (guard: Guards) => Config = (guard) => {
+const custom: (guard: LintLevel.Guards) => Config = (guard) => {
 	return {
 		name: "@duncan3142/eslint-config/typescipt/custom",
 		languageOptions: {
@@ -69,7 +69,10 @@ const custom: (guard: Guards) => Config = (guard) => {
 			"@typescript-eslint/no-loop-func": "error",
 			"@typescript-eslint/no-shadow": "error",
 			"@typescript-eslint/prefer-readonly": "error",
-			"@typescript-eslint/prefer-readonly-parameter-types": "error",
+			"@typescript-eslint/prefer-readonly-parameter-types": [
+				"error",
+				{ ignoreInferredTypes: true, treatMethodsAsReadonly: true },
+			],
 			"@typescript-eslint/no-unsafe-type-assertion": "error",
 			"@typescript-eslint/no-unsafe-assignment": guard.standard,
 			"@typescript-eslint/no-misused-promises": guard.standard,
@@ -109,7 +112,7 @@ const custom: (guard: Guards) => Config = (guard) => {
 	}
 }
 
-const typed: (guard: Guards) => Configs = (guard) =>
+const typed: (guard: LintLevel.Guards) => Configs = (guard) =>
 	compose({
 		name: "@duncan3142/eslint-config/typescipt",
 		files: filePatterns(...jstsExtensions),
@@ -125,6 +128,8 @@ const untyped: Configs = compose({
 	files: filePatterns(...jsExtensions),
 	extends: [tseslint.configs.disableTypeChecked],
 	rules: {
+		"@typescript-eslint/prefer-readonly": "off",
+		"@typescript-eslint/prefer-readonly-parameter-types": "off",
 		"@typescript-eslint/explicit-module-boundary-types": "off",
 	},
 })
@@ -134,6 +139,6 @@ const untyped: Configs = compose({
  * @param guard - Guard to determine if the config should be typed or untyped
  * @returns ESLint config
  */
-const config: (guard: Guards) => Configs = (guard) => compose(typed(guard), untyped)
+const config: (guard: LintLevel.Guards) => Configs = (guard) => compose(typed(guard), untyped)
 
 export { config }

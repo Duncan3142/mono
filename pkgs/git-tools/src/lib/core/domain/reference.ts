@@ -1,6 +1,6 @@
-import { Data, Order } from "effect"
+import { Data } from "effect"
 
-type GitSHA = string
+type SHA = string
 
 type Reference = Data.TaggedEnum<{
 	Branch: { readonly name: string }
@@ -8,28 +8,7 @@ type Reference = Data.TaggedEnum<{
 	Head: { readonly name: "HEAD" }
 }>
 
-const { Branch, Head, Tag, $is, $match } = Data.taggedEnum<Reference>()
+const { $is, $match, Branch, Head, Tag } = Data.taggedEnum<Reference>()
 
-interface Sort {
-	byName: Order.Order<Reference>
-	byTag: Order.Order<Reference>
-}
-
-const Sort: Sort = {
-	/**
-	 * Order reference by type
-	 * @param reference - Reference to check
-	 * @returns Reference ordering
-	 */
-	byTag: Order.mapInput(Order.string, ({ _tag }) => _tag),
-
-	/**
-	 * Order reference order by name
-	 * @param reference - Reference to check
-	 * @returns Reference ordering
-	 */
-	byName: Order.mapInput(Order.string, ({ name }) => name),
-}
-
-export type { Reference, GitSHA }
-export { Branch, Tag, Head, $is, $match, Sort }
+export type { SHA, Reference }
+export { $is, $match, Branch, Head, Tag }

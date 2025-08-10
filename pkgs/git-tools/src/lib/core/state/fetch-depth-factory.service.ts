@@ -1,13 +1,13 @@
 import { Ref, Effect, HashMap } from "effect"
-import FetchDepth, { type FetchDepthService } from "./fetch-depth.service.ts"
-import { tag } from "#const"
-import RepositoryConfig from "#config/repository-config.service"
+import { FetchDepth } from "#state"
+import { TagFactory } from "#const"
+import { RepositoryConfig } from "#config"
 
 /**
  * Fetch depth factory service
  */
-class FetchDepthFactory extends Effect.Service<FetchDepthFactory>()(
-	tag(`state`, `fetch-depth-factory`),
+class Service extends Effect.Service<Service>()(
+	TagFactory.make(`state`, `fetch-depth-factory`),
 	{
 		effect: Effect.gen(function* () {
 			yield* Effect.logTrace("CounterFactoryLive initialized")
@@ -17,7 +17,7 @@ class FetchDepthFactory extends Effect.Service<FetchDepthFactory>()(
 					fetch: { maxDepth },
 				},
 			] = yield* Effect.all(
-				[Ref.make(HashMap.empty<string, FetchDepthService>()), RepositoryConfig],
+				[Ref.make(HashMap.empty<string, FetchDepth.Service>()), RepositoryConfig.Service],
 				{
 					concurrency: "unbounded",
 				}
@@ -28,14 +28,16 @@ class FetchDepthFactory extends Effect.Service<FetchDepthFactory>()(
 				yield* Ref.update(map, (m) => HashMap.set(m, depth.id, depth))
 				return depth
 			})
-			const release = (depth: FetchDepthService) =>
+			const release = (service: FetchDepth.Service) =>
 				Effect.gen(function* () {
-					yield* Effect.logDebug("Releasing FetchDepth:", depth.id)
-					return yield* Ref.update(map, (m) => HashMap.remove(m, depth.id))
+					yield* Effect.logDebug("Releasing FetchDepth:", service.id)
+					return yield* Ref.update(map, (m) => HashMap.remove(m, service.id))
 				})
 			return Effect.acquireRelease(acquire, release)
 		}),
 	}
 ) {}
 
-export default FetchDepthFactory
+const Default = Service.Default
+
+export { Service, Default }
