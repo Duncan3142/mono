@@ -1,5 +1,11 @@
 # @duncan3142/eslint-config
 
+## 0.1.16
+
+### Patch Changes
+
+- 0695117: exports
+
 ## 0.1.15
 
 ### Patch Changes
