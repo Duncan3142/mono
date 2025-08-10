@@ -13,7 +13,7 @@ interface Arguments {
  * Print refs service
  */
 class CommitCommand extends Effect.Service<CommitCommand>()(
-	TagFactory.make(`command`, `branch`),
+	TagFactory.make(`command`, `commit`),
 	{
 		effect: Effect.gen(function* () {
 			const [executor, { directory }] = yield* Effect.all(

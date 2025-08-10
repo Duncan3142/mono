@@ -12,7 +12,7 @@ interface Arguments {
 /**
  * Print refs service
  */
-class InitCommand extends Effect.Service<InitCommand>()(TagFactory.make(`command`, `branch`), {
+class InitCommand extends Effect.Service<InitCommand>()(TagFactory.make(`command`, `init`), {
 	effect: Effect.gen(function* () {
 		const [executor, { directory }] = yield* Effect.all(
 			[InitExecutor.InitExecutor, RepositoryContext.RepositoryContext],

@@ -11,7 +11,7 @@ interface Arguments {
 /**
  * Print refs service
  */
-class AddCommand extends Effect.Service<AddCommand>()(TagFactory.make(`command`, `branch`), {
+class AddCommand extends Effect.Service<AddCommand>()(TagFactory.make(`command`, `add`), {
 	effect: Effect.gen(function* () {
 		const [executor, { directory }] = yield* Effect.all(
 			[AddExecutor.AddExecutor, RepositoryContext.RepositoryContext],

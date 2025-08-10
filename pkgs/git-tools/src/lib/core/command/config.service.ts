@@ -18,7 +18,7 @@ interface Arguments {
  * Print refs service
  */
 class ConfigCommand extends Effect.Service<ConfigCommand>()(
-	TagFactory.make(`command`, `branch`),
+	TagFactory.make(`command`, `config`),
 	{
 		effect: Effect.gen(function* () {
 			const [executor, { directory }] = yield* Effect.all(
