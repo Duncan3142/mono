@@ -1,5 +1,11 @@
 # @duncan3142/eslint-config
 
+## 0.1.17
+
+### Patch Changes
+
+- b46f253: scoped package.json imports
+
 ## 0.1.16
 
 ### Patch Changes
