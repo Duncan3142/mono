@@ -1,13 +1,12 @@
 import type { Duration, Effect } from "effect"
 import { Context } from "effect"
-import { Reference, GitCommandError, CheckoutError } from "#domain"
+import { Reference, GitCommandError, CheckoutError, CheckoutMode } from "#domain"
 import { Tag as TagFactory } from "#const"
-import * as BranchMode from "./checkout.mode.ts"
 
 interface Arguments {
 	readonly ref: Reference.Reference
 	readonly directory: string
-	readonly mode: BranchMode.Mode
+	readonly mode: CheckoutMode.Mode
 	readonly timeout: Duration.DurationInput
 }
 

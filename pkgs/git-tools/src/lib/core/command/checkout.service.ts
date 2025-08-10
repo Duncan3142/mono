@@ -1,10 +1,10 @@
 import type { Duration } from "effect"
 import { Effect } from "effect"
 import { Reference } from "#domain"
-import { Tag as TagFactory } from "#const"
+import { Tag } from "#const"
 import { RepositoryContext } from "#context"
-import { CheckoutExecutor, CheckoutMode } from "#executor"
-import { CheckoutError, GitCommandError } from "#domain"
+import { CheckoutExecutor } from "#executor"
+import { CheckoutError, GitCommandError, CheckoutMode } from "#domain"
 
 interface Arguments {
 	readonly ref: Reference.Reference
@@ -15,7 +15,7 @@ interface Arguments {
 /**
  * Print refs service
  */
-class Service extends Effect.Service<Service>()(TagFactory.make(`command`, `checkout`), {
+class Service extends Effect.Service<Service>()(Tag.make(`command`, `checkout`), {
 	effect: Effect.gen(function* () {
 		const [executor, { directory }] = yield* Effect.all(
 			[CheckoutExecutor.Tag, RepositoryContext.Tag],

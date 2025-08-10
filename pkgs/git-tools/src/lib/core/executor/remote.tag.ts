@@ -1,11 +1,10 @@
 import type { Duration, Effect } from "effect"
 import { Context } from "effect"
 import { Tag as TagFactory } from "#const"
-import { GitCommandError } from "#domain"
-import * as Mode from "./remote.mode.ts"
+import { GitCommandError, RemoteMode } from "#domain"
 
 interface Arguments {
-	readonly mode: Mode.Mode
+	readonly mode: RemoteMode.Mode
 	readonly directory: string
 	readonly timeout: Duration.DurationInput
 }

@@ -1,8 +1,7 @@
 import type { Duration, Effect } from "effect"
 import { Context } from "effect"
 import { Tag as TagFactory } from "#const"
-import { GitCommandError } from "#domain"
-import * as BranchMode from "./branch.mode.ts"
+import { GitCommandError, BranchMode } from "#domain"
 
 interface Arguments {
 	readonly mode: BranchMode.Mode

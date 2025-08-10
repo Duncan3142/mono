@@ -1,8 +1,8 @@
 import type { Array, Duration } from "effect"
 import { Effect } from "effect"
-import { FetchExecutor, FetchMode } from "#executor"
-import { Tag as TagFactory } from "#const"
-import { Remote, FetchError, Reference, GitCommandError } from "#domain"
+import { FetchExecutor } from "#executor"
+import { Tag } from "#const"
+import { Remote, FetchError, FetchMode, Reference, GitCommandError } from "#domain"
 import { FetchDepth } from "#state"
 import { RepositoryConfig } from "#config"
 import { RepositoryContext } from "#context"
@@ -17,7 +17,7 @@ interface Arguments {
 /**
  * Git fetch service
  */
-class Service extends Effect.Service<Service>()(TagFactory.make(`command`, `fetch`), {
+class Service extends Effect.Service<Service>()(Tag.make(`command`, `fetch`), {
 	effect: Effect.gen(function* () {
 		const [
 			executor,

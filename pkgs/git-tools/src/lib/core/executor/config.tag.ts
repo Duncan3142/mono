@@ -1,13 +1,11 @@
 import type { Duration, Effect } from "effect"
 import { Context } from "effect"
 import { Tag as TagFactory } from "#const"
-import { GitCommandError } from "#domain"
-import * as Mode from "./config.mode.ts"
-import * as Scope from "./config.scope.ts"
+import { GitCommandError, ConfigMode, ConfigScope } from "#domain"
 
 interface Arguments {
-	readonly scope: Scope.Scope
-	readonly input: Mode.Mode
+	readonly scope: ConfigScope.Scope
+	readonly input: ConfigMode.Mode
 	readonly timeout: Duration.DurationInput
 }
 

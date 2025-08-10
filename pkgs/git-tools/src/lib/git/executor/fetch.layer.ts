@@ -2,8 +2,8 @@ import { CommandExecutor } from "@effect/platform"
 import { Effect, Match, pipe, Layer, Console, Array } from "effect"
 import * as Base from "./base.ts"
 import { Number as Const } from "#const"
-import { ReferenceSpec, FetchError, GitCommandError } from "#domain"
-import { FetchExecutor, FetchMode } from "#executor"
+import { ReferenceSpec, FetchError, FetchMode, GitCommandError } from "#domain"
+import { FetchExecutor } from "#executor"
 
 const FETCH_NOT_FOUND_CODE = 128
 

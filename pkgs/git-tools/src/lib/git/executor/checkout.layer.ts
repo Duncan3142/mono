@@ -1,8 +1,8 @@
 import { CommandExecutor } from "@effect/platform"
 import { Layer, pipe, Effect, Match, Console } from "effect"
 import * as Base from "./base.ts"
-import { CheckoutExecutor, CheckoutMode } from "#executor"
-import { CheckoutError, GitCommandError } from "#domain"
+import { CheckoutExecutor } from "#executor"
+import { CheckoutError, GitCommandError, CheckoutMode } from "#domain"
 
 const CHECKOUT_REF_NOT_FOUND_CODE = 1
 

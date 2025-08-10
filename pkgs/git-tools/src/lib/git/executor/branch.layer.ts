@@ -1,8 +1,8 @@
 import { CommandExecutor } from "@effect/platform"
 import { Layer, pipe, Effect, Match, Console } from "effect"
 import * as Base from "./base.ts"
-import { BranchExecutor, BranchMode } from "#executor"
-import { GitCommandError } from "#domain"
+import { BranchExecutor } from "#executor"
+import { BranchMode, GitCommandError } from "#domain"
 
 const Live: Layer.Layer<BranchExecutor.Tag, never, CommandExecutor.CommandExecutor> =
 	Layer.effect(
