@@ -49,12 +49,12 @@ const setupRemote = Effect.gen(function* () {
 	yield* TestRepoFile.make("one.md")
 	yield* add()
 	yield* commit({ message: "Initial commit" })
-	yield* tag({ mode: TagMode.Create({ name: "1.0.0" }) })
+	yield* tag({ mode: TagMode.Create({ name: "1.0.0", message: "Version 1.0.0" }) })
 	yield* checkout({ ref: Reference.Branch({ name: "feature" }), mode: CheckoutMode.Create() })
 	yield* TestRepoFile.make("two.md")
 	yield* add()
-	yield* commit({ message: "Feature commit one" })
-	yield* tag({ mode: TagMode.Create({ name: "2.0.0" }) })
+	yield* commit({ message: "Feature commit A" })
+	yield* tag({ mode: TagMode.Create({ name: "2.0.0", message: "Version 2.0.0" }) })
 }).pipe(Effect.provide(ProgramLive))
 
 const setupLocal = Effect.gen(function* () {
@@ -90,7 +90,7 @@ const setupLocal = Effect.gen(function* () {
 	yield* checkout({ ref: Reference.Branch({ name: "feature" }), mode: CheckoutMode.Standard() })
 	yield* TestRepoFile.make("three.md")
 	yield* add()
-	yield* commit({ message: "Feature commit two" })
+	yield* commit({ message: "Feature commit B" })
 	yield* push({ ref: Reference.Branch({ name: "feature" }) })
 }).pipe(Effect.provide(ProgramLive))
 

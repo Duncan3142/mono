@@ -2,7 +2,7 @@ import { Data } from "effect"
 
 type TagMode = Data.TaggedEnum<{
 	Print: object
-	Create: { readonly name: string }
+	Create: { readonly name: string; readonly message: string }
 }>
 
 const { $is, $match, Print, Create } = Data.taggedEnum<TagMode>()

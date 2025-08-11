@@ -19,7 +19,7 @@ const Live: Layer.Layer<TagExecutor.TagExecutor, never, CommandExecutor.CommandE
 				GitCommandError.GitCommandFailed | GitCommandError.GitCommandTimeout
 			> => {
 				const [subArgs, noPager] = TagMode.$match(mode, {
-					Create: ({ name }) => [[name], false] as const,
+					Create: ({ name, message }) => [[name, "-m", message], false] as const,
 					Print: () => [[], true] as const,
 				})
 				return pipe(
