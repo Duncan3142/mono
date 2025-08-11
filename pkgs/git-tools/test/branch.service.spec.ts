@@ -8,6 +8,7 @@ import {
 	Repository,
 	Reference,
 	CheckoutMode,
+	FetchMode,
 } from "#duncan3142/git-tools/domain"
 import {
 	MergeBaseCommand,
@@ -29,8 +30,15 @@ import { FetchDepth, FetchDepthFactory } from "#duncan3142/git-tools/state"
 
 const ProgramLive = GitToolsLive.pipe(Layer.provide(NodeContext.layer))
 
-const setupRemote = Effect.gen(function* () {
-	const [init, config, add, commit, checkout, tag] = yield* Effect.all(
+const setupBare = Effect.gen(function* () {
+	const [init] = yield* Effect.all([InitCommand.InitCommand], {
+		concurrency: "unbounded",
+	})
+	yield* init({ bare: true })
+}).pipe(Effect.provide(ProgramLive))
+
+const setupA = Effect.gen(function* () {
+	const [init, config, add, commit, checkout, tag, remote, push] = yield* Effect.all(
 		[
 			InitCommand.InitCommand,
 			ConfigCommand.ConfigCommand,
@@ -38,14 +46,17 @@ const setupRemote = Effect.gen(function* () {
 			CommitCommand.CommitCommand,
 			CheckoutCommand.CheckoutCommand,
 			TagCommand.TagCommand,
+			RemoteCommand.RemoteCommand,
+			PushCommand.PushCommand,
 		],
 		{
 			concurrency: "unbounded",
 		}
 	)
-	yield* init()
+	yield* init({ initBranch: "main" })
 	yield* config({ mode: ConfigMode.Set({ key: "user.name", value: "Test User" }) })
 	yield* config({ mode: ConfigMode.Set({ key: "user.email", value: "test@test.com" }) })
+	yield* remote()
 	yield* TestRepoFile.make("one.md")
 	yield* add()
 	yield* commit({ message: "Initial commit" })
@@ -55,9 +66,13 @@ const setupRemote = Effect.gen(function* () {
 	yield* add()
 	yield* commit({ message: "Feature commit A" })
 	yield* tag({ mode: TagMode.Create({ name: "2.0.0", message: "Version 2.0.0" }) })
+	yield* push({ ref: Reference.Branch({ name: "feature" }) })
+	yield* push({ ref: Reference.Tag({ name: "1.0.0" }) })
+	yield* push({ ref: Reference.Branch({ name: "main" }) })
+	yield* push({ ref: Reference.Tag({ name: "2.0.0" }) })
 }).pipe(Effect.provide(ProgramLive))
 
-const setupLocal = Effect.gen(function* () {
+const setupB = Effect.gen(function* () {
 	const [init, config, remote, fetch, fetchDepthFactory, checkout, add, commit, push] =
 		yield* Effect.all(
 			[
@@ -75,7 +90,7 @@ const setupLocal = Effect.gen(function* () {
 				concurrency: "unbounded",
 			}
 		)
-	yield* init()
+	yield* init({ initBranch: "main" })
 	yield* config({ mode: ConfigMode.Set({ key: "user.name", value: "Test User" }) })
 	yield* config({ mode: ConfigMode.Set({ key: "user.email", value: "test@test.com" }) })
 	yield* remote()
@@ -94,49 +109,105 @@ const setupLocal = Effect.gen(function* () {
 	yield* push({ ref: Reference.Branch({ name: "feature" }) })
 }).pipe(Effect.provide(ProgramLive))
 
+const setupC = Effect.gen(function* () {
+	const [init, config, remote, fetch, fetchDepthFactory, checkout] = yield* Effect.all(
+		[
+			InitCommand.InitCommand,
+			ConfigCommand.ConfigCommand,
+			RemoteCommand.RemoteCommand,
+			FetchCommand.FetchCommand,
+			FetchDepthFactory.FetchDepthFactory,
+			CheckoutCommand.CheckoutCommand,
+		],
+		{
+			concurrency: "unbounded",
+		}
+	)
+	yield* init({ initBranch: "main" })
+	yield* config({ mode: ConfigMode.Set({ key: "user.name", value: "Test User" }) })
+	yield* config({ mode: ConfigMode.Set({ key: "user.email", value: "test@test.com" }) })
+	yield* remote()
+	yield* fetch({
+		refs: [
+			Reference.Branch({ name: "main" }),
+			Reference.Branch({ name: "feature" }),
+			Reference.Tag({ name: "1.0.0" }),
+			Reference.Tag({ name: "2.0.0" }),
+		],
+		mode: FetchMode.Depth({ depth: 128 }),
+	}).pipe(Effect.provideServiceEffect(FetchDepth.FetchDepth, fetchDepthFactory))
+	yield* checkout({ ref: Reference.Branch({ name: "main" }), mode: CheckoutMode.Standard() })
+	yield* checkout({ ref: Reference.Branch({ name: "feature" }), mode: CheckoutMode.Standard() })
+}).pipe(Effect.provide(ProgramLive))
+
 describe("Integration", () => {
 	it.scopedLive("executes", () =>
 		Effect.gen(function* () {
 			const remoteDir = yield* TestRepoDir.make
+			const localA = yield* TestRepoDir.make
+			const localB = yield* TestRepoDir.make
+			const localC = yield* TestRepoDir.make
 
-			yield* setupRemote.pipe(
+			yield* setupBare.pipe(
 				Effect.provideService(
 					RepositoryContext.RepositoryContext,
 					Repository.Repository({ directory: remoteDir })
 				),
 				Effect.withConfigProvider(
 					ConfigProvider.fromMap(
-						new Map([["GIT_TOOLS.DEFAULT_REMOTE.URL", "https://cloudgit.com/user/repo.git"]])
+						new Map([
+							[
+								"GIT_TOOLS.DEFAULT_REMOTE.URL",
+								"https://cloudgit.dummy/dummy-user/dummy-repo.git",
+							],
+						])
 					)
 				)
 			)
 
-			const localDir = yield* TestRepoDir.make
-
-			yield* setupLocal.pipe(
+			yield* setupA.pipe(
 				Effect.provideService(
 					RepositoryContext.RepositoryContext,
-					Repository.Repository({ directory: localDir })
+					Repository.Repository({ directory: localA })
 				),
 				Effect.withConfigProvider(
-					ConfigProvider.fromMap(
-						new Map([["GIT_TOOLS.DEFAULT_REMOTE.URL", "https://cloudgit.com/user/repo.git"]])
-					)
+					ConfigProvider.fromMap(new Map([["GIT_TOOLS.DEFAULT_REMOTE.URL", remoteDir]]))
 				)
 			)
 
-			const [mergeBase, revParse, branch] = yield* Effect.all(
+			yield* setupB.pipe(
+				Effect.provideService(
+					RepositoryContext.RepositoryContext,
+					Repository.Repository({ directory: localB })
+				),
+				Effect.withConfigProvider(
+					ConfigProvider.fromMap(new Map([["GIT_TOOLS.DEFAULT_REMOTE.URL", remoteDir]]))
+				)
+			)
+
+			yield* setupC.pipe(
+				Effect.provideService(
+					RepositoryContext.RepositoryContext,
+					Repository.Repository({ directory: localC })
+				),
+				Effect.withConfigProvider(
+					ConfigProvider.fromMap(new Map([["GIT_TOOLS.DEFAULT_REMOTE.URL", remoteDir]]))
+				)
+			)
+
+			const [mergeBase, revParse, branch, tag] = yield* Effect.all(
 				[
 					MergeBaseCommand.MergeBaseCommand,
 					RevParseCommand.RevParseCommand,
 					BranchCommand.BranchCommand,
+					TagCommand.TagCommand,
 				],
 				{ concurrency: "unbounded" }
 			).pipe(
 				Effect.provide(ProgramLive),
 				Effect.provideService(
 					RepositoryContext.RepositoryContext,
-					Repository.Repository({ directory: localDir })
+					Repository.Repository({ directory: localC })
 				),
 				Effect.withConfigProvider(
 					ConfigProvider.fromMap(new Map([["GIT_TOOLS.DEFAULT_REMOTE.URL", remoteDir]]))
@@ -153,9 +224,10 @@ describe("Integration", () => {
 			})
 
 			yield* branch()
+			yield* tag()
 
-			expect(base).toMatch(/abc/)
-			expect(sha).toMatch(/def/)
+			expect(base).toMatch(/[a-f0-9]{40}/)
+			expect(sha).toMatch(/[a-f0-9]{40}/)
 		})
 	)
 })
