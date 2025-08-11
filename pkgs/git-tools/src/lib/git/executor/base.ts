@@ -1,4 +1,4 @@
-import { type CommandExecutor, Command } from "@effect/platform"
+import { type CommandExecutor, Command, Error as PlatformError } from "@effect/platform"
 import {
 	type Duration,
 	type Scope,
@@ -59,27 +59,26 @@ const make = <ECode extends ErrorCode = never, Error = never>({
 	CommandExecutor.CommandExecutor | Scope.Scope
 > => {
 	const options = noPager ? ["--no-pager"] : []
+	// eslint-disable-next-line @typescript-eslint/prefer-readonly-parameter-types -- Effect type
+	const errorHandler = (error: PlatformError.PlatformError) =>
+		new GitCommandError.GitCommandFailed({
+			exitCode: Option.none(),
+			options,
+			command: subCommand,
+			args: subArgs,
+			cause: error,
+		})
+
 	return pipe(
 		Command.make("git", ...options, subCommand, ...subArgs),
 		Command.workingDirectory(directory),
 		Command.stdout("pipe"),
 		Command.stderr("pipe"),
 		Command.start,
-		Effect.orDie,
+		Effect.mapError(errorHandler),
 		Effect.flatMap(({ exitCode, stdout, stderr }) => {
 			const result = pipe(
 				exitCode,
-				Effect.catchAll((error) =>
-					Effect.fail(
-						new GitCommandError.GitCommandFailed({
-							exitCode: Option.none(),
-							options,
-							command: subCommand,
-							args: subArgs,
-							cause: error,
-						})
-					)
-				),
 				Effect.timeoutFail({
 					duration: timeout,
 					onTimeout: () =>
@@ -90,7 +89,6 @@ const make = <ECode extends ErrorCode = never, Error = never>({
 							args: subArgs,
 						}),
 				}),
-
 				Effect.flatMap((code) =>
 					code === SUCCESS_CODE
 						? Effect.void
@@ -110,18 +108,34 @@ const make = <ECode extends ErrorCode = never, Error = never>({
 			)
 			return Effect.all(
 				[
-					pipe(
-						stdout,
-						Stream.orDie,
-						Stream.decodeText(),
-						Stream.runCollect,
-						Effect.andThen(Chunk.join(""))
-					),
-					pipe(stderr, Stream.orDie, Stream.decodeText(), Stream.runForEach(Console.error)),
+					pipe(stdout, Stream.decodeText(), Stream.runCollect, Effect.andThen(Chunk.join(""))),
+					pipe(stderr, Stream.decodeText(), Stream.runForEach(Console.error)),
 					result,
 				],
-				{ concurrency: "unbounded" }
-			).pipe(Effect.map(([stdOut]) => stdOut))
+				{ concurrency: "unbounded", mode: "validate" }
+			).pipe(
+				Effect.map(([stdOut]) => stdOut),
+				Effect.catchAll(([stdOutErr, stdErrErr, exitCodeErr]) =>
+					Option.firstSomeOf([exitCodeErr, stdOutErr, stdErrErr]).pipe(
+						Option.map((err) => {
+							if (PlatformError.isPlatformError(err)) {
+								return errorHandler(err)
+							}
+							return err
+						}),
+						Option.getOrElse(
+							() =>
+								new GitCommandError.GitCommandFailed({
+									exitCode: Option.none(),
+									options,
+									command: subCommand,
+									args: subArgs,
+								})
+						),
+						Effect.fail
+					)
+				)
+			)
 		})
 	)
 }
