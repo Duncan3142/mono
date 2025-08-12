@@ -24,7 +24,7 @@ type ErrorMatcher<ECode extends ErrorCode, Error> = (
 
 interface Arguments<ECode extends ErrorCode, Error> {
 	readonly subCommand: string
-	readonly subArgs: ReadonlyArray<string>
+	readonly subArgs?: ReadonlyArray<string>
 	readonly directory: string
 	readonly timeout: Duration.DurationInput
 	readonly noPager?: boolean
@@ -49,7 +49,7 @@ type ErrorCode = number
 const make = <ECode extends ErrorCode = never, Error = never>({
 	directory,
 	subCommand,
-	subArgs,
+	subArgs = [],
 	timeout,
 	errorMatcher,
 	noPager = false,
