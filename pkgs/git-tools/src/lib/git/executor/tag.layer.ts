@@ -1,5 +1,5 @@
 import { CommandExecutor } from "@effect/platform"
-import { Layer, pipe, Effect, Match, Console } from "effect"
+import { Layer, pipe, Effect, Match } from "effect"
 import * as Base from "./base.ts"
 import { TagExecutor } from "#duncan3142/git-tools/executor"
 import { type GitCommandError, TagMode } from "#duncan3142/git-tools/domain"
@@ -31,7 +31,6 @@ const Live: Layer.Layer<TagExecutor.TagExecutor, never, CommandExecutor.CommandE
 						timeout,
 						errorMatcher: Match.value,
 					}),
-					Effect.flatMap(Console.log),
 					Effect.scoped,
 					Effect.provideService(CommandExecutor.CommandExecutor, executor)
 				)

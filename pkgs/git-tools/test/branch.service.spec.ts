@@ -9,6 +9,7 @@ import {
 	Reference,
 	CheckoutMode,
 	FetchMode,
+	ResetMode,
 } from "#duncan3142/git-tools/domain"
 import {
 	MergeBaseCommand,
@@ -23,6 +24,8 @@ import {
 	RemoteCommand,
 	RevParseCommand,
 	TagCommand,
+	ResetCommand,
+	StatusCommand,
 } from "#duncan3142/git-tools/command"
 import { RepositoryContext } from "#duncan3142/git-tools/context"
 import { TestRepoDir, TestRepoFile } from "#duncan3142/git-tools/test-setup"
@@ -110,7 +113,7 @@ const setupB = Effect.gen(function* () {
 }).pipe(Effect.provide(ProgramLive))
 
 const setupC = Effect.gen(function* () {
-	const [init, config, remote, fetch, fetchDepthFactory, checkout] = yield* Effect.all(
+	const [init, config, remote, fetch, fetchDepthFactory, checkout, reset] = yield* Effect.all(
 		[
 			InitCommand.InitCommand,
 			ConfigCommand.ConfigCommand,
@@ -118,6 +121,7 @@ const setupC = Effect.gen(function* () {
 			FetchCommand.FetchCommand,
 			FetchDepthFactory.FetchDepthFactory,
 			CheckoutCommand.CheckoutCommand,
+			ResetCommand.ResetCommand,
 		],
 		{
 			concurrency: "unbounded",
@@ -138,6 +142,7 @@ const setupC = Effect.gen(function* () {
 	}).pipe(Effect.provideServiceEffect(FetchDepth.FetchDepth, fetchDepthFactory))
 	yield* checkout({ ref: Reference.Branch({ name: "main" }), mode: CheckoutMode.Standard() })
 	yield* checkout({ ref: Reference.Branch({ name: "feature" }), mode: CheckoutMode.Standard() })
+	yield* reset({ ref: Reference.Branch({ name: "feature" }), mode: ResetMode.Soft() })
 }).pipe(Effect.provide(ProgramLive))
 
 describe("Integration", () => {
@@ -195,12 +200,13 @@ describe("Integration", () => {
 				)
 			)
 
-			const [mergeBase, revParse, branch, tag] = yield* Effect.all(
+			const [mergeBase, revParse, branch, tag, status] = yield* Effect.all(
 				[
 					MergeBaseCommand.MergeBaseCommand,
 					RevParseCommand.RevParseCommand,
 					BranchCommand.BranchCommand,
 					TagCommand.TagCommand,
+					StatusCommand.StatusCommand,
 				],
 				{ concurrency: "unbounded" }
 			).pipe(
@@ -225,6 +231,7 @@ describe("Integration", () => {
 
 			yield* branch()
 			yield* tag()
+			yield* status()
 
 			expect(base).toMatch(/[a-f0-9]{40}/)
 			expect(sha).toMatch(/[a-f0-9]{40}/)

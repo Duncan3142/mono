@@ -1,5 +1,5 @@
 import { CommandExecutor } from "@effect/platform"
-import { Effect, Match, pipe, Layer, Console, Array } from "effect"
+import { Effect, Match, pipe, Layer, Array } from "effect"
 import * as Base from "./base.ts"
 import { Number as Const } from "#duncan3142/git-tools/const"
 import {
@@ -64,11 +64,7 @@ const Live: Layer.Layer<FetchExecutor.FetchExecutor, never, CommandExecutor.Comm
 								)
 							)
 						),
-				}).pipe(
-					Effect.flatMap(Console.log),
-					Effect.scoped,
-					Effect.provideService(CommandExecutor.CommandExecutor, executor)
-				)
+				}).pipe(Effect.scoped, Effect.provideService(CommandExecutor.CommandExecutor, executor))
 			}
 		})
 	)

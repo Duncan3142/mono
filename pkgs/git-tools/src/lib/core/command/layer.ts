@@ -11,6 +11,7 @@ import { PushCommand } from "./push.service.ts"
 import { RemoteCommand } from "./remote.service.ts"
 import { ResetCommand } from "./reset.service.ts"
 import { RevParseCommand } from "./rev-parse.service.ts"
+import { StatusCommand } from "./status.service.ts"
 import { TagCommand } from "./tag.service.ts"
 
 const GitCommandLive = Layer.mergeAll(
@@ -26,6 +27,7 @@ const GitCommandLive = Layer.mergeAll(
 	RemoteCommand.Default,
 	ResetCommand.Default,
 	RevParseCommand.Default,
+	StatusCommand.Default,
 	TagCommand.Default
 )
 

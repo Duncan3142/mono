@@ -1,5 +1,5 @@
 import { CommandExecutor } from "@effect/platform"
-import { Layer, Effect, Match, Console } from "effect"
+import { Layer, Effect, Match } from "effect"
 import * as Base from "./base.ts"
 import { InitExecutor } from "#duncan3142/git-tools/executor"
 import type { GitCommandError } from "#duncan3142/git-tools/domain"
@@ -25,11 +25,7 @@ const Live: Layer.Layer<InitExecutor.InitExecutor, never, CommandExecutor.Comman
 					subArgs: [...bareArg, `--initial-branch=${initBranch}`],
 					timeout,
 					errorMatcher: Match.value,
-				}).pipe(
-					Effect.flatMap(Console.log),
-					Effect.scoped,
-					Effect.provideService(CommandExecutor.CommandExecutor, executor)
-				)
+				}).pipe(Effect.scoped, Effect.provideService(CommandExecutor.CommandExecutor, executor))
 			}
 		})
 	)

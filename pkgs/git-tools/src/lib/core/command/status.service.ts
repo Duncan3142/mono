@@ -11,23 +11,26 @@ interface Arguments {
 /**
  * Print refs service
  */
-class TagCommand extends Effect.Service<TagCommand>()(TagFactory.make(`command`, `status`), {
-	effect: Effect.gen(function* () {
-		const [executor, { directory }] = yield* Effect.all(
-			[StatusExecutor.StatusExecutor, RepositoryContext.RepositoryContext],
-			{
-				concurrency: "unbounded",
-			}
-		)
+class StatusCommand extends Effect.Service<StatusCommand>()(
+	TagFactory.make(`command`, `status`),
+	{
+		effect: Effect.gen(function* () {
+			const [executor, { directory }] = yield* Effect.all(
+				[StatusExecutor.StatusExecutor, RepositoryContext.RepositoryContext],
+				{
+					concurrency: "unbounded",
+				}
+			)
 
-		return ({ timeout = "2 seconds" }: Arguments = {}): Effect.Effect<
-			void,
-			GitCommandError.GitCommandFailed | GitCommandError.GitCommandTimeout
-		> => executor({ directory, timeout })
-	}),
-}) {}
+			return ({ timeout = "2 seconds" }: Arguments = {}): Effect.Effect<
+				void,
+				GitCommandError.GitCommandFailed | GitCommandError.GitCommandTimeout
+			> => executor({ directory, timeout })
+		}),
+	}
+) {}
 
-const { Default } = TagCommand
+const { Default } = StatusCommand
 
-export { TagCommand, Default }
+export { StatusCommand, Default }
 export type { Arguments }
