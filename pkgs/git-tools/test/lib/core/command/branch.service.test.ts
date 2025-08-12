@@ -50,9 +50,10 @@ describe("BranchCommand", () => {
 
 			expect(result).toStrictEqual(Effect.void)
 
-			expect(console.log).toHaveBeenCalledTimes(1)
+			expect(console.log).toHaveBeenCalledTimes(2)
 
-			expect(console.log).toHaveBeenNthCalledWith(1, [`alpha`, `beta`].join("\n"))
+			expect(console.log).toHaveBeenNthCalledWith(1, `alpha\n`)
+			expect(console.log).toHaveBeenNthCalledWith(2, `beta`)
 		}).pipe(
 			Effect.provide(ProgramLayer),
 			Effect.provideService(

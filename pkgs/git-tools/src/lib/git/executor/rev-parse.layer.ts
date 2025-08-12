@@ -1,5 +1,5 @@
 import { CommandExecutor } from "@effect/platform"
-import { Layer, Effect, Match } from "effect"
+import { Layer, Effect, Match, Chunk } from "effect"
 import * as Base from "./base.ts"
 import { RevParseExecutor } from "#duncan3142/git-tools/executor"
 import type { GitCommandError } from "#duncan3142/git-tools/domain"
@@ -27,7 +27,11 @@ const Live: Layer.Layer<
 				subArgs: [rev],
 				timeout,
 				errorMatcher: Match.value,
-			}).pipe(Effect.scoped, Effect.provideService(CommandExecutor.CommandExecutor, executor))
+			}).pipe(
+				Effect.andThen(Chunk.join("")),
+				Effect.scoped,
+				Effect.provideService(CommandExecutor.CommandExecutor, executor)
+			)
 	})
 )
 

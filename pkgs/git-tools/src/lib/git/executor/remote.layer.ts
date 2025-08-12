@@ -26,7 +26,11 @@ const Live: Layer.Layer<RemoteExecutor.RemoteExecutor, never, CommandExecutor.Co
 					subArgs,
 					timeout,
 					errorMatcher: Match.value,
-				}).pipe(Effect.scoped, Effect.provideService(CommandExecutor.CommandExecutor, executor))
+				}).pipe(
+					Effect.asVoid,
+					Effect.scoped,
+					Effect.provideService(CommandExecutor.CommandExecutor, executor)
+				)
 			}
 		})
 	)

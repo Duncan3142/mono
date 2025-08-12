@@ -142,7 +142,7 @@ const setupC = Effect.gen(function* () {
 	}).pipe(Effect.provideServiceEffect(FetchDepth.FetchDepth, fetchDepthFactory))
 	yield* checkout({ ref: Reference.Branch({ name: "main" }), mode: CheckoutMode.Standard() })
 	yield* checkout({ ref: Reference.Branch({ name: "feature" }), mode: CheckoutMode.Standard() })
-	yield* reset({ ref: Reference.Branch({ name: "feature" }), mode: ResetMode.Soft() })
+	yield* reset({ ref: Reference.Branch({ name: "main" }), mode: ResetMode.Soft() })
 }).pipe(Effect.provide(ProgramLive))
 
 describe("Integration", () => {
@@ -222,11 +222,11 @@ describe("Integration", () => {
 
 			const base = yield* mergeBase({
 				baseRef: Reference.Branch({ name: "main" }),
-				headRef: Reference.Branch({ name: "feature" }),
+				headRef: Reference.Tag({ name: "2.0.0" }),
 			})
 
 			const sha = yield* revParse({
-				ref: Reference.Branch({ name: "feature" }),
+				ref: Reference.Tag({ name: "2.0.0" }),
 			})
 
 			yield* branch()

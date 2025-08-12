@@ -24,6 +24,7 @@ const Live: Layer.Layer<StatusExecutor.StatusExecutor, never, CommandExecutor.Co
 						timeout,
 						errorMatcher: Match.value,
 					}),
+					Effect.asVoid,
 					Effect.scoped,
 					Effect.provideService(CommandExecutor.CommandExecutor, executor)
 				)

@@ -22,7 +22,11 @@ const Live: Layer.Layer<AddExecutor.AddExecutor, never, CommandExecutor.CommandE
 					subArgs: ["."],
 					timeout,
 					errorMatcher: Match.value,
-				}).pipe(Effect.scoped, Effect.provideService(CommandExecutor.CommandExecutor, executor))
+				}).pipe(
+					Effect.asVoid,
+					Effect.scoped,
+					Effect.provideService(CommandExecutor.CommandExecutor, executor)
+				)
 		})
 	)
 

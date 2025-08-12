@@ -23,7 +23,11 @@ const Live: Layer.Layer<CommitExecutor.CommitExecutor, never, CommandExecutor.Co
 					subArgs: ["-m", message],
 					timeout,
 					errorMatcher: Match.value,
-				}).pipe(Effect.scoped, Effect.provideService(CommandExecutor.CommandExecutor, executor))
+				}).pipe(
+					Effect.asVoid,
+					Effect.scoped,
+					Effect.provideService(CommandExecutor.CommandExecutor, executor)
+				)
 		})
 	)
 

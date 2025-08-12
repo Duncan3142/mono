@@ -25,7 +25,11 @@ const Live: Layer.Layer<InitExecutor.InitExecutor, never, CommandExecutor.Comman
 					subArgs: [...bareArg, `--initial-branch=${initBranch}`],
 					timeout,
 					errorMatcher: Match.value,
-				}).pipe(Effect.scoped, Effect.provideService(CommandExecutor.CommandExecutor, executor))
+				}).pipe(
+					Effect.asVoid,
+					Effect.scoped,
+					Effect.provideService(CommandExecutor.CommandExecutor, executor)
+				)
 			}
 		})
 	)

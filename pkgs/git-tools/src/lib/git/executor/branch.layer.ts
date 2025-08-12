@@ -30,6 +30,7 @@ const Live: Layer.Layer<BranchExecutor.BranchExecutor, never, CommandExecutor.Co
 						timeout,
 						errorMatcher: Match.value,
 					}),
+					Effect.asVoid,
 					Effect.scoped,
 					Effect.provideService(CommandExecutor.CommandExecutor, executor)
 				)

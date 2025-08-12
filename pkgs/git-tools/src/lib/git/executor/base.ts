@@ -1,12 +1,12 @@
 import { type CommandExecutor, Command, Error as PlatformError } from "@effect/platform"
 import {
+	type Chunk,
 	type Duration,
 	type Scope,
 	Effect,
 	Stream,
 	pipe,
 	Console,
-	Chunk,
 	Match,
 	Option,
 } from "effect"
@@ -54,7 +54,7 @@ const make = <ECode extends ErrorCode = never, Error = never>({
 	errorMatcher,
 	noPager = false,
 }: Arguments<ECode, Error>): Effect.Effect<
-	string,
+	Chunk.Chunk<string>,
 	Error | GitCommandError.GitCommandFailed | GitCommandError.GitCommandTimeout,
 	CommandExecutor.CommandExecutor | Scope.Scope
 > => {
@@ -108,13 +108,7 @@ const make = <ECode extends ErrorCode = never, Error = never>({
 			)
 			return Effect.all(
 				[
-					pipe(
-						stdout,
-						Stream.decodeText(),
-						Stream.tap(Console.log),
-						Stream.runCollect,
-						Effect.andThen(Chunk.join(""))
-					),
+					pipe(stdout, Stream.decodeText(), Stream.tap(Console.log), Stream.runCollect),
 					pipe(stderr, Stream.decodeText(), Stream.runForEach(Console.error)),
 					result,
 				],

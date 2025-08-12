@@ -1,5 +1,5 @@
 import { CommandExecutor } from "@effect/platform"
-import { Layer, pipe, Effect, Match } from "effect"
+import { Layer, pipe, Effect, Match, Chunk } from "effect"
 import * as Base from "./base.ts"
 import { MergeBaseExecutor } from "#duncan3142/git-tools/executor"
 import {
@@ -47,7 +47,11 @@ const Live: Layer.Layer<
 							)
 						)
 					),
-			}).pipe(Effect.scoped, Effect.provideService(CommandExecutor.CommandExecutor, executor))
+			}).pipe(
+				Effect.andThen(Chunk.join("")),
+				Effect.scoped,
+				Effect.provideService(CommandExecutor.CommandExecutor, executor)
+			)
 	})
 )
 

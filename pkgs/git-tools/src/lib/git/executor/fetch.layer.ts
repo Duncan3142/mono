@@ -64,7 +64,11 @@ const Live: Layer.Layer<FetchExecutor.FetchExecutor, never, CommandExecutor.Comm
 								)
 							)
 						),
-				}).pipe(Effect.scoped, Effect.provideService(CommandExecutor.CommandExecutor, executor))
+				}).pipe(
+					Effect.asVoid,
+					Effect.scoped,
+					Effect.provideService(CommandExecutor.CommandExecutor, executor)
+				)
 			}
 		})
 	)

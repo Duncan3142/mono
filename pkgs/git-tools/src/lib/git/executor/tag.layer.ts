@@ -31,6 +31,7 @@ const Live: Layer.Layer<TagExecutor.TagExecutor, never, CommandExecutor.CommandE
 						timeout,
 						errorMatcher: Match.value,
 					}),
+					Effect.asVoid,
 					Effect.scoped,
 					Effect.provideService(CommandExecutor.CommandExecutor, executor)
 				)
