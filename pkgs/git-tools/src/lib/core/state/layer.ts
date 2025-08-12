@@ -1,4 +1,4 @@
-import { FetchDepthFactory } from "./index.ts"
+import { FetchDepthFactory } from "./fetch-depth-factory.service.ts"
 
 const GitStateLive = FetchDepthFactory.Default
 

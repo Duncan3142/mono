@@ -1,19 +1,17 @@
 import { Layer } from "effect"
-import {
-	AddCommand,
-	BranchCommand,
-	CheckoutCommand,
-	CommitCommand,
-	ConfigCommand,
-	FetchCommand,
-	InitCommand,
-	MergeBaseCommand,
-	PushCommand,
-	RemoteCommand,
-	ResetCommand,
-	RevParseCommand,
-	TagCommand,
-} from "./index.ts"
+import { AddCommand } from "./add.service.ts"
+import { BranchCommand } from "./branch.service.ts"
+import { CheckoutCommand } from "./checkout.service.ts"
+import { CommitCommand } from "./commit.service.ts"
+import { ConfigCommand } from "./config.service.ts"
+import { FetchCommand } from "./fetch.service.ts"
+import { InitCommand } from "./init.service.ts"
+import { MergeBaseCommand } from "./merge-base.service.ts"
+import { PushCommand } from "./push.service.ts"
+import { RemoteCommand } from "./remote.service.ts"
+import { ResetCommand } from "./reset.service.ts"
+import { RevParseCommand } from "./rev-parse.service.ts"
+import { TagCommand } from "./tag.service.ts"
 
 const GitCommandLive = Layer.mergeAll(
 	AddCommand.Default,

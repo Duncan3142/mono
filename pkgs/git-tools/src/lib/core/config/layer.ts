@@ -1,4 +1,4 @@
-import { RepositoryConfig } from "./index.ts"
+import { RepositoryConfig } from "./repository-config.service.ts"
 
 const GitConfigLive = RepositoryConfig.Default
 
