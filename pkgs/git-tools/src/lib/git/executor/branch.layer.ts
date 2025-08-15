@@ -28,8 +28,11 @@ const Live: Layer.Layer<BranchExecutor.BranchExecutor, never, CommandExecutor.Co
 					subArgs,
 					timeout,
 					errorMatcher: Match.value,
-					stdoutHandler: Stream.runDrain,
-				}).pipe(Effect.scoped, Effect.provideService(CommandExecutor.CommandExecutor, executor))
+				}).pipe(
+					Effect.andThen(Stream.runDrain),
+					Effect.scoped,
+					Effect.provideService(CommandExecutor.CommandExecutor, executor)
+				)
 			}
 		})
 	)

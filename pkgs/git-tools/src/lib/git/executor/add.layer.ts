@@ -22,8 +22,11 @@ const Live: Layer.Layer<AddExecutor.AddExecutor, never, CommandExecutor.CommandE
 					subArgs: ["."],
 					timeout,
 					errorMatcher: Match.value,
-					stdoutHandler: Stream.runDrain,
-				}).pipe(Effect.scoped, Effect.provideService(CommandExecutor.CommandExecutor, executor))
+				}).pipe(
+					Effect.andThen(Stream.runDrain),
+					Effect.scoped,
+					Effect.provideService(CommandExecutor.CommandExecutor, executor)
+				)
 		})
 	)
 

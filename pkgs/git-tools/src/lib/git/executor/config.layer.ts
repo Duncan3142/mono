@@ -33,8 +33,11 @@ const Live: Layer.Layer<ConfigExecutor.ConfigExecutor, never, CommandExecutor.Co
 					subArgs: [...scopeArgs, ...modeArgs],
 					timeout,
 					errorMatcher: Match.value,
-					stdoutHandler: Stream.runDrain,
-				}).pipe(Effect.scoped, Effect.provideService(CommandExecutor.CommandExecutor, executor))
+				}).pipe(
+					Effect.andThen(Stream.runDrain),
+					Effect.scoped,
+					Effect.provideService(CommandExecutor.CommandExecutor, executor)
+				)
 			}
 		})
 	)

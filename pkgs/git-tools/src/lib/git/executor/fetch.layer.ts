@@ -64,8 +64,11 @@ const Live: Layer.Layer<FetchExecutor.FetchExecutor, never, CommandExecutor.Comm
 								)
 							)
 						),
-					stdoutHandler: Stream.runDrain,
-				}).pipe(Effect.scoped, Effect.provideService(CommandExecutor.CommandExecutor, executor))
+				}).pipe(
+					Effect.andThen(Stream.runDrain),
+					Effect.scoped,
+					Effect.provideService(CommandExecutor.CommandExecutor, executor)
+				)
 			}
 		})
 	)

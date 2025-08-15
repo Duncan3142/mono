@@ -26,8 +26,11 @@ const Live: Layer.Layer<PushExecutor.PushExecutor, never, CommandExecutor.Comman
 					subArgs: [...fwl, remote, ref],
 					timeout,
 					errorMatcher: Match.value,
-					stdoutHandler: Stream.runDrain,
-				}).pipe(Effect.scoped, Effect.provideService(CommandExecutor.CommandExecutor, executor))
+				}).pipe(
+					Effect.andThen(Stream.runDrain),
+					Effect.scoped,
+					Effect.provideService(CommandExecutor.CommandExecutor, executor)
+				)
 			}
 		})
 	)

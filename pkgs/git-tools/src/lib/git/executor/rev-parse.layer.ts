@@ -27,8 +27,12 @@ const Live: Layer.Layer<
 				subArgs: [rev],
 				timeout,
 				errorMatcher: Match.value,
-				stdoutHandler: (stream) => stream.pipe(Stream.runCollect, Effect.map(Chunk.join(""))),
-			}).pipe(Effect.scoped, Effect.provideService(CommandExecutor.CommandExecutor, executor))
+			}).pipe(
+				Effect.andThen(Stream.runCollect),
+				Effect.map(Chunk.join("")),
+				Effect.scoped,
+				Effect.provideService(CommandExecutor.CommandExecutor, executor)
+			)
 	})
 )
 
