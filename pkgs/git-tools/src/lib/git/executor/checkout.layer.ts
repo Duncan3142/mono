@@ -1,5 +1,5 @@
 import { CommandExecutor } from "@effect/platform"
-import { Layer, pipe, Effect, Match } from "effect"
+import { Layer, pipe, Effect, Match, Stream } from "effect"
 import * as Base from "./base.ts"
 import { CheckoutExecutor } from "#duncan3142/git-tools/executor"
 import { type GitCommandError, CheckoutError, CheckoutMode } from "#duncan3142/git-tools/domain"
@@ -47,11 +47,8 @@ const Live: Layer.Layer<
 							)
 						)
 					),
-			}).pipe(
-				Effect.asVoid,
-				Effect.scoped,
-				Effect.provideService(CommandExecutor.CommandExecutor, executor)
-			)
+				stdoutHandler: Stream.runDrain,
+			}).pipe(Effect.scoped, Effect.provideService(CommandExecutor.CommandExecutor, executor))
 		}
 	})
 )

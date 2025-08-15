@@ -1,6 +1,5 @@
-import { type CommandExecutor, Command, Error as PlatformError } from "@effect/platform"
+import { type Error as PlatformError, type CommandExecutor, Command } from "@effect/platform"
 import {
-	type Chunk,
 	type Duration,
 	type Scope,
 	Effect,
@@ -9,6 +8,7 @@ import {
 	Console,
 	Match,
 	Option,
+	Either,
 } from "effect"
 import { GitCommandError } from "#duncan3142/git-tools/domain"
 
@@ -22,13 +22,19 @@ type ErrorMatcher<ECode extends ErrorCode, Error> = (
 	ErrorCode
 >
 
-interface Arguments<ECode extends ErrorCode, Error> {
+type StdOutHandler<Res> = (
+	// eslint-disable-next-line @typescript-eslint/prefer-readonly-parameter-types -- Effect type
+	stream: Stream.Stream<string, GitCommandError.GitCommandFailed>
+) => Effect.Effect<Res, GitCommandError.GitCommandFailed>
+
+interface Arguments<ECode extends ErrorCode, Res, Error> {
 	readonly subCommand: string
 	readonly subArgs?: ReadonlyArray<string>
 	readonly directory: string
 	readonly timeout: Duration.DurationInput
 	readonly noPager?: boolean
 	readonly errorMatcher: ErrorMatcher<ECode, Error>
+	readonly stdoutHandler: StdOutHandler<Res>
 }
 
 const SUCCESS_CODE = 0
@@ -43,18 +49,20 @@ type ErrorCode = number
  * @param args.directory - The working directory for the git command.
  * @param args.timeout - The timeout for the command execution.
  * @param args.errorMatcher - A matcher to handle specific error codes.
+ * @param args.stdoutHandler - A handler for processing the standard output of the command.
  * @param args.noPager - Whether to disable the pager for git commands.
  * @returns A function that executes the git command and returns an effect.
  */
-const make = <ECode extends ErrorCode = never, Error = never>({
+const make = <Res, ECode extends ErrorCode = never, Error = never>({
 	directory,
 	subCommand,
 	subArgs = [],
 	timeout,
 	errorMatcher,
+	stdoutHandler,
 	noPager = false,
-}: Arguments<ECode, Error>): Effect.Effect<
-	Chunk.Chunk<string>,
+}: Arguments<ECode, Res, Error>): Effect.Effect<
+	Res,
 	Error | GitCommandError.GitCommandFailed | GitCommandError.GitCommandTimeout,
 	CommandExecutor.CommandExecutor | Scope.Scope
 > => {
@@ -77,8 +85,8 @@ const make = <ECode extends ErrorCode = never, Error = never>({
 		Command.start,
 		Effect.mapError(errorHandler),
 		Effect.flatMap(({ exitCode, stdout, stderr }) => {
-			const result = pipe(
-				exitCode,
+			const exitCodeEffect = exitCode.pipe(
+				Effect.mapError(errorHandler),
 				Effect.timeoutFail({
 					duration: timeout,
 					onTimeout: () =>
@@ -106,35 +114,26 @@ const make = <ECode extends ErrorCode = never, Error = never>({
 							)
 				)
 			)
-			return Effect.all(
-				[
-					pipe(stdout, Stream.decodeText(), Stream.tap(Console.log), Stream.runCollect),
-					pipe(stderr, Stream.decodeText(), Stream.runForEach(Console.error)),
-					result,
-				],
-				{ concurrency: "unbounded", mode: "validate" }
-			).pipe(
-				Effect.map(([stdOut]) => stdOut),
-				Effect.catchAll(([stdOutErr, stdErrErr, exitCodeErr]) =>
-					Option.firstSomeOf([exitCodeErr, stdOutErr, stdErrErr]).pipe(
-						Option.map((err) => {
-							if (PlatformError.isPlatformError(err)) {
-								return errorHandler(err)
-							}
-							return err
-						}),
-						Option.getOrElse(
-							() =>
-								new GitCommandError.GitCommandFailed({
-									exitCode: Option.none(),
-									options,
-									command: subCommand,
-									args: subArgs,
-								})
-						),
-						Effect.fail
-					)
-				)
+
+			const stderrEffect = stderr.pipe(
+				Stream.decodeText(),
+				Stream.mapError(errorHandler),
+				Stream.runForEach(Console.error)
+			)
+
+			const stdoutEffect = stdout.pipe(
+				Stream.decodeText(),
+				Stream.mapError(errorHandler),
+				Stream.tap(Console.log),
+				stdoutHandler
+			)
+
+			return Effect.all([stdoutEffect, stderrEffect, exitCodeEffect], {
+				concurrency: "unbounded",
+				mode: "either",
+			}).pipe(
+				Effect.andThen(Either.all),
+				Effect.map(([res]) => res)
 			)
 		})
 	)

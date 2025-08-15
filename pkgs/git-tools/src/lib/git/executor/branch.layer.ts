@@ -1,5 +1,5 @@
 import { CommandExecutor } from "@effect/platform"
-import { Layer, pipe, Effect, Match } from "effect"
+import { Layer, Effect, Match, Stream } from "effect"
 import * as Base from "./base.ts"
 import { BranchExecutor } from "#duncan3142/git-tools/executor"
 import { type GitCommandError, BranchMode } from "#duncan3142/git-tools/domain"
@@ -21,19 +21,15 @@ const Live: Layer.Layer<BranchExecutor.BranchExecutor, never, CommandExecutor.Co
 				const subArgs = BranchMode.$match(mode, {
 					Print: () => ["-a", "-v", "-v"],
 				})
-				return pipe(
-					Base.make({
-						directory,
-						noPager: true,
-						subCommand: "branch",
-						subArgs,
-						timeout,
-						errorMatcher: Match.value,
-					}),
-					Effect.asVoid,
-					Effect.scoped,
-					Effect.provideService(CommandExecutor.CommandExecutor, executor)
-				)
+				return Base.make({
+					directory,
+					noPager: true,
+					subCommand: "branch",
+					subArgs,
+					timeout,
+					errorMatcher: Match.value,
+					stdoutHandler: Stream.runDrain,
+				}).pipe(Effect.scoped, Effect.provideService(CommandExecutor.CommandExecutor, executor))
 			}
 		})
 	)

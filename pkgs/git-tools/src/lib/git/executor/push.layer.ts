@@ -1,5 +1,5 @@
 import { CommandExecutor } from "@effect/platform"
-import { Layer, Effect, Match } from "effect"
+import { Layer, Effect, Match, Stream } from "effect"
 import * as Base from "./base.ts"
 import { PushExecutor } from "#duncan3142/git-tools/executor"
 import type { GitCommandError } from "#duncan3142/git-tools/domain"
@@ -26,11 +26,8 @@ const Live: Layer.Layer<PushExecutor.PushExecutor, never, CommandExecutor.Comman
 					subArgs: [...fwl, remote, ref],
 					timeout,
 					errorMatcher: Match.value,
-				}).pipe(
-					Effect.asVoid,
-					Effect.scoped,
-					Effect.provideService(CommandExecutor.CommandExecutor, executor)
-				)
+					stdoutHandler: Stream.runDrain,
+				}).pipe(Effect.scoped, Effect.provideService(CommandExecutor.CommandExecutor, executor))
 			}
 		})
 	)

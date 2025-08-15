@@ -1,5 +1,5 @@
 import { CommandExecutor } from "@effect/platform"
-import { Layer, pipe, Effect, Match } from "effect"
+import { Layer, Effect, Match, Stream } from "effect"
 import * as Base from "./base.ts"
 import { StatusExecutor } from "#duncan3142/git-tools/executor"
 import type { GitCommandError } from "#duncan3142/git-tools/domain"
@@ -17,17 +17,13 @@ const Live: Layer.Layer<StatusExecutor.StatusExecutor, never, CommandExecutor.Co
 				void,
 				GitCommandError.GitCommandFailed | GitCommandError.GitCommandTimeout
 			> =>
-				pipe(
-					Base.make({
-						directory,
-						subCommand: "status",
-						timeout,
-						errorMatcher: Match.value,
-					}),
-					Effect.asVoid,
-					Effect.scoped,
-					Effect.provideService(CommandExecutor.CommandExecutor, executor)
-				)
+				Base.make({
+					directory,
+					subCommand: "status",
+					timeout,
+					errorMatcher: Match.value,
+					stdoutHandler: Stream.runDrain,
+				}).pipe(Effect.scoped, Effect.provideService(CommandExecutor.CommandExecutor, executor))
 		})
 	)
 
