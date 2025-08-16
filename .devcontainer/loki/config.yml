@@ -1,16 +1,34 @@
+# This is a modern, "zero-dependency" Loki configuration for local development.
+
 server:
   http_listen_port: 3100
+  grpc_listen_port: 9096
 
-storage_config:
-  filesystem:
-    directory: /tmp/loki/chunks
+common:
+  instance_addr: 127.0.0.1
+  path_prefix: /tmp/loki # Base path for all Loki data
+  storage:
+    filesystem:
+      chunks_directory: /tmp/loki/chunks
+      rules_directory: /tmp/loki/rules
+  replication_factor: 1
+  ring:
+    kvstore:
+      store: inmemory
 
+# Schema config for the TSDB index, required for modern OTLP ingestion.
 schema_config:
   configs:
-    - from: 2020-10-24
-      store: boltdb-shipper
+    - from: 2024-01-01 # A date in the past
+      store: tsdb
       object_store: filesystem
-      schema: v11
+      schema: v13
       index:
         prefix: index_
         period: 24h
+
+# This section is required by Loki but is configured by the 'common' block above.
+storage_config:
+  tsdb_shipper:
+    active_index_directory: /tmp/loki/tsdb-index
+    cache_location: /tmp/loki/tsdb-cache

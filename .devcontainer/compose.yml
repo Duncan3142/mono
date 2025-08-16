@@ -68,6 +68,7 @@ services:
     container_name: tempo
     restart: unless-stopped
     command: ["-config.file=/etc/tempo/config.yml"]
+    user: "root"
     volumes:
       - ./tempo/config.yml:/etc/tempo/config.yml
       - tempo_data:/tmp/tempo
@@ -81,6 +82,7 @@ services:
     container_name: loki
     restart: unless-stopped
     command: ["-config.file=/etc/loki/config.yml"]
+    user: "root"
     volumes:
       - ./loki/config.yml:/etc/loki/config.yml
       - loki_data:/tmp/loki
