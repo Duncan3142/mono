@@ -36,7 +36,7 @@ services:
   #   The Collector     #
   # ------------------- #
   otel-collector:
-    image: otel/opentelemetry-collector:latest
+    image: otel/opentelemetry-collector:0.132.2
     container_name: otel-collector
     restart: unless-stopped
     command: ["--config=/etc/otelcol-contrib/config.yml"]
@@ -52,7 +52,7 @@ services:
   #      Data Sources   #
   # ------------------- #
   prometheus:
-    image: prom/prometheus:latest
+    image: prom/prometheus:v3.5.0
     container_name: prometheus
     restart: unless-stopped
     volumes:
@@ -64,7 +64,7 @@ services:
       - monitoring
 
   tempo:
-    image: grafana/tempo:latest
+    image: grafana/tempo:2.8.2
     container_name: tempo
     restart: unless-stopped
     command: ["-config.file=/etc/tempo/config.yml"]
@@ -78,7 +78,7 @@ services:
       - monitoring
 
   loki:
-    image: grafana/loki:latest
+    image: grafana/loki:3.5.3
     container_name: loki
     restart: unless-stopped
     command: ["-config.file=/etc/loki/config.yml"]
@@ -93,7 +93,7 @@ services:
   #    Visualization    #
   # ------------------- #
   grafana:
-    image: grafana/grafana:latest
+    image: grafana/grafana:12.1.0
     container_name: grafana
     restart: unless-stopped
     volumes:
