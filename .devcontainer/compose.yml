@@ -2,7 +2,7 @@ services:
   mono-devcon:
     # Build from the Dockerfile and tag the resulting image
     build:
-      context: ./
+      context: ./devcontainer/
       dockerfile: Dockerfile
     image: mono-devcon:latest
 
@@ -16,4 +16,4 @@ services:
 
     # Load variables from the specified .env file
     env_file:
-      - ./.env
+      - ./devcontainer/.env
