@@ -9,6 +9,8 @@ volumes:
   tempo_data:
   loki_data:
   grafana_data:
+  pyroscope_data:
+  pyroscope_compactor_data:
 
 services:
   mono-devcon:
@@ -62,6 +64,8 @@ services:
       - "9090:9090" # Prometheus UI
     networks:
       - monitoring
+    depends_on:
+      - otel-collector
 
   tempo:
     image: grafana/tempo:2.8.2
@@ -89,6 +93,21 @@ services:
     networks:
       - monitoring
 
+  pyroscope:
+    image: grafana/pyroscope:1.14.0
+    container_name: pyroscope
+    restart: unless-stopped
+    command:
+      - "-config.file=/etc/pyroscope/config.yml"
+    volumes:
+      - ./pyroscope/config.yml:/etc/pyroscope/config.yml
+      - pyroscope_data:/data
+      - pyroscope_compactor_data:/data-compactor
+    ports:
+      - "4040:4040" # Pyroscope UI and API
+    networks:
+      - monitoring
+
   # ------------------- #
   #    Visualization    #
   # ------------------- #
@@ -107,3 +126,4 @@ services:
       - prometheus
       - tempo
       - loki
+      - pyroscope

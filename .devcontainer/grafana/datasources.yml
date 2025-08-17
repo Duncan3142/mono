@@ -18,6 +18,7 @@ datasources:
     url: http://tempo:3200
     isDefault: true
     jsonData:
+      orgId: '1'
       serviceMap:
         datasourceUid: 'Prometheus' # Link traces to metrics
     editable: true
@@ -29,9 +30,25 @@ datasources:
     url: http://loki:3100
     isDefault: false
     jsonData:
+      orgId: '1'
       derivedFields:
         - datasourceUid: 'Tempo' # Link logs to traces
           matcherRegex: 'trace_id=(\w+)'
           name: 'TraceID'
           url: '$${__value.raw}'
+    editable: true
+
+  - name: Pyroscope
+    type: phlare # <-- This is the correct type for Pyroscope
+    access: proxy
+    orgId: 1
+    url: http://pyroscope:4040
+    isDefault: false
+    jsonData:
+      orgId: '1'
+      # This links profiles to your traces in Tempo
+      tracesToProfiles:
+        datasourceUid: 'Tempo'
+        tags: ['service.name', 'service.namespace']
+        spanName: 'kind:span.kind'
     editable: true

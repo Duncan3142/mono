@@ -26,6 +26,12 @@ exporters:
   prometheus:
     endpoint: "0.0.0.0:8889"
 
+  # Export profiling data to Pyroscope
+  # otlphttp/pyroscope:
+  #   endpoint: "http://pyroscope:4318" # <-- Points to Pyroscope's OTLP port
+  #   tls:
+  #     insecure: true
+
 service:
   pipelines:
     traces:
@@ -40,3 +46,7 @@ service:
       receivers: [otlp]
       processors: [batch]
       exporters: [otlphttp/loki]
+    # profiles:
+    #   receivers: [otlp]
+    #   processors: [batch]
+    #   exporters: [otlphttp/pyroscope]
