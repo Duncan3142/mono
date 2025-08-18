@@ -1,4 +1,6 @@
 server:
   http_listen_port: 4040
 
+multitenancy_enabled: false
+
 storage: {}
