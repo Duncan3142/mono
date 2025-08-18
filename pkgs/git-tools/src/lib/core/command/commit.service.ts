@@ -4,6 +4,7 @@ import type { GitCommandError } from "#duncan3142/git-tools/domain"
 import { TagFactory } from "#duncan3142/git-tools/const"
 import { RepositoryContext } from "#duncan3142/git-tools/context"
 import { ExecutorDuration } from "#duncan3142/git-tools/metric"
+import { WrapLog } from "#duncan3142/git-tools/log"
 
 interface Arguments {
 	readonly message: string
@@ -24,13 +25,15 @@ class CommitCommand extends Effect.Service<CommitCommand>()(
 				}
 			)
 
-			return ({
-				message,
-				timeout = "2 seconds",
-			}: Arguments): Effect.Effect<
+			const handler: (
+				args: Arguments
+			) => Effect.Effect<
 				void,
 				GitCommandError.GitCommandFailed | GitCommandError.GitCommandTimeout
-			> => executor({ directory, timeout, message }).pipe(ExecutorDuration.duration)
+			> = WrapLog.wrap("Git commit", ({ message, timeout = "2 seconds" }) =>
+				executor({ directory, timeout, message }).pipe(ExecutorDuration.duration)
+			)
+			return handler
 		}),
 	}
 ) {}

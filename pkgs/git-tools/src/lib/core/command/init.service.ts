@@ -4,6 +4,7 @@ import type { GitCommandError } from "#duncan3142/git-tools/domain"
 import { TagFactory } from "#duncan3142/git-tools/const"
 import { RepositoryContext } from "#duncan3142/git-tools/context"
 import { ExecutorDuration } from "#duncan3142/git-tools/metric"
+import { WrapLog } from "#duncan3142/git-tools/log"
 
 interface Arguments {
 	readonly bare?: boolean
@@ -23,14 +24,17 @@ class InitCommand extends Effect.Service<InitCommand>()(TagFactory.make(`command
 			}
 		)
 
-		return ({
-			bare = false,
-			initBranch = "main",
-			timeout = "2 seconds",
-		}: Arguments = {}): Effect.Effect<
+		const handler: (
+			args?: Arguments
+		) => Effect.Effect<
 			void,
 			GitCommandError.GitCommandFailed | GitCommandError.GitCommandTimeout
-		> => executor({ directory, timeout, bare, initBranch }).pipe(ExecutorDuration.duration)
+		> = WrapLog.wrap(
+			"Git init",
+			({ bare = false, initBranch = "main", timeout = "2 seconds" } = {}) =>
+				executor({ directory, timeout, bare, initBranch }).pipe(ExecutorDuration.duration)
+		)
+		return handler
 	}),
 }) {}
 

@@ -5,6 +5,7 @@ import { TagFactory } from "#duncan3142/git-tools/const"
 import { RepositoryContext } from "#duncan3142/git-tools/context"
 import { RepositoryConfig } from "#duncan3142/git-tools/config"
 import { ExecutorDuration } from "#duncan3142/git-tools/metric"
+import { WrapLog } from "#duncan3142/git-tools/log"
 
 interface Arguments {
 	readonly timeout?: Duration.DurationInput
@@ -29,13 +30,17 @@ class RemoteCommand extends Effect.Service<RemoteCommand>()(
 				}
 			)
 
-			return ({
-				mode = RemoteMode.Add({ remote: defaultRemote }),
-				timeout = "2 seconds",
-			}: Arguments = {}): Effect.Effect<
+			const handler: (
+				args?: Arguments
+			) => Effect.Effect<
 				void,
 				GitCommandError.GitCommandFailed | GitCommandError.GitCommandTimeout
-			> => executor({ directory, timeout, mode }).pipe(ExecutorDuration.duration)
+			> = WrapLog.wrap(
+				"Git remote",
+				({ mode = RemoteMode.Add({ remote: defaultRemote }), timeout = "2 seconds" } = {}) =>
+					executor({ directory, timeout, mode }).pipe(ExecutorDuration.duration)
+			)
+			return handler
 		}),
 	}
 ) {}

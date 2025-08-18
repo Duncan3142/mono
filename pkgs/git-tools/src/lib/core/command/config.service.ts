@@ -8,6 +8,7 @@ import {
 import { TagFactory } from "#duncan3142/git-tools/const"
 import { RepositoryContext } from "#duncan3142/git-tools/context"
 import { ExecutorDuration } from "#duncan3142/git-tools/metric"
+import { WrapLog } from "#duncan3142/git-tools/log"
 
 interface Arguments {
 	readonly mode: ConfigMode.ConfigMode
@@ -29,14 +30,17 @@ class ConfigCommand extends Effect.Service<ConfigCommand>()(
 				}
 			)
 
-			return ({
-				mode,
-				scope = ConfigScope.Local(),
-				timeout = "2 seconds",
-			}: Arguments): Effect.Effect<
+			const handler: (
+				args: Arguments
+			) => Effect.Effect<
 				void,
 				GitCommandError.GitCommandFailed | GitCommandError.GitCommandTimeout
-			> => executor({ directory, mode, scope, timeout }).pipe(ExecutorDuration.duration)
+			> = WrapLog.wrap(
+				"Git config",
+				({ mode, scope = ConfigScope.Local(), timeout = "2 seconds" }) =>
+					executor({ directory, mode, scope, timeout }).pipe(ExecutorDuration.duration)
+			)
+			return handler
 		}),
 	}
 ) {}

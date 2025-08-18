@@ -1,6 +1,6 @@
 import { type Effect, Metric } from "effect"
 
-const timer = Metric.timer("executor-duration", "A timer for git executor duration")
+const timer = Metric.timer("git-executor-duration", "A timer for git executor duration")
 
 /**
  * Track the duration of an executor.

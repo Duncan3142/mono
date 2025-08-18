@@ -4,6 +4,7 @@ import type { MergeBaseError, Reference, GitCommandError } from "#duncan3142/git
 import { MergeBaseExecutor } from "#duncan3142/git-tools/executor"
 import { RepositoryContext } from "#duncan3142/git-tools/context"
 import { ExecutorDuration } from "#duncan3142/git-tools/metric"
+import { WrapLog } from "#duncan3142/git-tools/log"
 
 interface Arguments {
 	readonly headRef: Reference.Reference
@@ -25,22 +26,22 @@ class MergeBaseCommand extends Effect.Service<MergeBaseCommand>()(
 				}
 			)
 
-			return ({
-				headRef,
-				baseRef,
-				timeout = "2 seconds",
-			}: Arguments): Effect.Effect<
+			const handler: (
+				args: Arguments
+			) => Effect.Effect<
 				Reference.SHA,
 				| GitCommandError.GitCommandFailed
 				| GitCommandError.GitCommandTimeout
 				| MergeBaseError.MergeBaseNotFound
-			> =>
+			> = WrapLog.wrap("Git merge-base", ({ headRef, baseRef, timeout = "2 seconds" }) =>
 				executor({
 					headRef,
 					baseRef,
 					directory,
 					timeout,
 				}).pipe(ExecutorDuration.duration)
+			)
+			return handler
 		}),
 	}
 ) {}

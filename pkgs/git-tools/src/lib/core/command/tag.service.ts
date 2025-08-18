@@ -4,6 +4,7 @@ import { type GitCommandError, TagMode } from "#duncan3142/git-tools/domain"
 import { TagFactory } from "#duncan3142/git-tools/const"
 import { RepositoryContext } from "#duncan3142/git-tools/context"
 import { ExecutorDuration } from "#duncan3142/git-tools/metric"
+import { WrapLog } from "#duncan3142/git-tools/log"
 
 interface Arguments {
 	readonly mode?: TagMode.TagMode
@@ -22,10 +23,15 @@ class TagCommand extends Effect.Service<TagCommand>()(TagFactory.make(`command`,
 			}
 		)
 
-		return ({ mode = TagMode.Print(), timeout = "2 seconds" }: Arguments = {}): Effect.Effect<
+		const handler: (
+			args?: Arguments
+		) => Effect.Effect<
 			void,
 			GitCommandError.GitCommandFailed | GitCommandError.GitCommandTimeout
-		> => executor({ mode, directory, timeout }).pipe(ExecutorDuration.duration)
+		> = WrapLog.wrap("Git tag", ({ mode = TagMode.Print(), timeout = "2 seconds" } = {}) =>
+			executor({ mode, directory, timeout }).pipe(ExecutorDuration.duration)
+		)
+		return handler
 	}),
 }) {}
 

@@ -4,6 +4,7 @@ import { TagFactory } from "#duncan3142/git-tools/const"
 import { RepositoryContext } from "#duncan3142/git-tools/context"
 import { ResetExecutor } from "#duncan3142/git-tools/executor"
 import { ExecutorDuration } from "#duncan3142/git-tools/metric"
+import { WrapLog } from "#duncan3142/git-tools/log"
 
 interface Arguments {
 	readonly ref: Reference.Reference
@@ -23,14 +24,15 @@ class ResetCommand extends Effect.Service<ResetCommand>()(TagFactory.make(`comma
 			}
 		)
 
-		return ({
-			ref,
-			mode = ResetMode.Hard(),
-			timeout = "2 seconds",
-		}: Arguments): Effect.Effect<
+		const handler: (
+			args: Arguments
+		) => Effect.Effect<
 			void,
 			GitCommandError.GitCommandFailed | GitCommandError.GitCommandTimeout
-		> => executor({ ref, mode, directory, timeout }).pipe(ExecutorDuration.duration)
+		> = WrapLog.wrap("Git reset", ({ ref, mode = ResetMode.Hard(), timeout = "2 seconds" }) =>
+			executor({ ref, mode, directory, timeout }).pipe(ExecutorDuration.duration)
+		)
+		return handler
 	}),
 }) {}
 

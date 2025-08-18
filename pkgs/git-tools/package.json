@@ -27,6 +27,7 @@
 		"#duncan3142/git-tools/context": "./.tsc/dist/lib/core/context/index.js",
 		"#duncan3142/git-tools/domain": "./.tsc/dist/lib/core/domain/index.js",
 		"#duncan3142/git-tools/executor": "./.tsc/dist/lib/core/executor/index.js",
+		"#duncan3142/git-tools/log": "./.tsc/dist/lib/core/log/index.js",
 		"#duncan3142/git-tools/metric": "./.tsc/dist/lib/core/metric/index.js",
 		"#duncan3142/git-tools/state": "./.tsc/dist/lib/core/state/index.js",
 		"#duncan3142/git-tools/core": "./.tsc/dist/lib/core/index.js",
