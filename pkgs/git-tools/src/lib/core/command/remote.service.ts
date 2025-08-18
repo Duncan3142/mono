@@ -4,6 +4,7 @@ import { RemoteMode, type GitCommandError } from "#duncan3142/git-tools/domain"
 import { TagFactory } from "#duncan3142/git-tools/const"
 import { RepositoryContext } from "#duncan3142/git-tools/context"
 import { RepositoryConfig } from "#duncan3142/git-tools/config"
+import { ExecutorDuration } from "#duncan3142/git-tools/metric"
 
 interface Arguments {
 	readonly timeout?: Duration.DurationInput
@@ -34,7 +35,7 @@ class RemoteCommand extends Effect.Service<RemoteCommand>()(
 			}: Arguments = {}): Effect.Effect<
 				void,
 				GitCommandError.GitCommandFailed | GitCommandError.GitCommandTimeout
-			> => executor({ directory, timeout, mode })
+			> => executor({ directory, timeout, mode }).pipe(ExecutorDuration.duration)
 		}),
 	}
 ) {}

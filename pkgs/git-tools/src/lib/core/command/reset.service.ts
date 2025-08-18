@@ -3,6 +3,7 @@ import { type Reference, type GitCommandError, ResetMode } from "#duncan3142/git
 import { TagFactory } from "#duncan3142/git-tools/const"
 import { RepositoryContext } from "#duncan3142/git-tools/context"
 import { ResetExecutor } from "#duncan3142/git-tools/executor"
+import { ExecutorDuration } from "#duncan3142/git-tools/metric"
 
 interface Arguments {
 	readonly ref: Reference.Reference
@@ -29,7 +30,7 @@ class ResetCommand extends Effect.Service<ResetCommand>()(TagFactory.make(`comma
 		}: Arguments): Effect.Effect<
 			void,
 			GitCommandError.GitCommandFailed | GitCommandError.GitCommandTimeout
-		> => executor({ ref, mode, directory, timeout })
+		> => executor({ ref, mode, directory, timeout }).pipe(ExecutorDuration.duration)
 	}),
 }) {}
 

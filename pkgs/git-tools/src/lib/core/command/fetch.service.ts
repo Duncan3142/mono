@@ -11,6 +11,7 @@ import {
 import { FetchDepth } from "#duncan3142/git-tools/state"
 import { RepositoryConfig } from "#duncan3142/git-tools/config"
 import { RepositoryContext } from "#duncan3142/git-tools/context"
+import { ExecutorDuration } from "#duncan3142/git-tools/metric"
 
 interface Arguments {
 	readonly refs: Array.NonEmptyReadonlyArray<Reference.Reference>
@@ -68,7 +69,7 @@ class FetchCommand extends Effect.Service<FetchCommand>()(TagFactory.make(`comma
 					refs,
 					directory,
 					timeout,
-				})
+				}).pipe(ExecutorDuration.duration)
 			})
 	}),
 }) {}

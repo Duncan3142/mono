@@ -3,6 +3,7 @@ import { BranchExecutor } from "#duncan3142/git-tools/executor"
 import { type GitCommandError, BranchMode } from "#duncan3142/git-tools/domain"
 import { TagFactory } from "#duncan3142/git-tools/const"
 import { RepositoryContext } from "#duncan3142/git-tools/context"
+import { ExecutorDuration } from "#duncan3142/git-tools/metric"
 
 interface Arguments {
 	readonly mode?: BranchMode.BranchMode
@@ -29,7 +30,7 @@ class BranchCommand extends Effect.Service<BranchCommand>()(
 			}: Arguments = {}): Effect.Effect<
 				void,
 				GitCommandError.GitCommandFailed | GitCommandError.GitCommandTimeout
-			> => executor({ mode, directory, timeout })
+			> => executor({ mode, directory, timeout }).pipe(ExecutorDuration.duration)
 		}),
 	}
 ) {}

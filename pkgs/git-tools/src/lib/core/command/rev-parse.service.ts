@@ -3,6 +3,7 @@ import type { Reference, GitCommandError } from "#duncan3142/git-tools/domain"
 import { TagFactory } from "#duncan3142/git-tools/const"
 import { RepositoryContext } from "#duncan3142/git-tools/context"
 import { RevParseExecutor } from "#duncan3142/git-tools/executor"
+import { ExecutorDuration } from "#duncan3142/git-tools/metric"
 
 interface Arguments {
 	readonly ref: Reference.Reference
@@ -29,7 +30,7 @@ class RevParseCommand extends Effect.Service<RevParseCommand>()(
 			}: Arguments): Effect.Effect<
 				Reference.SHA,
 				GitCommandError.GitCommandFailed | GitCommandError.GitCommandTimeout
-			> => executor({ ref, directory, timeout })
+			> => executor({ ref, directory, timeout }).pipe(ExecutorDuration.duration)
 		}),
 	}
 ) {}

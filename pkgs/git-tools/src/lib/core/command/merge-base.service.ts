@@ -3,6 +3,7 @@ import { TagFactory } from "#duncan3142/git-tools/const"
 import type { MergeBaseError, Reference, GitCommandError } from "#duncan3142/git-tools/domain"
 import { MergeBaseExecutor } from "#duncan3142/git-tools/executor"
 import { RepositoryContext } from "#duncan3142/git-tools/context"
+import { ExecutorDuration } from "#duncan3142/git-tools/metric"
 
 interface Arguments {
 	readonly headRef: Reference.Reference
@@ -39,7 +40,7 @@ class MergeBaseCommand extends Effect.Service<MergeBaseCommand>()(
 					baseRef,
 					directory,
 					timeout,
-				})
+				}).pipe(ExecutorDuration.duration)
 		}),
 	}
 ) {}

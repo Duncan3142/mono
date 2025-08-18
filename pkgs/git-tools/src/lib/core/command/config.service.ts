@@ -7,6 +7,7 @@ import {
 } from "#duncan3142/git-tools/domain"
 import { TagFactory } from "#duncan3142/git-tools/const"
 import { RepositoryContext } from "#duncan3142/git-tools/context"
+import { ExecutorDuration } from "#duncan3142/git-tools/metric"
 
 interface Arguments {
 	readonly mode: ConfigMode.ConfigMode
@@ -35,7 +36,7 @@ class ConfigCommand extends Effect.Service<ConfigCommand>()(
 			}: Arguments): Effect.Effect<
 				void,
 				GitCommandError.GitCommandFailed | GitCommandError.GitCommandTimeout
-			> => executor({ directory, mode, scope, timeout })
+			> => executor({ directory, mode, scope, timeout }).pipe(ExecutorDuration.duration)
 		}),
 	}
 ) {}

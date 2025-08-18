@@ -3,6 +3,7 @@ import { AddExecutor } from "#duncan3142/git-tools/executor"
 import type { GitCommandError } from "#duncan3142/git-tools/domain"
 import { TagFactory } from "#duncan3142/git-tools/const"
 import { RepositoryContext } from "#duncan3142/git-tools/context"
+import { ExecutorDuration } from "#duncan3142/git-tools/metric"
 
 interface Arguments {
 	readonly timeout?: Duration.DurationInput
@@ -23,7 +24,7 @@ class AddCommand extends Effect.Service<AddCommand>()(TagFactory.make(`command`,
 		return ({ timeout = "2 seconds" }: Arguments = {}): Effect.Effect<
 			void,
 			GitCommandError.GitCommandFailed | GitCommandError.GitCommandTimeout
-		> => executor({ directory, timeout })
+		> => executor({ directory, timeout }).pipe(ExecutorDuration.duration)
 	}),
 }) {}
 
