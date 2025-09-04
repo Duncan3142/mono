@@ -5,7 +5,7 @@ import {
 	ResetMode,
 } from "#duncan3142/git-tools/core/domain"
 import { TagFactory } from "#duncan3142/git-tools/core/const"
-import { RepositoryContext } from "#duncan3142/git-tools/context"
+import { RepositoryContext } from "#duncan3142/git-tools/core/context"
 import { ResetExecutor } from "#duncan3142/git-tools/core/executor"
 import { ExecutorDuration, WrapLog } from "#duncan3142/git-tools/core/telemetry"
 

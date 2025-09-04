@@ -6,7 +6,7 @@ import type {
 	GitCommandError,
 } from "#duncan3142/git-tools/core/domain"
 import { MergeBaseExecutor } from "#duncan3142/git-tools/core/executor"
-import { RepositoryContext } from "#duncan3142/git-tools/context"
+import { RepositoryContext } from "#duncan3142/git-tools/core/context"
 import { ExecutorDuration, WrapLog } from "#duncan3142/git-tools/core/telemetry"
 
 interface Arguments {

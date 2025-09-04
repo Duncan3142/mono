@@ -1,7 +1,7 @@
 import { type Duration, Effect } from "effect"
 import type { Reference, GitCommandError } from "#duncan3142/git-tools/core/domain"
 import { TagFactory } from "#duncan3142/git-tools/core/const"
-import { RepositoryContext } from "#duncan3142/git-tools/context"
+import { RepositoryContext } from "#duncan3142/git-tools/core/context"
 import { RevParseExecutor } from "#duncan3142/git-tools/core/executor"
 import { ExecutorDuration, WrapLog } from "#duncan3142/git-tools/core/telemetry"
 

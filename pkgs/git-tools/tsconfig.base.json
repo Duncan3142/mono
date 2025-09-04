@@ -7,7 +7,7 @@
 			"#duncan3142/git-tools/core/command": ["./src/lib/core/command/index.ts"],
 			"#duncan3142/git-tools/core/config": ["./src/lib/core/config/index.ts"],
 			"#duncan3142/git-tools/core/const": ["./src/lib/core/const/index.ts"],
-			"#duncan3142/git-tools/context": ["./src/lib/core/context/index.ts"],
+			"#duncan3142/git-tools/core/context": ["./src/lib/core/context/index.ts"],
 			"#duncan3142/git-tools/core/domain": ["./src/lib/core/domain/index.ts"],
 			"#duncan3142/git-tools/core/executor": ["./src/lib/core/executor/index.ts"],
 			"#duncan3142/git-tools/core/telemetry": ["./src/lib/core/telemetry/index.ts"],

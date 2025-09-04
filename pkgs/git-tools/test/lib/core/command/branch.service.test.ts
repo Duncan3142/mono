@@ -12,7 +12,7 @@ import {
 	MockLogger,
 	MockProcess,
 } from "#duncan3142/git-tools/test-mock"
-import { RepositoryContext } from "#duncan3142/git-tools/context"
+import { RepositoryContext } from "#duncan3142/git-tools/core/context"
 import { Repository } from "#duncan3142/git-tools/core/domain"
 
 const logHandler = vi.fn<() => void>()

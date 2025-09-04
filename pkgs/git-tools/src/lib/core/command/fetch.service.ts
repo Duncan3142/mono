@@ -10,7 +10,7 @@ import {
 } from "#duncan3142/git-tools/core/domain"
 import { FetchDepth } from "#duncan3142/git-tools/core/state"
 import { RepositoryConfig } from "#duncan3142/git-tools/core/config"
-import { RepositoryContext } from "#duncan3142/git-tools/context"
+import { RepositoryContext } from "#duncan3142/git-tools/core/context"
 import { ExecutorDuration, WrapLog } from "#duncan3142/git-tools/core/telemetry"
 
 interface Arguments {

@@ -1,7 +1,7 @@
 import { writeFile } from "node:fs/promises"
 import { join } from "node:path"
 import { Effect, type Cause } from "effect"
-import { RepositoryContext } from "#duncan3142/git-tools/context"
+import { RepositoryContext } from "#duncan3142/git-tools/core/context"
 
 /**
  * Creates a new file.
