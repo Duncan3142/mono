@@ -12,7 +12,7 @@ import {
 	CheckoutMode,
 	FetchMode,
 	ResetMode,
-} from "#duncan3142/git-tools/domain"
+} from "#duncan3142/git-tools/core/domain"
 import {
 	MergeBaseCommand,
 	BranchCommand,
@@ -28,10 +28,10 @@ import {
 	TagCommand,
 	ResetCommand,
 	StatusCommand,
-} from "#duncan3142/git-tools/command"
-import { RepositoryContext } from "#duncan3142/git-tools/context"
+} from "#duncan3142/git-tools/core/command"
+import { RepositoryContext } from "#duncan3142/git-tools/core/context"
 import { TestRepoDir, TestRepoFile } from "#duncan3142/git-tools/test-setup"
-import { FetchDepth, FetchDepthFactory } from "#duncan3142/git-tools/state"
+import { FetchDepth, FetchDepthFactory } from "#duncan3142/git-tools/core/state"
 
 const console = MockConsole.make()
 
@@ -427,7 +427,7 @@ describe("Integration", () => {
 					/^On branch feature\nYour branch is behind 'origin\/feature' by 2 commits, and can be fast-forwarded\.\n {2}\(use "git pull" to update your local branch\)\n\nChanges to be committed:\n {2}\(use "git restore --staged <file>\.\.\." to unstage\)\n\tnew file: {3}three\.md\n\tnew file: {3}two\.md\n\n$/
 				)
 			)
-		})
+		}).pipe(Layer.provide(TelemetryLive))
 	)
 })
 /* eslint-enable @typescript-eslint/unbound-method -- Test spies */

@@ -1,8 +1,12 @@
 import { CommandExecutor } from "@effect/platform"
 import { Layer, Effect, Match, Stream } from "effect"
 import * as Base from "./base.ts"
-import { ConfigExecutor } from "#duncan3142/git-tools/executor"
-import { type GitCommandError, ConfigMode, ConfigScope } from "#duncan3142/git-tools/domain"
+import { ConfigExecutor } from "#duncan3142/git-tools/core/executor"
+import {
+	type GitCommandError,
+	ConfigMode,
+	ConfigScope,
+} from "#duncan3142/git-tools/core/domain"
 
 const Live: Layer.Layer<ConfigExecutor.ConfigExecutor, never, CommandExecutor.CommandExecutor> =
 	Layer.effect(

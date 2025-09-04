@@ -21,16 +21,17 @@
 	"main": "./.tsc/dist/index.js",
 	"imports": {
 		"#duncan3142/git-tools/layer": "./.tsc/dist/layer.js",
-		"#duncan3142/git-tools/command": "./.tsc/dist/lib/core/command/index.js",
-		"#duncan3142/git-tools/config": "./.tsc/dist/lib/core/config/index.js",
-		"#duncan3142/git-tools/const": "./.tsc/dist/lib/core/const/index.js",
-		"#duncan3142/git-tools/context": "./.tsc/dist/lib/core/context/index.js",
-		"#duncan3142/git-tools/domain": "./.tsc/dist/lib/core/domain/index.js",
-		"#duncan3142/git-tools/executor": "./.tsc/dist/lib/core/executor/index.js",
-		"#duncan3142/git-tools/telemetry": "./.tsc/dist/lib/core/telemetry/index.js",
-		"#duncan3142/git-tools/state": "./.tsc/dist/lib/core/state/index.js",
+		"#duncan3142/git-tools/core/command": "./.tsc/dist/lib/core/command/index.js",
+		"#duncan3142/git-tools/core/config": "./.tsc/dist/lib/core/config/index.js",
+		"#duncan3142/git-tools/core/const": "./.tsc/dist/lib/core/const/index.js",
+		"#duncan3142/git-tools/core/context": "./.tsc/dist/lib/core/context/index.js",
+		"#duncan3142/git-tools/core/domain": "./.tsc/dist/lib/core/domain/index.js",
+		"#duncan3142/git-tools/core/executor": "./.tsc/dist/lib/core/executor/index.js",
+		"#duncan3142/git-tools/core/telemetry": "./.tsc/dist/lib/core/telemetry/index.js",
+		"#duncan3142/git-tools/core/state": "./.tsc/dist/lib/core/state/index.js",
 		"#duncan3142/git-tools/core": "./.tsc/dist/lib/core/index.js",
-		"#duncan3142/git-tools/git": "./.tsc/dist/lib/git/index.js"
+		"#duncan3142/git-tools/git": "./.tsc/dist/lib/git/index.js",
+		"#duncan3142/git-tools/telemetry": "./.tsc/dist/lib/telemetry/index.js"
 	},
 	"exports": {
 		"./*": {

@@ -1,5 +1,5 @@
 import { type Duration, type Option, Data } from "effect"
-import { TagFactory } from "#duncan3142/git-tools/const"
+import { TagFactory } from "#duncan3142/git-tools/core/const"
 
 const GIT_COMMAND_TIMEOUT_ERROR_TAG = TagFactory.make("domain", `GIT_COMMAND_TIMEOUT_ERROR`)
 

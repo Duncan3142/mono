@@ -1,9 +1,13 @@
 import { type Duration, Effect } from "effect"
-import { type Reference, type GitCommandError, ResetMode } from "#duncan3142/git-tools/domain"
-import { TagFactory } from "#duncan3142/git-tools/const"
+import {
+	type Reference,
+	type GitCommandError,
+	ResetMode,
+} from "#duncan3142/git-tools/core/domain"
+import { TagFactory } from "#duncan3142/git-tools/core/const"
 import { RepositoryContext } from "#duncan3142/git-tools/context"
-import { ResetExecutor } from "#duncan3142/git-tools/executor"
-import { ExecutorDuration, WrapLog  } from "#duncan3142/git-tools/telemetry"
+import { ResetExecutor } from "#duncan3142/git-tools/core/executor"
+import { ExecutorDuration, WrapLog } from "#duncan3142/git-tools/core/telemetry"
 
 interface Arguments {
 	readonly ref: Reference.Reference

@@ -1,9 +1,13 @@
 import { type Duration, Effect } from "effect"
-import { TagFactory } from "#duncan3142/git-tools/const"
-import type { MergeBaseError, Reference, GitCommandError } from "#duncan3142/git-tools/domain"
-import { MergeBaseExecutor } from "#duncan3142/git-tools/executor"
+import { TagFactory } from "#duncan3142/git-tools/core/const"
+import type {
+	MergeBaseError,
+	Reference,
+	GitCommandError,
+} from "#duncan3142/git-tools/core/domain"
+import { MergeBaseExecutor } from "#duncan3142/git-tools/core/executor"
 import { RepositoryContext } from "#duncan3142/git-tools/context"
-import { ExecutorDuration, WrapLog  } from "#duncan3142/git-tools/telemetry"
+import { ExecutorDuration, WrapLog } from "#duncan3142/git-tools/core/telemetry"
 
 interface Arguments {
 	readonly headRef: Reference.Reference

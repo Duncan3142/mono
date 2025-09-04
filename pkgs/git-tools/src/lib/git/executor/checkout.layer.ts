@@ -1,8 +1,12 @@
 import { CommandExecutor } from "@effect/platform"
 import { Layer, pipe, Effect, Match, Stream } from "effect"
 import * as Base from "./base.ts"
-import { CheckoutExecutor } from "#duncan3142/git-tools/executor"
-import { type GitCommandError, CheckoutError, CheckoutMode } from "#duncan3142/git-tools/domain"
+import { CheckoutExecutor } from "#duncan3142/git-tools/core/executor"
+import {
+	type GitCommandError,
+	CheckoutError,
+	CheckoutMode,
+} from "#duncan3142/git-tools/core/domain"
 
 const CHECKOUT_REF_NOT_FOUND_CODE = 1
 

@@ -1,8 +1,8 @@
 import { CommandExecutor } from "@effect/platform"
 import { Layer, Effect, Match, Stream } from "effect"
 import * as Base from "./base.ts"
-import { RemoteExecutor } from "#duncan3142/git-tools/executor"
-import { type GitCommandError, RemoteMode } from "#duncan3142/git-tools/domain"
+import { RemoteExecutor } from "#duncan3142/git-tools/core/executor"
+import { type GitCommandError, RemoteMode } from "#duncan3142/git-tools/core/domain"
 
 const Live: Layer.Layer<RemoteExecutor.RemoteExecutor, never, CommandExecutor.CommandExecutor> =
 	Layer.effect(

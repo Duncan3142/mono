@@ -5,8 +5,8 @@ import type {
 	Remote,
 	GitCommandError,
 	FetchMode,
-} from "#duncan3142/git-tools/domain"
-import { TagFactory } from "#duncan3142/git-tools/const"
+} from "#duncan3142/git-tools/core/domain"
+import { TagFactory } from "#duncan3142/git-tools/core/const"
 
 interface Arguments {
 	readonly mode: FetchMode.FetchMode

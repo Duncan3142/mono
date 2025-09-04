@@ -1,13 +1,13 @@
 import { Effect, type Duration } from "effect"
-import { ConfigExecutor } from "#duncan3142/git-tools/executor"
+import { ConfigExecutor } from "#duncan3142/git-tools/core/executor"
 import {
 	ConfigScope,
 	type ConfigMode,
 	type GitCommandError,
-} from "#duncan3142/git-tools/domain"
-import { TagFactory } from "#duncan3142/git-tools/const"
+} from "#duncan3142/git-tools/core/domain"
+import { TagFactory } from "#duncan3142/git-tools/core/const"
 import { RepositoryContext } from "#duncan3142/git-tools/context"
-import { ExecutorDuration, WrapLog  } from "#duncan3142/git-tools/telemetry"
+import { ExecutorDuration, WrapLog } from "#duncan3142/git-tools/core/telemetry"
 
 interface Arguments {
 	readonly mode: ConfigMode.ConfigMode

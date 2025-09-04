@@ -4,11 +4,11 @@ import {
 	type CheckoutError,
 	type GitCommandError,
 	CheckoutMode,
-} from "#duncan3142/git-tools/domain"
-import { TagFactory } from "#duncan3142/git-tools/const"
+} from "#duncan3142/git-tools/core/domain"
+import { TagFactory } from "#duncan3142/git-tools/core/const"
 import { RepositoryContext } from "#duncan3142/git-tools/context"
-import { CheckoutExecutor } from "#duncan3142/git-tools/executor"
-import { ExecutorDuration, WrapLog  } from "#duncan3142/git-tools/telemetry"
+import { CheckoutExecutor } from "#duncan3142/git-tools/core/executor"
+import { ExecutorDuration, WrapLog } from "#duncan3142/git-tools/core/telemetry"
 
 interface Arguments {
 	readonly ref: Reference.Reference
