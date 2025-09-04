@@ -10,11 +10,22 @@ distributor:
     otlp:
       protocols:
         grpc:
+          endpoint: 0.0.0.0:4317
         http:
+          endpoint: 0.0.0.0:4318
+
+metrics_generator:
+  storage:
+    path: /tmp/tempo/generator/wal
+    remote_write:
+      - url: http://prometheus:9090/api/v1/write
+  ring:
+    kvstore:
+      store: inmemory
 
 ingester:
   lifecycler:
-    address: 127.0.0.1
+    address: 0.0.0.0
     ring:
       kvstore:
         store: inmemory

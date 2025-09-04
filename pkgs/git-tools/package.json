@@ -82,6 +82,7 @@
 	"dependencies": {
 		"@effect/opentelemetry": "^0.56.5",
 		"@effect/platform": "^0.90.6",
+		"@opentelemetry/api-logs": "^0.204.0",
 		"@opentelemetry/exporter-logs-otlp-grpc": "^0.203.0",
 		"@opentelemetry/exporter-metrics-otlp-grpc": "^0.203.0",
 		"@opentelemetry/exporter-trace-otlp-grpc": "^0.203.0",
