@@ -8,8 +8,7 @@ import {
 import { TagFactory } from "#duncan3142/git-tools/const"
 import { RepositoryContext } from "#duncan3142/git-tools/context"
 import { CheckoutExecutor } from "#duncan3142/git-tools/executor"
-import { ExecutorDuration } from "#duncan3142/git-tools/metric"
-import { WrapLog } from "#duncan3142/git-tools/log"
+import { ExecutorDuration, WrapLog  } from "#duncan3142/git-tools/telemetry"
 
 interface Arguments {
 	readonly ref: Reference.Reference

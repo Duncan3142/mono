@@ -3,8 +3,7 @@ import { TagFactory } from "#duncan3142/git-tools/const"
 import type { MergeBaseError, Reference, GitCommandError } from "#duncan3142/git-tools/domain"
 import { MergeBaseExecutor } from "#duncan3142/git-tools/executor"
 import { RepositoryContext } from "#duncan3142/git-tools/context"
-import { ExecutorDuration } from "#duncan3142/git-tools/metric"
-import { WrapLog } from "#duncan3142/git-tools/log"
+import { ExecutorDuration, WrapLog  } from "#duncan3142/git-tools/telemetry"
 
 interface Arguments {
 	readonly headRef: Reference.Reference

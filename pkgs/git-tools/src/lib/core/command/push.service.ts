@@ -4,8 +4,7 @@ import type { GitCommandError, Reference, Remote } from "#duncan3142/git-tools/d
 import { TagFactory } from "#duncan3142/git-tools/const"
 import { RepositoryContext } from "#duncan3142/git-tools/context"
 import { RepositoryConfig } from "#duncan3142/git-tools/config"
-import { ExecutorDuration } from "#duncan3142/git-tools/metric"
-import { WrapLog } from "#duncan3142/git-tools/log"
+import { ExecutorDuration, WrapLog } from "#duncan3142/git-tools/telemetry"
 
 interface Arguments {
 	readonly timeout?: Duration.DurationInput
