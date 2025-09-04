@@ -33,7 +33,10 @@ class BranchCommand extends Effect.Service<BranchCommand>()(
 			> = WrapLog.wrap(
 				"Git branch",
 				({ mode = BranchMode.Print(), timeout = "2 seconds" } = {}) =>
-					executor({ mode, directory, timeout }).pipe(ExecutorDuration.duration)
+					executor({ mode, directory, timeout }).pipe(
+						ExecutorDuration.duration,
+						Effect.withSpan("git-branch")
+					)
 			)
 			return handler
 		}),

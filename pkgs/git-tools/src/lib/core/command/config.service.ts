@@ -38,7 +38,10 @@ class ConfigCommand extends Effect.Service<ConfigCommand>()(
 			> = WrapLog.wrap(
 				"Git config",
 				({ mode, scope = ConfigScope.Local(), timeout = "2 seconds" }) =>
-					executor({ directory, mode, scope, timeout }).pipe(ExecutorDuration.duration)
+					executor({ directory, mode, scope, timeout }).pipe(
+						ExecutorDuration.duration,
+						Effect.withSpan("git-config")
+					)
 			)
 			return handler
 		}),

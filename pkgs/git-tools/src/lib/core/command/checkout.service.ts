@@ -41,7 +41,10 @@ class CheckoutCommand extends Effect.Service<CheckoutCommand>()(
 			> = WrapLog.wrap(
 				"Git checkout",
 				({ ref, mode = CheckoutMode.Standard(), timeout = "2 seconds" }) =>
-					executor({ ref, directory, mode, timeout }).pipe(ExecutorDuration.duration)
+					executor({ ref, directory, mode, timeout }).pipe(
+						ExecutorDuration.duration,
+						Effect.withSpan("git-checkout")
+					)
 			)
 
 			return handler

@@ -39,7 +39,8 @@ class PushCommand extends Effect.Service<PushCommand>()(TagFactory.make(`command
 			"Git push",
 			({ ref, forceWithLease = false, remote = defaultRemote, timeout = "2 seconds" }) =>
 				executor({ directory, timeout, forceWithLease, ref, remote }).pipe(
-					ExecutorDuration.duration
+					ExecutorDuration.duration,
+					Effect.withSpan("git-push")
 				)
 		)
 		return handler

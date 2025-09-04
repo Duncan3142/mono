@@ -1,27 +1,36 @@
-server:
-  http_listen_port: 3200
+target: all
 
 auth_enabled: false
 
+server:
+  http_listen_port: 3200
+
 distributor:
-  ring:
-    kvstore:
-      store: inmemory
   receivers:
     otlp:
       protocols:
         grpc:
-          endpoint: 0.0.0.0:4317
+        http:
 
 ingester:
   lifecycler:
+    address: 127.0.0.1
     ring:
       kvstore:
         store: inmemory
       replication_factor: 1
+    final_sleep: 0s
+
+compactor:
+  compaction:
+    compaction_window: 1h
+    block_retention: 1h
+    compacted_block_retention: 10m
 
 storage:
   trace:
     backend: local
+    wal:
+      path: /tmp/tempo/wal
     local:
-      path: /tmp/tempo/traces
+      path: /tmp/tempo/blocks

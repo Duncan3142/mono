@@ -30,7 +30,10 @@ class StatusCommand extends Effect.Service<StatusCommand>()(
 				void,
 				GitCommandError.GitCommandFailed | GitCommandError.GitCommandTimeout
 			> = WrapLog.wrap("Git status", ({ timeout = "2 seconds" } = {}) =>
-				executor({ directory, timeout }).pipe(ExecutorDuration.duration)
+				executor({ directory, timeout }).pipe(
+					ExecutorDuration.duration,
+					Effect.withSpan("git-status")
+				)
 			)
 
 			return handler

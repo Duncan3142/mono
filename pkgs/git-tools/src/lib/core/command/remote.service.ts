@@ -38,7 +38,10 @@ class RemoteCommand extends Effect.Service<RemoteCommand>()(
 			> = WrapLog.wrap(
 				"Git remote",
 				({ mode = RemoteMode.Add({ remote: defaultRemote }), timeout = "2 seconds" } = {}) =>
-					executor({ directory, timeout, mode }).pipe(ExecutorDuration.duration)
+					executor({ directory, timeout, mode }).pipe(
+						ExecutorDuration.duration,
+						Effect.withSpan("git-remote")
+					)
 			)
 			return handler
 		}),

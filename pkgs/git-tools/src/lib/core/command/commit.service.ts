@@ -31,7 +31,10 @@ class CommitCommand extends Effect.Service<CommitCommand>()(
 				void,
 				GitCommandError.GitCommandFailed | GitCommandError.GitCommandTimeout
 			> = WrapLog.wrap("Git commit", ({ message, timeout = "2 seconds" }) =>
-				executor({ directory, timeout, message }).pipe(ExecutorDuration.duration)
+				executor({ directory, timeout, message }).pipe(
+					ExecutorDuration.duration,
+					Effect.withSpan("git-commit")
+				)
 			)
 			return handler
 		}),
