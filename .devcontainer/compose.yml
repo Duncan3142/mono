@@ -3,12 +3,7 @@ networks:
     driver: bridge
 
 volumes:
-  prometheus_data:
-  tempo_data:
-  loki_data:
-  grafana_data:
-  pyroscope_data:
-  pyroscope_compactor_data:
+  otel_lgtm_data:
 
 services:
   mono-devcon:
@@ -33,97 +28,15 @@ services:
       - monitoring
 
   # ------------------- #
-  #   The Collector     #
+  #      OTel-LGTM      #
   # ------------------- #
-  otel-collector:
-    image: otel/opentelemetry-collector:0.132.2
-    container_name: otel-collector
+  otel-lgtm:
+    image: grafana/otel-lgtm:0.11.10
+    container_name: otel-lgtm
     restart: unless-stopped
-    command: ["--config=/etc/otelcol-contrib/config.yml"]
-    volumes:
-      - ./otel-collector/config.yml:/etc/otelcol-contrib/config.yml
-    networks:
-      - monitoring
-    depends_on:
-      - tempo
-      - loki
-
-  # ------------------- #
-  #      Data Sources   #
-  # ------------------- #
-  prometheus:
-    image: prom/prometheus:v3.5.0
-    container_name: prometheus
-    restart: unless-stopped
-    volumes:
-      - ./prometheus/config.yml:/etc/prometheus/prometheus.yml
-      - prometheus_data:/prometheus
-    ports:
-      - "9090:9090" # Prometheus UI
-    networks:
-      - monitoring
-    depends_on:
-      - otel-collector
-
-  tempo:
-    image: grafana/tempo:2.8.2
-    container_name: tempo
-    restart: unless-stopped
-    command: ["-config.file=/etc/tempo/config.yml"]
-    user: "root"
-    volumes:
-      - ./tempo/config.yml:/etc/tempo/config.yml
-      - tempo_data:/tmp/tempo
-    ports:
-      - "3200:3200" # Tempo UI
-    networks:
-      - monitoring
-
-  loki:
-    image: grafana/loki:3.5.3
-    container_name: loki
-    restart: unless-stopped
-    command: ["-config.file=/etc/loki/config.yml"]
-    user: "root"
-    ports:
-      - "3100:3100" # Loki API
-    volumes:
-      - ./loki/config.yml:/etc/loki/config.yml
-      - loki_data:/tmp/loki
-    networks:
-      - monitoring
-
-  pyroscope:
-    image: grafana/pyroscope:1.14.0
-    container_name: pyroscope
-    restart: unless-stopped
-    command:
-      - "-config.file=/etc/pyroscope/config.yml"
-    volumes:
-      - ./pyroscope/config.yml:/etc/pyroscope/config.yml
-      - pyroscope_data:/data
-      - pyroscope_compactor_data:/data-compactor
-    ports:
-      - "4040:4040" # Pyroscope UI and API
-    networks:
-      - monitoring
-
-  # ------------------- #
-  #    Visualization    #
-  # ------------------- #
-  grafana:
-    image: grafana/grafana:12.1.0
-    container_name: grafana
-    restart: unless-stopped
-    volumes:
-      - ./grafana/datasources.yml:/etc/grafana/provisioning/datasources/datasources.yml
-      - grafana_data:/var/lib/grafana
     ports:
       - "3000:3000"
+    volumes:
+      - otel_lgtm_data:/data
     networks:
       - monitoring
-    depends_on:
-      - prometheus
-      - tempo
-      - loki
-      - pyroscope
