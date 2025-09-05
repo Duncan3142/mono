@@ -33,7 +33,7 @@ class BranchCommand extends Effect.Service<BranchCommand>()(
 				"Git branch",
 				({ mode = BranchMode.Print(), timeout = "2 seconds" } = {}) =>
 					executor({ mode, directory, timeout }).pipe(
-						ExecutorDuration.duration,
+						ExecutorDuration.duration("git-branch"),
 						Effect.withSpan("git-branch")
 					)
 			)

@@ -42,7 +42,7 @@ class MergeBaseCommand extends Effect.Service<MergeBaseCommand>()(
 					baseRef,
 					directory,
 					timeout,
-				}).pipe(ExecutorDuration.duration, Effect.withSpan("git-merge-base"))
+				}).pipe(ExecutorDuration.duration("git-merge-base"), Effect.withSpan("git-merge-base"))
 			)
 			return handler
 		}),

@@ -32,7 +32,7 @@ class InitCommand extends Effect.Service<InitCommand>()(TagFactory.make(`command
 			"Git init",
 			({ bare = false, initBranch = "main", timeout = "2 seconds" } = {}) =>
 				executor({ directory, timeout, bare, initBranch }).pipe(
-					ExecutorDuration.duration,
+					ExecutorDuration.duration("git-init"),
 					Effect.withSpan("git-init")
 				)
 		)

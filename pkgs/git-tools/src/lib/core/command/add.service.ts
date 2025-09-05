@@ -28,7 +28,7 @@ class AddCommand extends Effect.Service<AddCommand>()(TagFactory.make(`command`,
 			GitCommandError.GitCommandFailed | GitCommandError.GitCommandTimeout
 		> = WrapLog.wrap("Git add", ({ timeout = "2 seconds" } = {}) =>
 			executor({ directory, timeout }).pipe(
-				ExecutorDuration.duration,
+				ExecutorDuration.duration("git-add"),
 				Effect.withSpan("git-add")
 			)
 		)

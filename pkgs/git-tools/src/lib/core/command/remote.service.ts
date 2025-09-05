@@ -38,7 +38,7 @@ class RemoteCommand extends Effect.Service<RemoteCommand>()(
 				"Git remote",
 				({ mode = RemoteMode.Add({ remote: defaultRemote }), timeout = "2 seconds" } = {}) =>
 					executor({ directory, timeout, mode }).pipe(
-						ExecutorDuration.duration,
+						ExecutorDuration.duration("git-remote"),
 						Effect.withSpan("git-remote")
 					)
 			)

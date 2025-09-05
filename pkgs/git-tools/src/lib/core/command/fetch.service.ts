@@ -73,7 +73,7 @@ class FetchCommand extends Effect.Service<FetchCommand>()(TagFactory.make(`comma
 						refs,
 						directory,
 						timeout,
-					}).pipe(ExecutorDuration.duration)
+					}).pipe(ExecutorDuration.duration("git-fetch"))
 				}).pipe(Effect.withSpan("git-fetch"))
 		)
 		return handler

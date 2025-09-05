@@ -29,7 +29,7 @@ class TagCommand extends Effect.Service<TagCommand>()(TagFactory.make(`command`,
 			GitCommandError.GitCommandFailed | GitCommandError.GitCommandTimeout
 		> = WrapLog.wrap("Git tag", ({ mode = TagMode.Print(), timeout = "2 seconds" } = {}) =>
 			executor({ mode, directory, timeout }).pipe(
-				ExecutorDuration.duration,
+				ExecutorDuration.duration("git-tag"),
 				Effect.withSpan("git-tag")
 			)
 		)

@@ -41,7 +41,7 @@ class CheckoutCommand extends Effect.Service<CheckoutCommand>()(
 				"Git checkout",
 				({ ref, mode = CheckoutMode.Standard(), timeout = "2 seconds" }) =>
 					executor({ ref, directory, mode, timeout }).pipe(
-						ExecutorDuration.duration,
+						ExecutorDuration.duration("git-checkout"),
 						Effect.withSpan("git-checkout")
 					)
 			)

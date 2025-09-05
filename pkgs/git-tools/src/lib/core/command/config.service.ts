@@ -38,7 +38,7 @@ class ConfigCommand extends Effect.Service<ConfigCommand>()(
 				"Git config",
 				({ mode, scope = ConfigScope.Local(), timeout = "2 seconds" }) =>
 					executor({ directory, mode, scope, timeout }).pipe(
-						ExecutorDuration.duration,
+						ExecutorDuration.duration("git-config"),
 						Effect.withSpan("git-config")
 					)
 			)

@@ -31,7 +31,7 @@ class RevParseCommand extends Effect.Service<RevParseCommand>()(
 				GitCommandError.GitCommandFailed | GitCommandError.GitCommandTimeout
 			> = WrapLog.wrap("Git rev-parse", ({ ref, timeout = "2 seconds" }) =>
 				executor({ ref, directory, timeout }).pipe(
-					ExecutorDuration.duration,
+					ExecutorDuration.duration("git-rev-parse"),
 					Effect.withSpan("git-rev-parse")
 				)
 			)

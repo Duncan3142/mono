@@ -34,7 +34,7 @@ class ResetCommand extends Effect.Service<ResetCommand>()(TagFactory.make(`comma
 			GitCommandError.GitCommandFailed | GitCommandError.GitCommandTimeout
 		> = WrapLog.wrap("Git reset", ({ ref, mode = ResetMode.Hard(), timeout = "2 seconds" }) =>
 			executor({ ref, mode, directory, timeout }).pipe(
-				ExecutorDuration.duration,
+				ExecutorDuration.duration("git-reset"),
 				Effect.withSpan("git-reset")
 			)
 		)
