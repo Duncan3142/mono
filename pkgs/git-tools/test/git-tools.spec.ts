@@ -32,6 +32,7 @@ import {
 import { RepositoryContext } from "#duncan3142/git-tools/core/context"
 import { TestRepoDir, TestRepoFile } from "#duncan3142/git-tools/test-setup"
 import { FetchDepth, FetchDepthFactory } from "#duncan3142/git-tools/core/state"
+import { TelemetryLive } from "#duncan3142/git-tools/telemetry"
 
 const console = MockConsole.make()
 
@@ -42,7 +43,7 @@ const setupBare = Effect.gen(function* () {
 		concurrency: "unbounded",
 	})
 	yield* init({ bare: true })
-}).pipe(Effect.provide(ProgramLive), Effect.withConsole(console))
+}).pipe(Effect.provide(ProgramLive))
 
 const setupA = Effect.gen(function* () {
 	const [init, config, add, commit, checkout, tag, remote, push] = yield* Effect.all(
@@ -77,7 +78,7 @@ const setupA = Effect.gen(function* () {
 	yield* push({ ref: Reference.Tag({ name: "1.0.0" }) })
 	yield* push({ ref: Reference.Branch({ name: "main" }) })
 	yield* push({ ref: Reference.Tag({ name: "2.0.0" }) })
-}).pipe(Effect.provide(ProgramLive), Effect.withConsole(console))
+}).pipe(Effect.provide(ProgramLive))
 
 const setupB = Effect.gen(function* () {
 	const [init, config, remote, fetch, fetchDepthFactory, checkout, add, commit, push] =
@@ -114,7 +115,7 @@ const setupB = Effect.gen(function* () {
 	yield* add()
 	yield* commit({ message: "Feature commit B" })
 	yield* push({ ref: Reference.Branch({ name: "feature" }) })
-}).pipe(Effect.provide(ProgramLive), Effect.withConsole(console))
+}).pipe(Effect.provide(ProgramLive))
 
 const setupC = Effect.gen(function* () {
 	const [
@@ -180,10 +181,10 @@ const setupC = Effect.gen(function* () {
 	yield* tag()
 	yield* status()
 	return { base, sha }
-}).pipe(Effect.provide(ProgramLive), Effect.withConsole(console))
+}).pipe(Effect.provide(ProgramLive))
 
 describe("Integration", () => {
-	it.scoped("executes", () =>
+	it.scopedLive("executes", () =>
 		Effect.gen(function* () {
 			const remoteDir = yield* TestRepoDir.make
 			const localA = yield* TestRepoDir.make
@@ -427,7 +428,11 @@ describe("Integration", () => {
 					/^On branch feature\nYour branch is behind 'origin\/feature' by 2 commits, and can be fast-forwarded\.\n {2}\(use "git pull" to update your local branch\)\n\nChanges to be committed:\n {2}\(use "git restore --staged <file>\.\.\." to unstage\)\n\tnew file: {3}three\.md\n\tnew file: {3}two\.md\n\n$/
 				)
 			)
-		})
+		}).pipe(
+			Effect.provide(TelemetryLive),
+			Effect.withSpan("git-tools-test"),
+			Effect.withConsole(console)
+		)
 	)
 })
 /* eslint-enable @typescript-eslint/unbound-method -- Test spies */

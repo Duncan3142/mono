@@ -14,11 +14,15 @@ const TelemetryLive = NodeSdk.layer(
 	() =>
 		({
 			resource: { serviceName: SERVICE_NAME },
-			spanProcessor: new BatchSpanProcessor(new OTLPTraceExporter(otelConfig)),
-			logRecordProcessor: new BatchLogRecordProcessor(new OTLPLogExporter(otelConfig)),
+			spanProcessor: new BatchSpanProcessor(new OTLPTraceExporter(otelConfig), {
+				scheduledDelayMillis: 500,
+			}),
+			logRecordProcessor: new BatchLogRecordProcessor(new OTLPLogExporter(otelConfig), {
+				scheduledDelayMillis: 500,
+			}),
 			metricReader: new PeriodicExportingMetricReader({
 				exporter: new OTLPMetricExporter(otelConfig),
-				exportIntervalMillis: 1000,
+				exportIntervalMillis: 500,
 			}),
 			shutdownTimeout: "2 seconds",
 		}) satisfies NodeSdk.Configuration
