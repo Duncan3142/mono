@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/unbound-method -- Test spies */
 import { expect, describe, it } from "@effect/vitest"
 import { NodeContext } from "@effect/platform-node"
-import { ConfigProvider, Effect, Layer } from "effect"
+import { ConfigProvider, Effect, Layer, Logger } from "effect"
 import { MockConsole } from "./mock/index.ts"
 import { GitToolsLive } from "#duncan3142/git-tools/layer"
 import {
@@ -439,6 +439,7 @@ describe("Integration", () => {
 			}).pipe(
 				Effect.withSpan("git-tools-test"),
 				Effect.provide(TelemetryLive),
+				Effect.provide(Logger.json),
 				Effect.withConsole(console)
 			),
 		{
