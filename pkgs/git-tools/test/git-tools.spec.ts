@@ -30,9 +30,9 @@ import {
 	StatusCommand,
 } from "#duncan3142/git-tools/core/command"
 import { RepositoryContext } from "#duncan3142/git-tools/core/context"
-import { TestRepoDir, TestRepoFile } from "#duncan3142/git-tools/test-setup"
+import { TestRepoDir, TestRepoFile } from "#duncan3142/git-tools/test/setup"
 import { FetchDepth, FetchDepthFactory } from "#duncan3142/git-tools/core/state"
-import { TelemetryLive } from "#duncan3142/git-tools/telemetry"
+import { TelemetryLive } from "#duncan3142/git-tools/test/telemetry"
 
 const console = MockConsole.make()
 

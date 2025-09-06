@@ -30,8 +30,7 @@
 		"#duncan3142/git-tools/core/telemetry": "./.tsc/dist/lib/core/telemetry/index.js",
 		"#duncan3142/git-tools/core/state": "./.tsc/dist/lib/core/state/index.js",
 		"#duncan3142/git-tools/core": "./.tsc/dist/lib/core/index.js",
-		"#duncan3142/git-tools/git": "./.tsc/dist/lib/git/index.js",
-		"#duncan3142/git-tools/telemetry": "./.tsc/dist/lib/telemetry/index.js"
+		"#duncan3142/git-tools/git": "./.tsc/dist/lib/git/index.js"
 	},
 	"exports": {
 		"./*": {
@@ -62,13 +61,16 @@
 		"@duncan3142/eslint-config": "^0.1.17",
 		"@duncan3142/prettier-config": "^0.1.7",
 		"@duncan3142/tsc-config": "^0.1.10",
-		"@effect/language-service": "^0.37.0",
+		"@effect/language-service": "^0.38.1",
 		"@effect/platform-node": "^0.96.1",
 		"@effect/vitest": "^0.25.1",
 		"@eslint/config-inspector": "^1.2.0",
-		"@types/node": "^22.18.0",
-		"@vitest/eslint-plugin": "^1.3.8",
-		"eslint": "^9.34.0",
+		"@opentelemetry/exporter-logs-otlp-grpc": "^0.204.0",
+		"@opentelemetry/exporter-metrics-otlp-grpc": "^0.204.0",
+		"@opentelemetry/exporter-trace-otlp-grpc": "^0.204.0",
+		"@types/node": "^22.18.1",
+		"@vitest/eslint-plugin": "^1.3.9",
+		"eslint": "^9.35.0",
 		"prettier": "^3.6.2",
 		"typescript": "^5.9.2",
 		"vite-tsconfig-paths": "^5.1.4",
@@ -81,14 +83,11 @@
 	},
 	"dependencies": {
 		"@effect/opentelemetry": "^0.56.5",
-		"@effect/platform": "^0.90.6",
-		"@opentelemetry/exporter-logs-otlp-grpc": "^0.203.0",
-		"@opentelemetry/exporter-metrics-otlp-grpc": "^0.203.0",
-		"@opentelemetry/exporter-trace-otlp-grpc": "^0.203.0",
+		"@effect/platform": "^0.90.7",
 		"@opentelemetry/sdk-logs": "^0.203.0",
-		"@opentelemetry/sdk-metrics": "^2.0.1",
+		"@opentelemetry/sdk-metrics": "^2.1.0",
 		"@opentelemetry/sdk-trace-base": "^2.0.1",
-		"@opentelemetry/sdk-trace-node": "^2.0.1",
+		"@opentelemetry/sdk-trace-node": "^2.1.0",
 		"@opentelemetry/sdk-trace-web": "^2.1.0",
 		"@opentelemetry/semantic-conventions": "^1.37.0",
 		"effect": "^3.17.13"
