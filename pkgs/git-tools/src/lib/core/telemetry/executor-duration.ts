@@ -2,7 +2,7 @@ import { Array, type Effect, Metric } from "effect"
 
 const timer = Metric.timerWithBoundaries(
 	"git-executor-duration",
-	Array.range(1, 2_000),
+	Array.range(1, 4_096),
 	"A timer for git executor duration"
 )
 
