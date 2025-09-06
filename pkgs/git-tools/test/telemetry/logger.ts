@@ -9,6 +9,7 @@ import {
 	Logger,
 	Array,
 	Tracer,
+	Option,
 } from "effect"
 import { Logger as OtelLogger } from "@effect/opentelemetry"
 import { SimpleLogRecordProcessor, type SdkLogRecord } from "@opentelemetry/sdk-logs"
@@ -56,7 +57,7 @@ const BaseLogLayer = Effect.gen(function* () {
 			Tracer.ParentSpan
 		)
 
-		if (maybeSpan._tag === "Some") {
+		if (Option.isSome(maybeSpan)) {
 			attributes["spanId"] = maybeSpan.value.spanId
 			attributes["traceId"] = maybeSpan.value.traceId
 		}
@@ -70,8 +71,10 @@ const BaseLogLayer = Effect.gen(function* () {
 				`${spanDuration.toString(NumberConst.BASE_10_RADIX)}ms`
 		}
 
+		const [messageHead, ...messageTail] = Array.ensure(unknownToAnyValue(message))
+
 		otelLogger.emit({
-			body: unknownToAnyValue(message),
+			body: messageTail.length > 0 ? [messageHead, ...messageTail] : messageHead,
 			severityText: logLevel.label,
 			severityNumber: logLevel.ordinal,
 			timestamp: date,
