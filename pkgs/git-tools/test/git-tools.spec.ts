@@ -188,7 +188,7 @@ describe("Integration", () => {
 		"executes",
 		() =>
 			Effect.gen(function* () {
-				expect.assertions(34)
+				expect.assertions(61)
 				const remoteDir = yield* TestRepoDir.make
 				const localA = yield* TestRepoDir.make
 				const localB = yield* TestRepoDir.make
@@ -243,205 +243,292 @@ describe("Integration", () => {
 
 				expect(base).toMatch(/[a-f0-9]{40}/)
 				expect(sha).toMatch(/[a-f0-9]{40}/)
-				// expect(console.log).toHaveBeenCalledTimes(15)
-				// expect(console.error).toHaveBeenCalledTimes(17)
+				expect(console.log).toHaveBeenCalledTimes(33)
+				expect(console.error).toHaveBeenCalledTimes(24)
 
 				expect(console.log).toHaveBeenNthCalledWith(
 					1,
 					expect.stringMatching(
-						/^Initialized empty Git repository in \/tmp\/test-repo-[a-zA-Z0-9]{6}\/\n$/
+						/^Initialized empty Git repository in \/tmp\/test-repo-[a-zA-Z0-9]{6}\/$/
 					)
 				)
 
 				expect(console.log).toHaveBeenNthCalledWith(
 					2,
 					expect.stringMatching(
-						/^Initialized empty Git repository in \/tmp\/test-repo-[a-zA-Z0-9]{6}\/\.git\/\n$/
+						/^Initialized empty Git repository in \/tmp\/test-repo-[a-zA-Z0-9]{6}\/\.git\/$/
 					)
 				)
 
 				expect(console.log).toHaveBeenNthCalledWith(
 					3,
-					expect.stringMatching(
-						/^\[main \(root-commit\) [a-f0-9]{7}\] Initial commit\n 1 file changed, 0 insertions\(\+\), 0 deletions\(-\)\n create mode 100644 one\.md\n$/
-					)
+					expect.stringMatching(/^\[main \(root-commit\) [a-f0-9]{7}\] Initial commit$/)
+				)
+
+				expect(console.log).toHaveBeenNthCalledWith(
+					4,
+					expect.stringMatching(/^ 1 file changed, 0 insertions\(\+\), 0 deletions\(-\)$/)
+				)
+
+				expect(console.log).toHaveBeenNthCalledWith(
+					5,
+					expect.stringMatching(/^ create mode 100644 one\.md$/)
 				)
 
 				expect(console.error).toHaveBeenNthCalledWith(
 					1,
-					expect.stringMatching(/^Switched to a new branch 'feature'\n$/)
+					expect.stringMatching(/^Switched to a new branch 'feature'$/)
 				)
 
 				expect(console.log).toHaveBeenNthCalledWith(
-					4,
-					expect.stringMatching(
-						/^\[feature [a-f0-9]{7}\] Feature commit A\n 1 file changed, 0 insertions\(\+\), 0 deletions\(-\)\n create mode 100644 two\.md\n$/
-					)
+					6,
+					expect.stringMatching(/^\[feature [a-f0-9]{7}\] Feature commit A$/)
+				)
+
+				expect(console.log).toHaveBeenNthCalledWith(
+					7,
+					expect.stringMatching(/^ 1 file changed, 0 insertions\(\+\), 0 deletions\(-\)$/)
+				)
+
+				expect(console.log).toHaveBeenNthCalledWith(
+					8,
+					expect.stringMatching(/^ create mode 100644 two\.md$/)
 				)
 
 				expect(console.error).toHaveBeenNthCalledWith(
 					2,
-					expect.stringMatching(
-						/^To \/tmp\/test-repo-[a-zA-Z0-9]{6}\n \* \[new branch\] {6}feature -> feature\n$/
-					)
+					expect.stringMatching(/^To \/tmp\/test-repo-[a-zA-Z0-9]{6}$/)
 				)
 
 				expect(console.error).toHaveBeenNthCalledWith(
 					3,
-					expect.stringMatching(
-						/^To \/tmp\/test-repo-[a-zA-Z0-9]{6}\n \* \[new tag\] {9}1\.0\.0 -> 1\.0\.0\n$/
-					)
+					expect.stringMatching(/^ \* \[new branch\] {6}feature -> feature$/)
 				)
 
 				expect(console.error).toHaveBeenNthCalledWith(
 					4,
-					expect.stringMatching(
-						/^To \/tmp\/test-repo-[a-zA-Z0-9]{6}\n \* \[new branch\] {6}main -> main\n$/
-					)
+					expect.stringMatching(/^To \/tmp\/test-repo-[a-zA-Z0-9]{6}$/)
 				)
 
 				expect(console.error).toHaveBeenNthCalledWith(
 					5,
-					expect.stringMatching(
-						/^To \/tmp\/test-repo-[a-zA-Z0-9]{6}\n \* \[new tag\] {9}2\.0\.0 -> 2\.0\.0\n$/
-					)
-				)
-
-				expect(console.log).toHaveBeenNthCalledWith(
-					5,
-					expect.stringMatching(
-						/^Initialized empty Git repository in \/tmp\/test-repo-[a-zA-Z0-9]{6}\/\.git\/\n$/
-					)
+					expect.stringMatching(/^ \* \[new tag\] {9}1\.0\.0 -> 1\.0\.0$/)
 				)
 
 				expect(console.error).toHaveBeenNthCalledWith(
 					6,
-					expect.stringMatching(
-						/^From \/tmp\/test-repo-[a-zA-Z0-9]{6}\n \* \[new branch\] {6}main {7}-> origin\/main\n$/
-					)
+					expect.stringMatching(/^To \/tmp\/test-repo-[a-zA-Z0-9]{6}$/)
 				)
 
 				expect(console.error).toHaveBeenNthCalledWith(
 					7,
-					expect.stringMatching(/^ \* \[new branch\] {6}feature {4}-> origin\/feature\n$/)
+					expect.stringMatching(/^ \* \[new branch\] {6}main -> main$/)
 				)
 
 				expect(console.error).toHaveBeenNthCalledWith(
 					8,
-					expect.stringMatching(/^ \* \[new tag\] {9}1\.0\.0 {6}-> 1\.0\.0\n$/)
+					expect.stringMatching(/^To \/tmp\/test-repo-[a-zA-Z0-9]{6}$/)
 				)
 
 				expect(console.error).toHaveBeenNthCalledWith(
 					9,
-					expect.stringMatching(/^ \* \[new tag\] {9}2\.0\.0 {6}-> 2\.0\.0\n$/)
+					expect.stringMatching(/^ \* \[new tag\] {9}2\.0\.0 -> 2\.0\.0$/)
+				)
+
+				expect(console.log).toHaveBeenNthCalledWith(
+					9,
+					expect.stringMatching(
+						/^Initialized empty Git repository in \/tmp\/test-repo-[a-zA-Z0-9]{6}\/\.git\/$/
+					)
 				)
 
 				expect(console.error).toHaveBeenNthCalledWith(
 					10,
-					expect.stringMatching(/^Switched to a new branch 'feature'\n$/)
-				)
-
-				expect(console.log).toHaveBeenNthCalledWith(
-					6,
-					expect.stringMatching(/^branch 'feature' set up to track 'origin\/feature'\.\n$/)
-				)
-
-				expect(console.log).toHaveBeenNthCalledWith(
-					7,
-					expect.stringMatching(
-						/^\[feature [a-f0-9]{7}\] Feature commit B\n 1 file changed, 0 insertions\(\+\), 0 deletions\(-\)\n create mode 100644 three\.md\n$/
-					)
+					expect.stringMatching(/^From \/tmp\/test-repo-[a-zA-Z0-9]{6}$/)
 				)
 
 				expect(console.error).toHaveBeenNthCalledWith(
 					11,
-					expect.stringMatching(
-						/^To \/tmp\/test-repo-[a-zA-Z0-9]{6}\n {3}[a-f0-9]{7}\.\.[a-f0-9]{7} {2}feature -> feature\n$/
-					)
-				)
-
-				expect(console.log).toHaveBeenNthCalledWith(
-					8,
-					expect.stringMatching(
-						/^Initialized empty Git repository in \/tmp\/test-repo-[a-zA-Z0-9]{6}\/\.git\/\n$/
-					)
+					expect.stringMatching(/^ \* \[new branch\] {6}main {7}-> origin\/main$/)
 				)
 
 				expect(console.error).toHaveBeenNthCalledWith(
 					12,
-					expect.stringMatching(
-						/^From \/tmp\/test-repo-[a-zA-Z0-9]{6}\n \* \[new branch\] {6}main {7}-> origin\/main\n$/
-					)
+					expect.stringMatching(/^ \* \[new branch\] {6}feature {4}-> origin\/feature$/)
 				)
 
 				expect(console.error).toHaveBeenNthCalledWith(
 					13,
-					expect.stringMatching(/^ \* \[new branch\] {6}feature {4}-> origin\/feature\n$/)
+					expect.stringMatching(/^ \* \[new tag\] {9}1\.0\.0 {6}-> 1\.0\.0$/)
 				)
 
 				expect(console.error).toHaveBeenNthCalledWith(
 					14,
-					expect.stringMatching(/^ \* \[new tag\] {9}1\.0\.0 {6}-> 1\.0\.0\n$/)
+					expect.stringMatching(/^ \* \[new tag\] {9}2\.0\.0 {6}-> 2\.0\.0$/)
 				)
 
 				expect(console.error).toHaveBeenNthCalledWith(
 					15,
-					expect.stringMatching(/^ \* \[new tag\] {9}2\.0\.0 {6}-> 2\.0\.0\n$/)
+					expect.stringMatching(/^Switched to a new branch 'feature'$/)
+				)
+
+				expect(console.log).toHaveBeenNthCalledWith(
+					10,
+					expect.stringMatching(/^branch 'feature' set up to track 'origin\/feature'\.$/)
+				)
+
+				expect(console.log).toHaveBeenNthCalledWith(
+					11,
+					expect.stringMatching(/^\[feature [a-f0-9]{7}\] Feature commit B$/)
+				)
+
+				expect(console.log).toHaveBeenNthCalledWith(
+					12,
+					expect.stringMatching(/^ 1 file changed, 0 insertions\(\+\), 0 deletions\(-\)$/)
+				)
+
+				expect(console.log).toHaveBeenNthCalledWith(
+					13,
+					expect.stringMatching(/^ create mode 100644 three\.md$/)
 				)
 
 				expect(console.error).toHaveBeenNthCalledWith(
 					16,
-					expect.stringMatching(/^Already on 'main'\n$/)
-				)
-
-				expect(console.log).toHaveBeenNthCalledWith(
-					9,
-					expect.stringMatching(/^branch 'main' set up to track 'origin\/main'\.\n$/)
+					expect.stringMatching(/^To \/tmp\/test-repo-[a-zA-Z0-9]{6}$/)
 				)
 
 				expect(console.error).toHaveBeenNthCalledWith(
 					17,
-					expect.stringMatching(/^Switched to a new branch 'feature'\n$/)
-				)
-
-				expect(console.log).toHaveBeenNthCalledWith(
-					10,
-					expect.stringMatching(/^branch 'feature' set up to track 'origin\/feature'\.\n$/)
-				)
-
-				expect(console.log).toHaveBeenNthCalledWith(
-					11,
-					expect.stringMatching(/^[a-f0-9]{40}\n$/)
-				)
-
-				expect(console.log).toHaveBeenNthCalledWith(
-					12,
-					expect.stringMatching(/^[a-f0-9]{40}\n$/)
-				)
-
-				expect(console.log).toHaveBeenNthCalledWith(
-					13,
-					expect.stringMatching(
-						/^\* feature {16}[a-f0-9]{7} \[origin\/feature: behind 2\] Initial commit\n {2}main {19}[a-f0-9]{7} \[origin\/main\] Initial commit\n {2}remotes\/origin\/feature [a-f0-9]{7} Feature commit B\n {2}remotes\/origin\/main {4}[a-f0-9]{7} Initial commit\n$/
-					)
+					expect.stringMatching(/^ {3}[a-f0-9]{7}\.\.[a-f0-9]{7} {2}feature -> feature$/)
 				)
 
 				expect(console.log).toHaveBeenNthCalledWith(
 					14,
-					expect.stringMatching(/^1\.0\.0\n2\.0\.0\n$/)
+					expect.stringMatching(
+						/^Initialized empty Git repository in \/tmp\/test-repo-[a-zA-Z0-9]{6}\/\.git\/$/
+					)
+				)
+
+				expect(console.error).toHaveBeenNthCalledWith(
+					18,
+					expect.stringMatching(/^From \/tmp\/test-repo-[a-zA-Z0-9]{6}$/)
+				)
+
+				expect(console.error).toHaveBeenNthCalledWith(
+					19,
+					expect.stringMatching(/^ \* \[new branch\] {6}main {7}-> origin\/main$/)
+				)
+
+				expect(console.error).toHaveBeenNthCalledWith(
+					20,
+					expect.stringMatching(/^ \* \[new branch\] {6}feature {4}-> origin\/feature$/)
+				)
+
+				expect(console.error).toHaveBeenNthCalledWith(
+					21,
+					expect.stringMatching(/^ \* \[new tag\] {9}1\.0\.0 {6}-> 1\.0\.0$/)
+				)
+
+				expect(console.error).toHaveBeenNthCalledWith(
+					22,
+					expect.stringMatching(/^ \* \[new tag\] {9}2\.0\.0 {6}-> 2\.0\.0$/)
+				)
+
+				expect(console.error).toHaveBeenNthCalledWith(
+					23,
+					expect.stringMatching(/^Already on 'main'$/)
 				)
 
 				expect(console.log).toHaveBeenNthCalledWith(
 					15,
+					expect.stringMatching(/^branch 'main' set up to track 'origin\/main'\.$/)
+				)
+
+				expect(console.error).toHaveBeenNthCalledWith(
+					24,
+					expect.stringMatching(/^Switched to a new branch 'feature'$/)
+				)
+
+				expect(console.log).toHaveBeenNthCalledWith(
+					16,
+					expect.stringMatching(/^branch 'feature' set up to track 'origin\/feature'\.$/)
+				)
+
+				expect(console.log).toHaveBeenNthCalledWith(17, expect.stringMatching(/^[a-f0-9]{40}$/))
+
+				expect(console.log).toHaveBeenNthCalledWith(18, expect.stringMatching(/^[a-f0-9]{40}$/))
+
+				expect(console.log).toHaveBeenNthCalledWith(
+					19,
 					expect.stringMatching(
-						/^On branch feature\nYour branch is behind 'origin\/feature' by 2 commits, and can be fast-forwarded\.\n {2}\(use "git pull" to update your local branch\)\n\nChanges to be committed:\n {2}\(use "git restore --staged <file>\.\.\." to unstage\)\n\tnew file: {3}three\.md\n\tnew file: {3}two\.md\n\n$/
+						/^\* feature {16}[a-f0-9]{7} \[origin\/feature: behind 2\] Initial commit$/
 					)
 				)
+
+				expect(console.log).toHaveBeenNthCalledWith(
+					20,
+					expect.stringMatching(/^ {2}main {19}[a-f0-9]{7} \[origin\/main\] Initial commit$/)
+				)
+
+				expect(console.log).toHaveBeenNthCalledWith(
+					21,
+					expect.stringMatching(/^ {2}remotes\/origin\/feature [a-f0-9]{7} Feature commit B$/)
+				)
+
+				expect(console.log).toHaveBeenNthCalledWith(
+					22,
+					expect.stringMatching(/^ {2}remotes\/origin\/main {4}[a-f0-9]{7} Initial commit$/)
+				)
+
+				expect(console.log).toHaveBeenNthCalledWith(23, expect.stringMatching(/^1\.0\.0$/))
+
+				expect(console.log).toHaveBeenNthCalledWith(24, expect.stringMatching(/^2\.0\.0$/))
+
+				expect(console.log).toHaveBeenNthCalledWith(
+					25,
+					expect.stringMatching(/^On branch feature$/)
+				)
+
+				expect(console.log).toHaveBeenNthCalledWith(
+					26,
+					expect.stringMatching(
+						/^Your branch is behind 'origin\/feature' by 2 commits, and can be fast-forwarded\.$/
+					)
+				)
+
+				expect(console.log).toHaveBeenNthCalledWith(
+					27,
+					expect.stringMatching(/^ {2}\(use "git pull" to update your local branch\)$/)
+				)
+
+				expect(console.log).toHaveBeenNthCalledWith(28, expect.stringMatching(/^$/))
+
+				expect(console.log).toHaveBeenNthCalledWith(
+					29,
+					expect.stringMatching(/^Changes to be committed:$/)
+				)
+
+				expect(console.log).toHaveBeenNthCalledWith(
+					30,
+					expect.stringMatching(/^ {2}\(use "git restore --staged <file>\.\.\." to unstage\)$/)
+				)
+
+				expect(console.log).toHaveBeenNthCalledWith(
+					31,
+					expect.stringMatching(/^\tnew file: {3}three\.md$/)
+				)
+
+				expect(console.log).toHaveBeenNthCalledWith(
+					32,
+					expect.stringMatching(/^\tnew file: {3}two\.md$/)
+				)
+
+				expect(console.log).toHaveBeenNthCalledWith(33, expect.stringMatching(/^$/))
 			}).pipe(
 				Effect.withSpan("git-tools-test"),
 				Effect.provide(TelemetryLive),
-				Effect.provide(Logger.json)
-				// Effect.withConsole(console)
+				Effect.provide(Logger.json),
+				Effect.withConsole(console)
 			),
 		{
 			timeout: 10_000,

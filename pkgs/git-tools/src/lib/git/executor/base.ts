@@ -104,11 +104,16 @@ const make = <ECode extends ErrorCode = never, Error = never>({
 
 			const stderrStream = stderr.pipe(
 				Stream.decodeText(),
+				Stream.splitLines,
 				Stream.tap(Console.error),
 				Stream.drain
 			)
 
-			const stdoutStream = stdout.pipe(Stream.decodeText(), Stream.tap(Console.log))
+			const stdoutStream = stdout.pipe(
+				Stream.decodeText(),
+				Stream.splitLines,
+				Stream.tap(Console.log)
+			)
 
 			const stdStream = Stream.merge(stdoutStream, stderrStream).pipe(
 				Stream.mapError(errorHandler)

@@ -52,7 +52,7 @@ describe("BranchCommand", () => {
 
 			expect(console.log).toHaveBeenCalledTimes(2)
 
-			expect(console.log).toHaveBeenNthCalledWith(1, `alpha\n`)
+			expect(console.log).toHaveBeenNthCalledWith(1, `alpha`)
 			expect(console.log).toHaveBeenNthCalledWith(2, `beta`)
 		}).pipe(
 			Effect.provide(ProgramLayer),
