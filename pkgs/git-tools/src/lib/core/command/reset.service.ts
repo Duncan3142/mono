@@ -1,39 +1,50 @@
-import type { Duration } from "effect"
-import { Effect } from "effect"
-import { Reference, GitCommandError } from "#domain"
-import { TagFactory } from "#const"
-import { RepositoryContext } from "#context"
-import { ResetMode } from "#domain"
-import { ResetExecutor } from "#executor"
+import { type Duration, Effect } from "effect"
+import {
+	type Reference,
+	type GitCommandError,
+	ResetMode,
+} from "#duncan3142/git-tools/core/domain"
+import { TagFactory } from "#duncan3142/git-tools/core/const"
+import { RepositoryContext } from "#duncan3142/git-tools/core/context"
+import { ResetExecutor } from "#duncan3142/git-tools/core/executor"
+import { ExecutorDuration, ExecutorLog } from "#duncan3142/git-tools/core/telemetry"
 
 interface Arguments {
 	readonly ref: Reference.Reference
-	readonly mode?: ResetMode.Mode
+	readonly mode?: ResetMode.ResetMode
 	readonly timeout?: Duration.DurationInput
 }
 
 /**
  * Print refs service
  */
-class Service extends Effect.Service<Service>()(TagFactory.make(`command`, `reset`), {
+class ResetCommand extends Effect.Service<ResetCommand>()(TagFactory.make(`command`, `reset`), {
 	effect: Effect.gen(function* () {
 		const [executor, { directory }] = yield* Effect.all(
-			[ResetExecutor.Tag, RepositoryContext.Tag],
+			[ResetExecutor.ResetExecutor, RepositoryContext.RepositoryContext],
 			{
 				concurrency: "unbounded",
 			}
 		)
 
-		return ({
-			ref,
-			mode = ResetMode.Hard(),
-			timeout = "2 seconds",
-		}: Arguments): Effect.Effect<void, GitCommandError.Failed | GitCommandError.Timeout> =>
-			executor({ ref, mode, directory, timeout })
+		const handler: (
+			args: Arguments
+		) => Effect.Effect<
+			void,
+			GitCommandError.GitCommandFailed | GitCommandError.GitCommandTimeout
+		> = ExecutorLog.wrap(
+			"Git reset",
+			({ ref, mode = ResetMode.Hard(), timeout = "2 seconds" }) =>
+				executor({ ref, mode, directory, timeout }).pipe(
+					ExecutorDuration.duration("git-reset"),
+					Effect.withSpan("git-reset")
+				)
+		)
+		return handler
 	}),
 }) {}
 
-const Default = Service.Default
+const { Default } = ResetCommand
 
-export { Service, Default }
+export { ResetCommand, Default }
 export type { Arguments }

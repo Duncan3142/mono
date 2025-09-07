@@ -1,10 +1,15 @@
-import type { Array, Duration, Effect } from "effect"
-import { Context } from "effect"
-import { FetchError, Reference, Remote, GitCommandError, FetchMode } from "#domain"
-import { TagFactory } from "#const"
+import { type Array, type Duration, type Effect, Context } from "effect"
+import type {
+	FetchError,
+	Reference,
+	Remote,
+	GitCommandError,
+	FetchMode,
+} from "#duncan3142/git-tools/core/domain"
+import { TagFactory } from "#duncan3142/git-tools/core/const"
 
 interface Arguments {
-	readonly mode: FetchMode.Mode
+	readonly mode: FetchMode.FetchMode
 	readonly remote: Remote.Remote
 	readonly refs: Array.NonEmptyReadonlyArray<Reference.Reference>
 	readonly directory: string
@@ -14,15 +19,17 @@ interface Arguments {
 /**
  * Fetch command service
  */
-class Tag extends Context.Tag(TagFactory.make(`executor`, `fetch`))<
-	Tag,
+class FetchExecutor extends Context.Tag(TagFactory.make(`executor`, `fetch`))<
+	FetchExecutor,
 	(
 		args: Arguments
 	) => Effect.Effect<
 		void,
-		FetchError.RefsNotFound | GitCommandError.Failed | GitCommandError.Timeout
+		| FetchError.FetchRefsNotFound
+		| GitCommandError.GitCommandFailed
+		| GitCommandError.GitCommandTimeout
 	>
 >() {}
 
-export { Tag }
+export { FetchExecutor }
 export type { Arguments }

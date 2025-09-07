@@ -1,15 +1,20 @@
 import { CommandExecutor } from "@effect/platform"
-import { Effect, Match, pipe, Layer, Console, Array } from "effect"
+import { Effect, Match, pipe, Layer, Array, Stream } from "effect"
 import * as Base from "./base.ts"
-import { Number as Const } from "#const"
-import { ReferenceSpec, FetchError, FetchMode, GitCommandError } from "#domain"
-import { FetchExecutor } from "#executor"
+import { Number as Const } from "#duncan3142/git-tools/core/const"
+import {
+	type GitCommandError,
+	ReferenceSpec,
+	FetchError,
+	FetchMode,
+} from "#duncan3142/git-tools/core/domain"
+import { FetchExecutor } from "#duncan3142/git-tools/core/executor"
 
 const FETCH_NOT_FOUND_CODE = 128
 
-const Live: Layer.Layer<FetchExecutor.Tag, never, CommandExecutor.CommandExecutor> =
+const Live: Layer.Layer<FetchExecutor.FetchExecutor, never, CommandExecutor.CommandExecutor> =
 	Layer.effect(
-		FetchExecutor.Tag,
+		FetchExecutor.FetchExecutor,
 		Effect.gen(function* () {
 			const executor = yield* CommandExecutor.CommandExecutor
 
@@ -21,7 +26,9 @@ const Live: Layer.Layer<FetchExecutor.Tag, never, CommandExecutor.CommandExecuto
 				timeout,
 			}: FetchExecutor.Arguments): Effect.Effect<
 				void,
-				FetchError.RefsNotFound | GitCommandError.Failed | GitCommandError.Timeout
+				| FetchError.FetchRefsNotFound
+				| GitCommandError.GitCommandFailed
+				| GitCommandError.GitCommandTimeout
 			> => {
 				const { name: remoteName } = remote
 				const refStrings = pipe(
@@ -51,14 +58,14 @@ const Live: Layer.Layer<FetchExecutor.Tag, never, CommandExecutor.CommandExecuto
 							Match.value(errorCode),
 							Match.when(FETCH_NOT_FOUND_CODE, () =>
 								Effect.fail(
-									new FetchError.RefsNotFound({
+									new FetchError.FetchRefsNotFound({
 										references: refStrings,
 									})
 								)
 							)
 						),
 				}).pipe(
-					Effect.flatMap(Console.log),
+					Effect.andThen(Stream.runDrain),
 					Effect.scoped,
 					Effect.provideService(CommandExecutor.CommandExecutor, executor)
 				)

@@ -1,9 +1,9 @@
-import type { Duration } from "effect"
-import { Effect } from "effect"
-import { Reference, GitCommandError } from "#domain"
-import { TagFactory } from "#const"
-import { RepositoryContext } from "#context"
-import { RevParseExecutor } from "#executor"
+import { type Duration, Effect } from "effect"
+import type { Reference, GitCommandError } from "#duncan3142/git-tools/core/domain"
+import { TagFactory } from "#duncan3142/git-tools/core/const"
+import { RepositoryContext } from "#duncan3142/git-tools/core/context"
+import { RevParseExecutor } from "#duncan3142/git-tools/core/executor"
+import { ExecutorDuration, ExecutorLog } from "#duncan3142/git-tools/core/telemetry"
 
 interface Arguments {
 	readonly ref: Reference.Reference
@@ -13,26 +13,34 @@ interface Arguments {
 /**
  * Print refs service
  */
-class Service extends Effect.Service<Service>()(TagFactory.make(`command`, `rev-parse`), {
-	effect: Effect.gen(function* () {
-		const [executor, { directory }] = yield* Effect.all(
-			[RevParseExecutor.Tag, RepositoryContext.Tag],
-			{
-				concurrency: "unbounded",
-			}
-		)
+class RevParseCommand extends Effect.Service<RevParseCommand>()(
+	TagFactory.make(`command`, `rev-parse`),
+	{
+		effect: Effect.gen(function* () {
+			const [executor, { directory }] = yield* Effect.all(
+				[RevParseExecutor.RevParseExecutor, RepositoryContext.RepositoryContext],
+				{
+					concurrency: "unbounded",
+				}
+			)
 
-		return ({
-			ref,
-			timeout = "2 seconds",
-		}: Arguments): Effect.Effect<
-			Reference.SHA,
-			GitCommandError.Failed | GitCommandError.Timeout
-		> => executor({ ref, directory, timeout })
-	}),
-}) {}
+			const handler: (
+				args: Arguments
+			) => Effect.Effect<
+				Reference.SHA,
+				GitCommandError.GitCommandFailed | GitCommandError.GitCommandTimeout
+			> = ExecutorLog.wrap("Git rev-parse", ({ ref, timeout = "2 seconds" }) =>
+				executor({ ref, directory, timeout }).pipe(
+					ExecutorDuration.duration("git-rev-parse"),
+					Effect.withSpan("git-rev-parse")
+				)
+			)
+			return handler
+		}),
+	}
+) {}
 
-const Default = Service.Default
+const { Default } = RevParseCommand
 
-export { Service, Default }
+export { RevParseCommand, Default }
 export type { Arguments }

@@ -1,15 +1,15 @@
 import { Data } from "effect"
-import { TagFactory } from "#const"
+import { TagFactory } from "#duncan3142/git-tools/core/const"
 
 const MERGE_BASE_NOT_FOUND_ERROR_TAG = TagFactory.make("domain", `MERGE_BASE_NOT_FOUND_ERROR`)
 
 /**
  * Fetch Not Found Error
  */
-class NotFound extends Data.TaggedError(MERGE_BASE_NOT_FOUND_ERROR_TAG)<{
+class MergeBaseNotFound extends Data.TaggedError(MERGE_BASE_NOT_FOUND_ERROR_TAG)<{
 	headRef: string
 	baseRef: string
 	cause?: Error
 }> {}
 
-export { NotFound, MERGE_BASE_NOT_FOUND_ERROR_TAG }
+export { MergeBaseNotFound, MERGE_BASE_NOT_FOUND_ERROR_TAG }

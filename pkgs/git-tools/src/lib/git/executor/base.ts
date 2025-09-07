@@ -1,8 +1,6 @@
-import type { CommandExecutor } from "@effect/platform"
-import { Command } from "@effect/platform"
-import type { Duration, Scope } from "effect"
-import { Effect, Stream, pipe, Console, Chunk, Match, Option } from "effect"
-import { GitCommandError } from "#domain"
+import { type Error as PlatformError, type CommandExecutor, Command } from "@effect/platform"
+import { type Duration, type Scope, Effect, Stream, pipe, Console, Match, Option } from "effect"
+import { GitCommandError } from "#duncan3142/git-tools/core/domain"
 
 type ErrorMatcher<ECode extends ErrorCode, Error> = (
 	ecode: ErrorCode
@@ -16,7 +14,7 @@ type ErrorMatcher<ECode extends ErrorCode, Error> = (
 
 interface Arguments<ECode extends ErrorCode, Error> {
 	readonly subCommand: string
-	readonly subArgs: ReadonlyArray<string>
+	readonly subArgs?: ReadonlyArray<string>
 	readonly directory: string
 	readonly timeout: Duration.DurationInput
 	readonly noPager?: boolean
@@ -41,79 +39,87 @@ type ErrorCode = number
 const make = <ECode extends ErrorCode = never, Error = never>({
 	directory,
 	subCommand,
-	subArgs,
+	subArgs = [],
 	timeout,
 	errorMatcher,
 	noPager = false,
 }: Arguments<ECode, Error>): Effect.Effect<
-	string,
-	Error | GitCommandError.Failed | GitCommandError.Timeout,
+	Stream.Stream<
+		string,
+		GitCommandError.GitCommandFailed | Error | GitCommandError.GitCommandTimeout
+	>,
+	GitCommandError.GitCommandFailed,
 	CommandExecutor.CommandExecutor | Scope.Scope
 > => {
 	const options = noPager ? ["--no-pager"] : []
+	// eslint-disable-next-line @typescript-eslint/prefer-readonly-parameter-types -- Effect type
+	const errorHandler = (error: PlatformError.PlatformError) =>
+		new GitCommandError.GitCommandFailed({
+			exitCode: Option.none(),
+			options,
+			command: subCommand,
+			args: subArgs,
+			cause: error,
+		})
+
 	return pipe(
 		Command.make("git", ...options, subCommand, ...subArgs),
 		Command.workingDirectory(directory),
 		Command.stdout("pipe"),
 		Command.stderr("pipe"),
 		Command.start,
-		Effect.orDie,
+		Effect.mapError(errorHandler),
 		Effect.flatMap(({ exitCode, stdout, stderr }) => {
-			const result = pipe(
-				exitCode,
-				Effect.catchAll((error) =>
-					Effect.fail(
-						new GitCommandError.Failed({
-							exitCode: Option.none(),
-							options,
-							command: subCommand,
-							args: subArgs,
-							cause: error,
-						})
-					)
-				),
-				Effect.timeoutFail({
-					duration: timeout,
-					onTimeout: () =>
-						new GitCommandError.Timeout({
-							timeout,
-							options,
-							command: subCommand,
-							args: subArgs,
-						}),
-				}),
-
-				Effect.flatMap((code) =>
-					code === SUCCESS_CODE
-						? Effect.void
-						: errorMatcher(code).pipe(
-								Match.orElse((errCode) =>
-									Effect.fail(
-										new GitCommandError.Failed({
-											exitCode: Option.some(errCode),
-											options,
-											command: subCommand,
-											args: subArgs,
-										})
+			const exitCodeStream = exitCode
+				.pipe(
+					Effect.mapError(errorHandler),
+					Effect.timeoutFail({
+						duration: timeout,
+						onTimeout: () =>
+							new GitCommandError.GitCommandTimeout({
+								timeout,
+								options,
+								command: subCommand,
+								args: subArgs,
+							}),
+					}),
+					Effect.flatMap((code) =>
+						code === SUCCESS_CODE
+							? Effect.void
+							: errorMatcher(code).pipe(
+									Match.orElse((errCode) =>
+										Effect.fail(
+											new GitCommandError.GitCommandFailed({
+												exitCode: Option.some(errCode),
+												options,
+												command: subCommand,
+												args: subArgs,
+											})
+										)
 									)
 								)
-							)
+					)
 				)
+				.pipe(Stream.fromEffect, Stream.drain)
+
+			const stderrStream = stderr.pipe(
+				Stream.decodeText(),
+				Stream.splitLines,
+				Stream.tap(Console.error),
+				Stream.drain
 			)
-			return Effect.all(
-				[
-					pipe(
-						stdout,
-						Stream.orDie,
-						Stream.decodeText(),
-						Stream.runCollect,
-						Effect.andThen(Chunk.join(""))
-					),
-					pipe(stderr, Stream.orDie, Stream.decodeText(), Stream.runForEach(Console.error)),
-					result,
-				],
-				{ concurrency: "unbounded" }
-			).pipe(Effect.map(([stdOut]) => stdOut))
+
+			const stdoutStream = stdout.pipe(
+				Stream.decodeText(),
+				Stream.splitLines,
+				Stream.tap(Console.log)
+			)
+
+			const stdStream = Stream.merge(stdoutStream, stderrStream).pipe(
+				Stream.mapError(errorHandler)
+			)
+
+			return Effect.succeed(Stream.concat(stdStream, exitCodeStream))
 		})
 	)
 }

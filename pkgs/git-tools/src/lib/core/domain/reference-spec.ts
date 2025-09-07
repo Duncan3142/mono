@@ -1,6 +1,7 @@
 import { Match, pipe, Data } from "effect"
-import { Remote, Reference } from "#domain"
-import { TagFactory } from "#const"
+import type * as Remote from "./remote.ts"
+import type * as Reference from "./reference.ts"
+import { TagFactory } from "#duncan3142/git-tools/core/const"
 
 const REFERENCE_SPEC_TAG = TagFactory.make("domain", "ReferenceSpec")
 

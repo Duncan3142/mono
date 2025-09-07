@@ -33,4 +33,5 @@ const configs = Core.compose(
 	Prettier.config
 )
 
+// eslint-disable-next-line import-x/no-default-export -- ESLint config
 export default configs

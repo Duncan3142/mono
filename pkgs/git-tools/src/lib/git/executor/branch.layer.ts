@@ -1,12 +1,12 @@
 import { CommandExecutor } from "@effect/platform"
-import { Layer, pipe, Effect, Match, Console } from "effect"
+import { Layer, Effect, Match, Stream } from "effect"
 import * as Base from "./base.ts"
-import { BranchExecutor } from "#executor"
-import { BranchMode, GitCommandError } from "#domain"
+import { BranchExecutor } from "#duncan3142/git-tools/core/executor"
+import { type GitCommandError, BranchMode } from "#duncan3142/git-tools/core/domain"
 
-const Live: Layer.Layer<BranchExecutor.Tag, never, CommandExecutor.CommandExecutor> =
+const Live: Layer.Layer<BranchExecutor.BranchExecutor, never, CommandExecutor.CommandExecutor> =
 	Layer.effect(
-		BranchExecutor.Tag,
+		BranchExecutor.BranchExecutor,
 		Effect.gen(function* () {
 			const executor = yield* CommandExecutor.CommandExecutor
 
@@ -16,21 +16,20 @@ const Live: Layer.Layer<BranchExecutor.Tag, never, CommandExecutor.CommandExecut
 				timeout,
 			}: BranchExecutor.Arguments): Effect.Effect<
 				void,
-				GitCommandError.Failed | GitCommandError.Timeout
+				GitCommandError.GitCommandFailed | GitCommandError.GitCommandTimeout
 			> => {
 				const subArgs = BranchMode.$match(mode, {
 					Print: () => ["-a", "-v", "-v"],
 				})
-				return pipe(
-					Base.make({
-						directory,
-						noPager: true,
-						subCommand: "branch",
-						subArgs,
-						timeout,
-						errorMatcher: Match.value,
-					}),
-					Effect.flatMap(Console.log),
+				return Base.make({
+					directory,
+					noPager: true,
+					subCommand: "branch",
+					subArgs,
+					timeout,
+					errorMatcher: Match.value,
+				}).pipe(
+					Effect.andThen(Stream.runDrain),
 					Effect.scoped,
 					Effect.provideService(CommandExecutor.CommandExecutor, executor)
 				)

@@ -1,3 +1,3 @@
-type Depth = number
+type FetchDepth = number
 
-export type { Depth }
+export type { FetchDepth }

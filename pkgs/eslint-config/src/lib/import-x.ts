@@ -1,5 +1,4 @@
 import { importX } from "eslint-plugin-import-x"
-
 import { compose, filePatterns, jstsExtensions, type Config, type Configs } from "./core.ts"
 import type { LintLevel } from "#duncan3142/eslint-config/context"
 
@@ -53,6 +52,7 @@ const config: (guard: LintLevel.Guards) => Configs = (guard) =>
 	compose({
 		name: "@duncan3142/eslint-config/import",
 		files: filePatterns(...jstsExtensions),
+		// @ts-expect-error -- eslint-plugin-import-x uses Typescript ESLint types
 		extends: [importX.flatConfigs.recommended, importX.flatConfigs.typescript, custom(guard)],
 	})
 

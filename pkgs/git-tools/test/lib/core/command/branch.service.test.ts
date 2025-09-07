@@ -1,14 +1,19 @@
 /* eslint-disable @typescript-eslint/unbound-method -- Check mock use */
-/* eslint-disable @typescript-eslint/no-magic-numbers -- Check mock use */
+
 import { expect, describe, it, vi } from "@effect/vitest"
-import { Effect, Fiber, ConfigProvider, Layer, TestClock, Either } from "effect"
+import { Effect, Fiber, Layer, TestClock, Either } from "effect"
 import { CommandExecutor } from "@effect/platform"
-import { BranchCommand } from "#command"
-import { BranchExecutor } from "#git"
-import { RepositoryConfig } from "#config"
-import { MockConsole, MockLogger, MockProcess } from "#mock"
-import { RepositoryContext } from "#context"
-import { Repository } from "#domain"
+import { BranchCommand } from "#duncan3142/git-tools/core/command"
+import { BranchExecutor } from "#duncan3142/git-tools/git"
+import { RepositoryConfig } from "#duncan3142/git-tools/core/config"
+import {
+	MockConfigProvider,
+	MockConsole,
+	MockLogger,
+	MockProcess,
+} from "#duncan3142/git-tools/test/mock"
+import { RepositoryContext } from "#duncan3142/git-tools/core/context"
+import { Repository } from "#duncan3142/git-tools/core/domain"
 
 const logHandler = vi.fn<() => void>()
 
@@ -18,12 +23,7 @@ const processProps = {
 	delay: "1 second",
 	result: Either.right({
 		exitCode: 0,
-		stdOutLines: [
-			`* effect-test                0468291 [origin/effect-test] abc def\n`,
-			`  main                       62c5d1a [origin/main] Semver @duncan3142/effect-test (#2)\n`,
-			`  remotes/origin/HEAD        -> origin/main\n`,
-			`  remotes/origin/effect-test c6722b4 Semver @duncan3142/effect-test (#1)`,
-		],
+		stdOutLines: [`alpha\n`, `beta`],
 		stdErrLines: [],
 	}),
 } satisfies MockProcess.Props
@@ -42,7 +42,7 @@ describe("BranchCommand", () => {
 	it.effect("prints", () =>
 		Effect.gen(function* () {
 			const result = yield* Effect.gen(function* () {
-				const printRefs = yield* BranchCommand.Service
+				const printRefs = yield* BranchCommand.BranchCommand
 				const fiber = yield* Effect.fork(Effect.exit(printRefs()))
 				yield* TestClock.adjust("3 seconds")
 				return yield* Fiber.join(fiber)
@@ -50,31 +50,24 @@ describe("BranchCommand", () => {
 
 			expect(result).toStrictEqual(Effect.void)
 
-			expect(console.log).toHaveBeenCalledTimes(1)
+			expect(console.log).toHaveBeenCalledTimes(2)
 
-			expect(console.log).toHaveBeenNthCalledWith(
-				1,
-				[
-					`* effect-test                0468291 [origin/effect-test] abc def`,
-					`  main                       62c5d1a [origin/main] Semver @duncan3142/effect-test (#2)`,
-					`  remotes/origin/HEAD        -> origin/main`,
-					`  remotes/origin/effect-test c6722b4 Semver @duncan3142/effect-test (#1)`,
-				].join("\n")
-			)
+			expect(console.log).toHaveBeenNthCalledWith(1, `alpha`)
+			expect(console.log).toHaveBeenNthCalledWith(2, `beta`)
 		}).pipe(
 			Effect.provide(ProgramLayer),
 			Effect.provideService(
-				RepositoryContext.Tag,
-				Repository.Repository({ directory: process.cwd() })
+				RepositoryContext.RepositoryContext,
+				Repository.Repository({ directory: "dummy" })
 			),
 			Effect.provideService(
 				CommandExecutor.CommandExecutor,
 				CommandExecutor.makeExecutor(start)
 			),
 			Effect.withConsole(console),
-			Effect.withConfigProvider(ConfigProvider.fromMap(new Map([])))
+			Effect.withConfigProvider(MockConfigProvider.Test)
 		)
 	)
 })
+
 /* eslint-enable @typescript-eslint/unbound-method -- Check mock use */
-/* eslint-enable @typescript-eslint/no-magic-numbers -- Check mock use */

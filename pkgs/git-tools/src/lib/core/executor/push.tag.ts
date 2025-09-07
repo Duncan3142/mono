@@ -1,21 +1,24 @@
-import type { Duration, Effect } from "effect"
-import { Context } from "effect"
-import { TagFactory } from "#const"
-import { GitCommandError } from "#domain"
+import { type Duration, type Effect, Context } from "effect"
+import { TagFactory } from "#duncan3142/git-tools/core/const"
+import type { GitCommandError, Reference, Remote } from "#duncan3142/git-tools/core/domain"
 
 interface Arguments {
 	readonly directory: string
 	readonly forceWithLease: boolean
+	readonly remote: Remote.Remote
+	readonly ref: Reference.Reference
 	readonly timeout: Duration.DurationInput
 }
 
 /**
  * Checkout command service
  */
-class Tag extends Context.Tag(TagFactory.make(`executor`, `push`))<
-	Tag,
-	(args: Arguments) => Effect.Effect<void, GitCommandError.Failed | GitCommandError.Timeout>
+class PushExecutor extends Context.Tag(TagFactory.make(`executor`, `push`))<
+	PushExecutor,
+	(
+		args: Arguments
+	) => Effect.Effect<void, GitCommandError.GitCommandFailed | GitCommandError.GitCommandTimeout>
 >() {}
 
-export { Tag }
+export { PushExecutor }
 export type { Arguments }

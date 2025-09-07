@@ -1,5 +1,5 @@
 import { Order } from "effect"
-import { Reference } from "#domain"
+import type * as Reference from "./reference.ts"
 
 /**
  * Order reference by type

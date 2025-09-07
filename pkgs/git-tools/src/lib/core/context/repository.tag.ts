@@ -1,13 +1,13 @@
 import { Context } from "effect"
-import { TagFactory } from "#const"
-import { Repository } from "#domain"
+import { TagFactory } from "#duncan3142/git-tools/core/const"
+import type { Repository } from "#duncan3142/git-tools/core/domain"
 
 /**
  * Repository context service
  */
-class Tag extends Context.Tag(TagFactory.make(`context`, `repository`))<
-	Tag,
+class RepositoryContext extends Context.Tag(TagFactory.make(`context`, `repository`))<
+	RepositoryContext,
 	Repository.Repository
 >() {}
 
-export { Tag }
+export { RepositoryContext }

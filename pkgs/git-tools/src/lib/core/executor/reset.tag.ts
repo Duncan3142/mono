@@ -1,11 +1,10 @@
-import type { Duration, Effect } from "effect"
-import { Context } from "effect"
-import { Reference, GitCommandError, ResetMode } from "#domain"
-import { TagFactory } from "#const"
+import { type Duration, type Effect, Context } from "effect"
+import type { Reference, GitCommandError, ResetMode } from "#duncan3142/git-tools/core/domain"
+import { TagFactory } from "#duncan3142/git-tools/core/const"
 
 interface Arguments {
 	readonly ref: Reference.Reference
-	readonly mode: ResetMode.Mode
+	readonly mode: ResetMode.ResetMode
 	readonly directory: string
 	readonly timeout: Duration.DurationInput
 }
@@ -13,10 +12,12 @@ interface Arguments {
 /**
  * Checkout command service
  */
-class Tag extends Context.Tag(TagFactory.make(`executor`, `reset`))<
-	Tag,
-	(args: Arguments) => Effect.Effect<void, GitCommandError.Failed | GitCommandError.Timeout>
+class ResetExecutor extends Context.Tag(TagFactory.make(`executor`, `reset`))<
+	ResetExecutor,
+	(
+		args: Arguments
+	) => Effect.Effect<void, GitCommandError.GitCommandFailed | GitCommandError.GitCommandTimeout>
 >() {}
 
-export { Tag }
+export { ResetExecutor }
 export type { Arguments }

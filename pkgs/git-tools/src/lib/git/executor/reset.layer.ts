@@ -1,12 +1,12 @@
 import { CommandExecutor } from "@effect/platform"
-import { Console, Layer, Effect, Match } from "effect"
+import { Layer, Effect, Match, Stream } from "effect"
 import * as Base from "./base.ts"
-import { ResetExecutor } from "#executor"
-import { GitCommandError, ResetMode } from "#domain"
+import { ResetExecutor } from "#duncan3142/git-tools/core/executor"
+import { type GitCommandError, ResetMode } from "#duncan3142/git-tools/core/domain"
 
-const Live: Layer.Layer<ResetExecutor.Tag, never, CommandExecutor.CommandExecutor> =
+const Live: Layer.Layer<ResetExecutor.ResetExecutor, never, CommandExecutor.CommandExecutor> =
 	Layer.effect(
-		ResetExecutor.Tag,
+		ResetExecutor.ResetExecutor,
 		Effect.gen(function* () {
 			const executor = yield* CommandExecutor.CommandExecutor
 
@@ -17,7 +17,7 @@ const Live: Layer.Layer<ResetExecutor.Tag, never, CommandExecutor.CommandExecuto
 				timeout,
 			}: ResetExecutor.Arguments): Effect.Effect<
 				void,
-				GitCommandError.Failed | GitCommandError.Timeout
+				GitCommandError.GitCommandFailed | GitCommandError.GitCommandTimeout
 			> => {
 				const modeArg = ResetMode.$match(mode, {
 					Hard: () => "--hard",
@@ -32,7 +32,7 @@ const Live: Layer.Layer<ResetExecutor.Tag, never, CommandExecutor.CommandExecuto
 					timeout,
 					errorMatcher: Match.value,
 				}).pipe(
-					Effect.flatMap(Console.log),
+					Effect.andThen(Stream.runDrain),
 					Effect.scoped,
 					Effect.provideService(CommandExecutor.CommandExecutor, executor)
 				)

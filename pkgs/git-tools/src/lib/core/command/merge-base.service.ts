@@ -1,9 +1,13 @@
-import type { Duration } from "effect"
-import { Effect } from "effect"
-import { TagFactory } from "#const"
-import { MergeBaseError, Reference, GitCommandError } from "#domain"
-import { MergeBaseExecutor } from "#executor"
-import { RepositoryContext } from "#context"
+import { type Duration, Effect } from "effect"
+import { TagFactory } from "#duncan3142/git-tools/core/const"
+import type {
+	MergeBaseError,
+	Reference,
+	GitCommandError,
+} from "#duncan3142/git-tools/core/domain"
+import { MergeBaseExecutor } from "#duncan3142/git-tools/core/executor"
+import { RepositoryContext } from "#duncan3142/git-tools/core/context"
+import { ExecutorDuration, ExecutorLog } from "#duncan3142/git-tools/core/telemetry"
 
 interface Arguments {
 	readonly headRef: Reference.Reference
@@ -14,33 +18,38 @@ interface Arguments {
 /**
  * Reference service
  */
-class Service extends Effect.Service<Service>()(TagFactory.make(`command`, `merge-base`), {
-	effect: Effect.gen(function* () {
-		const [executor, { directory }] = yield* Effect.all(
-			[MergeBaseExecutor.Tag, RepositoryContext.Tag],
-			{
-				concurrency: "unbounded",
-			}
-		)
+class MergeBaseCommand extends Effect.Service<MergeBaseCommand>()(
+	TagFactory.make(`command`, `merge-base`),
+	{
+		effect: Effect.gen(function* () {
+			const [executor, { directory }] = yield* Effect.all(
+				[MergeBaseExecutor.MergeBaseExecutor, RepositoryContext.RepositoryContext],
+				{
+					concurrency: "unbounded",
+				}
+			)
 
-		return ({
-			headRef,
-			baseRef,
-			timeout = "2 seconds",
-		}: Arguments): Effect.Effect<
-			Reference.SHA,
-			GitCommandError.Failed | GitCommandError.Timeout | MergeBaseError.NotFound
-		> =>
-			executor({
-				headRef,
-				baseRef,
-				directory,
-				timeout,
-			})
-	}),
-}) {}
+			const handler: (
+				args: Arguments
+			) => Effect.Effect<
+				Reference.SHA,
+				| GitCommandError.GitCommandFailed
+				| GitCommandError.GitCommandTimeout
+				| MergeBaseError.MergeBaseNotFound
+			> = ExecutorLog.wrap("Git merge-base", ({ headRef, baseRef, timeout = "2 seconds" }) =>
+				executor({
+					headRef,
+					baseRef,
+					directory,
+					timeout,
+				}).pipe(ExecutorDuration.duration("git-merge-base"), Effect.withSpan("git-merge-base"))
+			)
+			return handler
+		}),
+	}
+) {}
 
-const Default = Service.Default
+const { Default } = MergeBaseCommand
 
-export { Service, Default }
+export { MergeBaseCommand, Default }
 export type { Arguments }

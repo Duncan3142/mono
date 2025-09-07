@@ -22,6 +22,7 @@ node_modules
 
 # Git
 !.gitignore
+!.gitkeep
 
 # Env Example
 !.env.example

@@ -9,13 +9,17 @@ import {
 	Stream,
 	pipe,
 } from "effect"
-import type { Command, Error as PlatformError, CommandExecutor } from "@effect/platform"
+import { type Command, type Error as PlatformError, CommandExecutor } from "@effect/platform"
 import { mockDeep } from "vitest-mock-extended"
 
 interface Props {
 	readonly delay: Duration.DurationInput
 	readonly result: Either.Either<
-		{ exitCode: number; stdOutLines: Array<string>; stdErrLines: Array<string> },
+		{
+			readonly exitCode: number
+			readonly stdOutLines: ReadonlyArray<string>
+			readonly stdErrLines: ReadonlyArray<string>
+		},
 		PlatformError.PlatformError
 	>
 }
@@ -27,6 +31,7 @@ interface Props {
  * @param props.result - The result of the process execution.
  * @returns An Effect that produces a mock CommandExecutor.Process.
  */
+// eslint-disable-next-line @typescript-eslint/prefer-readonly-parameter-types -- result is mutable
 const make = ({ delay, result }: Props): Effect.Effect<CommandExecutor.Process> =>
 	Either.match(result, {
 		onLeft: (err) =>
@@ -81,6 +86,7 @@ const make = ({ delay, result }: Props): Effect.Effect<CommandExecutor.Process> 
 	})
 
 type Start = (
+	// eslint-disable-next-line @typescript-eslint/prefer-readonly-parameter-types -- Command is mutable
 	command: Command.Command
 ) => Effect.Effect<CommandExecutor.Process, PlatformError.PlatformError, Scope.Scope>
 

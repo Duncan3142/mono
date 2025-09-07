@@ -1,41 +1,57 @@
-import type { Duration } from "effect"
-import { Effect } from "effect"
-import { Reference } from "#domain"
-import { TagFactory } from "#const"
-import { RepositoryContext } from "#context"
-import { CheckoutExecutor } from "#executor"
-import { CheckoutError, GitCommandError, CheckoutMode } from "#domain"
+import { type Duration, Effect } from "effect"
+import {
+	type Reference,
+	type CheckoutError,
+	type GitCommandError,
+	CheckoutMode,
+} from "#duncan3142/git-tools/core/domain"
+import { TagFactory } from "#duncan3142/git-tools/core/const"
+import { RepositoryContext } from "#duncan3142/git-tools/core/context"
+import { CheckoutExecutor } from "#duncan3142/git-tools/core/executor"
+import { ExecutorDuration, ExecutorLog } from "#duncan3142/git-tools/core/telemetry"
 
 interface Arguments {
 	readonly ref: Reference.Reference
-	readonly mode?: CheckoutMode.Mode
+	readonly mode?: CheckoutMode.CheckoutMode
 	readonly timeout?: Duration.DurationInput
 }
 
 /**
  * Print refs service
  */
-class Service extends Effect.Service<Service>()(TagFactory.make(`command`, `checkout`), {
-	effect: Effect.gen(function* () {
-		const [executor, { directory }] = yield* Effect.all(
-			[CheckoutExecutor.Tag, RepositoryContext.Tag],
-			{
-				concurrency: "unbounded",
-			}
-		)
+class CheckoutCommand extends Effect.Service<CheckoutCommand>()(
+	TagFactory.make(`command`, `checkout`),
+	{
+		effect: Effect.gen(function* () {
+			const [executor, { directory }] = yield* Effect.all(
+				[CheckoutExecutor.CheckoutExecutor, RepositoryContext.RepositoryContext],
+				{
+					concurrency: "unbounded",
+				}
+			)
 
-		return ({
-			ref,
-			mode = CheckoutMode.Standard(),
-			timeout = "2 seconds",
-		}: Arguments): Effect.Effect<
-			void,
-			CheckoutError.RefNotFound | GitCommandError.Failed | GitCommandError.Timeout
-		> => executor({ ref, directory, mode, timeout })
-	}),
-}) {}
+			const handler: (
+				args: Arguments
+			) => Effect.Effect<
+				void,
+				| CheckoutError.CheckoutRefNotFound
+				| GitCommandError.GitCommandFailed
+				| GitCommandError.GitCommandTimeout
+			> = ExecutorLog.wrap(
+				"Git checkout",
+				({ ref, mode = CheckoutMode.Standard(), timeout = "2 seconds" }) =>
+					executor({ ref, directory, mode, timeout }).pipe(
+						ExecutorDuration.duration("git-checkout"),
+						Effect.withSpan("git-checkout")
+					)
+			)
 
-const Default = Service.Default
+			return handler
+		}),
+	}
+) {}
 
-export { Service, Default }
+const { Default } = CheckoutCommand
+
+export { CheckoutCommand, Default }
 export type { Arguments }

@@ -1,11 +1,11 @@
 import { Data } from "effect"
 
-type Mode = Data.TaggedEnum<{
+type TagMode = Data.TaggedEnum<{
 	Print: object
-	Create: { readonly name: string }
+	Create: { readonly name: string; readonly message: string }
 }>
 
-const { $is, $match, Print, Create } = Data.taggedEnum<Mode>()
+const { $is, $match, Print, Create } = Data.taggedEnum<TagMode>()
 
 export { $is, $match, Print, Create }
-export type { Mode }
+export type { TagMode }

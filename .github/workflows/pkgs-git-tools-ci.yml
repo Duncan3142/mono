@@ -1,0 +1,33 @@
+name: Git Tools CI
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches: [main]
+    paths:
+      - '.github/workflows/pkgs-git-tools-ci.yml'
+      - 'pkgs/git-tools/**'
+      - '!pkgs/git-tools/.changeset/*'
+      - '!pkgs/git-tools/CHANGELOG.md'
+
+concurrency:
+  group: ${{ github.workflow_ref }}
+  cancel-in-progress: true
+
+env:
+  GH_PKG_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  MONO_WORK_DIR: ${{ vars.GIT_TOOLS_DIR }}
+  MONO_LOG_LEVEL: debug
+  EVENT_BRANCH: ${{ github.head_ref }}
+
+jobs:
+  ci:
+    if: github.event.pull_request.state == 'open' && github.event.pull_request.draft == false
+    name: CI
+    runs-on: ubuntu-22.04
+    steps:
+
+      - name: CI
+        uses: Duncan3142/mono/actions/npm-ci@main
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}

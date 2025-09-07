@@ -1,11 +1,11 @@
 import { Data } from "effect"
-import { Remote } from "#domain"
+import type * as Remote from "./remote.ts"
 
-type Mode = Data.TaggedEnum<{
+type RemoteMode = Data.TaggedEnum<{
 	Add: { readonly remote: Remote.Remote }
 }>
 
-const { $is, $match, Add } = Data.taggedEnum<Mode>()
+const { $is, $match, Add } = Data.taggedEnum<RemoteMode>()
 
 export { $is, $match, Add }
-export type { Mode }
+export type { RemoteMode }

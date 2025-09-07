@@ -1,10 +1,10 @@
 import { Data } from "effect"
 
-type Mode = Data.TaggedEnum<{
+type BranchMode = Data.TaggedEnum<{
 	Print: object
 }>
 
-const { Print, $is, $match } = Data.taggedEnum<Mode>()
+const { Print, $is, $match } = Data.taggedEnum<BranchMode>()
 
 export { Print, $is, $match }
-export type { Mode }
+export type { BranchMode }

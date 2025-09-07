@@ -1,12 +1,12 @@
 import { Ref, Effect, HashMap } from "effect"
-import { FetchDepth } from "#state"
-import { TagFactory } from "#const"
-import { RepositoryConfig } from "#config"
+import * as FetchDepth from "./fetch-depth.tag.ts"
+import { TagFactory } from "#duncan3142/git-tools/core/const"
+import { RepositoryConfig } from "#duncan3142/git-tools/core/config"
 
 /**
  * Fetch depth factory service
  */
-class Service extends Effect.Service<Service>()(
+class FetchDepthFactory extends Effect.Service<FetchDepthFactory>()(
 	TagFactory.make(`state`, `fetch-depth-factory`),
 	{
 		effect: Effect.gen(function* () {
@@ -17,7 +17,10 @@ class Service extends Effect.Service<Service>()(
 					fetch: { maxDepth },
 				},
 			] = yield* Effect.all(
-				[Ref.make(HashMap.empty<string, FetchDepth.Service>()), RepositoryConfig.Service],
+				[
+					Ref.make(HashMap.empty<string, FetchDepth.FetchDepthService>()),
+					RepositoryConfig.RepositoryConfig,
+				],
 				{
 					concurrency: "unbounded",
 				}
@@ -28,7 +31,7 @@ class Service extends Effect.Service<Service>()(
 				yield* Ref.update(map, (m) => HashMap.set(m, depth.id, depth))
 				return depth
 			})
-			const release = (service: FetchDepth.Service) =>
+			const release = (service: FetchDepth.FetchDepthService) =>
 				Effect.gen(function* () {
 					yield* Effect.logDebug("Releasing FetchDepth:", service.id)
 					return yield* Ref.update(map, (m) => HashMap.remove(m, service.id))
@@ -38,6 +41,6 @@ class Service extends Effect.Service<Service>()(
 	}
 ) {}
 
-const Default = Service.Default
+const { Default } = FetchDepthFactory
 
-export { Service, Default }
+export { FetchDepthFactory, Default }

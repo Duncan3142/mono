@@ -1,8 +1,15 @@
+networks:
+  monitoring:
+    driver: bridge
+
+volumes:
+  otel_lgtm_data:
+
 services:
   mono-devcon:
     # Build from the Dockerfile and tag the resulting image
     build:
-      context: ./
+      context: ./devcontainer/
       dockerfile: Dockerfile
     image: mono-devcon:latest
 
@@ -16,4 +23,20 @@ services:
 
     # Load variables from the specified .env file
     env_file:
-      - ./.env
+      - ./devcontainer/.env
+    networks:
+      - monitoring
+
+  # ------------------- #
+  #      OTel-LGTM      #
+  # ------------------- #
+  otel-lgtm:
+    image: grafana/otel-lgtm:0.11.10
+    container_name: otel-lgtm
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    volumes:
+      - otel_lgtm_data:/data
+    networks:
+      - monitoring
