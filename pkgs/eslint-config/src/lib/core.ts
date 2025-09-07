@@ -1,36 +1,17 @@
-import type { ESLint } from "eslint"
-import tseslint, { type InfiniteDepthConfigWithExtends } from "typescript-eslint"
-import type { FlatConfig, Parser as TSParser } from "@typescript-eslint/utils/ts-eslint"
+import type { ESLint, Linter } from "eslint"
+import { defineConfig } from "eslint/config"
 
-/**
- * File path
- */
 type Path = string
 
-/**
- * Files paths
- */
 type Paths = ReadonlyArray<Path>
 
-/**
- * ESLint config
- */
-type Config = FlatConfig.Config
+type Config = Linter.Config
 
-/**
- * ESLint configs
- */
 type Configs = Array<Config>
 
-/**
- * ESLint plugin
- */
-type Plugin = Readonly<FlatConfig.Plugin | ESLint.Plugin>
+type Plugin = ESLint.Plugin
 
-/**
- * ESLint parser
- */
-type Parser = Readonly<TSParser.LooseParserModule>
+type Parser = Linter.Parser
 
 /**
  * File path pattern
@@ -85,10 +66,9 @@ const jstsExtensions: Patterns = [...jsExtensions, ...tsExtensions]
 const filePatterns = (...extensionPatterns: Patterns): Array<Pattern> =>
 	extensionPatterns.map((pattern) => `**/*${pattern}`)
 
-type ConfigWithExtendsArray = ReadonlyArray<InfiniteDepthConfigWithExtends>
+type Compose = typeof defineConfig
 
-// eslint-disable-next-line @typescript-eslint/prefer-readonly-parameter-types -- TypeScript ESLint does not support readonly config
-const compose: (...configs: ConfigWithExtendsArray) => Configs = tseslint.config
+const compose: Compose = defineConfig
 
 const config: Config = {
 	name: "@duncan3142/eslint-config/core",
