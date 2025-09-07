@@ -8,7 +8,7 @@ import {
 import { TagFactory } from "#duncan3142/git-tools/core/const"
 import { RepositoryContext } from "#duncan3142/git-tools/core/context"
 import { CheckoutExecutor } from "#duncan3142/git-tools/core/executor"
-import { ExecutorDuration, WrapLog } from "#duncan3142/git-tools/core/telemetry"
+import { ExecutorDuration, ExecutorLog } from "#duncan3142/git-tools/core/telemetry"
 
 interface Arguments {
 	readonly ref: Reference.Reference
@@ -37,7 +37,7 @@ class CheckoutCommand extends Effect.Service<CheckoutCommand>()(
 				| CheckoutError.CheckoutRefNotFound
 				| GitCommandError.GitCommandFailed
 				| GitCommandError.GitCommandTimeout
-			> = WrapLog.wrap(
+			> = ExecutorLog.wrap(
 				"Git checkout",
 				({ ref, mode = CheckoutMode.Standard(), timeout = "2 seconds" }) =>
 					executor({ ref, directory, mode, timeout }).pipe(

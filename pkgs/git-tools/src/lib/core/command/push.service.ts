@@ -4,7 +4,7 @@ import type { GitCommandError, Reference, Remote } from "#duncan3142/git-tools/c
 import { TagFactory } from "#duncan3142/git-tools/core/const"
 import { RepositoryContext } from "#duncan3142/git-tools/core/context"
 import { RepositoryConfig } from "#duncan3142/git-tools/core/config"
-import { ExecutorDuration, WrapLog } from "#duncan3142/git-tools/core/telemetry"
+import { ExecutorDuration, ExecutorLog } from "#duncan3142/git-tools/core/telemetry"
 
 interface Arguments {
 	readonly timeout?: Duration.DurationInput
@@ -34,7 +34,7 @@ class PushCommand extends Effect.Service<PushCommand>()(TagFactory.make(`command
 		) => Effect.Effect<
 			void,
 			GitCommandError.GitCommandFailed | GitCommandError.GitCommandTimeout
-		> = WrapLog.wrap(
+		> = ExecutorLog.wrap(
 			"Git push",
 			({ ref, forceWithLease = false, remote = defaultRemote, timeout = "2 seconds" }) =>
 				executor({ directory, timeout, forceWithLease, ref, remote }).pipe(

@@ -11,7 +11,7 @@ import {
 import { FetchDepth } from "#duncan3142/git-tools/core/state"
 import { RepositoryConfig } from "#duncan3142/git-tools/core/config"
 import { RepositoryContext } from "#duncan3142/git-tools/core/context"
-import { ExecutorDuration, WrapLog } from "#duncan3142/git-tools/core/telemetry"
+import { ExecutorDuration, ExecutorLog } from "#duncan3142/git-tools/core/telemetry"
 
 interface Arguments {
 	readonly refs: Array.NonEmptyReadonlyArray<Reference.Reference>
@@ -52,7 +52,7 @@ class FetchCommand extends Effect.Service<FetchCommand>()(TagFactory.make(`comma
 			| GitCommandError.GitCommandFailed
 			| GitCommandError.GitCommandTimeout,
 			FetchDepth.FetchDepth
-		> = WrapLog.wrap(
+		> = ExecutorLog.wrap(
 			"Git fetch",
 			({
 				refs,

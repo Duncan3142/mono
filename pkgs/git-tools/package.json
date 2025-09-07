@@ -33,9 +33,17 @@
 		"#duncan3142/git-tools/git": "./.tsc/dist/lib/git/index.js"
 	},
 	"exports": {
-		"./*": {
-			"import": "./.tsc/dist/*.js",
-			"types": "./.tsc/dist/*.d.ts"
+		".": {
+			"import": "./.tsc/dist/index.js",
+			"types": "./.tsc/dist/index.d.ts"
+		},
+		"./core": {
+			"import": "./.tsc/dist/lib/core/index.js",
+			"types": "./.tsc/dist/lib/core/index.d.ts"
+		},
+		"./git": {
+			"import": "./.tsc/dist/lib/git/index.js",
+			"types": "./.tsc/dist/lib/git/index.d.ts"
 		}
 	},
 	"files": [

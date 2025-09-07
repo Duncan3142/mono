@@ -3,7 +3,7 @@ import { TagExecutor } from "#duncan3142/git-tools/core/executor"
 import { type GitCommandError, TagMode } from "#duncan3142/git-tools/core/domain"
 import { TagFactory } from "#duncan3142/git-tools/core/const"
 import { RepositoryContext } from "#duncan3142/git-tools/core/context"
-import { ExecutorDuration, WrapLog } from "#duncan3142/git-tools/core/telemetry"
+import { ExecutorDuration, ExecutorLog } from "#duncan3142/git-tools/core/telemetry"
 
 interface Arguments {
 	readonly mode?: TagMode.TagMode
@@ -27,7 +27,7 @@ class TagCommand extends Effect.Service<TagCommand>()(TagFactory.make(`command`,
 		) => Effect.Effect<
 			void,
 			GitCommandError.GitCommandFailed | GitCommandError.GitCommandTimeout
-		> = WrapLog.wrap("Git tag", ({ mode = TagMode.Print(), timeout = "2 seconds" } = {}) =>
+		> = ExecutorLog.wrap("Git tag", ({ mode = TagMode.Print(), timeout = "2 seconds" } = {}) =>
 			executor({ mode, directory, timeout }).pipe(
 				ExecutorDuration.duration("git-tag"),
 				Effect.withSpan("git-tag")

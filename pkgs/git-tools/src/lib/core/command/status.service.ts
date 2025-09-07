@@ -3,7 +3,7 @@ import { StatusExecutor } from "#duncan3142/git-tools/core/executor"
 import type { GitCommandError } from "#duncan3142/git-tools/core/domain"
 import { TagFactory } from "#duncan3142/git-tools/core/const"
 import { RepositoryContext } from "#duncan3142/git-tools/core/context"
-import { ExecutorDuration, WrapLog } from "#duncan3142/git-tools/core/telemetry"
+import { ExecutorDuration, ExecutorLog } from "#duncan3142/git-tools/core/telemetry"
 
 interface Arguments {
 	readonly timeout?: Duration.DurationInput
@@ -28,7 +28,7 @@ class StatusCommand extends Effect.Service<StatusCommand>()(
 			) => Effect.Effect<
 				void,
 				GitCommandError.GitCommandFailed | GitCommandError.GitCommandTimeout
-			> = WrapLog.wrap("Git status", ({ timeout = "2 seconds" } = {}) =>
+			> = ExecutorLog.wrap("Git status", ({ timeout = "2 seconds" } = {}) =>
 				executor({ directory, timeout }).pipe(
 					ExecutorDuration.duration("git-status"),
 					Effect.withSpan("git-status")

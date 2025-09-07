@@ -13,7 +13,7 @@ const wrap =
 	) =>
 	(...args: Args): Effect.Effect<A, E, R> =>
 		Effect.gen(function* () {
-			yield* Effect.logInfo({ name, args })
+			yield* Effect.logDebug({ name, args })
 			return yield* func(...args).pipe(Effect.tapError(Effect.logError))
 		})
 
