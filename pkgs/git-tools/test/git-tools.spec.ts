@@ -440,8 +440,8 @@ describe("Integration", () => {
 			}).pipe(
 				Effect.withSpan("git-tools-test"),
 				Effect.provide(TelemetryLive),
-				Effect.provide(Logger.json),
-				Effect.withConsole(console)
+				Effect.provide(Logger.json)
+				// Effect.withConsole(console)
 			),
 		{
 			timeout: 10_000,
