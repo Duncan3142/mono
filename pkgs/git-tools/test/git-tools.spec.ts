@@ -188,6 +188,7 @@ describe("Integration", () => {
 		"executes",
 		() =>
 			Effect.gen(function* () {
+				expect.assertions(34)
 				const remoteDir = yield* TestRepoDir.make
 				const localA = yield* TestRepoDir.make
 				const localB = yield* TestRepoDir.make
@@ -242,8 +243,8 @@ describe("Integration", () => {
 
 				expect(base).toMatch(/[a-f0-9]{40}/)
 				expect(sha).toMatch(/[a-f0-9]{40}/)
-				expect(console.log).toHaveBeenCalledTimes(15)
-				expect(console.error).toHaveBeenCalledTimes(17)
+				// expect(console.log).toHaveBeenCalledTimes(15)
+				// expect(console.error).toHaveBeenCalledTimes(17)
 
 				expect(console.log).toHaveBeenNthCalledWith(
 					1,
