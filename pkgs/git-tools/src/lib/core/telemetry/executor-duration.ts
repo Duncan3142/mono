@@ -9,7 +9,7 @@ const timer = Metric.timerWithBoundaries(
 /**
  * Track the duration of an executor.
  * @param executorName - The name of the executor.
- * @returns A function that tracks the duration of the effect arugument.
+ * @returns A function that tracks the duration of the effect argument.
  */
 const duration =
 	(executorName: string) =>
