@@ -10,7 +10,7 @@
 	},
 	"description": "Prettier config",
 	"keywords": [],
-	"version": "0.1.7",
+	"version": "0.1.8",
 	"author": "Duncan Giles",
 	"type": "module",
 	"license": "LGPL-3.0-or-later",
