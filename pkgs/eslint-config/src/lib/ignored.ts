@@ -25,11 +25,6 @@ const defaultOptions: Options = {
  * @returns Ignored files config
  */
 const config = ({ ignoreFiles = IGNORE_FILES_DEFAULT }: Options = defaultOptions): Configs =>
-	compose(
-		ignoreFiles.map(
-			(path): Configs =>
-				compose({ name: `Ignore '${path}' files`, extends: [includeIgnoreFile(resolve(path))] })
-		)
-	)
+	compose(ignoreFiles.map((path) => includeIgnoreFile(resolve(path), `Ignore '${path}' files`)))
 
 export { config, IGNORE_FILES_DEFAULT }
