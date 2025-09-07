@@ -28,6 +28,8 @@ const unknownToAnyValue = (value: unknown): SdkLogRecord["body"] => {
 		return value
 	} else if (typeof value === "bigint") {
 		return Number(value)
+	} else if (value instanceof Date) {
+		return value.toISOString()
 	} else if (value instanceof Uint8Array) {
 		return value
 	} else if (Array.isArray(value)) {
