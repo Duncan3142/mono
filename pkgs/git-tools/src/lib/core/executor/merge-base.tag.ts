@@ -1,10 +1,10 @@
 import { type Duration, type Effect, Context } from "effect"
-import { TagFactory } from "#duncan3142/git-tools/core/const"
+import { TagFactory } from "#duncan3142/git-tools/lib/core/const"
 import type {
 	GitCommandError,
 	Reference,
 	MergeBaseError,
-} from "#duncan3142/git-tools/core/domain"
+} from "#duncan3142/git-tools/lib/core/domain"
 
 interface Arguments {
 	readonly headRef: Reference.Reference

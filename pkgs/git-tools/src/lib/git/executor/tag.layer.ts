@@ -1,8 +1,8 @@
 import { CommandExecutor } from "@effect/platform"
 import { Layer, Effect, Match, Stream } from "effect"
 import * as Base from "./base.ts"
-import { TagExecutor } from "#duncan3142/git-tools/core/executor"
-import { type GitCommandError, TagMode } from "#duncan3142/git-tools/core/domain"
+import { TagExecutor } from "#duncan3142/git-tools/lib/core/executor"
+import { type GitCommandError, TagMode } from "#duncan3142/git-tools/lib/core/domain"
 
 const Live: Layer.Layer<TagExecutor.TagExecutor, never, CommandExecutor.CommandExecutor> =
 	Layer.effect(

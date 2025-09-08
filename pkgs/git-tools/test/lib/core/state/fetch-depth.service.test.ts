@@ -1,7 +1,7 @@
 import { describe, it, expect } from "@effect/vitest"
 import { Effect, Layer, pipe } from "effect"
-import { FetchDepth, FetchDepthFactory } from "#duncan3142/git-tools/core/state"
-import { RepositoryConfig } from "#duncan3142/git-tools/core/config"
+import { FetchDepth, FetchDepthFactory } from "#duncan3142/git-tools/lib/core/state"
+import { RepositoryConfig } from "#duncan3142/git-tools/lib/core/config"
 import { MockConsole, MockConfigProvider } from "#duncan3142/git-tools/test/mock"
 
 const ProgramTest = pipe(FetchDepthFactory.Default, Layer.provide(RepositoryConfig.Default))

@@ -1,14 +1,14 @@
 import { CommandExecutor } from "@effect/platform"
 import { Effect, Match, pipe, Layer, Array, Stream } from "effect"
 import * as Base from "./base.ts"
-import { Number as Const } from "#duncan3142/git-tools/core/const"
+import { Number as Const } from "#duncan3142/git-tools/lib/core/const"
 import {
 	type GitCommandError,
 	ReferenceSpec,
 	FetchError,
 	FetchMode,
-} from "#duncan3142/git-tools/core/domain"
-import { FetchExecutor } from "#duncan3142/git-tools/core/executor"
+} from "#duncan3142/git-tools/lib/core/domain"
+import { FetchExecutor } from "#duncan3142/git-tools/lib/core/executor"
 
 const FETCH_NOT_FOUND_CODE = 128
 

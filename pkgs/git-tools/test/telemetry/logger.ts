@@ -15,7 +15,7 @@ import { Logger as OtelLogger } from "@effect/opentelemetry"
 import { SimpleLogRecordProcessor, type SdkLogRecord } from "@opentelemetry/sdk-logs"
 import { OTLPLogExporter } from "@opentelemetry/exporter-logs-otlp-grpc"
 import { otelConfig } from "./config.ts"
-import { Number as NumberConst } from "#duncan3142/git-tools/core/const"
+import { Number as NumberConst } from "#duncan3142/git-tools/lib/core/const"
 
 const unknownToAnyValue = (value: unknown): SdkLogRecord["body"] => {
 	if (

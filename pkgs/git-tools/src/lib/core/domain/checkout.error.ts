@@ -1,5 +1,5 @@
 import { Data } from "effect"
-import { TagFactory } from "#duncan3142/git-tools/core/const"
+import { TagFactory } from "#duncan3142/git-tools/lib/core/const"
 
 const CHECKOUT_REF_NOT_FOUND_ERROR_TAG = TagFactory.make(
 	"domain",
