@@ -3,7 +3,7 @@ import { expect, describe, it } from "@effect/vitest"
 import { NodeContext } from "@effect/platform-node"
 import { ConfigProvider, Effect, Layer, Logger } from "effect"
 import { MockConsole } from "./mock/index.ts"
-import { GitToolsLive } from "#duncan3142/git-tools/layer"
+import { GitToolsLive } from "#duncan3142/git-tools"
 import {
 	TagMode,
 	ConfigMode,

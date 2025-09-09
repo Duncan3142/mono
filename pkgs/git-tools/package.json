@@ -20,15 +20,15 @@
 	},
 	"main": "./.tsc/dist/index.js",
 	"imports": {
-		"#duncan3142/git-tools/layer": "./.tsc/dist/layer.js",
+		"#duncan3142/git-tools": "./.tsc/dist/index.js",
 		"#duncan3142/git-tools/lib/core/command": "./.tsc/dist/lib/core/command/index.js",
 		"#duncan3142/git-tools/lib/core/config": "./.tsc/dist/lib/core/config/index.js",
 		"#duncan3142/git-tools/lib/core/const": "./.tsc/dist/lib/core/const/index.js",
 		"#duncan3142/git-tools/lib/core/context": "./.tsc/dist/lib/core/context/index.js",
 		"#duncan3142/git-tools/lib/core/domain": "./.tsc/dist/lib/core/domain/index.js",
 		"#duncan3142/git-tools/lib/core/executor": "./.tsc/dist/lib/core/executor/index.js",
-		"#duncan3142/git-tools/lib/core/telemetry": "./.tsc/dist/lib/core/telemetry/index.js",
 		"#duncan3142/git-tools/lib/core/state": "./.tsc/dist/lib/core/state/index.js",
+		"#duncan3142/git-tools/lib/core/telemetry": "./.tsc/dist/lib/core/telemetry/index.js",
 		"#duncan3142/git-tools/lib/core": "./.tsc/dist/lib/core/index.js",
 		"#duncan3142/git-tools/lib/git": "./.tsc/dist/lib/git/index.js"
 	},
