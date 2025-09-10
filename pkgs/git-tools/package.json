@@ -89,8 +89,8 @@
 		"npm": "11.6.0"
 	},
 	"dependencies": {
-		"@effect/opentelemetry": "^0.56.5",
-		"@effect/platform": "^0.90.7",
+		"@effect/opentelemetry": "^0.56.6",
+		"@effect/platform": "^0.90.8",
 		"@opentelemetry/sdk-logs": "^0.203.0",
 		"@opentelemetry/sdk-metrics": "^2.1.0",
 		"@opentelemetry/sdk-trace-base": "^2.0.1",
