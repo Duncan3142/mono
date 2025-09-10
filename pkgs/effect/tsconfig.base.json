@@ -1,0 +1,23 @@
+{
+	"$schema": "https://json.schemastore.org/tsconfig",
+	"extends": ["@duncan3142/tsc-config/base"],
+	"compilerOptions": {
+		"paths": {
+			"#duncan3142/effect": ["./src/index.ts"],
+			"#duncan3142/effect/internal": ["./src/internal/index.ts"],
+			"#duncan3142/effect/lib/config": ["./src/lib/config/index.ts"],
+			"#duncan3142/effect/lib/const": ["./src/lib/const/index.ts"],
+			"#duncan3142/effect/lib/mock": ["./src/lib/mock/index.ts"],
+			"#duncan3142/effect/lib/otel": ["./src/lib/otel/index.ts"],
+			"#duncan3142/effect/lib/tag": ["./src/lib/tag/index.ts"],
+			"#duncan3142/effect/lib/telemetry": ["./src/lib/telemetry/index.ts"]
+		},
+		"isolatedDeclarations": false,
+		"plugins": [
+			{
+				"name": "@effect/language-service"
+			}
+		]
+	},
+	"include": []
+}

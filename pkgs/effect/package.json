@@ -1,0 +1,99 @@
+{
+	"name": "@duncan3142/effect",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/Duncan3142/mono.git"
+	},
+	"publishConfig": {
+		"registry": "https://npm.pkg.github.com",
+		"access": "restricted"
+	},
+	"description": "Effect TS Extension",
+	"keywords": [],
+	"version": "0.0.0",
+	"author": "Duncan Giles",
+	"type": "module",
+	"license": "LGPL-3.0-or-later",
+	"engines": {
+		"node": ">=22",
+		"npm": ">=11"
+	},
+	"main": "./.tsc/dist/index.js",
+	"imports": {
+		"#duncan3142/effect": "./.tsc/dist/index.js",
+		"#duncan3142/effect/internal": "./.tsc/dist/internal/index.js",
+		"#duncan3142/effect/lib/config": "./.tsc/dist/lib/config/index.js",
+		"#duncan3142/effect/lib/const": "./.tsc/dist/lib/const/index.js",
+		"#duncan3142/effect/lib/mock": "./.tsc/dist/lib/mock/index.js",
+		"#duncan3142/effect/lib/otel": "./.tsc/dist/lib/otel/index.js",
+		"#duncan3142/effect/lib/tag": "./.tsc/dist/lib/tag/index.js",
+		"#duncan3142/effect/lib/telemetry": "./.tsc/dist/lib/telemetry/index.js"
+	},
+	"exports": {
+		".": {
+			"import": "./.tsc/dist/index.js",
+			"types": "./.tsc/dist/index.d.ts"
+		},
+		"./core": {
+			"import": "./.tsc/dist/lib/core/index.js",
+			"types": "./.tsc/dist/lib/core/index.d.ts"
+		},
+		"./git": {
+			"import": "./.tsc/dist/lib/git/index.js",
+			"types": "./.tsc/dist/lib/git/index.d.ts"
+		}
+	},
+	"files": [
+		".tsc/dist/**/*.js",
+		".tsc/dist/**/*.ts",
+		".tsc/dist/**/*.map"
+	],
+	"scripts": {
+		"clean": "rm -rf .prettier .package .tsc",
+		"format": "prettier --check --cache --cache-location='.prettier/cache' --cache-strategy content .",
+		"format:fix": "prettier --write --cache --cache-location='.prettier/cache' --cache-strategy content .",
+		"assets": "tsc --build",
+		"assets:watch": "tsc --build --watch",
+		"check:tsc": "tsc --build --noEmit",
+		"lint:eslint:all": "TIMING=1 LINT_LEVEL=all eslint --max-warnings 0 .",
+		"lint:eslint": "TIMING=1 eslint --max-warnings 0 .",
+		"lint:eslint:fix": "LINT_LEVEL=all eslint --fix .",
+		"test:vitest": "vitest run",
+		"inspect:eslint": "LINT_LEVEL=all eslint --inspect-config ."
+	},
+	"devDependencies": {
+		"@changesets/cli": "^2.29.7",
+		"@duncan3142/eslint-config": "^0.1.18",
+		"@duncan3142/prettier-config": "^0.1.8",
+		"@duncan3142/tsc-config": "^0.1.11",
+		"@effect/language-service": "^0.38.4",
+		"@effect/platform-node": "^0.96.1",
+		"@effect/vitest": "^0.25.1",
+		"@eslint/config-inspector": "^1.2.0",
+		"@types/node": "^22.18.1",
+		"eslint": "^9.35.0",
+		"prettier": "^3.6.2",
+		"typescript": "^5.9.2",
+		"vite-tsconfig-paths": "^5.1.4",
+		"vitest": "^3.2.4",
+		"vitest-mock-extended": "^3.1.0"
+	},
+	"volta": {
+		"node": "22.19.0",
+		"npm": "11.6.0"
+	},
+	"dependencies": {
+		"@effect/opentelemetry": "^0.56.5",
+		"@effect/platform": "^0.90.7",
+		"@opentelemetry/exporter-logs-otlp-grpc": "^0.204.0",
+		"@opentelemetry/exporter-metrics-otlp-grpc": "^0.204.0",
+		"@opentelemetry/exporter-trace-otlp-grpc": "^0.204.0",
+		"@opentelemetry/sdk-logs": "^0.203.0",
+		"@opentelemetry/sdk-metrics": "^2.1.0",
+		"@opentelemetry/sdk-trace-base": "^2.0.1",
+		"@opentelemetry/sdk-trace-node": "^2.1.0",
+		"@opentelemetry/sdk-trace-web": "^2.1.0",
+		"@opentelemetry/semantic-conventions": "^1.37.0",
+		"effect": "^3.17.13"
+	}
+}
