@@ -1,7 +1,11 @@
 import { ConfigProvider } from "effect"
 
-const Test = ConfigProvider.fromMap(
-	new Map([["OTEL.URL", "https://cloudgit.com/user/repo.git"]])
-)
+/**
+ * Creates a ConfigProvider from an iterable of key-value pairs.
+ * @param source - An iterable of key-value pairs.
+ * @returns A ConfigProvider instance.
+ */
+const make = (source: Iterable<readonly [string, string]>): ConfigProvider.ConfigProvider =>
+	ConfigProvider.fromMap(new Map(source))
 
-export { Test }
+export { make }

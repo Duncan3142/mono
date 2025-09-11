@@ -8,6 +8,7 @@ import {
 	Ref,
 	Stream,
 	pipe,
+	Sink,
 } from "effect"
 import { type Command, type Error as PlatformError, CommandExecutor } from "@effect/platform"
 import { mockDeep } from "vitest-mock-extended"
@@ -41,6 +42,11 @@ const make = ({ delay, result }: Props): Effect.Effect<CommandExecutor.Process> 
 					exitCode: Effect.fail(err),
 					stdout: Stream.fail(err),
 					stderr: Stream.fail(err),
+					kill: () => Effect.void,
+					pid: CommandExecutor.ProcessId(1),
+					toJSON: () => null,
+					toString: () => "[MockProcess]",
+					stdin: Sink.succeed([]),
 				})
 			),
 		onRight: ({ exitCode: exitCodeNumber, stdOutLines, stdErrLines }) =>
@@ -81,6 +87,11 @@ const make = ({ delay, result }: Props): Effect.Effect<CommandExecutor.Process> 
 					exitCode,
 					stdout,
 					stderr,
+					kill: () => Effect.void,
+					pid: CommandExecutor.ProcessId(1),
+					toJSON: () => null,
+					toString: () => "[MockProcess]",
+					stdin: Sink.succeed([]),
 				})
 			}),
 	})

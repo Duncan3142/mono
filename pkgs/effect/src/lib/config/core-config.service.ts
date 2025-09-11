@@ -1,4 +1,5 @@
 import { Config, Effect, Option } from "effect"
+import type { EmptyObject } from "#duncan3142/effect/lib/type"
 
 interface CoreConfigData {
 	readonly service: { name: string; version?: string }
@@ -7,8 +8,6 @@ interface CoreConfigData {
 		readonly exportDelay?: number
 	}
 }
-
-type EmptyObject = Record<string, never>
 
 const someKV = <Key extends string, Value>(
 	key: Key,

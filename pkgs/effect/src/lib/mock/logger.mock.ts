@@ -5,7 +5,7 @@ import { Logger, type Layer } from "effect"
  * @param handler - A function that receives the log options.
  * @returns A layer that provides a mocked Logger.
  */
-const Test = (handler: (options: Logger.Logger.Options<unknown>) => void): Layer.Layer<never> =>
+const make = (handler: (options: Logger.Logger.Options<unknown>) => void): Layer.Layer<never> =>
 	Logger.replace(Logger.defaultLogger, Logger.make(handler))
 
-export { Test }
+export { make }

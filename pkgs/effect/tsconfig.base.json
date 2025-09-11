@@ -10,7 +10,8 @@
 			"#duncan3142/effect/lib/mock": ["./src/lib/mock/index.ts"],
 			"#duncan3142/effect/lib/otel": ["./src/lib/otel/index.ts"],
 			"#duncan3142/effect/lib/tag": ["./src/lib/tag/index.ts"],
-			"#duncan3142/effect/lib/telemetry": ["./src/lib/telemetry/index.ts"]
+			"#duncan3142/effect/lib/telemetry": ["./src/lib/telemetry/index.ts"],
+			"#duncan3142/effect/lib/type": ["./src/lib/type.ts"]
 		},
 		"isolatedDeclarations": false,
 		"plugins": [
