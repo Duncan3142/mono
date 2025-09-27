@@ -1,9 +1,9 @@
 import { type Duration, Effect } from "effect"
-import type { Reference, GitCommandError } from "#duncan3142/git-tools/core/domain"
-import { TagFactory } from "#duncan3142/git-tools/core/const"
-import { RepositoryContext } from "#duncan3142/git-tools/core/context"
-import { RevParseExecutor } from "#duncan3142/git-tools/core/executor"
-import { ExecutorDuration, ExecutorLog } from "#duncan3142/git-tools/core/telemetry"
+import type { Reference, GitCommandError } from "#duncan3142/git-tools/lib/core/domain"
+import { TagFactory } from "#duncan3142/git-tools/lib/core/const"
+import { RepositoryContext } from "#duncan3142/git-tools/lib/core/context"
+import { RevParseExecutor } from "#duncan3142/git-tools/lib/core/executor"
+import { ExecutorDuration, ExecutorLog } from "#duncan3142/git-tools/lib/core/telemetry"
 
 interface Arguments {
 	readonly ref: Reference.Reference

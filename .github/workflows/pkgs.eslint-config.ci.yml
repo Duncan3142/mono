@@ -5,10 +5,10 @@ on:
     types: [opened, synchronize, reopened]
     branches: [main]
     paths:
-      - '.github/workflows/pkgs-eslint-config-ci.yml'
-      - 'pkgs/eslint-config/**'
-      - '!pkgs/eslint-config/.changeset/*'
-      - '!pkgs/eslint-config/CHANGELOG.md'
+      - ".github/workflows/pkgs.eslint-config.ci.yml"
+      - "pkgs/eslint-config/**"
+      - "!pkgs/eslint-config/.changeset/*"
+      - "!pkgs/eslint-config/CHANGELOG.md"
 
 concurrency:
   group: ${{ github.workflow_ref }}
@@ -26,7 +26,6 @@ jobs:
     name: CI
     runs-on: ubuntu-22.04
     steps:
-
       - name: CI
         uses: Duncan3142/mono/actions/npm-ci@main
         with:

@@ -1,5 +1,5 @@
 import { Data } from "effect"
-import { TagFactory } from "#duncan3142/git-tools/core/const"
+import { TagFactory } from "#duncan3142/git-tools/lib/core/const"
 
 const REMOTE_TAG = TagFactory.make("domain", "Remote")
 

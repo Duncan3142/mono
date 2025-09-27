@@ -3,7 +3,7 @@ import { expect, describe, it } from "@effect/vitest"
 import { NodeContext } from "@effect/platform-node"
 import { ConfigProvider, Effect, Layer, Logger } from "effect"
 import { MockConsole } from "./mock/index.ts"
-import { GitToolsLive } from "#duncan3142/git-tools/layer"
+import { GitToolsLive } from "#duncan3142/git-tools"
 import {
 	TagMode,
 	ConfigMode,
@@ -12,7 +12,7 @@ import {
 	CheckoutMode,
 	FetchMode,
 	ResetMode,
-} from "#duncan3142/git-tools/core/domain"
+} from "#duncan3142/git-tools/lib/core/domain"
 import {
 	MergeBaseCommand,
 	BranchCommand,
@@ -28,10 +28,10 @@ import {
 	TagCommand,
 	ResetCommand,
 	StatusCommand,
-} from "#duncan3142/git-tools/core/command"
-import { RepositoryContext } from "#duncan3142/git-tools/core/context"
+} from "#duncan3142/git-tools/lib/core/command"
+import { RepositoryContext } from "#duncan3142/git-tools/lib/core/context"
 import { TestRepoDir, TestRepoFile } from "#duncan3142/git-tools/test/setup"
-import { FetchDepth, FetchDepthFactory } from "#duncan3142/git-tools/core/state"
+import { FetchDepth, FetchDepthFactory } from "#duncan3142/git-tools/lib/core/state"
 import { TelemetryLive } from "#duncan3142/git-tools/test/telemetry"
 
 const console = MockConsole.make()

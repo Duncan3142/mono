@@ -4,8 +4,8 @@ on:
   push:
     branches: [main]
     paths:
-     - '.github/workflows/pkgs-tsc-config-cd.yml'
-     - 'pkgs/tsc-config/**'
+      - ".github/workflows/pkgs.tsc-config.cd.yml"
+      - "pkgs/tsc-config/**"
 
 concurrency:
   group: ${{ github.workflow }}
@@ -28,7 +28,6 @@ jobs:
     environment: GitHub
     runs-on: ubuntu-22.04
     steps:
-
       - name: CD
         uses: Duncan3142/mono/actions/npm-pkg-cd@main
         with:

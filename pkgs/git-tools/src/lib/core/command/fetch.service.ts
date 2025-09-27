@@ -1,17 +1,17 @@
 import { type Array, type Duration, Effect } from "effect"
-import { FetchExecutor } from "#duncan3142/git-tools/core/executor"
-import { TagFactory } from "#duncan3142/git-tools/core/const"
+import { FetchExecutor } from "#duncan3142/git-tools/lib/core/executor"
+import { TagFactory } from "#duncan3142/git-tools/lib/core/const"
 import {
 	type Remote,
 	type FetchError,
 	type Reference,
 	type GitCommandError,
 	FetchMode,
-} from "#duncan3142/git-tools/core/domain"
-import { FetchDepth } from "#duncan3142/git-tools/core/state"
-import { RepositoryConfig } from "#duncan3142/git-tools/core/config"
-import { RepositoryContext } from "#duncan3142/git-tools/core/context"
-import { ExecutorDuration, ExecutorLog } from "#duncan3142/git-tools/core/telemetry"
+} from "#duncan3142/git-tools/lib/core/domain"
+import { FetchDepth } from "#duncan3142/git-tools/lib/core/state"
+import { RepositoryConfig } from "#duncan3142/git-tools/lib/core/config"
+import { RepositoryContext } from "#duncan3142/git-tools/lib/core/context"
+import { ExecutorDuration, ExecutorLog } from "#duncan3142/git-tools/lib/core/telemetry"
 
 interface Arguments {
 	readonly refs: Array.NonEmptyReadonlyArray<Reference.Reference>

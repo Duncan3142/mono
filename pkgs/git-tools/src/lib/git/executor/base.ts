@@ -1,6 +1,6 @@
 import { type Error as PlatformError, type CommandExecutor, Command } from "@effect/platform"
 import { type Duration, type Scope, Effect, Stream, pipe, Console, Match, Option } from "effect"
-import { GitCommandError } from "#duncan3142/git-tools/core/domain"
+import { GitCommandError } from "#duncan3142/git-tools/lib/core/domain"
 
 type ErrorMatcher<ECode extends ErrorCode, Error> = (
 	ecode: ErrorCode

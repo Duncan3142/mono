@@ -1,10 +1,10 @@
 import { Effect, type Duration } from "effect"
-import { RemoteExecutor } from "#duncan3142/git-tools/core/executor"
-import { RemoteMode, type GitCommandError } from "#duncan3142/git-tools/core/domain"
-import { TagFactory } from "#duncan3142/git-tools/core/const"
-import { RepositoryContext } from "#duncan3142/git-tools/core/context"
-import { RepositoryConfig } from "#duncan3142/git-tools/core/config"
-import { ExecutorDuration, ExecutorLog } from "#duncan3142/git-tools/core/telemetry"
+import { RemoteExecutor } from "#duncan3142/git-tools/lib/core/executor"
+import { RemoteMode, type GitCommandError } from "#duncan3142/git-tools/lib/core/domain"
+import { TagFactory } from "#duncan3142/git-tools/lib/core/const"
+import { RepositoryContext } from "#duncan3142/git-tools/lib/core/context"
+import { RepositoryConfig } from "#duncan3142/git-tools/lib/core/config"
+import { ExecutorDuration, ExecutorLog } from "#duncan3142/git-tools/lib/core/telemetry"
 
 interface Arguments {
 	readonly timeout?: Duration.DurationInput

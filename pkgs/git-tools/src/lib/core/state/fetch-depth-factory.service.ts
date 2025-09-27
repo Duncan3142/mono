@@ -1,7 +1,7 @@
 import { Ref, Effect, HashMap } from "effect"
 import * as FetchDepth from "./fetch-depth.tag.ts"
-import { TagFactory } from "#duncan3142/git-tools/core/const"
-import { RepositoryConfig } from "#duncan3142/git-tools/core/config"
+import { TagFactory } from "#duncan3142/git-tools/lib/core/const"
+import { RepositoryConfig } from "#duncan3142/git-tools/lib/core/config"
 
 /**
  * Fetch depth factory service

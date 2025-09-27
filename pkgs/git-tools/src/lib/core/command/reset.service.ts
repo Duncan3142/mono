@@ -3,11 +3,11 @@ import {
 	type Reference,
 	type GitCommandError,
 	ResetMode,
-} from "#duncan3142/git-tools/core/domain"
-import { TagFactory } from "#duncan3142/git-tools/core/const"
-import { RepositoryContext } from "#duncan3142/git-tools/core/context"
-import { ResetExecutor } from "#duncan3142/git-tools/core/executor"
-import { ExecutorDuration, ExecutorLog } from "#duncan3142/git-tools/core/telemetry"
+} from "#duncan3142/git-tools/lib/core/domain"
+import { TagFactory } from "#duncan3142/git-tools/lib/core/const"
+import { RepositoryContext } from "#duncan3142/git-tools/lib/core/context"
+import { ResetExecutor } from "#duncan3142/git-tools/lib/core/executor"
+import { ExecutorDuration, ExecutorLog } from "#duncan3142/git-tools/lib/core/telemetry"
 
 interface Arguments {
 	readonly ref: Reference.Reference

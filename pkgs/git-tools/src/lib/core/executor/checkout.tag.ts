@@ -4,8 +4,8 @@ import type {
 	GitCommandError,
 	CheckoutError,
 	CheckoutMode,
-} from "#duncan3142/git-tools/core/domain"
-import { TagFactory } from "#duncan3142/git-tools/core/const"
+} from "#duncan3142/git-tools/lib/core/domain"
+import { TagFactory } from "#duncan3142/git-tools/lib/core/const"
 
 interface Arguments {
 	readonly ref: Reference.Reference
