@@ -1,11 +1,11 @@
-name: ESLint Config CD
+name: Effect CD
 
 on:
   push:
     branches: [main]
     paths:
-     - '.github/workflows/pkgs-eslint-config-cd.yml'
-     - 'pkgs/eslint-config/**'
+      - ".github/workflows/pkgs.effect.cd.yml"
+      - "pkgs/effect/**"
 
 concurrency:
   group: ${{ github.workflow }}
@@ -17,7 +17,7 @@ permissions:
 
 env:
   GH_PKG_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  MONO_WORK_DIR: ${{ vars.ESLINT_CONFIG_DIR }}
+  MONO_WORK_DIR: ${{ vars.EFFECT_DIR }}
   SEMVER_BRANCH_PREFIX: ${{ vars.SEMVER_BRANCH_PREFIX }}
   MONO_LOG_LEVEL: debug
   EVENT_BRANCH: ${{ github.ref_name }}
@@ -28,7 +28,6 @@ jobs:
     environment: GitHub
     runs-on: ubuntu-22.04
     steps:
-
       - name: CD
         uses: Duncan3142/mono/actions/npm-pkg-cd@main
         with:
