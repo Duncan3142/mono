@@ -9,7 +9,7 @@ import { OTLPTraceExporter } from "@opentelemetry/exporter-trace-otlp-grpc"
 import { BaseLogLayer } from "./logger.layer.ts"
 import { CoreConfig } from "#duncan3142/effect/lib/config"
 
-const OTEL_URL = "http://otel-lgtm:4317"
+const OTEL_URL = new URL("http://otel-lgtm:4317")
 const OTEL_DELAY = 500
 const OTEL_SHUTDOWN_TIMEOUT: Duration.DurationInput = "2 seconds"
 
@@ -26,7 +26,7 @@ const Live = Layer.unwrapEffect(
 
 		const versionKV = typeof serviceVersion === "undefined" ? {} : { serviceVersion }
 
-		const config = { url }
+		const config = { url: url.href }
 
 		const LogLayer = Layer.provide(
 			BaseLogLayer,
