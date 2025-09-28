@@ -8,20 +8,34 @@ const mockConsole = MockConsole.make()
 describe("CoreConfig", () => {
 	it.effect("should provide default config", () =>
 		Effect.gen(function* () {
-			const config = yield* CoreConfig.CoreConfig
+			const config = yield* pipe(
+				CoreConfig.CoreConfig,
+				Effect.provide(CoreConfig.Default),
+				Effect.withConsole(mockConsole),
+				Effect.withConfigProvider(
+					MockConfigProvider.make([["GIT_TOOLS.SERVICE.NAME", "test_service"]])
+				)
+			)
 
 			expect(config).toMatchObject({ otel: {}, service: { name: "test_service" } })
-		}).pipe(
-			Effect.provide(CoreConfig.Default),
-			Effect.withConsole(mockConsole),
-			Effect.withConfigProvider(
-				MockConfigProvider.make([["GIT_TOOLS.SERVICE.NAME", "test_service"]])
-			)
-		)
+		})
 	)
 	it.effect("should provide specified config", () =>
 		Effect.gen(function* () {
-			const config = yield* CoreConfig.CoreConfig
+			const config = yield* pipe(
+				CoreConfig.CoreConfig,
+				Effect.provide(CoreConfig.Default),
+				Effect.withConsole(mockConsole),
+				Effect.withConfigProvider(
+					MockConfigProvider.make([
+						["GIT_TOOLS.SERVICE.NAME", "test_service"],
+						["GIT_TOOLS.SERVICE.VERSION", "1.0.0"],
+						["GIT_TOOLS.OTEL.URL", "http://example.com"],
+						["GIT_TOOLS.OTEL.DELAY", "5000"],
+						["GIT_TOOLS.OTEL.SHUTDOWN_TIMEOUT", "1 second"],
+					])
+				)
+			)
 
 			expect(config).toMatchObject({
 				otel: {
@@ -31,19 +45,7 @@ describe("CoreConfig", () => {
 				},
 				service: { name: "test_service", version: "1.0.0" },
 			})
-		}).pipe(
-			Effect.provide(CoreConfig.Default),
-			Effect.withConsole(mockConsole),
-			Effect.withConfigProvider(
-				MockConfigProvider.make([
-					["GIT_TOOLS.SERVICE.NAME", "test_service"],
-					["GIT_TOOLS.SERVICE.VERSION", "1.0.0"],
-					["GIT_TOOLS.OTEL.URL", "http://example.com"],
-					["GIT_TOOLS.OTEL.DELAY", "5000"],
-					["GIT_TOOLS.OTEL.SHUTDOWN_TIMEOUT", "1 second"],
-				])
-			)
-		)
+		})
 	)
 	it.effect("should fail invalid config", () =>
 		Effect.gen(function* () {
@@ -62,7 +64,7 @@ describe("CoreConfig", () => {
 				)
 			)
 
-			expect(result).toEqual(
+			expect(result).toStrictEqual(
 				Exit.fail(
 					ConfigError.And(
 						ConfigError.MissingData(
