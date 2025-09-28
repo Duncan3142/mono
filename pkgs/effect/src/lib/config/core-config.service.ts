@@ -1,11 +1,12 @@
-import { Config, Effect, Option } from "effect"
+import { type Duration, Config, Effect, Option } from "effect"
 import type { EmptyObject } from "#duncan3142/effect/lib/type"
 
 interface CoreConfigData {
 	readonly service: { name: string; version?: string }
 	readonly otel: {
-		readonly url?: string
+		readonly url?: URL
 		readonly exportDelay?: number
+		readonly shutdownTimeout?: Duration.DurationInput
 	}
 }
 
@@ -43,15 +44,17 @@ class CoreConfig extends Effect.Service<CoreConfig>()("@duncan3142/effect/config
 				),
 				Config.nested(
 					Config.all([
-						Config.string("URL").pipe(Config.option),
+						Config.url("URL").pipe(Config.option),
 						Config.number("DELAY").pipe(Config.option),
+						Config.duration("SHUTDOWN_TIMEOUT").pipe(Config.option),
 					]),
 					"OTEL"
 				).pipe(
-					Config.map(([url, delay]) => {
+					Config.map(([url, delay, shutdownTimeout]) => {
 						const urlKV = someKV("url", url)
 						const delayKV = someKV("exportDelay", delay)
-						return { ...urlKV, ...delayKV }
+						const shutdownKV = someKV("shutdownTimeout", shutdownTimeout)
+						return { ...urlKV, ...delayKV, ...shutdownKV }
 					})
 				),
 			]),

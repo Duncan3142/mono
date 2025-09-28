@@ -13,7 +13,7 @@ import {
 import { Logger as OtelLogger } from "@effect/opentelemetry"
 import type { SdkLogRecord } from "@opentelemetry/sdk-logs"
 
-import { ExhaustiveError } from "../never.ts"
+import { ExhaustiveError } from "#duncan3142/effect/lib/exhaustive"
 import { Radix } from "#duncan3142/effect/lib/const"
 
 const unknownToAnyValue = (value: unknown): SdkLogRecord["body"] => {
@@ -45,7 +45,7 @@ const unknownToAnyValue = (value: unknown): SdkLogRecord["body"] => {
 				Object.entries(value).map(([key, val]) => [key, unknownToAnyValue(val)])
 			)
 		default:
-			return ExhaustiveError.throw(value)
+			return ExhaustiveError.unknown(value)
 	}
 }
 

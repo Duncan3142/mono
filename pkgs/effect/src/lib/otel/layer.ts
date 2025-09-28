@@ -1,4 +1,4 @@
-import { Effect, Layer } from "effect"
+import { type Duration, Effect, Layer } from "effect"
 import { BatchLogRecordProcessor } from "@opentelemetry/sdk-logs"
 import { NodeSdk, Logger as OtelLogger } from "@effect/opentelemetry"
 import { OTLPLogExporter } from "@opentelemetry/exporter-logs-otlp-grpc"
@@ -11,12 +11,17 @@ import { CoreConfig } from "#duncan3142/effect/lib/config"
 
 const OTEL_URL = "http://otel-lgtm:4317"
 const OTEL_DELAY = 500
+const OTEL_SHUTDOWN_TIMEOUT: Duration.DurationInput = "2 seconds"
 
 const Live = Layer.unwrapEffect(
 	Effect.gen(function* () {
 		const {
 			service: { name: serviceName, version: serviceVersion },
-			otel: { url = OTEL_URL, exportDelay = OTEL_DELAY },
+			otel: {
+				url = OTEL_URL,
+				exportDelay = OTEL_DELAY,
+				shutdownTimeout = OTEL_SHUTDOWN_TIMEOUT,
+			},
 		} = yield* CoreConfig.CoreConfig
 
 		const versionKV = typeof serviceVersion === "undefined" ? {} : { serviceVersion }
@@ -30,7 +35,7 @@ const Live = Layer.unwrapEffect(
 					scheduledDelayMillis: exportDelay,
 				}),
 				{
-					shutdownTimeout: "2 seconds",
+					shutdownTimeout,
 				}
 			)
 		)
@@ -44,7 +49,7 @@ const Live = Layer.unwrapEffect(
 				spanProcessor: new BatchSpanProcessor(new OTLPTraceExporter(config), {
 					scheduledDelayMillis: exportDelay,
 				}),
-				shutdownTimeout: "2 seconds",
+				shutdownTimeout,
 			}
 		})
 
