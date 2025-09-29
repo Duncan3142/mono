@@ -1,8 +1,6 @@
 import { describe, it, expect } from "@effect/vitest"
 import { Duration, Effect, Exit, Logger, LogLevel, pipe } from "effect"
-import { MockConsole, MockConfigProvider } from "#duncan3142/effect/lib/mock"
-import { Otel } from "#duncan3142/effect/lib/otel"
-import { CoreConfig } from "#duncan3142/effect/lib/config"
+import { MockConsole, MockOtel } from "#duncan3142/effect/lib/mock"
 import { DurationTimer, LogEffect } from "#duncan3142/effect/lib/telemetry"
 
 const mockConsole = MockConsole.make()
@@ -10,6 +8,13 @@ const mockConsole = MockConsole.make()
 describe("Telemetry", () => {
 	it.live("should emit telemetry", () =>
 		Effect.gen(function* () {
+			const {
+				layer: OtelLayer,
+				logs,
+				metrics,
+				spans,
+			} = MockOtel.make({ serviceName: "test_service" })
+
 			const duration = DurationTimer.make({
 				name: "test_timer",
 				boundaries: [0, 5, 10, 15, 20, 25, 30],
@@ -39,13 +44,125 @@ describe("Telemetry", () => {
 				wrapped,
 				Logger.withMinimumLogLevel(LogLevel.Debug),
 				Effect.withConsole(mockConsole),
-				Effect.provide(Otel.Live),
-				Effect.provide(CoreConfig.Default),
-				MockConfigProvider.make([["GIT_TOOLS.SERVICE.NAME", "telemetry-test"]]),
+				Effect.provide(OtelLayer),
 				Effect.exit
 			)
 
 			expect(result).toEqual(Exit.void)
+			expect(logs.logs).toEqual([
+				expect.objectContaining({
+					_body: '{\n  "message": "Test log",\n  "args": []\n}',
+					_isReadonly: true,
+					_logRecordLimits: {
+						attributeCountLimit: 128,
+						attributeValueLengthLimit: Infinity,
+					},
+					_severityNumber: 10000,
+					_severityText: "DEBUG",
+					attributes: {
+						fiberId: "#1",
+						log_key: "log_value",
+						// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Expect assertion
+						spanId: expect.any(String),
+						// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Expect assertion
+						traceId: expect.any(String),
+					},
+					hrTime: [expect.any(Number), expect.any(Number)],
+					hrTimeObserved: [expect.any(Number), expect.any(Number)],
+					// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Expect assertion
+					instrumentationScope: expect.objectContaining({
+						name: "@effect/opentelemetry",
+					}),
+					// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Expect assertion
+					resource: expect.objectContaining({
+						_asyncAttributesPending: false,
+						_memoizedAttributes: {
+							"service.name": "test_service",
+							"telemetry.sdk.language": "nodejs",
+							"telemetry.sdk.name": "@effect/opentelemetry",
+						},
+						_rawAttributes: [
+							["service.name", "test_service"],
+							["telemetry.sdk.name", "@effect/opentelemetry"],
+							["telemetry.sdk.language", "nodejs"],
+						],
+					}),
+					totalAttributesCount: 4,
+				}),
+			])
+			expect(spans.spans).toEqual([
+				expect.objectContaining({
+					_attributeValueLengthLimit: Infinity,
+					_droppedAttributesCount: 0,
+					_droppedEventsCount: 0,
+					_droppedLinksCount: 0,
+					_duration: [expect.any(Number), expect.any(Number)],
+					_ended: true,
+					// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Expect assertion
+					_performanceOffset: expect.any(Number),
+					// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Expect assertion
+					_performanceStartTime: expect.any(Number),
+					// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Expect assertion
+					_spanContext: expect.objectContaining({
+						// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Expect assertion
+						spanId: expect.any(String),
+						traceFlags: 1,
+						// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Expect assertion
+						traceId: expect.any(String),
+					}),
+					_spanLimits: {
+						attributeCountLimit: 128,
+						attributePerEventCountLimit: 128,
+						attributePerLinkCountLimit: 128,
+						attributeValueLengthLimit: Infinity,
+						eventCountLimit: 128,
+						linkCountLimit: 128,
+					},
+					_startTimeProvided: true,
+					attributes: {
+						span_key: "span_value",
+					},
+					endTime: [expect.any(Number), expect.any(Number)],
+					events: [
+						{
+							attributes: {
+								"effect.fiberId": "#1",
+								"effect.logLevel": "DEBUG",
+								log_key: "log_value",
+							},
+							droppedAttributesCount: 0,
+							name: '{\n  "message": "Test log",\n  "args": []\n}',
+							time: [expect.any(Number), expect.any(Number)],
+						},
+					],
+					// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Expect assertion
+					instrumentationScope: expect.objectContaining({
+						name: "test_service",
+					}),
+					kind: 0,
+					links: [],
+					name: "test_span",
+					// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Expect assertion
+					resource: expect.objectContaining({
+						_asyncAttributesPending: false,
+						_memoizedAttributes: {
+							"service.name": "test_service",
+							"telemetry.sdk.language": "nodejs",
+							"telemetry.sdk.name": "@effect/opentelemetry",
+						},
+						_rawAttributes: [
+							["service.name", "test_service"],
+							["telemetry.sdk.name", "@effect/opentelemetry"],
+							["telemetry.sdk.language", "nodejs"],
+						],
+					}),
+					startTime: [expect.any(Number), expect.any(Number)],
+					status: {
+						code: 1,
+					},
+				}),
+			])
+			expect(metrics.getMetrics()).toEqual([])
 		})
 	)
 })
