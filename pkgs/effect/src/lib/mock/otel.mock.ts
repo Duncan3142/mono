@@ -32,11 +32,12 @@ interface Result {
 const make = ({
 	serviceName,
 	shutdownTimeout = "1 second",
-	exportIntervalMillis = 1000,
+	exportIntervalMillis = 100,
 }: Props): Result => {
 	const metrics = new InMemoryMetricExporter(AggregationTemporality.CUMULATIVE)
 	const spans = new InMemorySpanExporter()
 	const logs = new InMemoryLogRecordExporter()
+
 	const layer = NodeSdk.layer(() => {
 		return {
 			resource: { serviceName },

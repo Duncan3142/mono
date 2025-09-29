@@ -12,9 +12,7 @@ describe("CoreConfig", () => {
 				CoreConfig.CoreConfig,
 				Effect.provide(CoreConfig.Default),
 				Effect.withConsole(mockConsole),
-				Effect.withConfigProvider(
-					MockConfigProvider.make([["GIT_TOOLS.SERVICE.NAME", "test_service"]])
-				)
+				MockConfigProvider.make([["GIT_TOOLS.SERVICE.NAME", "test_service"]])
 			)
 
 			expect(config).toMatchObject({ otel: {}, service: { name: "test_service" } })
@@ -26,15 +24,13 @@ describe("CoreConfig", () => {
 				CoreConfig.CoreConfig,
 				Effect.provide(CoreConfig.Default),
 				Effect.withConsole(mockConsole),
-				Effect.withConfigProvider(
-					MockConfigProvider.make([
-						["GIT_TOOLS.SERVICE.NAME", "test_service"],
-						["GIT_TOOLS.SERVICE.VERSION", "1.0.0"],
-						["GIT_TOOLS.OTEL.URL", "http://example.com"],
-						["GIT_TOOLS.OTEL.DELAY", "5000"],
-						["GIT_TOOLS.OTEL.SHUTDOWN_TIMEOUT", "1 second"],
-					])
-				)
+				MockConfigProvider.make([
+					["GIT_TOOLS.SERVICE.NAME", "test_service"],
+					["GIT_TOOLS.SERVICE.VERSION", "1.0.0"],
+					["GIT_TOOLS.OTEL.URL", "http://example.com"],
+					["GIT_TOOLS.OTEL.DELAY", "5000"],
+					["GIT_TOOLS.OTEL.SHUTDOWN_TIMEOUT", "1 second"],
+				])
 			)
 
 			expect(config).toMatchObject({
@@ -54,13 +50,11 @@ describe("CoreConfig", () => {
 					CoreConfig.CoreConfig,
 					Effect.provide(CoreConfig.Default),
 					Effect.withConsole(mockConsole),
-					Effect.withConfigProvider(
-						MockConfigProvider.make([
-							["GIT_TOOLS.OTEL.URL", "bad"],
-							["GIT_TOOLS.OTEL.DELAY", "wrong"],
-							["GIT_TOOLS.OTEL.SHUTDOWN_TIMEOUT", "invalid"],
-						])
-					)
+					MockConfigProvider.make([
+						["GIT_TOOLS.OTEL.URL", "bad"],
+						["GIT_TOOLS.OTEL.DELAY", "wrong"],
+						["GIT_TOOLS.OTEL.SHUTDOWN_TIMEOUT", "invalid"],
+					])
 				)
 			)
 

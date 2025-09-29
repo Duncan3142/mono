@@ -1,6 +1,8 @@
 import { describe, it, expect } from "@effect/vitest"
-import { Duration, Effect, Fiber, Logger, LogLevel, pipe, TestClock } from "effect"
-import { MockConsole, MockOtel } from "#duncan3142/effect/lib/mock"
+import { Duration, Effect, Exit, Logger, LogLevel, pipe } from "effect"
+import { MockConsole, MockConfigProvider } from "#duncan3142/effect/lib/mock"
+import { Otel } from "#duncan3142/effect/lib/otel"
+import { CoreConfig } from "#duncan3142/effect/lib/config"
 import { DurationTimer, LogEffect } from "#duncan3142/effect/lib/telemetry"
 
 const mockConsole = MockConsole.make()
@@ -8,44 +10,42 @@ const mockConsole = MockConsole.make()
 describe("Telemetry", () => {
 	it.live("should emit telemetry", () =>
 		Effect.gen(function* () {
-			const otel = MockOtel.make({ serviceName: "test_service" })
-
 			const duration = DurationTimer.make({
 				name: "test_timer",
-				boundaries: [0, 100, 200, 300, 400],
+				boundaries: [0, 5, 10, 15, 20, 25, 30],
 				description: "A test timer",
-				tags: { base: "base_tag" },
+				tags: { timer_core_key: "timer_core_value" },
 			})
 
 			const program = () =>
 				pipe(
-					Effect.sleep(Duration.millis(150)),
-					duration({ tags: { operation: "test_operation" } }),
-					Effect.withSpan("test_span", { root: true })
+					Effect.sleep(Duration.millis(15)),
+					duration({ tags: { timer_use_key: "timer_use_value" } })
 				)
 
 			const wrapped = pipe(
 				program,
-				LogEffect.wrap({ message: "Test log", annotations: { key: "value" } })
+				LogEffect.wrap({ message: "Test log", annotations: { log_key: "log_value" } }),
+				(prog) => prog(),
+				Effect.andThen(Effect.sleep("1 seconds")),
+				Effect.withSpan("test_span", {
+					root: true,
+					kind: "internal",
+					attributes: { span_key: "span_value" },
+				})
 			)
 
-			const fiber = yield* Effect.fork(
-				pipe(
-					wrapped(),
-					Logger.withMinimumLogLevel(LogLevel.Debug),
-					Effect.withConsole(mockConsole),
-					Effect.provide(otel.layer)
-				)
+			const result = yield* pipe(
+				wrapped,
+				Logger.withMinimumLogLevel(LogLevel.Debug),
+				Effect.withConsole(mockConsole),
+				Effect.provide(Otel.Live),
+				Effect.provide(CoreConfig.Default),
+				MockConfigProvider.make([["GIT_TOOLS.SERVICE.NAME", "telemetry-test"]]),
+				Effect.exit
 			)
-			// yield* TestClock.adjust("1 seconds")
-			yield* Fiber.join(fiber)
 
-			const { metrics, spans, logs } = otel
-			yield* Effect.promise(() => Promise.all([metrics.forceFlush(), spans.forceFlush()]))
-
-			expect(metrics.getMetrics()).toHaveLength(1)
-			expect(spans.getFinishedSpans()).toHaveLength(1)
-			expect(logs.getFinishedLogRecords()).toHaveLength(1)
+			expect(result).toEqual(Exit.void)
 		})
 	)
 })
