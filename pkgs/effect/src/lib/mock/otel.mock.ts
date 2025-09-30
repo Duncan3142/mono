@@ -28,7 +28,7 @@ interface Result {
 
 class MockSpanExporter implements SpanExporter {
 	readonly #spans: Array<ReadableSpan> = []
-	public get spans(): Array<ReadableSpan> {
+	public getSpans(): Array<ReadableSpan> {
 		return this.#spans
 	}
 	public export(
@@ -47,7 +47,7 @@ class MockSpanExporter implements SpanExporter {
 
 class MockLogRecordExporter implements LogRecordExporter {
 	readonly #logs: Array<unknown> = []
-	public get logs(): Array<unknown> {
+	public getLogs(): Array<unknown> {
 		return this.#logs
 	}
 	public export(

@@ -58,7 +58,7 @@ describe("Telemetry", () => {
 			const result = yield* Fiber.join(fiber)
 
 			expect(result).toEqual(Exit.void)
-			expect(logs.logs).toEqual([
+			expect(logs.getLogs()).toEqual([
 				expect.objectContaining({
 					_body: '{\n  "message": "Test log",\n  "args": []\n}',
 					_isReadonly: true,
@@ -100,7 +100,7 @@ describe("Telemetry", () => {
 					totalAttributesCount: 4,
 				}),
 			])
-			expect(spans.spans).toEqual([
+			expect(spans.getSpans()).toEqual([
 				expect.objectContaining({
 					_attributeValueLengthLimit: Infinity,
 					_droppedAttributesCount: 0,
