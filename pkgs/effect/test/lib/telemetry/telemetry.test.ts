@@ -1,12 +1,12 @@
 import { describe, it, expect } from "@effect/vitest"
-import { Duration, Effect, Exit, Logger, LogLevel, pipe } from "effect"
+import { Duration, Effect, Exit, Fiber, Logger, LogLevel, pipe, TestClock } from "effect"
 import { MockConsole, MockOtel } from "#duncan3142/effect/lib/mock"
 import { DurationTimer, LogEffect } from "#duncan3142/effect/lib/telemetry"
 
 const mockConsole = MockConsole.make()
 
 describe("Telemetry", () => {
-	it.live("should emit telemetry", () =>
+	it.effect("should emit telemetry", () =>
 		Effect.gen(function* () {
 			const {
 				layer: OtelLayer,
@@ -22,16 +22,19 @@ describe("Telemetry", () => {
 				tags: { timer_core_key: "timer_core_value" },
 			})
 
-			const program = () =>
+			const timed = () =>
 				pipe(
 					Effect.sleep(Duration.millis(15)),
 					duration({ tags: { timer_use_key: "timer_use_value" } })
 				)
 
 			const wrapped = pipe(
-				program,
-				LogEffect.wrap({ message: "Test log", annotations: { log_key: "log_value" } }),
-				(prog) => prog(),
+				timed,
+				LogEffect.wrap({ message: "Test log", annotations: { log_key: "log_value" } })
+			)
+
+			const program = pipe(
+				wrapped(),
 				Effect.andThen(Effect.sleep("1 seconds")),
 				Effect.withSpan("test_span", {
 					root: true,
@@ -40,13 +43,19 @@ describe("Telemetry", () => {
 				})
 			)
 
-			const result = yield* pipe(
-				wrapped,
-				Logger.withMinimumLogLevel(LogLevel.Debug),
-				Effect.withConsole(mockConsole),
-				Effect.provide(OtelLayer),
-				Effect.exit
+			const fiber = yield* Effect.fork(
+				pipe(
+					program,
+					Logger.withMinimumLogLevel(LogLevel.Debug),
+					Effect.withConsole(mockConsole),
+					Effect.provide(OtelLayer),
+					Effect.exit
+				)
 			)
+
+			yield* TestClock.adjust("2 seconds")
+
+			const result = yield* Fiber.join(fiber)
 
 			expect(result).toEqual(Exit.void)
 			expect(logs.logs).toEqual([
@@ -60,7 +69,8 @@ describe("Telemetry", () => {
 					_severityNumber: 10000,
 					_severityText: "DEBUG",
 					attributes: {
-						fiberId: "#1",
+						// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Expect assertion
+						fiberId: expect.stringMatching(/^#[0-9]+$/),
 						log_key: "log_value",
 						// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Expect assertion
 						spanId: expect.any(String),
@@ -126,7 +136,8 @@ describe("Telemetry", () => {
 					events: [
 						{
 							attributes: {
-								"effect.fiberId": "#1",
+								// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Expect assertion
+								"effect.fiberId": expect.stringMatching(/^#[0-9]+$/),
 								"effect.logLevel": "DEBUG",
 								log_key: "log_value",
 							},
@@ -162,7 +173,53 @@ describe("Telemetry", () => {
 					},
 				}),
 			])
-			expect(metrics.getMetrics()).toEqual([])
+			expect(metrics.getMetrics()).toEqual([
+				expect.objectContaining({
+					scopeMetrics: [
+						{
+							// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Expect assertion
+							metrics: expect.arrayContaining([
+								expect.objectContaining({
+									aggregationTemporality: 1,
+									dataPointType: 0,
+									dataPoints: [
+										{
+											attributes: {
+												time_unit: "milliseconds",
+												timer_core_key: "timer_core_value",
+												timer_use_key: "timer_use_value",
+											},
+											endTime: [expect.any(Number), expect.any(Number)],
+											startTime: [expect.any(Number), expect.any(Number)],
+											value: {
+												buckets: {
+													boundaries: [0, 5, 10, 15, 20, 25, 30],
+													counts: [0, 0, 0, 1, 0, 0, 0, 0],
+												},
+												count: 1,
+												max: 15,
+												min: 15,
+												sum: 15,
+											},
+										},
+									],
+									descriptor: {
+										advice: {},
+										description: "A test timer",
+										name: "test_timer",
+										type: "HISTOGRAM",
+										unit: "milliseconds",
+										valueType: 1,
+									},
+								}),
+							]),
+							scope: {
+								name: "@effect/opentelemetry/Metrics",
+							},
+						},
+					],
+				}),
+			])
 		})
 	)
 })

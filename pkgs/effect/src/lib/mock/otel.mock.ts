@@ -11,7 +11,7 @@ import {
 	type SpanExporter,
 } from "@opentelemetry/sdk-trace-base"
 import type { Duration, Layer } from "effect"
-import type { ExportResult } from "@opentelemetry/core"
+import { ExportResultCode, type ExportResult } from "@opentelemetry/core"
 
 interface Props {
 	readonly serviceName: string
@@ -38,7 +38,7 @@ class MockSpanExporter implements SpanExporter {
 		resultCallback: (result: ExportResult) => void
 	): void {
 		this.#spans.push(...spans)
-		resultCallback({ code: 0 })
+		resultCallback({ code: ExportResultCode.SUCCESS })
 	}
 	public shutdown(): Promise<void> {
 		return Promise.resolve()
@@ -57,7 +57,7 @@ class MockLogRecordExporter implements LogRecordExporter {
 		resultCallback: (result: ExportResult) => void
 	): void {
 		this.#logs.push(...logs)
-		resultCallback({ code: 0 })
+		resultCallback({ code: ExportResultCode.SUCCESS })
 	}
 	public shutdown(): Promise<void> {
 		return Promise.resolve()
