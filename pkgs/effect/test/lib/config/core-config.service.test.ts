@@ -12,7 +12,7 @@ describe("CoreConfig", () => {
 				CoreConfig.CoreConfig,
 				Effect.provide(CoreConfig.Default),
 				Effect.withConsole(mockConsole),
-				MockConfigProvider.make([["GIT_TOOLS.SERVICE.NAME", "test_service"]])
+				MockConfigProvider.make([["EFFECT.SERVICE.NAME", "test_service"]])
 			)
 
 			expect(config).toMatchObject({ otel: {}, service: { name: "test_service" } })
@@ -25,11 +25,13 @@ describe("CoreConfig", () => {
 				Effect.provide(CoreConfig.Default),
 				Effect.withConsole(mockConsole),
 				MockConfigProvider.make([
-					["GIT_TOOLS.SERVICE.NAME", "test_service"],
-					["GIT_TOOLS.SERVICE.VERSION", "1.0.0"],
-					["GIT_TOOLS.OTEL.URL", "http://example.com"],
-					["GIT_TOOLS.OTEL.DELAY", "5000"],
-					["GIT_TOOLS.OTEL.SHUTDOWN_TIMEOUT", "1 second"],
+					["EFFECT.SERVICE.NAME", "test_service"],
+					["EFFECT.SERVICE.VERSION", "1.0.0"],
+					["EFFECT.OTEL.URL", "http://example.com"],
+					["EFFECT.OTEL.DELAY", "5000"],
+					["EFFECT.OTEL.SHUTDOWN_TIMEOUT", "1 second"],
+					["EFFECT.OTEL.HEADERS.ALPHA", "beta"],
+					["EFFECT.OTEL.HEADERS.GAMMA", "delta"],
 				])
 			)
 
@@ -38,6 +40,10 @@ describe("CoreConfig", () => {
 					url: new URL("http://example.com"),
 					exportDelay: 5000,
 					shutdownTimeout: Duration.seconds(1),
+					headers: {
+						ALPHA: "beta",
+						GAMMA: "delta",
+					},
 				},
 				service: { name: "test_service", version: "1.0.0" },
 			})
@@ -51,9 +57,9 @@ describe("CoreConfig", () => {
 					Effect.provide(CoreConfig.Default),
 					Effect.withConsole(mockConsole),
 					MockConfigProvider.make([
-						["GIT_TOOLS.OTEL.URL", "bad"],
-						["GIT_TOOLS.OTEL.DELAY", "wrong"],
-						["GIT_TOOLS.OTEL.SHUTDOWN_TIMEOUT", "invalid"],
+						["EFFECT.OTEL.URL", "bad"],
+						["EFFECT.OTEL.DELAY", "wrong"],
+						["EFFECT.OTEL.SHUTDOWN_TIMEOUT", "invalid"],
 					])
 				)
 			)
@@ -62,22 +68,22 @@ describe("CoreConfig", () => {
 				Exit.fail(
 					ConfigError.And(
 						ConfigError.MissingData(
-							["GIT_TOOLS", "SERVICE", "NAME"],
-							"Expected GIT_TOOLS.SERVICE.NAME to exist in the provided map"
+							["EFFECT", "SERVICE", "NAME"],
+							"Expected EFFECT.SERVICE.NAME to exist in the provided map"
 						),
 						ConfigError.And(
 							ConfigError.And(
 								ConfigError.InvalidData(
-									["GIT_TOOLS", "OTEL", "URL"],
+									["EFFECT", "OTEL", "URL"],
 									"Expected an URL value but received bad"
 								),
 								ConfigError.InvalidData(
-									["GIT_TOOLS", "OTEL", "DELAY"],
+									["EFFECT", "OTEL", "DELAY"],
 									"Expected a number value but received wrong"
 								)
 							),
 							ConfigError.InvalidData(
-								["GIT_TOOLS", "OTEL", "SHUTDOWN_TIMEOUT"],
+								["EFFECT", "OTEL", "SHUTDOWN_TIMEOUT"],
 								"Expected a duration but received invalid"
 							)
 						)

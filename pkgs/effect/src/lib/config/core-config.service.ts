@@ -1,4 +1,5 @@
-import { type Duration, Config, Effect, Option } from "effect"
+import { HashMap, type Duration, Config, Effect, Option, Record } from "effect"
+import { TagFactory } from "#duncan3142/effect/internal"
 import type { EmptyObject } from "#duncan3142/effect/lib/type"
 
 interface CoreConfigData {
@@ -7,6 +8,7 @@ interface CoreConfigData {
 		readonly url?: URL
 		readonly exportDelay?: number
 		readonly shutdownTimeout?: Duration.DurationInput
+		readonly headers?: Readonly<Record<string, string>>
 	}
 }
 
@@ -29,46 +31,55 @@ const someKV = <Key extends string, Value>(
 /**
  * Core configuration service
  */
-class CoreConfig extends Effect.Service<CoreConfig>()("@duncan3142/effect/config/core-config", {
-	effect: Effect.gen(function* () {
-		const [service, otel] = yield* Config.nested(
-			Config.all([
-				Config.nested(
-					Config.all([Config.string("NAME"), Config.string("VERSION").pipe(Config.option)]),
-					"SERVICE"
-				).pipe(
-					Config.map(([name, version]) => {
-						const versionKV = someKV("version", version)
-						return { name, ...versionKV }
-					})
-				),
-				Config.nested(
-					Config.all([
-						Config.url("URL").pipe(Config.option),
-						Config.number("DELAY").pipe(Config.option),
-						Config.duration("SHUTDOWN_TIMEOUT").pipe(Config.option),
-					]),
-					"OTEL"
-				).pipe(
-					Config.map(([url, delay, shutdownTimeout]) => {
-						const urlKV = someKV("url", url)
-						const delayKV = someKV("exportDelay", delay)
-						const shutdownKV = someKV("shutdownTimeout", shutdownTimeout)
-						return { ...urlKV, ...delayKV, ...shutdownKV }
-					})
-				),
-			]),
-			"GIT_TOOLS"
-		)
+class CoreConfig extends Effect.Service<CoreConfig>()(
+	TagFactory.make("config", "core-config"),
+	{
+		effect: Effect.gen(function* () {
+			const [service, otel] = yield* Config.nested(
+				Config.all([
+					Config.nested(
+						Config.all([Config.string("NAME"), Config.string("VERSION").pipe(Config.option)]),
+						"SERVICE"
+					).pipe(
+						Config.map(([name, version]) => {
+							const versionKV = someKV("version", version)
+							return { name, ...versionKV }
+						})
+					),
+					Config.nested(
+						Config.all([
+							Config.url("URL").pipe(Config.option),
+							Config.number("DELAY").pipe(Config.option),
+							Config.duration("SHUTDOWN_TIMEOUT").pipe(Config.option),
+							Config.hashMap(Config.string(), "HEADERS").pipe(
+								Config.map((map) => map.pipe(HashMap.entries, Record.fromEntries)),
+								Config.option
+							),
+						]),
+						"OTEL"
+					).pipe(
+						Config.map(([url, delay, shutdownTimeout, headers]) => {
+							const urlKV = someKV("url", url)
+							const delayKV = someKV("exportDelay", delay)
+							const shutdownKV = someKV("shutdownTimeout", shutdownTimeout)
+							const headersKV = someKV("headers", headers)
 
-		const result: CoreConfigData = {
-			service,
-			otel,
-		}
+							return { ...urlKV, ...delayKV, ...shutdownKV, ...headersKV }
+						})
+					),
+				]),
+				"EFFECT"
+			)
 
-		return result
-	}),
-}) {}
+			const result: CoreConfigData = {
+				service,
+				otel,
+			}
+
+			return result
+		}),
+	}
+) {}
 
 const { Default } = CoreConfig
 

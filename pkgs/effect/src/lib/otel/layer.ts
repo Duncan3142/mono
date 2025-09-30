@@ -1,11 +1,11 @@
 import { type Duration, Effect, Layer } from "effect"
 import { BatchLogRecordProcessor } from "@opentelemetry/sdk-logs"
 import { NodeSdk, Logger as OtelLogger } from "@effect/opentelemetry"
-import { OTLPLogExporter } from "@opentelemetry/exporter-logs-otlp-grpc"
+import { OTLPLogExporter } from "@opentelemetry/exporter-logs-otlp-proto"
 import { PeriodicExportingMetricReader } from "@opentelemetry/sdk-metrics"
-import { OTLPMetricExporter } from "@opentelemetry/exporter-metrics-otlp-grpc"
+import { OTLPMetricExporter } from "@opentelemetry/exporter-metrics-otlp-proto"
 import { BatchSpanProcessor } from "@opentelemetry/sdk-trace-base"
-import { OTLPTraceExporter } from "@opentelemetry/exporter-trace-otlp-grpc"
+import { OTLPTraceExporter } from "@opentelemetry/exporter-trace-otlp-proto"
 import { BaseLogLayer } from "./logger.layer.ts"
 import { CoreConfig } from "#duncan3142/effect/lib/config"
 
@@ -21,12 +21,13 @@ const Live = Layer.unwrapEffect(
 				url = OTEL_URL,
 				exportDelay = OTEL_DELAY,
 				shutdownTimeout = OTEL_SHUTDOWN_TIMEOUT,
+				headers = {},
 			},
 		} = yield* CoreConfig.CoreConfig
 
 		const versionKV = typeof serviceVersion === "undefined" ? {} : { serviceVersion }
 
-		const config = { url: url.href }
+		const config = { url: url.href, headers }
 
 		const LogLayer = Layer.provide(
 			BaseLogLayer,
