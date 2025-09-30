@@ -17,7 +17,7 @@ describe("Telemetry", () => {
 
 			const duration = DurationTimer.make({
 				name: "test_timer",
-				boundaries: [0, 5, 10, 15, 20, 25, 30],
+				boundaries: [0, 10, 20, 30],
 				description: "A test timer",
 				tags: { timer_core_key: "timer_core_value" },
 			})
@@ -193,8 +193,8 @@ describe("Telemetry", () => {
 											startTime: [expect.any(Number), expect.any(Number)],
 											value: {
 												buckets: {
-													boundaries: [0, 5, 10, 15, 20, 25, 30],
-													counts: [0, 0, 0, 1, 0, 0, 0, 0],
+													boundaries: [0, 10, 20, 30],
+													counts: [0, 0, 1, 0, 0],
 												},
 												count: 1,
 												max: 15,
