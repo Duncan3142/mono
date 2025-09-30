@@ -1,5 +1,5 @@
 /**
- * An error indicating that an impossible code path has been reached.
+ * An error indicating that an unexpected code path has been reached.
  */
 class ExhaustiveError extends Error {
 	readonly #value: unknown
@@ -32,7 +32,7 @@ class ExhaustiveError extends Error {
 	 * Throws a ExhaustiveError for the given value.
 	 * @param value - The value.
 	 */
-	public static throw(value: unknown): never {
+	public static unknown(value: unknown): never {
 		throw new ExhaustiveError(value)
 	}
 }

@@ -21,12 +21,7 @@ interface DurationProps {
  * @param props.tags - The tags associated with the timer.
  * @returns A function that tracks the duration of the effect argument.
  */
-const durationFactory = ({
-	name,
-	boundaries,
-	description,
-	tags: timerTags = {},
-}: TimerProps) => {
+const make = ({ name, boundaries, description, tags: timerTags = {} }: TimerProps) => {
 	const timer = Metric.timerWithBoundaries(name, boundaries, description).pipe(
 		Metric.taggedWithLabels(MetricLabels.make(timerTags))
 	)
@@ -34,4 +29,4 @@ const durationFactory = ({
 		<A, E, R>(effect: Effect.Effect<A, E, R>): Effect.Effect<A, E, R> =>
 			Metric.trackDuration(effect, timer.pipe(Metric.taggedWithLabels(MetricLabels.make(tags))))
 }
-export { durationFactory }
+export { make }

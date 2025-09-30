@@ -28,21 +28,13 @@
 		"#duncan3142/effect/lib/otel": "./.tsc/dist/lib/otel/index.js",
 		"#duncan3142/effect/lib/tag": "./.tsc/dist/lib/tag/index.js",
 		"#duncan3142/effect/lib/telemetry": "./.tsc/dist/lib/telemetry/index.js",
-		"#duncan3142/effect/lib/never": "./.tsc/dist/lib/never.js",
+		"#duncan3142/effect/lib/exhaustive": "./.tsc/dist/lib/exhaustive.js",
 		"#duncan3142/effect/lib/type": "./.tsc/dist/lib/type.js"
 	},
 	"exports": {
 		".": {
 			"import": "./.tsc/dist/index.js",
 			"types": "./.tsc/dist/index.d.ts"
-		},
-		"./core": {
-			"import": "./.tsc/dist/lib/core/index.js",
-			"types": "./.tsc/dist/lib/core/index.d.ts"
-		},
-		"./git": {
-			"import": "./.tsc/dist/lib/git/index.js",
-			"types": "./.tsc/dist/lib/git/index.d.ts"
 		}
 	},
 	"files": [
@@ -68,11 +60,11 @@
 		"@duncan3142/eslint-config": "^0.1.18",
 		"@duncan3142/prettier-config": "^0.1.8",
 		"@duncan3142/tsc-config": "^0.1.11",
-		"@effect/language-service": "^0.41.0",
-		"@effect/platform-node": "^0.97.1",
-		"@effect/vitest": "^0.25.1",
+		"@effect/language-service": "^0.41.1",
+		"@effect/platform-node": "^0.98.0",
+		"@effect/vitest": "^0.26.0",
 		"@eslint/config-inspector": "^1.3.0",
-		"@types/node": "^22.18.6",
+		"@types/node": "^22.18.7",
 		"eslint": "^9.36.0",
 		"prettier": "^3.6.2",
 		"typescript": "^5.9.2",
@@ -85,17 +77,17 @@
 		"npm": "11.6.1"
 	},
 	"dependencies": {
-		"@effect/opentelemetry": "^0.57.0",
-		"@effect/platform": "^0.91.1",
-		"@opentelemetry/exporter-logs-otlp-grpc": "^0.205.0",
-		"@opentelemetry/exporter-metrics-otlp-grpc": "^0.205.0",
-		"@opentelemetry/exporter-trace-otlp-grpc": "^0.205.0",
+		"@effect/opentelemetry": "^0.58.0",
+		"@effect/platform": "^0.92.0",
+		"@opentelemetry/exporter-logs-otlp-proto": "^0.205.0",
+		"@opentelemetry/exporter-metrics-otlp-proto": "^0.205.0",
+		"@opentelemetry/exporter-trace-otlp-proto": "^0.205.0",
 		"@opentelemetry/sdk-logs": "^0.203.0",
 		"@opentelemetry/sdk-metrics": "^2.1.0",
 		"@opentelemetry/sdk-trace-base": "^2.1.0",
 		"@opentelemetry/sdk-trace-node": "^2.1.0",
 		"@opentelemetry/sdk-trace-web": "^2.1.0",
 		"@opentelemetry/semantic-conventions": "^1.37.0",
-		"effect": "^3.17.14"
+		"effect": "^3.18.0"
 	}
 }
