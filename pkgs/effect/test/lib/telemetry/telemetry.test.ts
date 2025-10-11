@@ -1,7 +1,7 @@
 import { describe, it, expect } from "@effect/vitest"
 import { Duration, Effect, Exit, Fiber, Logger, LogLevel, pipe, TestClock } from "effect"
 import { MockConsole, MockOtel } from "#duncan3142/effect/lib/mock"
-import { DurationTimer, LogEffect } from "#duncan3142/effect/lib/telemetry"
+import { DurationTimer, LogSpan } from "#duncan3142/effect/lib/telemetry"
 
 const mockConsole = MockConsole.make()
 
@@ -13,36 +13,31 @@ describe("Telemetry", () => {
 				logs,
 				metrics,
 				spans,
-			} = MockOtel.make({ serviceName: "test_service" })
+			} = MockOtel.make({ serviceName: "test.service" })
 
 			const duration = DurationTimer.make({
-				name: "test_timer",
+				name: "test.timer",
 				bucketCount: 3,
 				maxTime: 30,
 				description: "A test timer",
-				tags: { timer_core_key: "timer_core_value" },
+				tags: { "timer.core.key": "timer.core.value" },
 			})
 
 			const timed = () =>
 				pipe(
 					Effect.sleep(Duration.millis(15)),
-					duration({ tags: { timer_use_key: "timer_use_value" } })
+					duration({ tags: { "timer.use.key": "timer.use.value" } })
 				)
 
 			const wrapped = pipe(
 				timed,
-				LogEffect.wrap({ message: "Test log", annotations: { log_key: "log_value" } })
-			)
-
-			const program = pipe(
-				wrapped(),
-				Effect.andThen(Effect.sleep("1 seconds")),
-				Effect.withSpan("test_span", {
-					root: true,
-					kind: "internal",
-					attributes: { span_key: "span_value" },
+				LogSpan.wrap({
+					log: { message: "Test log", annotations: { "log.key": "log.value" } },
+					span: { name: "test.span", attributes: { "span.key": "span.value" }, root: true },
 				})
 			)
+
+			const program = pipe(wrapped(), Effect.andThen(Effect.sleep("1 seconds")))
 
 			const fiber = yield* Effect.fork(
 				pipe(
@@ -72,7 +67,7 @@ describe("Telemetry", () => {
 					attributes: {
 						// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Expect assertion
 						fiberId: expect.stringMatching(/^#[0-9]+$/),
-						log_key: "log_value",
+						"log.key": "log.value",
 						// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Expect assertion
 						spanId: expect.any(String),
 						// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Expect assertion
@@ -88,12 +83,12 @@ describe("Telemetry", () => {
 					resource: expect.objectContaining({
 						_asyncAttributesPending: false,
 						_memoizedAttributes: {
-							"service.name": "test_service",
+							"service.name": "test.service",
 							"telemetry.sdk.language": "nodejs",
 							"telemetry.sdk.name": "@effect/opentelemetry",
 						},
 						_rawAttributes: [
-							["service.name", "test_service"],
+							["service.name", "test.service"],
 							["telemetry.sdk.name", "@effect/opentelemetry"],
 							["telemetry.sdk.language", "nodejs"],
 						],
@@ -131,7 +126,7 @@ describe("Telemetry", () => {
 					},
 					_startTimeProvided: true,
 					attributes: {
-						span_key: "span_value",
+						"span.key": "span.value",
 					},
 					endTime: [expect.any(Number), expect.any(Number)],
 					events: [
@@ -140,7 +135,7 @@ describe("Telemetry", () => {
 								// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Expect assertion
 								"effect.fiberId": expect.stringMatching(/^#[0-9]+$/),
 								"effect.logLevel": "DEBUG",
-								log_key: "log_value",
+								"log.key": "log.value",
 							},
 							droppedAttributesCount: 0,
 							name: '{\n  "message": "Test log"\n}',
@@ -149,21 +144,21 @@ describe("Telemetry", () => {
 					],
 					// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Expect assertion
 					instrumentationScope: expect.objectContaining({
-						name: "test_service",
+						name: "test.service",
 					}),
 					kind: 0,
 					links: [],
-					name: "test_span",
+					name: "test.span",
 					// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Expect assertion
 					resource: expect.objectContaining({
 						_asyncAttributesPending: false,
 						_memoizedAttributes: {
-							"service.name": "test_service",
+							"service.name": "test.service",
 							"telemetry.sdk.language": "nodejs",
 							"telemetry.sdk.name": "@effect/opentelemetry",
 						},
 						_rawAttributes: [
-							["service.name", "test_service"],
+							["service.name", "test.service"],
 							["telemetry.sdk.name", "@effect/opentelemetry"],
 							["telemetry.sdk.language", "nodejs"],
 						],
@@ -187,8 +182,8 @@ describe("Telemetry", () => {
 										{
 											attributes: {
 												time_unit: "milliseconds",
-												timer_core_key: "timer_core_value",
-												timer_use_key: "timer_use_value",
+												"timer.core.key": "timer.core.value",
+												"timer.use.key": "timer.use.value",
 											},
 											endTime: [expect.any(Number), expect.any(Number)],
 											startTime: [expect.any(Number), expect.any(Number)],
@@ -207,7 +202,7 @@ describe("Telemetry", () => {
 									descriptor: {
 										advice: {},
 										description: "A test timer",
-										name: "test_timer",
+										name: "test.timer",
 										type: "HISTOGRAM",
 										unit: "milliseconds",
 										valueType: 1,
