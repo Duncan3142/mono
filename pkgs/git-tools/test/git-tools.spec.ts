@@ -12,7 +12,7 @@ import {
 	CheckoutMode,
 	FetchMode,
 	ResetMode,
-} from "#duncan3142/git-tools/lib/core/domain"
+} from "#duncan3142/git-tools/core/domain"
 import {
 	MergeBaseCommand,
 	BranchCommand,
@@ -28,10 +28,10 @@ import {
 	TagCommand,
 	ResetCommand,
 	StatusCommand,
-} from "#duncan3142/git-tools/lib/core/command"
-import { RepositoryContext } from "#duncan3142/git-tools/lib/core/context"
+} from "#duncan3142/git-tools/core/command"
+import { RepositoryContext } from "#duncan3142/git-tools/core/context"
 import { TestRepoDir, TestRepoFile } from "#duncan3142/git-tools/test/setup"
-import { FetchDepth, FetchDepthFactory } from "#duncan3142/git-tools/lib/core/state"
+import { FetchDepth, FetchDepthFactory } from "#duncan3142/git-tools/core/state"
 
 const console = MockConsole.make()
 vi.spyOn(console, "log").mockReturnValue(Effect.void)

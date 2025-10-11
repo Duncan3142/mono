@@ -4,11 +4,11 @@ import { expect, describe, it, vi } from "@effect/vitest"
 import { Effect, Fiber, Layer, TestClock, Either } from "effect"
 import { CommandExecutor } from "@effect/platform"
 import { MockConfigProvider, MockConsole, MockLogger, MockProcess } from "@duncan3142/effect"
-import { BranchCommand } from "#duncan3142/git-tools/lib/core/command"
-import { BranchExecutor } from "#duncan3142/git-tools/lib/git"
-import { RepositoryConfig } from "#duncan3142/git-tools/lib/core/config"
-import { RepositoryContext } from "#duncan3142/git-tools/lib/core/context"
-import { Repository } from "#duncan3142/git-tools/lib/core/domain"
+import { BranchCommand } from "#duncan3142/git-tools/core/command"
+import { BranchExecutor } from "#duncan3142/git-tools/git"
+import { RepositoryConfig } from "#duncan3142/git-tools/core/config"
+import { RepositoryContext } from "#duncan3142/git-tools/core/context"
+import { Repository } from "#duncan3142/git-tools/core/domain"
 
 const logHandler = vi.fn<() => void>()
 
