@@ -1,10 +1,11 @@
-import { Effect, type Duration } from "effect"
+import { Effect, pipe, type Duration } from "effect"
+import { LogSpan } from "@duncan3142/effect"
 import { PushExecutor } from "#duncan3142/git-tools/lib/core/executor"
 import type { GitCommandError, Reference, Remote } from "#duncan3142/git-tools/lib/core/domain"
-import { TagFactory } from "#duncan3142/git-tools/lib/core/const"
+import { TagFactory } from "#duncan3142/git-tools/internal"
 import { RepositoryContext } from "#duncan3142/git-tools/lib/core/context"
 import { RepositoryConfig } from "#duncan3142/git-tools/lib/core/config"
-import { ExecutorDuration, ExecutorLog } from "#duncan3142/git-tools/lib/core/telemetry"
+import { ExecutorTimer } from "#duncan3142/git-tools/lib/core/telemetry"
 
 interface Arguments {
 	readonly timeout?: Duration.DurationInput
@@ -34,15 +35,15 @@ class PushCommand extends Effect.Service<PushCommand>()(TagFactory.make(`command
 		) => Effect.Effect<
 			void,
 			GitCommandError.GitCommandFailed | GitCommandError.GitCommandTimeout
-		> = ExecutorLog.wrap(
-			"Git push",
-			({ ref, forceWithLease = false, remote = defaultRemote, timeout = "2 seconds" }) =>
-				executor({ directory, timeout, forceWithLease, ref, remote }).pipe(
-					ExecutorDuration.duration("git-push"),
-					Effect.withSpan("git-push")
-				)
+		> = ({ ref, forceWithLease = false, remote = defaultRemote, timeout = "2 seconds" }) =>
+			executor({ directory, timeout, forceWithLease, ref, remote }).pipe(
+				ExecutorTimer.duration({ tags: { "executor.name": "git.push" } })
+			)
+
+		return pipe(
+			handler,
+			LogSpan.wrap({ log: { message: "Git push" }, span: { name: "git.push" } })
 		)
-		return handler
 	}),
 }) {}
 

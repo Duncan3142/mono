@@ -1,13 +1,14 @@
-import { type Duration, Effect } from "effect"
+import { type Duration, Effect, pipe } from "effect"
+import { LogSpan } from "@duncan3142/effect"
 import {
 	type Reference,
 	type GitCommandError,
 	ResetMode,
 } from "#duncan3142/git-tools/lib/core/domain"
-import { TagFactory } from "#duncan3142/git-tools/lib/core/const"
+import { TagFactory } from "#duncan3142/git-tools/internal"
 import { RepositoryContext } from "#duncan3142/git-tools/lib/core/context"
 import { ResetExecutor } from "#duncan3142/git-tools/lib/core/executor"
-import { ExecutorDuration, ExecutorLog } from "#duncan3142/git-tools/lib/core/telemetry"
+import { ExecutorTimer } from "#duncan3142/git-tools/lib/core/telemetry"
 
 interface Arguments {
 	readonly ref: Reference.Reference
@@ -32,15 +33,15 @@ class ResetCommand extends Effect.Service<ResetCommand>()(TagFactory.make(`comma
 		) => Effect.Effect<
 			void,
 			GitCommandError.GitCommandFailed | GitCommandError.GitCommandTimeout
-		> = ExecutorLog.wrap(
-			"Git reset",
-			({ ref, mode = ResetMode.Hard(), timeout = "2 seconds" }) =>
-				executor({ ref, mode, directory, timeout }).pipe(
-					ExecutorDuration.duration("git-reset"),
-					Effect.withSpan("git-reset")
-				)
+		> = ({ ref, mode = ResetMode.Hard(), timeout = "2 seconds" }) =>
+			executor({ ref, mode, directory, timeout }).pipe(
+				ExecutorTimer.duration({ tags: { "executor.name": "git.reset" } })
+			)
+
+		return pipe(
+			handler,
+			LogSpan.wrap({ log: { message: "Git reset" }, span: { name: "git.reset" } })
 		)
-		return handler
 	}),
 }) {}
 

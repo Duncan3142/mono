@@ -1,5 +1,5 @@
 import { Context } from "effect"
-import { TagFactory } from "#duncan3142/git-tools/lib/core/const"
+import { TagFactory } from "#duncan3142/git-tools/internal"
 import type { Repository } from "#duncan3142/git-tools/lib/core/domain"
 
 /**

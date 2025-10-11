@@ -1,6 +1,6 @@
 import { type Duration, type Effect, Context } from "effect"
 import type { Reference, GitCommandError } from "#duncan3142/git-tools/lib/core/domain"
-import { TagFactory } from "#duncan3142/git-tools/lib/core/const"
+import { TagFactory } from "#duncan3142/git-tools/internal"
 
 interface Arguments {
 	readonly ref: Reference.Reference

@@ -1,5 +1,5 @@
 import { Data } from "effect"
-import { TagFactory } from "#duncan3142/git-tools/lib/core/const"
+import { TagFactory } from "#duncan3142/git-tools/internal"
 
 const MERGE_BASE_NOT_FOUND_ERROR_TAG = TagFactory.make("domain", `MERGE_BASE_NOT_FOUND_ERROR`)
 

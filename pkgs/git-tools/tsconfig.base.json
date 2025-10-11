@@ -4,9 +4,9 @@
 	"compilerOptions": {
 		"paths": {
 			"#duncan3142/git-tools": ["./src/index.ts"],
+			"#duncan3142/git-tools/internal": ["./src/internal/index.ts"],
 			"#duncan3142/git-tools/lib/core/command": ["./src/lib/core/command/index.ts"],
 			"#duncan3142/git-tools/lib/core/config": ["./src/lib/core/config/index.ts"],
-			"#duncan3142/git-tools/lib/core/const": ["./src/lib/core/const/index.ts"],
 			"#duncan3142/git-tools/lib/core/context": ["./src/lib/core/context/index.ts"],
 			"#duncan3142/git-tools/lib/core/domain": ["./src/lib/core/domain/index.ts"],
 			"#duncan3142/git-tools/lib/core/executor": ["./src/lib/core/executor/index.ts"],
@@ -14,9 +14,7 @@
 			"#duncan3142/git-tools/lib/core/telemetry": ["./src/lib/core/telemetry/index.ts"],
 			"#duncan3142/git-tools/lib/core": ["./src/lib/core/index.ts"],
 			"#duncan3142/git-tools/lib/git": ["./src/lib/git/index.ts"],
-			"#duncan3142/git-tools/test/setup": ["./test/setup/index.ts"],
-			"#duncan3142/git-tools/test/mock": ["./test/mock/index.ts"],
-			"#duncan3142/git-tools/test/telemetry": ["./test/telemetry/index.ts"]
+			"#duncan3142/git-tools/test/setup": ["./test/setup/index.ts"]
 		},
 		"isolatedDeclarations": false,
 		"plugins": [

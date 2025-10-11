@@ -1,7 +1,7 @@
 import { CommandExecutor } from "@effect/platform"
 import { Effect, Match, pipe, Layer, Array, Stream } from "effect"
+import { Radix } from "@duncan3142/effect"
 import * as Base from "./base.ts"
-import { Number as Const } from "#duncan3142/git-tools/lib/core/const"
 import {
 	type GitCommandError,
 	ReferenceSpec,
@@ -38,7 +38,7 @@ const Live: Layer.Layer<FetchExecutor.FetchExecutor, never, CommandExecutor.Comm
 					)
 				)
 
-				const numberToString = (num: number) => num.toString(Const.BASE_10_RADIX)
+				const numberToString = (num: number) => num.toString(Radix.BASE_10)
 
 				const modeArg = FetchMode.$match(mode, {
 					DeepenBy: ({ deepenBy }) => `--deepen=${numberToString(deepenBy)}`,

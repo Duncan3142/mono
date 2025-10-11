@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest"
-import { TagFactory } from "#duncan3142/git-tools/lib/core/const"
+import { TagFactory } from "#duncan3142/git-tools/internal"
 
 describe("tag", () => {
 	it("should generate a namespaced tag string", () => {

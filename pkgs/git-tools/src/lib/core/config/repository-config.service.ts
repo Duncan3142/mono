@@ -1,5 +1,5 @@
 import { Config, Effect } from "effect"
-import { TagFactory } from "#duncan3142/git-tools/lib/core/const"
+import { TagFactory } from "#duncan3142/git-tools/internal"
 import { type Fetch, Remote } from "#duncan3142/git-tools/lib/core/domain"
 
 const DEFAULT_REMOTE_NAME = "origin"

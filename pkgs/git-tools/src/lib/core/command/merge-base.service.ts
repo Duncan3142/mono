@@ -1,5 +1,6 @@
-import { type Duration, Effect } from "effect"
-import { TagFactory } from "#duncan3142/git-tools/lib/core/const"
+import { type Duration, Effect, pipe } from "effect"
+import { LogSpan } from "@duncan3142/effect"
+import { TagFactory } from "#duncan3142/git-tools/internal"
 import type {
 	MergeBaseError,
 	Reference,
@@ -7,7 +8,7 @@ import type {
 } from "#duncan3142/git-tools/lib/core/domain"
 import { MergeBaseExecutor } from "#duncan3142/git-tools/lib/core/executor"
 import { RepositoryContext } from "#duncan3142/git-tools/lib/core/context"
-import { ExecutorDuration, ExecutorLog } from "#duncan3142/git-tools/lib/core/telemetry"
+import { ExecutorTimer } from "#duncan3142/git-tools/lib/core/telemetry"
 
 interface Arguments {
 	readonly headRef: Reference.Reference
@@ -36,15 +37,18 @@ class MergeBaseCommand extends Effect.Service<MergeBaseCommand>()(
 				| GitCommandError.GitCommandFailed
 				| GitCommandError.GitCommandTimeout
 				| MergeBaseError.MergeBaseNotFound
-			> = ExecutorLog.wrap("Git merge-base", ({ headRef, baseRef, timeout = "2 seconds" }) =>
+			> = ({ headRef, baseRef, timeout = "2 seconds" }) =>
 				executor({
 					headRef,
 					baseRef,
 					directory,
 					timeout,
-				}).pipe(ExecutorDuration.duration("git-merge-base"), Effect.withSpan("git-merge-base"))
+				}).pipe(ExecutorTimer.duration({ tags: { "executor.name": "git.merge-base" } }))
+
+			return pipe(
+				handler,
+				LogSpan.wrap({ log: { message: "Git merge-base" }, span: { name: "git.merge-base" } })
 			)
-			return handler
 		}),
 	}
 ) {}
