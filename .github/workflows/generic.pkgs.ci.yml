@@ -1,0 +1,41 @@
+name: Package CI
+
+on:
+  workflow_call:
+    inputs:
+      working-directory:
+        required: true
+        type: string
+      log-level:
+        required: false
+        type: string
+        default: debug
+      pr-branch:
+        required: false
+        type: string
+        default: main
+    secrets:
+      github-package-token:
+        required: true
+      github-repo-token:
+        required: true
+
+concurrency:
+  group: "${{ inputs.working-directory }}_CI"
+  cancel-in-progress: true
+
+env:
+  GH_PKG_TOKEN: ${{ secrets.github-package-token }}
+  MONO_WORK_DIR: ${{ inputs.working-directory }}
+  MONO_LOG_LEVEL: ${{ inputs.log-level }}
+  EVENT_BRANCH: ${{ inputs.pr-branch }}
+
+jobs:
+  ci:
+    name: CI
+    runs-on: ubuntu-22.04
+    steps:
+      - name: CI
+        uses: Duncan3142/mono/actions/npm-ci@main
+        with:
+          token: ${{ secrets.github-repo-token }}
