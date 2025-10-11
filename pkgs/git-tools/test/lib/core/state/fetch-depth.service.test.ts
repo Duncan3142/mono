@@ -1,8 +1,8 @@
 import { describe, it, expect } from "@effect/vitest"
 import { Effect, Layer, pipe } from "effect"
-import { FetchDepth, FetchDepthFactory } from "#duncan3142/git-tools/lib/core/state"
-import { RepositoryConfig } from "#duncan3142/git-tools/lib/core/config"
-import { MockConsole, MockConfigProvider } from "#duncan3142/git-tools/test/mock"
+import { MockConsole, MockConfigProvider } from "@duncan3142/effect"
+import { FetchDepth, FetchDepthFactory } from "#duncan3142/git-tools/core/state"
+import { RepositoryConfig } from "#duncan3142/git-tools/core/config"
 
 const ProgramTest = pipe(FetchDepthFactory.Default, Layer.provide(RepositoryConfig.Default))
 
@@ -27,7 +27,9 @@ describe("FetchDepth", () => {
 		}).pipe(
 			Effect.provide(ProgramTest),
 			Effect.withConsole(mockConsole),
-			Effect.withConfigProvider(MockConfigProvider.Test)
+			MockConfigProvider.make([
+				["GIT_TOOLS.DEFAULT_REMOTE.URL", "https://cloudgit.com/user/repo.git"],
+			])
 		)
 	)
 	it.effect("should increment across scopes independently", () =>
@@ -55,7 +57,9 @@ describe("FetchDepth", () => {
 		}).pipe(
 			Effect.provide(ProgramTest),
 			Effect.withConsole(mockConsole),
-			Effect.withConfigProvider(MockConfigProvider.Test)
+			MockConfigProvider.make([
+				["GIT_TOOLS.DEFAULT_REMOTE.URL", "https://cloudgit.com/user/repo.git"],
+			])
 		)
 	)
 	it.scoped("should increment within a scope dependently", () =>
@@ -82,7 +86,9 @@ describe("FetchDepth", () => {
 		}).pipe(
 			Effect.provide(ProgramTest),
 			Effect.withConsole(mockConsole),
-			Effect.withConfigProvider(MockConfigProvider.Test)
+			MockConfigProvider.make([
+				["GIT_TOOLS.DEFAULT_REMOTE.URL", "https://cloudgit.com/user/repo.git"],
+			])
 		)
 	)
 })

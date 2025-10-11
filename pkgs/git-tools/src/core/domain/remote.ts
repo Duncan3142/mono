@@ -1,0 +1,14 @@
+import { Data } from "effect"
+import { TagFactory } from "#duncan3142/git-tools/internal"
+
+const REMOTE_TAG = TagFactory.make("domain", "Remote")
+
+interface Remote {
+	readonly _tag: typeof REMOTE_TAG
+	readonly name: string
+	readonly url: string
+}
+
+const Remote = Data.tagged<Remote>(REMOTE_TAG)
+
+export { REMOTE_TAG, Remote }
