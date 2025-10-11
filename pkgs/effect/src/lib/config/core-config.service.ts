@@ -84,3 +84,4 @@ class CoreConfig extends Effect.Service<CoreConfig>()(
 const { Default } = CoreConfig
 
 export { CoreConfig, Default }
+export type { CoreConfigData }

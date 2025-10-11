@@ -1,10 +1,10 @@
 import { Array } from "effect"
-import type { Join } from "./tag.join.ts"
+import type { TagJoin } from "./tag.join.ts"
 
 type Tag<
 	Prefix extends string,
 	Segments extends [...Array.NonEmptyReadonlyArray<string>],
-> = `${Prefix}${Join<[...Segments]>}`
+> = `${Prefix}${TagJoin<[...Segments]>}`
 
 /**
  * Generates namespaced tag builder.
@@ -26,3 +26,4 @@ const make =
 		`${prefix}/${Array.join(segments, "/")}` as Tag<Prefix, Segments>
 
 export { make }
+export type { Tag }

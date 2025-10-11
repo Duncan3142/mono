@@ -13,13 +13,13 @@ import {
 import type { Duration, Layer } from "effect"
 import { ExportResultCode, type ExportResult } from "@opentelemetry/core"
 
-interface Props {
+interface MockOtelProps {
 	readonly serviceName: string
 	readonly shutdownTimeout?: Duration.DurationInput
 	readonly exportIntervalMillis?: number
 }
 
-interface Result {
+interface MockOtelResult {
 	readonly layer: Layer.Layer<Resource.Resource>
 	readonly metrics: InMemoryMetricExporter
 	readonly spans: MockSpanExporter
@@ -76,7 +76,7 @@ const make = ({
 	serviceName,
 	shutdownTimeout = "1 second",
 	exportIntervalMillis = 100,
-}: Props): Result => {
+}: MockOtelProps): MockOtelResult => {
 	const metrics = new InMemoryMetricExporter(AggregationTemporality.CUMULATIVE)
 	const spans = new MockSpanExporter()
 	const logs = new MockLogRecordExporter()
@@ -97,3 +97,4 @@ const make = ({
 }
 
 export { make }
+export type { MockOtelProps, MockOtelResult }

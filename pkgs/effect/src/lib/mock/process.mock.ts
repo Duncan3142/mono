@@ -1,19 +1,8 @@
-import {
-	type Duration,
-	type Scope,
-	Effect,
-	Array,
-	Either,
-	Deferred,
-	Ref,
-	Stream,
-	pipe,
-	Sink,
-} from "effect"
+import { type Duration, Effect, Array, Either, Deferred, Ref, Stream, pipe, Sink } from "effect"
 import { type Command, type Error as PlatformError, CommandExecutor } from "@effect/platform"
 import { mockDeep } from "vitest-mock-extended"
 
-interface Props {
+interface MockProcessProps {
 	readonly delay: Duration.DurationInput
 	readonly result: Either.Either<
 		{
@@ -33,7 +22,7 @@ interface Props {
  * @returns An Effect that produces a mock CommandExecutor.Process.
  */
 // eslint-disable-next-line @typescript-eslint/prefer-readonly-parameter-types -- result is mutable
-const make = ({ delay, result }: Props): Effect.Effect<CommandExecutor.Process> =>
+const make = ({ delay, result }: MockProcessProps): Effect.Effect<CommandExecutor.Process> =>
 	Either.match(result, {
 		onLeft: (err) =>
 			Effect.succeed(
@@ -96,10 +85,10 @@ const make = ({ delay, result }: Props): Effect.Effect<CommandExecutor.Process> 
 			}),
 	})
 
-type Start = (
+type MockProcessStart = (
 	// eslint-disable-next-line @typescript-eslint/prefer-readonly-parameter-types -- Command is mutable
 	command: Command.Command
-) => Effect.Effect<CommandExecutor.Process, PlatformError.PlatformError, Scope.Scope>
+) => Effect.Effect<CommandExecutor.Process, PlatformError.PlatformError>
 
 export { make }
-export type { Props, Start }
+export type { MockProcessProps, MockProcessStart }
