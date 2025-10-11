@@ -1,10 +1,13 @@
-import { type Effect, Metric } from "effect"
+import { type Effect, Metric, pipe, Array } from "effect"
 import * as MetricLabels from "./metric-labels.ts"
+
+type Milliseconds = number
 
 interface TimerProps {
 	readonly name: string
-	readonly boundaries: ReadonlyArray<number>
-	readonly description: string | undefined
+	readonly bucketCount: number
+	readonly maxTime: Milliseconds
+	readonly description?: string
 	readonly tags?: MetricLabels.Tags
 }
 
@@ -16,12 +19,21 @@ interface DurationProps {
  * Track the duration of an executor.
  * @param props - Timer props.
  * @param props.name - The name of the timer.
- * @param props.boundaries - The boundaries for the timer.
  * @param props.description - The description of the timer.
  * @param props.tags - The tags associated with the timer.
+ * @param props.bucketCount - The number of buckets to use for the timer.
+ * @param props.maxTime - The maximum time for the timer range.
  * @returns A function that tracks the duration of the effect argument.
  */
-const make = ({ name, boundaries, description, tags: timerTags = {} }: TimerProps) => {
+const make = ({
+	name,
+	bucketCount,
+	maxTime,
+	description,
+	tags: timerTags = {},
+}: TimerProps) => {
+	const scaleBuckets = (bucket: number) => Math.floor((bucket * maxTime) / bucketCount)
+	const boundaries = pipe(Array.range(0, bucketCount), Array.map(scaleBuckets))
 	const timer = Metric.timerWithBoundaries(name, boundaries, description).pipe(
 		Metric.taggedWithLabels(MetricLabels.make(timerTags))
 	)
@@ -30,3 +42,4 @@ const make = ({ name, boundaries, description, tags: timerTags = {} }: TimerProp
 			Metric.trackDuration(effect, timer.pipe(Metric.taggedWithLabels(MetricLabels.make(tags))))
 }
 export { make }
+export type { TimerProps, DurationProps, Milliseconds }

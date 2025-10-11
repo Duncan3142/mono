@@ -17,7 +17,8 @@ describe("Telemetry", () => {
 
 			const duration = DurationTimer.make({
 				name: "test_timer",
-				boundaries: [0, 10, 20, 30],
+				bucketCount: 3,
+				maxTime: 30,
 				description: "A test timer",
 				tags: { timer_core_key: "timer_core_value" },
 			})
@@ -60,7 +61,7 @@ describe("Telemetry", () => {
 			expect(result).toEqual(Exit.void)
 			expect(logs.getLogs()).toEqual([
 				expect.objectContaining({
-					_body: '{\n  "message": "Test log",\n  "args": []\n}',
+					_body: '{\n  "message": "Test log"\n}',
 					_isReadonly: true,
 					_logRecordLimits: {
 						attributeCountLimit: 128,
@@ -142,7 +143,7 @@ describe("Telemetry", () => {
 								log_key: "log_value",
 							},
 							droppedAttributesCount: 0,
-							name: '{\n  "message": "Test log",\n  "args": []\n}',
+							name: '{\n  "message": "Test log"\n}',
 							time: [expect.any(Number), expect.any(Number)],
 						},
 					],

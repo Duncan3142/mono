@@ -1,4 +1,4 @@
-type Join<
+type TagJoin<
 	Elements extends [...Array<string>],
 	Sep extends string = "/",
 	Acc extends string = "",
@@ -7,9 +7,9 @@ type Join<
 	: Elements extends [infer Head, ...infer Tail]
 		? Head extends string
 			? Tail extends Array<string>
-				? Join<Tail, Sep, `${Acc}${Sep}${Head}`>
+				? TagJoin<Tail, Sep, `${Acc}${Sep}${Head}`>
 				: never
 			: never
 		: never
 
-export type { Join }
+export type { TagJoin }
