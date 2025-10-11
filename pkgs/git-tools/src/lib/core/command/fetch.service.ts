@@ -1,6 +1,7 @@
-import { type Array, type Duration, Effect } from "effect"
+import { type Array, type Duration, Effect, pipe } from "effect"
+import { LogEffect } from "@duncan3142/effect"
 import { FetchExecutor } from "#duncan3142/git-tools/lib/core/executor"
-import { TagFactory } from "#duncan3142/git-tools/lib/core/const"
+import { TagFactory } from "#duncan3142/git-tools/internal"
 import {
 	type Remote,
 	type FetchError,
@@ -11,7 +12,7 @@ import {
 import { FetchDepth } from "#duncan3142/git-tools/lib/core/state"
 import { RepositoryConfig } from "#duncan3142/git-tools/lib/core/config"
 import { RepositoryContext } from "#duncan3142/git-tools/lib/core/context"
-import { ExecutorDuration, ExecutorLog } from "#duncan3142/git-tools/lib/core/telemetry"
+import { ExecutorTimer } from "#duncan3142/git-tools/lib/core/telemetry"
 
 interface Arguments {
 	readonly refs: Array.NonEmptyReadonlyArray<Reference.Reference>
@@ -52,31 +53,29 @@ class FetchCommand extends Effect.Service<FetchCommand>()(TagFactory.make(`comma
 			| GitCommandError.GitCommandFailed
 			| GitCommandError.GitCommandTimeout,
 			FetchDepth.FetchDepth
-		> = ExecutorLog.wrap(
-			"Git fetch",
-			({
-				refs,
-				remote = defaultRemote,
-				mode = FetchMode.Depth({ depth: defaultDepth }),
-				timeout = "4 seconds",
-			}) =>
-				Effect.gen(function* () {
-					const fetchDepth = yield* FetchDepth.FetchDepth
-					yield* FetchMode.$match(mode, {
-						Depth: ({ depth }) => fetchDepth.set(depth),
-						DeepenBy: ({ deepenBy }) => fetchDepth.inc(deepenBy),
-					})
+		> = ({
+			refs,
+			remote = defaultRemote,
+			mode = FetchMode.Depth({ depth: defaultDepth }),
+			timeout = "4 seconds",
+		}) =>
+			Effect.gen(function* () {
+				const fetchDepth = yield* FetchDepth.FetchDepth
+				yield* FetchMode.$match(mode, {
+					Depth: ({ depth }) => fetchDepth.set(depth),
+					DeepenBy: ({ deepenBy }) => fetchDepth.inc(deepenBy),
+				})
 
-					return yield* executor({
-						mode,
-						remote,
-						refs,
-						directory,
-						timeout,
-					}).pipe(ExecutorDuration.duration("git-fetch"))
-				}).pipe(Effect.withSpan("git-fetch"))
-		)
-		return handler
+				return yield* executor({
+					mode,
+					remote,
+					refs,
+					directory,
+					timeout,
+				}).pipe(ExecutorTimer.duration({ tags: { "executor.name": "git.fetch" } }))
+			}).pipe(Effect.withSpan("git.fetch", {}))
+
+		return pipe(handler, LogEffect.wrap({ message: "Git fetch" }))
 	}),
 }) {}
 

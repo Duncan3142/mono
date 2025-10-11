@@ -3,15 +3,10 @@
 import { expect, describe, it, vi } from "@effect/vitest"
 import { Effect, Fiber, Layer, TestClock, Either } from "effect"
 import { CommandExecutor } from "@effect/platform"
+import { MockConfigProvider, MockConsole, MockLogger, MockProcess } from "@duncan3142/effect"
 import { BranchCommand } from "#duncan3142/git-tools/lib/core/command"
 import { BranchExecutor } from "#duncan3142/git-tools/lib/git"
 import { RepositoryConfig } from "#duncan3142/git-tools/lib/core/config"
-import {
-	MockConfigProvider,
-	MockConsole,
-	MockLogger,
-	MockProcess,
-} from "#duncan3142/git-tools/test/mock"
 import { RepositoryContext } from "#duncan3142/git-tools/lib/core/context"
 import { Repository } from "#duncan3142/git-tools/lib/core/domain"
 
@@ -35,7 +30,7 @@ start.mockReturnValueOnce(branchProcess)
 const ProgramLayer = BranchCommand.Default.pipe(
 	Layer.provide(BranchExecutor.Live),
 	Layer.provide(RepositoryConfig.Default),
-	Layer.provide(MockLogger.Test(logHandler))
+	Layer.provide(MockLogger.make(logHandler))
 )
 
 describe("BranchCommand", () => {
@@ -65,7 +60,7 @@ describe("BranchCommand", () => {
 				CommandExecutor.makeExecutor(start)
 			),
 			Effect.withConsole(console),
-			Effect.withConfigProvider(MockConfigProvider.Test)
+			MockConfigProvider.make([])
 		)
 	)
 })

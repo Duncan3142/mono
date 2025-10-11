@@ -6,7 +6,7 @@ import type {
 	GitCommandError,
 	FetchMode,
 } from "#duncan3142/git-tools/lib/core/domain"
-import { TagFactory } from "#duncan3142/git-tools/lib/core/const"
+import { TagFactory } from "#duncan3142/git-tools/internal"
 
 interface Arguments {
 	readonly mode: FetchMode.FetchMode

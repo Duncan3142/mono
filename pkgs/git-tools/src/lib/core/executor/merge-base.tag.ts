@@ -1,5 +1,5 @@
 import { type Duration, type Effect, Context } from "effect"
-import { TagFactory } from "#duncan3142/git-tools/lib/core/const"
+import { TagFactory } from "#duncan3142/git-tools/internal"
 import type {
 	GitCommandError,
 	Reference,

@@ -4,7 +4,7 @@ import type {
 	GitCommandError,
 	ResetMode,
 } from "#duncan3142/git-tools/lib/core/domain"
-import { TagFactory } from "#duncan3142/git-tools/lib/core/const"
+import { TagFactory } from "#duncan3142/git-tools/internal"
 
 interface Arguments {
 	readonly ref: Reference.Reference

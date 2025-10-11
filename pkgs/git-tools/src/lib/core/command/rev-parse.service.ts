@@ -1,9 +1,10 @@
-import { type Duration, Effect } from "effect"
+import { type Duration, Effect, pipe } from "effect"
+import { LogEffect } from "@duncan3142/effect"
 import type { Reference, GitCommandError } from "#duncan3142/git-tools/lib/core/domain"
-import { TagFactory } from "#duncan3142/git-tools/lib/core/const"
+import { TagFactory } from "#duncan3142/git-tools/internal"
 import { RepositoryContext } from "#duncan3142/git-tools/lib/core/context"
 import { RevParseExecutor } from "#duncan3142/git-tools/lib/core/executor"
-import { ExecutorDuration, ExecutorLog } from "#duncan3142/git-tools/lib/core/telemetry"
+import { ExecutorTimer } from "#duncan3142/git-tools/lib/core/telemetry"
 
 interface Arguments {
 	readonly ref: Reference.Reference
@@ -29,13 +30,13 @@ class RevParseCommand extends Effect.Service<RevParseCommand>()(
 			) => Effect.Effect<
 				Reference.SHA,
 				GitCommandError.GitCommandFailed | GitCommandError.GitCommandTimeout
-			> = ExecutorLog.wrap("Git rev-parse", ({ ref, timeout = "2 seconds" }) =>
+			> = ({ ref, timeout = "2 seconds" }) =>
 				executor({ ref, directory, timeout }).pipe(
-					ExecutorDuration.duration("git-rev-parse"),
-					Effect.withSpan("git-rev-parse")
+					ExecutorTimer.duration({ tags: { "executor.name": "git.rev-parse" } }),
+					Effect.withSpan("git.rev-parse")
 				)
-			)
-			return handler
+
+			return pipe(handler, LogEffect.wrap({ message: "Git rev-parse" }))
 		}),
 	}
 ) {}

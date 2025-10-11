@@ -1,9 +1,10 @@
-import { Effect, type Duration } from "effect"
+import { Effect, pipe, type Duration } from "effect"
+import { LogEffect } from "@duncan3142/effect"
 import { InitExecutor } from "#duncan3142/git-tools/lib/core/executor"
 import type { GitCommandError } from "#duncan3142/git-tools/lib/core/domain"
-import { TagFactory } from "#duncan3142/git-tools/lib/core/const"
+import { TagFactory } from "#duncan3142/git-tools/internal"
 import { RepositoryContext } from "#duncan3142/git-tools/lib/core/context"
-import { ExecutorDuration, ExecutorLog } from "#duncan3142/git-tools/lib/core/telemetry"
+import { ExecutorTimer } from "#duncan3142/git-tools/lib/core/telemetry"
 
 interface Arguments {
 	readonly bare?: boolean
@@ -28,15 +29,13 @@ class InitCommand extends Effect.Service<InitCommand>()(TagFactory.make(`command
 		) => Effect.Effect<
 			void,
 			GitCommandError.GitCommandFailed | GitCommandError.GitCommandTimeout
-		> = ExecutorLog.wrap(
-			"Git init",
-			({ bare = false, initBranch = "main", timeout = "2 seconds" } = {}) =>
-				executor({ directory, timeout, bare, initBranch }).pipe(
-					ExecutorDuration.duration("git-init"),
-					Effect.withSpan("git-init")
-				)
-		)
-		return handler
+		> = ({ bare = false, initBranch = "main", timeout = "2 seconds" } = {}) =>
+			executor({ directory, timeout, bare, initBranch }).pipe(
+				ExecutorTimer.duration({ tags: { "executor.name": "git.init" } }),
+				Effect.withSpan("git.init")
+			)
+
+		return pipe(handler, LogEffect.wrap({ message: "Git init" }))
 	}),
 }) {}
 

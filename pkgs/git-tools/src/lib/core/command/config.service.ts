@@ -1,13 +1,14 @@
-import { Effect, type Duration } from "effect"
+import { Effect, pipe, type Duration } from "effect"
+import { LogEffect } from "@duncan3142/effect"
 import { ConfigExecutor } from "#duncan3142/git-tools/lib/core/executor"
 import {
 	ConfigScope,
 	type ConfigMode,
 	type GitCommandError,
 } from "#duncan3142/git-tools/lib/core/domain"
-import { TagFactory } from "#duncan3142/git-tools/lib/core/const"
+import { TagFactory } from "#duncan3142/git-tools/internal"
 import { RepositoryContext } from "#duncan3142/git-tools/lib/core/context"
-import { ExecutorDuration, ExecutorLog } from "#duncan3142/git-tools/lib/core/telemetry"
+import { ExecutorTimer } from "#duncan3142/git-tools/lib/core/telemetry"
 
 interface Arguments {
 	readonly mode: ConfigMode.ConfigMode
@@ -34,15 +35,13 @@ class ConfigCommand extends Effect.Service<ConfigCommand>()(
 			) => Effect.Effect<
 				void,
 				GitCommandError.GitCommandFailed | GitCommandError.GitCommandTimeout
-			> = ExecutorLog.wrap(
-				"Git config",
-				({ mode, scope = ConfigScope.Local(), timeout = "2 seconds" }) =>
-					executor({ directory, mode, scope, timeout }).pipe(
-						ExecutorDuration.duration("git-config"),
-						Effect.withSpan("git-config")
-					)
-			)
-			return handler
+			> = ({ mode, scope = ConfigScope.Local(), timeout = "2 seconds" }) =>
+				executor({ directory, mode, scope, timeout }).pipe(
+					ExecutorTimer.duration({ tags: { "executor.name": "git.config" } }),
+					Effect.withSpan("git.config")
+				)
+
+			return pipe(handler, LogEffect.wrap({ message: "Git config" }))
 		}),
 	}
 ) {}

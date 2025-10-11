@@ -1,9 +1,10 @@
-import { Effect, type Duration } from "effect"
+import { Effect, pipe, type Duration } from "effect"
+import { LogEffect } from "@duncan3142/effect"
 import { CommitExecutor } from "#duncan3142/git-tools/lib/core/executor"
 import type { GitCommandError } from "#duncan3142/git-tools/lib/core/domain"
-import { TagFactory } from "#duncan3142/git-tools/lib/core/const"
+import { TagFactory } from "#duncan3142/git-tools/internal"
 import { RepositoryContext } from "#duncan3142/git-tools/lib/core/context"
-import { ExecutorDuration, ExecutorLog } from "#duncan3142/git-tools/lib/core/telemetry"
+import { ExecutorTimer } from "#duncan3142/git-tools/lib/core/telemetry"
 
 interface Arguments {
 	readonly message: string
@@ -29,13 +30,13 @@ class CommitCommand extends Effect.Service<CommitCommand>()(
 			) => Effect.Effect<
 				void,
 				GitCommandError.GitCommandFailed | GitCommandError.GitCommandTimeout
-			> = ExecutorLog.wrap("Git commit", ({ message, timeout = "2 seconds" }) =>
+			> = ({ message, timeout = "2 seconds" }) =>
 				executor({ directory, timeout, message }).pipe(
-					ExecutorDuration.duration("git-commit"),
-					Effect.withSpan("git-commit")
+					ExecutorTimer.duration({ tags: { "executor.name": "git.commit" } }),
+					Effect.withSpan("git.commit")
 				)
-			)
-			return handler
+
+			return pipe(handler, LogEffect.wrap({ message: "Git commit" }))
 		}),
 	}
 ) {}

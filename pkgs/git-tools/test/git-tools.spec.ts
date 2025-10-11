@@ -2,7 +2,7 @@
 import { expect, describe, it } from "@effect/vitest"
 import { NodeContext } from "@effect/platform-node"
 import { ConfigProvider, Effect, Layer, Logger } from "effect"
-import { MockConsole } from "./mock/index.ts"
+import { MockConsole, MockOtel } from "@duncan3142/effect"
 import { GitToolsLive } from "#duncan3142/git-tools"
 import {
 	TagMode,
@@ -32,9 +32,10 @@ import {
 import { RepositoryContext } from "#duncan3142/git-tools/lib/core/context"
 import { TestRepoDir, TestRepoFile } from "#duncan3142/git-tools/test/setup"
 import { FetchDepth, FetchDepthFactory } from "#duncan3142/git-tools/lib/core/state"
-import { TelemetryLive } from "#duncan3142/git-tools/test/telemetry"
 
 const console = MockConsole.make()
+
+const otel = MockOtel.make({ serviceName: "git-tools-test" })
 
 const ProgramLive = GitToolsLive.pipe(Layer.provide(NodeContext.layer))
 
@@ -526,7 +527,7 @@ describe("Integration", () => {
 				expect(console.log).toHaveBeenNthCalledWith(33, expect.stringMatching(/^$/))
 			}).pipe(
 				Effect.withSpan("git-tools-test"),
-				Effect.provide(TelemetryLive),
+				Effect.provide(otel.layer),
 				Effect.provide(Logger.json),
 				Effect.withConsole(console)
 			),
