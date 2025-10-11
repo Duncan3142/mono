@@ -1,5 +1,11 @@
 # @duncan3142/git-tools
 
+## 0.1.2
+
+### Patch Changes
+
+- 428bfee: restructure directory layout
+
 ## 0.1.1
 
 ### Patch Changes
