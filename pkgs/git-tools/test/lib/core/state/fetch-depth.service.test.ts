@@ -1,6 +1,6 @@
 import { describe, it, expect } from "@effect/vitest"
 import { Effect, Layer, pipe } from "effect"
-import { MockConsole, MockConfigProvider } from "@duncan3142/effect"
+import { MockConsole, MockWithConfigProvider } from "@duncan3142/effect"
 import { FetchDepth, FetchDepthFactory } from "#duncan3142/git-tools/core/state"
 import { RepositoryConfig } from "#duncan3142/git-tools/core/config"
 
@@ -27,7 +27,7 @@ describe("FetchDepth", () => {
 		}).pipe(
 			Effect.provide(ProgramTest),
 			Effect.withConsole(mockConsole),
-			MockConfigProvider.make([
+			MockWithConfigProvider.make([
 				["GIT_TOOLS.DEFAULT_REMOTE.URL", "https://cloudgit.com/user/repo.git"],
 			])
 		)
@@ -57,7 +57,7 @@ describe("FetchDepth", () => {
 		}).pipe(
 			Effect.provide(ProgramTest),
 			Effect.withConsole(mockConsole),
-			MockConfigProvider.make([
+			MockWithConfigProvider.make([
 				["GIT_TOOLS.DEFAULT_REMOTE.URL", "https://cloudgit.com/user/repo.git"],
 			])
 		)
@@ -86,7 +86,7 @@ describe("FetchDepth", () => {
 		}).pipe(
 			Effect.provide(ProgramTest),
 			Effect.withConsole(mockConsole),
-			MockConfigProvider.make([
+			MockWithConfigProvider.make([
 				["GIT_TOOLS.DEFAULT_REMOTE.URL", "https://cloudgit.com/user/repo.git"],
 			])
 		)
