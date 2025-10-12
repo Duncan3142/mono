@@ -1,0 +1,48 @@
+name: Sub Debug Workflow
+
+on:
+  workflow_call:
+
+permissions:
+  packages: write
+  contents: read
+
+concurrency:
+  group: debug-workflow
+  cancel-in-progress: true
+
+env:
+  GH_PKG_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  MONO_WORK_DIR: ".github/workflows"
+  MONO_LOG_LEVEL: debug
+  EVENT_BRANCH: debug-workflow
+
+jobs:
+  cd:
+    name: Debug
+    environment: GitHub
+    runs-on: ubuntu-22.04
+    steps:
+      - name: CLI Auth
+        uses: Duncan3142/mono/actions/gh-cli@main
+        with:
+          token: ${{ secrets.GHA_PAT }}
+      - name: Env vars
+        uses: Duncan3142/mono/actions/common-env@main
+      - name: Git scripts
+        uses: Duncan3142/mono/tools/git@main
+
+      - name: Debug
+        run: |
+          set -ueC
+          set -o pipefail
+
+          git-init --checkout "${EVENT_BRANCH}"
+
+          cd "${MONO_WORK_DIR}"
+
+          timber info 'tree -a --gitignore'
+          tree -a --gitignore
+
+          timber info 'tree -a'
+          tree -a
