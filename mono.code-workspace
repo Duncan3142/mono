@@ -45,16 +45,8 @@
 			"path": "tools/npm",
 		},
 		{
-			"name": "apps/solid-squared/ui",
-			"path": "apps/solid-squared/ui",
-		},
-		{
-			"name": "apps/solid-squared/api",
-			"path": "apps/solid-squared/api",
-		},
-		{
-			"name": "pkgs/solid-squared/graphql",
-			"path": "pkgs/solid-squared/graphql",
+			"name": "pkgs/fronting/graphql",
+			"path": "pkgs/fronting/graphql",
 		},
 		{
 			"name": "pkgs/effect",
