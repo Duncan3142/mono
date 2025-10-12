@@ -23,6 +23,8 @@ jobs:
     environment: GitHub
     runs-on: ubuntu-22.04
     steps:
+      - name: Debug Available Secrets
+        run: echo "${{ toJSON(secrets) }}"
       - name: Check if secret is set
         if: ${{ env.AUTH_TOKEN == '' }}
         run: |
