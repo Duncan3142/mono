@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/unbound-method -- Test spies */
-import { expect, describe, it, vi } from "@effect/vitest"
+import { expect, describe, it } from "@effect/vitest"
 import { NodeContext } from "@effect/platform-node"
 import { ConfigProvider, Effect, Layer, Logger } from "effect"
 import { MockConsole, MockOtel } from "@duncan3142/effect"
@@ -34,8 +34,6 @@ import { TestRepoDir, TestRepoFile } from "#duncan3142/git-tools/test/setup"
 import { FetchDepth, FetchDepthFactory } from "#duncan3142/git-tools/core/state"
 
 const console = MockConsole.make()
-vi.spyOn(console, "log").mockReturnValue(Effect.void)
-vi.spyOn(console, "error").mockReturnValue(Effect.void)
 
 const otel = MockOtel.make({ serviceName: "git-tools-test" })
 
