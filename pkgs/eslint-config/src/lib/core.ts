@@ -23,40 +23,28 @@ type Pattern = string
  */
 type Patterns = ReadonlyArray<Pattern>
 
-/**
- * JavaScript file extension pattern
- */
-const jsExtensions: Patterns = [".js", ".jsx"]
+const JS_EXT = [".js", ".jsx"] as const
+const TS_EXT = [".ts", ".tsx"] as const
 
-/**
- * TypeScript file extension pattern
- */
-const tsExtensions: Patterns = [".ts", ".tsx"]
+interface FileExtensions {
+	readonly JS: Patterns
+	readonly TS: Patterns
+	readonly NODE: Patterns
+	readonly JSON: Patterns
+	readonly CSS: Patterns
+	readonly HTML: Patterns
+	readonly JSTS: Patterns
+}
 
-/**
- * Node file extension pattern
- */
-const nodeExtensions: Patterns = [".node"]
-
-/**
- * JSON file extension pattern
- */
-const jsonExtensions: Patterns = [".json", ".jsonc"]
-
-/**
- * CSS file extension pattern
- */
-const cssExtensions: Patterns = [".css"]
-
-/**
- * HTML file extension pattern
- */
-const htmlExtensions: Patterns = [".html"]
-
-/**
- * JavaScript / TypeScript file extension pattern
- */
-const jstsExtensions: Patterns = [...jsExtensions, ...tsExtensions]
+const FILE_EXTENSIONS: FileExtensions = {
+	JS: JS_EXT,
+	TS: TS_EXT,
+	NODE: [".node"],
+	JSON: [".json", ".jsonc"],
+	CSS: [".css"],
+	HTML: [".html"],
+	JSTS: [...JS_EXT, ...TS_EXT],
+}
 
 /**
  * Factory function for creating file patterns array
@@ -79,15 +67,4 @@ const config: Config = {
 }
 
 export type { Path, Paths, Pattern, Patterns as Patterns, Config, Configs, Plugin, Parser }
-export {
-	compose,
-	config,
-	filePatterns,
-	jstsExtensions,
-	jsExtensions,
-	tsExtensions,
-	nodeExtensions,
-	jsonExtensions,
-	cssExtensions,
-	htmlExtensions,
-}
+export { compose, config, filePatterns, FILE_EXTENSIONS }

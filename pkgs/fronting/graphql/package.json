@@ -1,5 +1,5 @@
 {
-	"name": "@duncan3142/npm-tools",
+	"name": "@duncan3142/solid-squared-graphql",
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/Duncan3142/mono.git"
@@ -8,7 +8,7 @@
 		"registry": "https://npm.pkg.github.com",
 		"access": "restricted"
 	},
-	"description": "NPM tools",
+	"description": "Solid Squared GraphQL schema",
 	"keywords": [],
 	"version": "0.0.0",
 	"author": "Duncan Giles",
@@ -31,7 +31,9 @@
 	"files": [
 		".tsc/dist/**/*.js",
 		".tsc/dist/**/*.ts",
-		".tsc/dist/**/*.map"
+		".tsc/dist/**/*.map",
+		"graphql/*.graphql",
+		".graphql/schema.json"
 	],
 	"scripts": {
 		"clean": "rm -rf .prettier .package .tsc",
@@ -42,7 +44,8 @@
 		"check:tsc": "tsc --build --noEmit",
 		"lint:eslint": "eslint --max-warnings 0 .",
 		"lint:eslint:fix": "eslint --fix .",
-		"inspect:eslint": "eslint --inspect-config ."
+		"inspect:eslint": "eslint --inspect-config .",
+		"inspect:graphql": "graphql-inspector serve ./graphql"
 	},
 	"devDependencies": {
 		"@changesets/cli": "^2.29.7",
@@ -50,6 +53,8 @@
 		"@duncan3142/prettier-config": "^0.1.8",
 		"@duncan3142/tsc-config": "^0.1.11",
 		"@eslint/config-inspector": "^1.3.0",
+		"@graphql-eslint/eslint-plugin": "^4.4.0",
+		"@graphql-inspector/cli": "^5.0.8",
 		"@types/node": "^22.18.10",
 		"eslint": "^9.37.0",
 		"prettier": "^3.6.2",
@@ -60,7 +65,8 @@
 		"npm": "11.6.2"
 	},
 	"dependencies": {
-		"execa": "^9.6.0",
+		"find-up-simple": "^1.0.1",
+		"graphql": "^16.11.0",
 		"purify-ts": "^2.1.2"
 	}
 }

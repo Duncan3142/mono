@@ -1,6 +1,6 @@
 // @ts-expect-error -- Package lacks types
 import promise from "eslint-plugin-promise"
-import { compose, filePatterns, jstsExtensions, type Config, type Configs } from "./core.ts"
+import { compose, filePatterns, FILE_EXTENSIONS, type Config, type Configs } from "./core.ts"
 
 const custom: Config = {
 	name: "@duncan3142/eslint-config/promise/custom",
@@ -11,7 +11,7 @@ const custom: Config = {
 
 const config: Configs = compose({
 	name: "@duncan3142/eslint-config/promise",
-	files: filePatterns(...jstsExtensions),
+	files: filePatterns(...FILE_EXTENSIONS.JSTS),
 	// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Package lacks types
 	extends: [
 		// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Package lacks types

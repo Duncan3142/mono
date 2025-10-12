@@ -1,118 +1,110 @@
 {
-	"folders": [
-		{
-			"name": "/",
-			"path": "."
-		},
-		{
-			"name": ".devcontainer",
-			"path": ".devcontainer"
-		},
-		{
-			"name": "workflows",
-			"path": ".github/workflows"
-		},
-		{
-			"name": "actions/gh-cli",
-			"path": "actions/gh-cli"
-		},
-		{
-			"name": "actions/common-env",
-			"path": "actions/common-env"
-		},
-		{
-			"name": "actions/npm-ci",
-			"path": "actions/npm-ci"
-		},
-		{
-			"name": "actions/npm-pkg-cd",
-			"path": "actions/npm-pkg-cd"
-		},
-		{
-			"name": "actions/volta",
-			"path": "actions/volta"
-		},
-		{
-			"name": "tools/git",
-			"path": "tools/git"
-		},
-		{
-			"name": "tools/github",
-			"path": "tools/github"
-		},
-		{
-			"name": "tools/npm",
-			"path": "tools/npm",
-		},
-		{
-			"name": "apps/solid-squared/ui",
-			"path": "apps/solid-squared/ui",
-		},
-		{
-			"name": "apps/solid-squared/api",
-			"path": "apps/solid-squared/api",
-		},
-		{
-			"name": "pkgs/solid-squared/graphql",
-			"path": "pkgs/solid-squared/graphql",
-		},
-		{
-			"name": "pkgs/effect",
-			"path": "pkgs/effect"
-		},
-		{
-			"name": "pkgs/git-tools",
-			"path": "pkgs/git-tools"
-		},
-		{
-			"name": "pkgs/github-tools",
-			"path": "pkgs/github-tools"
-		},
-		{
-			"name": "pkgs/npm-tools",
-			"path": "pkgs/npm-tools",
-		},
-		{
-			"name": "pkgs/eslint-config",
-			"path": "pkgs/eslint-config"
-		},
-		{
-			"name": "pkgs/prettier-config",
-			"path": "pkgs/prettier-config"
-		},
-		{
-			"name": "pkgs/tsc-config",
-			"path": "pkgs/tsc-config"
-		}
-	],
-	"settings": {
-		"files.exclude": {
-			"**/.git": true,
-			"**/.svn": true,
-			"**/.hg": true,
-			"**/CVS": true,
-			"**/.DS_Store": true,
-			"**/Thumbs.db": true,
-			".github/": false,
-			"actions/": false,
-			"apps/": false,
-			"infra/": false,
-			"libs/": false,
-			"pkgs/": false,
-			"shell": false,
-			"tools/": false,
-			".prettier/": false,
-			"node_modules/": false,
-			".tsc/": false
-		},
-		"explorerExclude.backup": {},
-		"editor.insertSpaces": false,
-		"postman.settings.dotenv-detection-notification-visibility": false,
-		"files.watcherExclude": {
-			"**/.git/objects/**": true,
-			"**/.git/subtree-cache/**": true,
-			"**/.hg/store/**": true,
-			"**/node_modules/**": true
-		}
-	},
+  "folders": [
+    {
+      "name": "/",
+      "path": ".",
+    },
+    {
+      "name": ".devcontainer",
+      "path": ".devcontainer",
+    },
+    {
+      "name": "workflows",
+      "path": ".github/workflows",
+    },
+    {
+      "name": "actions/gh-cli",
+      "path": "actions/gh-cli",
+    },
+    {
+      "name": "actions/common-env",
+      "path": "actions/common-env",
+    },
+    {
+      "name": "actions/npm-ci",
+      "path": "actions/npm-ci",
+    },
+    {
+      "name": "actions/npm-pkg-cd",
+      "path": "actions/npm-pkg-cd",
+    },
+    {
+      "name": "actions/volta",
+      "path": "actions/volta",
+    },
+    {
+      "name": "tools/git",
+      "path": "tools/git",
+    },
+    {
+      "name": "tools/github",
+      "path": "tools/github",
+    },
+    {
+      "name": "tools/npm",
+      "path": "tools/npm",
+    },
+    {
+      "name": "pkgs/fronting/graphql",
+      "path": "pkgs/fronting/graphql",
+    },
+    {
+      "name": "pkgs/effect",
+      "path": "pkgs/effect",
+    },
+    {
+      "name": "pkgs/git-tools",
+      "path": "pkgs/git-tools",
+    },
+    {
+      "name": "pkgs/github-tools",
+      "path": "pkgs/github-tools",
+    },
+    {
+      "name": "pkgs/npm-tools",
+      "path": "pkgs/npm-tools",
+    },
+    {
+      "name": "pkgs/eslint-config",
+      "path": "pkgs/eslint-config",
+    },
+    {
+      "name": "pkgs/prettier-config",
+      "path": "pkgs/prettier-config",
+    },
+    {
+      "name": "pkgs/tsc-config",
+      "path": "pkgs/tsc-config",
+    },
+  ],
+  "settings": {
+    "files.exclude": {
+      "**/.git": true,
+      "**/.svn": true,
+      "**/.hg": true,
+      "**/CVS": true,
+      "**/.DS_Store": true,
+      "**/Thumbs.db": true,
+      ".github/": false,
+      "actions/": false,
+      "apps/": false,
+      "infra/": false,
+      "libs/": false,
+      "pkgs/": false,
+      "shell": false,
+      "tools/": false,
+      ".prettier/": false,
+      "node_modules/": false,
+      ".tsc/": false,
+    },
+    "explorerExclude.backup": {},
+    "editor.insertSpaces": false,
+    "postman.settings.dotenv-detection-notification-visibility": false,
+    "files.watcherExclude": {
+      "**/.git/objects/**": true,
+      "**/.git/subtree-cache/**": true,
+      "**/.hg/store/**": true,
+      "**/node_modules/**": true,
+    },
+  },
 }
