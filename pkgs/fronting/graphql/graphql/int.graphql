@@ -1,0 +1,19 @@
+"""
+Int comparison operator
+"""
+enum IntComparisonOperator {
+	EQ
+	NE
+	GT
+	GTE
+	LT
+	LTE
+}
+
+"""
+Int comparison input
+"""
+input IntComparisonInput {
+	value: Int!
+	operator: IntComparisonOperator!
+}

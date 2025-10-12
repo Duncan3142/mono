@@ -1,0 +1,52 @@
+"""
+User game edge
+"""
+type UserGameEdge {
+	node: Game!
+	topScore: Int
+	cursor: String!
+}
+
+"""
+User game connection
+"""
+type UserGameConnection {
+	edges: [UserGameEdge!]!
+	pageInfo: PageInfo!
+}
+
+"""
+User game order
+"""
+input UserGameSortOrderInput @oneOf {
+	name: SortOrder
+	topScore: SortOrder
+}
+
+"""
+User game filter leaf
+"""
+input UserGameFilterLeafInput @oneOf {
+	name: StringComparisonInput
+	topScore: IntComparisonInput
+}
+
+"""
+User game filter
+"""
+input UserGameFilterInput @oneOf {
+	and: [UserGameFilterInput!]
+	or: [UserGameFilterInput!]
+	match: UserGameFilterLeafInput
+}
+
+extend type User {
+	"""
+	Get games
+	"""
+	games(
+		cursor: CursorInput
+		order: [UserGameSortOrderInput!]
+		filter: [UserGameFilterInput!]
+	): UserGameConnection!
+}

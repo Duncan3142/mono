@@ -1,0 +1,65 @@
+"""
+Game node
+"""
+type Game implements Node {
+	urn: URN!
+	name: String!
+	topScore: Int
+}
+
+"""
+Game edge
+"""
+type GameEdge {
+	node: Game!
+	cursor: String!
+}
+
+"""
+Game connection
+"""
+type GameConnection {
+	edges: [GameEdge!]!
+	pageInfo: PageInfo!
+}
+
+"""
+Game order
+"""
+input GameSortOrderInput @oneOf {
+	name: SortOrder
+	topScore: SortOrder
+}
+
+"""
+Game filter leaf
+"""
+input GameFilterLeafInput @oneOf {
+	name: StringComparisonInput
+	topScore: IntComparisonInput
+}
+
+"""
+Game filter
+"""
+input GameFilterInput @oneOf {
+	and: [GameFilterInput!]
+	or: [GameFilterInput!]
+	match: GameFilterLeafInput
+}
+
+extend type Query {
+	"""
+	Get a game by URN
+	"""
+	game(urn: URN!): Game!
+
+	"""
+	Get games
+	"""
+	games(
+		cursor: CursorInput
+		order: [GameSortOrderInput!]
+		filter: GameFilterInput
+	): GameConnection!
+}
