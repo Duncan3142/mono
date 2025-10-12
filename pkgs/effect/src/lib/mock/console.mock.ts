@@ -1,13 +1,13 @@
 /* eslint-disable @typescript-eslint/no-empty-function -- Mock */
-import { type Console, Effect } from "effect"
-import { mockDeep, type DeepMockProxy } from "vitest-mock-extended"
+import { Console, Effect } from "effect"
 
 /**
  * Creates a mocked Console instance.
  * @returns A mocked Console instance.
  */
-const make = (): DeepMockProxy<Console.Console> => {
-	const mock = mockDeep<Console.Console>({
+const make = (): Console.Console => {
+	return {
+		[Console.TypeId]: Console.TypeId,
 		log: () => Effect.void,
 		info: () => Effect.void,
 		error: () => Effect.void,
@@ -47,8 +47,7 @@ const make = (): DeepMockProxy<Console.Console> => {
 			clear: () => {},
 			groupCollapsed: () => {},
 		},
-	})
-	return mock
+	}
 }
 
 export { make }

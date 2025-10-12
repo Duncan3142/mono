@@ -57,9 +57,9 @@
 	},
 	"devDependencies": {
 		"@changesets/cli": "^2.29.7",
-		"@duncan3142/eslint-config": "^0.1.18",
-		"@duncan3142/prettier-config": "^0.1.8",
-		"@duncan3142/tsc-config": "^0.1.11",
+		"@duncan3142/eslint-config": "^0.1.19",
+		"@duncan3142/prettier-config": "^0.1.9",
+		"@duncan3142/tsc-config": "^0.1.12",
 		"@effect/language-service": "^0.44.0",
 		"@effect/platform-node": "^0.98.3",
 		"@effect/vitest": "^0.26.0",
@@ -69,8 +69,7 @@
 		"prettier": "^3.6.2",
 		"typescript": "^5.9.3",
 		"vite-tsconfig-paths": "^5.1.4",
-		"vitest": "^3.2.4",
-		"vitest-mock-extended": "^3.1.0"
+		"vitest": "^3.2.4"
 	},
 	"volta": {
 		"node": "22.20.0",
