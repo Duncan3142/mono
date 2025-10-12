@@ -3,10 +3,7 @@ import { createTypeScriptImportResolver } from "eslint-import-resolver-typescrip
 import {
 	compose,
 	filePatterns,
-	jsExtensions,
-	jsonExtensions,
-	jstsExtensions,
-	nodeExtensions,
+	FILE_EXTENSIONS,
 	type Config,
 	type Configs,
 	type Parser,
@@ -19,7 +16,7 @@ const TS_CONFIG_DEFAULT: Path = "tsconfig.json"
 
 const parser: Parser = tseslint.parser
 
-const extraExtensions: Patterns = [...jsonExtensions, ...nodeExtensions]
+const extraExtensions: Patterns = [...FILE_EXTENSIONS.JSON, ...FILE_EXTENSIONS.NODE]
 
 const custom: (guard: LintLevel.Guards) => Config = (guard) => {
 	return {
@@ -37,7 +34,7 @@ const custom: (guard: LintLevel.Guards) => Config = (guard) => {
 				createTypeScriptImportResolver({
 					alwaysTryTypes: true,
 					project: TS_CONFIG_DEFAULT,
-					extensions: [...jstsExtensions, ...extraExtensions],
+					extensions: [...FILE_EXTENSIONS.JSTS, ...extraExtensions],
 				}),
 			],
 		},
@@ -115,7 +112,7 @@ const custom: (guard: LintLevel.Guards) => Config = (guard) => {
 const typed: (guard: LintLevel.Guards) => Configs = (guard) =>
 	compose({
 		name: "@duncan3142/eslint-config/typescipt",
-		files: filePatterns(...jstsExtensions),
+		files: filePatterns(...FILE_EXTENSIONS.JSTS),
 		extends: [
 			tseslint.configs.strictTypeChecked,
 			tseslint.configs.stylisticTypeChecked,
@@ -125,7 +122,7 @@ const typed: (guard: LintLevel.Guards) => Configs = (guard) =>
 
 const untyped: Configs = compose({
 	name: "@duncan3142/eslint-config/untyped",
-	files: filePatterns(...jsExtensions),
+	files: filePatterns(...FILE_EXTENSIONS.JSTS),
 	extends: [tseslint.configs.disableTypeChecked],
 	rules: {
 		"@typescript-eslint/prefer-readonly": "off",

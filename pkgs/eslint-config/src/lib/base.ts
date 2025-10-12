@@ -1,5 +1,5 @@
 import eslintjs from "@eslint/js"
-import { compose, filePatterns, jstsExtensions, type Config, type Configs } from "./core.ts"
+import { compose, filePatterns, FILE_EXTENSIONS, type Config, type Configs } from "./core.ts"
 
 const custom: Config = {
 	name: "@duncan3142/eslint-config/base/custom",
@@ -45,7 +45,7 @@ const custom: Config = {
 
 const config: Configs = compose({
 	name: "@duncan3142/eslint-config/base",
-	files: filePatterns(...jstsExtensions),
+	files: filePatterns(...FILE_EXTENSIONS.JSTS),
 	extends: [eslintjs.configs.recommended, custom],
 })
 

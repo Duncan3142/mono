@@ -1,5 +1,5 @@
-import jsdoc from "eslint-plugin-jsdoc"
-import { compose, filePatterns, jstsExtensions, type Config, type Configs } from "./core.ts"
+import jsDoc from "eslint-plugin-jsdoc"
+import { compose, filePatterns, FILE_EXTENSIONS, type Config, type Configs } from "./core.ts"
 
 const custom: Config = {
 	name: "@duncan3142/eslint-config/jsdoc/custom",
@@ -33,8 +33,8 @@ const custom: Config = {
 
 const config: Configs = compose({
 	name: "@duncan3142/eslint-config/jsdoc",
-	files: filePatterns(...jstsExtensions),
-	extends: [jsdoc.configs["flat/recommended-typescript-error"], custom],
+	files: filePatterns(...FILE_EXTENSIONS.JSTS),
+	extends: [jsDoc.configs["flat/recommended-typescript-error"], custom],
 })
 
 export { config }
