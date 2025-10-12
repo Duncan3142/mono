@@ -122,7 +122,7 @@ const typed: (guard: LintLevel.Guards) => Configs = (guard) =>
 
 const untyped: Configs = compose({
 	name: "@duncan3142/eslint-config/untyped",
-	files: filePatterns(...FILE_EXTENSIONS.JSTS),
+	files: filePatterns(...FILE_EXTENSIONS.JS),
 	extends: [tseslint.configs.disableTypeChecked],
 	rules: {
 		"@typescript-eslint/prefer-readonly": "off",
