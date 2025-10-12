@@ -14,8 +14,14 @@ import { CommandTimeout, CommandFailed } from "./command.error.ts"
 
 type ErrorCode = number
 
+interface ErrorMatcherProps {
+	readonly exitCode: ErrorCode
+	readonly command: string
+	readonly args: ReadonlyArray<string>
+}
+
 type ErrorMatcher<ECode extends ErrorCode, Error extends Cause.YieldableError> = (
-	ecode: ErrorCode
+	props: ErrorMatcherProps
 ) => Match.Matcher<
 	ErrorCode,
 	Match.Types.Without<ECode>,
@@ -87,7 +93,7 @@ const make = <ECode extends ErrorCode = never, Error extends Cause.YieldableErro
 					Effect.flatMap((code) =>
 						code === SUCCESS_CODE
 							? Effect.void
-							: errorMatcher(code).pipe(
+							: errorMatcher({ args, command, exitCode: code }).pipe(
 									Match.orElse((errCode) =>
 										Effect.fail(
 											new CommandFailed({
@@ -125,4 +131,4 @@ const make = <ECode extends ErrorCode = never, Error extends Cause.YieldableErro
 }
 
 export { make }
-export type { ErrorCode, Arguments }
+export type { ErrorCode, Arguments, ErrorMatcher, ErrorMatcherProps }
