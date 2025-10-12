@@ -1,5 +1,11 @@
 # @duncan3142/eslint-config
 
+## 0.1.20
+
+### Patch Changes
+
+- a567c4f: update deps
+
 ## 0.1.19
 
 ### Patch Changes
