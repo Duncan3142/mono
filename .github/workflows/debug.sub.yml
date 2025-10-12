@@ -26,7 +26,7 @@ jobs:
       - name: CLI Auth
         uses: Duncan3142/mono/actions/gh-cli@main
         with:
-          token: ${{ secrets.GHA_PAT }}
+          token: ${{ secrets.GITHUB_TOKEN }}
       - name: Env vars
         uses: Duncan3142/mono/actions/common-env@main
       - name: Git scripts
