@@ -19,7 +19,7 @@ env:
 
 jobs:
   cd:
-    name: Debug
+    name: Sub Debug
     environment: GitHub
     runs-on: ubuntu-22.04
     steps:
