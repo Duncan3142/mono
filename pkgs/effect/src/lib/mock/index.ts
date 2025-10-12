@@ -1,4 +1,4 @@
-export * as MockConfigProvider from "./config-provider.mock.js"
+export * as MockWithConfigProvider from "./with-config-provider.mock.js"
 export * as MockConsole from "./console.mock.js"
 export * as MockLogger from "./logger.mock.js"
 export * as MockOtel from "./otel.mock.js"
