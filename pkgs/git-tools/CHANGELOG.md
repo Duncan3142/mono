@@ -1,5 +1,11 @@
 # @duncan3142/git-tools
 
+## 0.1.5
+
+### Patch Changes
+
+- a567c4f: update deps
+
 ## 0.1.4
 
 ### Patch Changes
