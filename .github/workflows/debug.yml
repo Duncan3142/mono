@@ -30,3 +30,4 @@ jobs:
   sub:
     name: Sub Debug
     uses: ./.github/workflows/debug.sub.yml
+    secrets: inherit
