@@ -1,5 +1,11 @@
 # @duncan3142/git-tools
 
+## 0.1.4
+
+### Patch Changes
+
+- 4fca327: remove vitest mock extended
+
 ## 0.1.3
 
 ### Patch Changes
