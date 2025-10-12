@@ -10,7 +10,7 @@
 	},
 	"description": "TypeScript config",
 	"keywords": [],
-	"version": "0.1.12",
+	"version": "0.1.13",
 	"author": "Duncan Giles",
 	"type": "module",
 	"license": "LGPL-3.0-or-later",
