@@ -10,7 +10,7 @@
 	},
 	"description": "Git tools",
 	"keywords": [],
-	"version": "0.1.2",
+	"version": "0.1.3",
 	"author": "Duncan Giles",
 	"type": "module",
 	"license": "LGPL-3.0-or-later",
