@@ -1,7 +1,7 @@
 import { describe, it, expect } from "@effect/vitest"
 import { ConfigError, Duration, Effect, Exit, pipe } from "effect"
 import { CoreConfig } from "#duncan3142/effect/lib/config"
-import { MockConsole, MockConfigProvider } from "#duncan3142/effect/lib/mock"
+import { MockConsole, MockWithConfigProvider } from "#duncan3142/effect/lib/mock"
 
 const mockConsole = MockConsole.make()
 
@@ -12,7 +12,7 @@ describe("CoreConfig", () => {
 				CoreConfig.CoreConfig,
 				Effect.provide(CoreConfig.Default),
 				Effect.withConsole(mockConsole),
-				MockConfigProvider.make([["EFFECT.SERVICE.NAME", "test_service"]])
+				MockWithConfigProvider.make([["EFFECT.SERVICE.NAME", "test_service"]])
 			)
 
 			expect(config).toMatchObject({ otel: {}, service: { name: "test_service" } })
@@ -24,7 +24,7 @@ describe("CoreConfig", () => {
 				CoreConfig.CoreConfig,
 				Effect.provide(CoreConfig.Default),
 				Effect.withConsole(mockConsole),
-				MockConfigProvider.make([
+				MockWithConfigProvider.make([
 					["EFFECT.SERVICE.NAME", "test_service"],
 					["EFFECT.SERVICE.VERSION", "1.0.0"],
 					["EFFECT.OTEL.URL", "http://example.com"],
@@ -56,7 +56,7 @@ describe("CoreConfig", () => {
 					CoreConfig.CoreConfig,
 					Effect.provide(CoreConfig.Default),
 					Effect.withConsole(mockConsole),
-					MockConfigProvider.make([
+					MockWithConfigProvider.make([
 						["EFFECT.OTEL.URL", "bad"],
 						["EFFECT.OTEL.DELAY", "wrong"],
 						["EFFECT.OTEL.SHUTDOWN_TIMEOUT", "invalid"],

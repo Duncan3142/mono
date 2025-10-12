@@ -7,28 +7,13 @@ on:
       - ".github/workflows/pkgs.git-tools.cd.yml"
       - "pkgs/git-tools/**"
 
-concurrency:
-  group: ${{ github.workflow }}
-  cancel-in-progress: false
-
 permissions:
   packages: write
   contents: read
 
-env:
-  GH_PKG_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  MONO_WORK_DIR: ${{ vars.GIT_TOOLS_DIR }}
-  SEMVER_BRANCH_PREFIX: ${{ vars.SEMVER_BRANCH_PREFIX }}
-  MONO_LOG_LEVEL: debug
-  EVENT_BRANCH: ${{ github.ref_name }}
-
 jobs:
   cd:
-    name: CD
-    environment: GitHub
-    runs-on: ubuntu-22.04
-    steps:
-      - name: CD
-        uses: Duncan3142/mono/actions/npm-pkg-cd@main
-        with:
-          token: ${{ secrets.GHA_PAT }}
+    name: Git Tools CD
+    uses: ./.github/workflows/generic.pkgs.cd.yml
+    with:
+      working-directory: ${{ vars.GIT_TOOLS_DIR }}

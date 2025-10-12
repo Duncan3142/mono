@@ -7,28 +7,13 @@ on:
       - ".github/workflows/pkgs.effect.cd.yml"
       - "pkgs/effect/**"
 
-concurrency:
-  group: ${{ github.workflow }}
-  cancel-in-progress: false
-
 permissions:
   packages: write
   contents: read
 
-env:
-  GH_PKG_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  MONO_WORK_DIR: ${{ vars.EFFECT_DIR }}
-  SEMVER_BRANCH_PREFIX: ${{ vars.SEMVER_BRANCH_PREFIX }}
-  MONO_LOG_LEVEL: debug
-  EVENT_BRANCH: ${{ github.ref_name }}
-
 jobs:
   cd:
-    name: CD
-    environment: GitHub
-    runs-on: ubuntu-22.04
-    steps:
-      - name: CD
-        uses: Duncan3142/mono/actions/npm-pkg-cd@main
-        with:
-          token: ${{ secrets.GHA_PAT }}
+    name: Effect CD
+    uses: ./.github/workflows/generic.pkgs.cd.yml
+    with:
+      working-directory: ${{ vars.EFFECT_DIR }}

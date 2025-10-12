@@ -1,4 +1,4 @@
-name: Package CD
+name: Generic Package CD
 
 on:
   workflow_call:
@@ -14,18 +14,17 @@ on:
         required: false
         type: string
         default: main
-    secrets:
-      github-package-token:
-        required: true
-      github-repo-token:
-        required: true
+
+permissions:
+  packages: write
+  contents: read
 
 concurrency:
   group: "${{ inputs.working-directory }}_CD"
   cancel-in-progress: false
 
 env:
-  GH_PKG_TOKEN: ${{ secrets.github-package-token }}
+  GH_PKG_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   MONO_WORK_DIR: ${{ inputs.working-directory }}
   SEMVER_BRANCH_PREFIX: ${{ vars.SEMVER_BRANCH_PREFIX }}
   MONO_LOG_LEVEL: ${{ inputs.log-level }}
@@ -40,4 +39,4 @@ jobs:
       - name: CD
         uses: Duncan3142/mono/actions/npm-pkg-cd@main
         with:
-          token: ${{ secrets.github-repo-token }}
+          token: ${{ secrets.GHA_PAT }}

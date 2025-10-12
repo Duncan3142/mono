@@ -1,6 +1,16 @@
-import { type Duration, Effect, Array, Either, Deferred, Ref, Stream, pipe, Sink } from "effect"
+import {
+	type Duration,
+	Effect,
+	Array,
+	Either,
+	Deferred,
+	Ref,
+	Stream,
+	pipe,
+	Sink,
+	Inspectable,
+} from "effect"
 import { type Command, type Error as PlatformError, CommandExecutor } from "@effect/platform"
-import { mockDeep } from "vitest-mock-extended"
 
 interface MockProcessProps {
 	readonly delay: Duration.DurationInput
@@ -25,19 +35,19 @@ interface MockProcessProps {
 const make = ({ delay, result }: MockProcessProps): Effect.Effect<CommandExecutor.Process> =>
 	Either.match(result, {
 		onLeft: (err) =>
-			Effect.succeed(
-				mockDeep<CommandExecutor.Process>({
-					isRunning: Effect.succeed(false),
-					exitCode: Effect.fail(err),
-					stdout: Stream.fail(err),
-					stderr: Stream.fail(err),
-					kill: () => Effect.void,
-					pid: CommandExecutor.ProcessId(1),
-					toJSON: () => null,
-					toString: () => "[MockProcess]",
-					stdin: Sink.succeed([]),
-				})
-			),
+			Effect.succeed({
+				[CommandExecutor.ProcessTypeId]: CommandExecutor.ProcessTypeId,
+				[Inspectable.NodeInspectSymbol]: () => null,
+				isRunning: Effect.succeed(false),
+				exitCode: Effect.fail(err),
+				stdout: Stream.fail(err),
+				stderr: Stream.fail(err),
+				kill: () => Effect.void,
+				pid: CommandExecutor.ProcessId(1),
+				toJSON: () => null,
+				toString: () => "[MockProcess]",
+				stdin: Sink.succeed([]),
+			} satisfies CommandExecutor.Process),
 		onRight: ({ exitCode: exitCodeNumber, stdOutLines, stdErrLines }) =>
 			Effect.gen(function* () {
 				const isRunningRef = yield* Ref.make(true)
@@ -71,7 +81,9 @@ const make = ({ delay, result }: MockProcessProps): Effect.Effect<CommandExecuto
 				const stdout = lineToByteStream(stdOutLines)
 				const stderr = lineToByteStream(stdErrLines)
 
-				return mockDeep<CommandExecutor.Process>({
+				return {
+					[CommandExecutor.ProcessTypeId]: CommandExecutor.ProcessTypeId,
+					[Inspectable.NodeInspectSymbol]: () => null,
 					isRunning,
 					exitCode,
 					stdout,
@@ -81,7 +93,7 @@ const make = ({ delay, result }: MockProcessProps): Effect.Effect<CommandExecuto
 					toJSON: () => null,
 					toString: () => "[MockProcess]",
 					stdin: Sink.succeed([]),
-				})
+				} satisfies CommandExecutor.Process
 			}),
 	})
 
