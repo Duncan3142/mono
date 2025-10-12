@@ -15,5 +15,6 @@ jobs:
   cd:
     name: Prettier Config CD
     uses: ./.github/workflows/generic.pkgs.cd.yml
+    secrets: inherit
     with:
       working-directory: ${{ vars.PRETTIER_CONFIG_DIR }}

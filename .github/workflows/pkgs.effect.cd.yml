@@ -15,5 +15,6 @@ jobs:
   cd:
     name: Effect CD
     uses: ./.github/workflows/generic.pkgs.cd.yml
+    secrets: inherit
     with:
       working-directory: ${{ vars.EFFECT_DIR }}

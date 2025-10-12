@@ -15,5 +15,6 @@ jobs:
   cd:
     name: Git Tools CD
     uses: ./.github/workflows/generic.pkgs.cd.yml
+    secrets: inherit
     with:
       working-directory: ${{ vars.GIT_TOOLS_DIR }}

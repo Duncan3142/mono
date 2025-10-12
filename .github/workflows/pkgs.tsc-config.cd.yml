@@ -15,5 +15,6 @@ jobs:
   cd:
     name: TypeScript Config CD
     uses: ./.github/workflows/generic.pkgs.cd.yml
+    secrets: inherit
     with:
       working-directory: ${{ vars.TSC_CONFIG_DIR }}

@@ -1,16 +1,25 @@
-name: Debug Workflow
+name: Sub Debug Workflow
 
 on:
-  push:
-    branches: [debug-workflow]
+  workflow_call:
 
 permissions:
   packages: write
   contents: read
 
+concurrency:
+  group: debug-workflow
+  cancel-in-progress: true
+
+env:
+  GH_PKG_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  MONO_WORK_DIR: ".github/workflows"
+  MONO_LOG_LEVEL: debug
+  EVENT_BRANCH: debug-workflow
+
 jobs:
-  debug:
-    name: Debug
+  cd:
+    name: Sub Debug
     environment: GitHub
     runs-on: ubuntu-22.04
     steps:
@@ -27,7 +36,3 @@ jobs:
         uses: Duncan3142/mono/actions/gh-cli@main
         with:
           token: ${{ secrets.GHA_PAT }}
-  sub:
-    name: Sub Debug
-    uses: ./.github/workflows/debug.sub.yml
-    secrets: inherit
