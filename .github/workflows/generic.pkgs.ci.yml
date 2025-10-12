@@ -1,4 +1,4 @@
-name: Package CI
+name: Generic Package CI
 
 on:
   workflow_call:
