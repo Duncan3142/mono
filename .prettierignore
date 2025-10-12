@@ -1,6 +1,9 @@
 # Directories
 */
 
+# Dev Container
+!.devcontainer/
+
 # GitHub
 !.github/
 
