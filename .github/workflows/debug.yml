@@ -9,6 +9,24 @@ permissions:
   contents: read
 
 jobs:
-  cd:
+  debug:
     name: Debug
+    environment: GitHub
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Debug Available Secrets
+        run: echo "${{ toJSON(secrets) }}"
+      - name: Check if secret is set
+        if: ${{ env.AUTH_TOKEN == '' }}
+        run: |
+          echo "AUTH_TOKEN is empty or not set."
+          exit 1
+        env:
+          AUTH_TOKEN: ${{ secrets.GHA_PAT }}
+      - name: CLI Auth
+        uses: Duncan3142/mono/actions/gh-cli@main
+        with:
+          token: ${{ secrets.GHA_PAT }}
+  sub:
+    name: Sub Debug
     uses: ./.github/workflows/debug.sub.yml
