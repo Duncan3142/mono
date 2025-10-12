@@ -1,5 +1,11 @@
 # @duncan3142/effect
 
+## 0.1.3
+
+### Patch Changes
+
+- 6abb6f7: update deps
+
 ## 0.1.2
 
 ### Patch Changes
