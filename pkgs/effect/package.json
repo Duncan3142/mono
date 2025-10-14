@@ -26,8 +26,10 @@
 		"#duncan3142/effect/lib/const": "./.tsc/dist/lib/const/index.js",
 		"#duncan3142/effect/lib/mock": "./.tsc/dist/lib/mock/index.js",
 		"#duncan3142/effect/lib/otel": "./.tsc/dist/lib/otel/index.js",
+		"#duncan3142/effect/lib/process": "./.tsc/dist/lib/process/index.js",
 		"#duncan3142/effect/lib/tag": "./.tsc/dist/lib/tag/index.js",
 		"#duncan3142/effect/lib/telemetry": "./.tsc/dist/lib/telemetry/index.js",
+		"#duncan3142/effect/lib/temp": "./.tsc/dist/lib/temp/index.js",
 		"#duncan3142/effect/lib/exhaustive": "./.tsc/dist/lib/exhaustive.js",
 		"#duncan3142/effect/lib/type": "./.tsc/dist/lib/type.js"
 	},

@@ -6,7 +6,6 @@ import {
 	Effect,
 	Stream,
 	pipe,
-	Console,
 	Match,
 	Option,
 } from "effect"
@@ -30,12 +29,24 @@ type ErrorMatcher<ECode extends ErrorCode, Error extends Cause.YieldableError> =
 	ErrorCode
 >
 
-interface Arguments<ECode extends ErrorCode, Error extends Cause.YieldableError> {
+type StdPipe<Out> = (
+	// eslint-disable-next-line @typescript-eslint/prefer-readonly-parameter-types -- Effect type
+	input: Stream.Stream<Uint8Array, CommandFailed>
+) => Stream.Stream<Out, CommandFailed>
+
+interface Arguments<
+	StdOut,
+	StdErr,
+	ECode extends ErrorCode,
+	Error extends Cause.YieldableError,
+> {
+	readonly directory: string
 	readonly command: string
 	readonly args: ReadonlyArray<string>
-	readonly directory: string
 	readonly timeout: Duration.DurationInput
 	readonly errorMatcher: ErrorMatcher<ECode, Error>
+	readonly stdoutPipe: StdPipe<StdOut>
+	readonly stderrPipe: StdPipe<StdErr>
 }
 
 const SUCCESS_CODE = 0
@@ -43,21 +54,30 @@ const SUCCESS_CODE = 0
 /**
  * Factory function to create a command executor.
  * @param args - The arguments for the command executor.
+ * @param args.directory - The working directory for the command.
  * @param args.command - The command to run (e.g., "git").
  * @param args.args - The command arguments.
- * @param args.directory - The working directory for the command.
  * @param args.timeout - The timeout for the command execution.
  * @param args.errorMatcher - A matcher to handle specific error codes.
+ * @param args.stdoutPipe - A function to process the standard output stream.
+ * @param args.stderrPipe - A function to process the standard error stream.
  * @returns An effect that executes the command.
  */
-const make = <ECode extends ErrorCode = never, Error extends Cause.YieldableError = never>({
+const make = <
+	StdOut = never,
+	StdErr = never,
+	ECode extends ErrorCode = never,
+	Error extends Cause.YieldableError = never,
+>({
+	directory,
 	command,
 	args,
-	directory,
 	timeout,
 	errorMatcher,
-}: Arguments<ECode, Error>): Effect.Effect<
-	Stream.Stream<string, CommandFailed | CommandTimeout | Error>,
+	stdoutPipe,
+	stderrPipe,
+}: Arguments<StdOut, StdErr, ECode, Error>): Effect.Effect<
+	Stream.Stream<StdOut | StdErr, CommandFailed | CommandTimeout | Error>,
 	CommandFailed,
 	CommandExecutor.CommandExecutor | Scope.Scope
 > => {
@@ -109,21 +129,23 @@ const make = <ECode extends ErrorCode = never, Error extends Cause.YieldableErro
 				.pipe(Stream.fromEffect, Stream.drain)
 
 			const stderrStream = stderr.pipe(
-				Stream.decodeText(),
-				Stream.splitLines,
-				Stream.tap(Console.error),
-				Stream.drain
+				Stream.mapError(errorHandler),
+				stderrPipe
+				// Stream.decodeText(),
+				// Stream.splitLines,
+				// Stream.tap(Console.error),
+				// Stream.drain
 			)
 
 			const stdoutStream = stdout.pipe(
-				Stream.decodeText(),
-				Stream.splitLines,
-				Stream.tap(Console.log)
+				Stream.mapError(errorHandler),
+				stdoutPipe
+				// Stream.decodeText(),
+				// Stream.splitLines,
+				// Stream.tap(Console.log)
 			)
 
-			const stdStream = Stream.merge(stdoutStream, stderrStream).pipe(
-				Stream.mapError(errorHandler)
-			)
+			const stdStream = Stream.merge(stdoutStream, stderrStream)
 
 			return Effect.succeed(Stream.concat(stdStream, exitCodeStream))
 		})
