@@ -13,8 +13,7 @@
 			"#duncan3142/git-tools/core/state": ["./src/core/state/index.ts"],
 			"#duncan3142/git-tools/core/telemetry": ["./src/core/telemetry/index.ts"],
 			"#duncan3142/git-tools/core": ["./src/core/index.ts"],
-			"#duncan3142/git-tools/git": ["./src/git/index.ts"],
-			"#duncan3142/git-tools/test/setup": ["./test/setup/index.ts"]
+			"#duncan3142/git-tools/git": ["./src/git/index.ts"]
 		},
 		"isolatedDeclarations": false,
 		"plugins": [
