@@ -10,24 +10,7 @@ import {
 	Option,
 } from "effect"
 import { CommandTimeout, CommandFailed } from "./command.error.ts"
-
-type ErrorCode = number
-
-interface ErrorMatcherProps {
-	readonly exitCode: ErrorCode
-	readonly command: string
-	readonly args: ReadonlyArray<string>
-}
-
-type ErrorMatcher<ECode extends ErrorCode, Error extends Cause.YieldableError> = (
-	props: ErrorMatcherProps
-) => Match.Matcher<
-	ErrorCode,
-	Match.Types.Without<ECode>,
-	ErrorCode,
-	Effect.Effect<never, Error>,
-	ErrorCode
->
+import type { ErrorCode, ErrorMatcher } from "./error-matcher.ts"
 
 type StdPipe<Out> = (
 	// eslint-disable-next-line @typescript-eslint/prefer-readonly-parameter-types -- Effect type
@@ -140,4 +123,4 @@ const make = <
 }
 
 export { make }
-export type { ErrorCode, Arguments, StdPipe, ErrorMatcher, ErrorMatcherProps }
+export type { Arguments, StdPipe }
