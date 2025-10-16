@@ -1,5 +1,11 @@
 # @duncan3142/effect
 
+## 0.1.6
+
+### Patch Changes
+
+- 0ce5acf: command test
+
 ## 0.1.5
 
 ### Patch Changes
