@@ -1,7 +1,6 @@
 export * as CheckoutError from "./checkout.error.ts"
 export * as FetchError from "./fetch.error.ts"
 export type * as Fetch from "./fetch.ts"
-export * as GitCommandError from "./git-command.error.ts"
 export * as MergeBaseError from "./merge-base.error.ts"
 export * as ReferenceSpec from "./reference-spec.ts"
 export * as ReferenceSort from "./reference.sort.ts"
