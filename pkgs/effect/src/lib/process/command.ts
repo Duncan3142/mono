@@ -153,4 +153,4 @@ const make = <
 }
 
 export { make }
-export type { ErrorCode, Arguments, ErrorMatcher, ErrorMatcherProps }
+export type { ErrorCode, Arguments, StdPipe, ErrorMatcher, ErrorMatcherProps }
