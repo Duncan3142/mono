@@ -128,22 +128,9 @@ const make = <
 				)
 				.pipe(Stream.fromEffect, Stream.drain)
 
-			const stderrStream = stderr.pipe(
-				Stream.mapError(errorHandler),
-				stderrPipe
-				// Stream.decodeText(),
-				// Stream.splitLines,
-				// Stream.tap(Console.error),
-				// Stream.drain
-			)
+			const stderrStream = stderr.pipe(Stream.mapError(errorHandler), stderrPipe)
 
-			const stdoutStream = stdout.pipe(
-				Stream.mapError(errorHandler),
-				stdoutPipe
-				// Stream.decodeText(),
-				// Stream.splitLines,
-				// Stream.tap(Console.log)
-			)
+			const stdoutStream = stdout.pipe(Stream.mapError(errorHandler), stdoutPipe)
 
 			const stdStream = Stream.merge(stdoutStream, stderrStream)
 
