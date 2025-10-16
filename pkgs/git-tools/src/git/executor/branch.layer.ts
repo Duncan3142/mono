@@ -1,8 +1,9 @@
 import { CommandExecutor } from "@effect/platform"
-import { Layer, Effect, Match, Stream } from "effect"
+import { Layer, Effect, Stream } from "effect"
+import type { CommandError } from "@duncan3142/effect"
 import * as Base from "./base.ts"
 import { BranchExecutor } from "#duncan3142/git-tools/core/executor"
-import { type GitCommandError, BranchMode } from "#duncan3142/git-tools/core/domain"
+import { BranchMode } from "#duncan3142/git-tools/core/domain"
 
 const Live: Layer.Layer<BranchExecutor.BranchExecutor, never, CommandExecutor.CommandExecutor> =
 	Layer.effect(
@@ -18,16 +19,16 @@ const Live: Layer.Layer<BranchExecutor.BranchExecutor, never, CommandExecutor.Co
 				void,
 				CommandError.CommandFailed | CommandError.CommandTimeout
 			> => {
-				const subArgs = BranchMode.$match(mode, {
-					Print: () => ["-a", "-v", "-v"],
+				const args = BranchMode.$match(mode, {
+					Print: () => [Base.NO_PAGER, "-a", "-v", "-v"],
 				})
 				return Base.make({
 					directory,
-					noPager: true,
+
 					command: "branch",
-					subArgs,
+					args,
 					timeout,
-					errorMatcher: Match.value,
+					errorMatcher: Base.errorMatcherNoOp,
 				}).pipe(
 					Effect.andThen(Stream.runDrain),
 					Effect.scoped,

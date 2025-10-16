@@ -1,5 +1,13 @@
 import type { CommandExecutor } from "@effect/platform"
-import { type Effect, type Cause, type Duration, type Scope, Stream, Console } from "effect"
+import {
+	type Effect,
+	type Cause,
+	type Duration,
+	type Scope,
+	Stream,
+	Console,
+	Match,
+} from "effect"
 import { type CommandError, Command } from "@duncan3142/effect"
 
 interface Arguments<ECode extends ErrorCode, Error extends Cause.YieldableError> {
@@ -13,6 +21,15 @@ interface Arguments<ECode extends ErrorCode, Error extends Cause.YieldableError>
 type ErrorCode = number
 
 const NO_PAGER = "--no-pager"
+
+/**
+ * Default error matcher that simply matches on the exit code.
+ * @param args - The arguments containing the exit code.
+ * @param args.exitCode - The exit code of the command.
+ * @returns An effect that matches the exit code.
+ */
+const errorMatcherNoOp: Command.ErrorMatcher<never, never> = ({ exitCode }) =>
+	Match.value(exitCode)
 
 /**
  * Factory function to create a command executor for git commands.
@@ -52,5 +69,5 @@ const make = <ECode extends ErrorCode = never, Error extends Cause.YieldableErro
 			),
 	})
 
-export { make, NO_PAGER }
+export { make, NO_PAGER, errorMatcherNoOp }
 export type { ErrorCode, Arguments }
