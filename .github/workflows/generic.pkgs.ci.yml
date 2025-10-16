@@ -9,6 +9,9 @@ on:
       pr-branch:
         required: true
         type: string
+      pr-meta-json:
+        required: true
+        type: string
       log-level:
         required: false
         type: string
@@ -27,6 +30,7 @@ env:
 jobs:
   ci:
     name: CI
+    if: ${{ fromJSON(inputs.pr-meta-json).state == 'open' && fromJSON(inputs.pr-meta-json).draft == false }}
     runs-on: ubuntu-22.04
     steps:
       - name: CI

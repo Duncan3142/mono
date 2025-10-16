@@ -12,9 +12,9 @@ on:
 
 jobs:
   ci:
-    if: github.event.pull_request.state == 'open' && github.event.pull_request.draft == false
     name: Effect CI
     uses: ./.github/workflows/generic.pkgs.ci.yml
     with:
       working-directory: ${{ vars.EFFECT_DIR }}
       pr-branch: ${{ github.head_ref }}
+      pr-meta-json: ${{ toJson(github.event.pull_request) }}
