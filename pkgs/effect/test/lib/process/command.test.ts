@@ -1,7 +1,7 @@
 import { describe, it, expect } from "@effect/vitest"
 import { FileSystem, Path } from "@effect/platform"
 import { NodeContext } from "@effect/platform-node"
-import { Effect, Match, Stream, Console, Data, pipe } from "effect"
+import { Effect, Match, Stream, Console, Data, pipe, Chunk } from "effect"
 import { Command } from "#duncan3142/effect/lib/process"
 import { TagFactory } from "#duncan3142/effect/internal"
 
@@ -38,7 +38,7 @@ const stat = (dir: string, name: string) =>
 			stdErr.pipe(Stream.decodeText(), Stream.splitLines, Stream.tap(Console.log)),
 		stderrPipe: (stdErr) =>
 			stdErr.pipe(Stream.decodeText(), Stream.splitLines, Stream.tap(Console.error)),
-	})
+	}).pipe(Effect.andThen(Stream.runCollect), Effect.map(Chunk.join("")))
 
 describe("Command", () => {
 	it.scopedLive("should execute successfully", () =>
@@ -54,7 +54,7 @@ describe("Command", () => {
 
 			const result = yield* stat(tmpDir, fileName)
 
-			expect(result).toBe("@namespace/foo/bar/baz")
+			expect(result).toBe("meow")
 		}).pipe(Effect.provide(NodeContext.layer))
 	)
 })
