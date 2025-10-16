@@ -19,7 +19,7 @@ const stat = (dir: string, name: string) =>
 	Command.make({
 		directory: dir,
 		command: "stat",
-		args: [name],
+		args: ["-c", "%n %s", name],
 		timeout: "1 second",
 		errorMatcher: ({ exitCode, command, args }) =>
 			pipe(
@@ -38,7 +38,7 @@ const stat = (dir: string, name: string) =>
 			stdErr.pipe(Stream.decodeText(), Stream.splitLines, Stream.tap(Console.log)),
 		stderrPipe: (stdErr) =>
 			stdErr.pipe(Stream.decodeText(), Stream.splitLines, Stream.tap(Console.error)),
-	}).pipe(Effect.andThen(Stream.runCollect), Effect.map(Chunk.join("")))
+	}).pipe(Effect.andThen(Stream.runCollect), Effect.map(Chunk.join("\n")))
 
 describe("Command", () => {
 	it.scopedLive("should execute successfully", () =>
@@ -54,7 +54,7 @@ describe("Command", () => {
 
 			const result = yield* stat(tmpDir, fileName)
 
-			expect(result).toBe("meow")
+			expect(result).toBe("test.txt 13")
 		}).pipe(Effect.provide(NodeContext.layer))
 	)
 })
