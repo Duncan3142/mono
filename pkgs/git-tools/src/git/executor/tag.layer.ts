@@ -16,7 +16,7 @@ const Live: Layer.Layer<TagExecutor.TagExecutor, never, CommandExecutor.CommandE
 				timeout,
 			}: TagExecutor.Arguments): Effect.Effect<
 				void,
-				GitCommandError.GitCommandFailed | GitCommandError.GitCommandTimeout
+				CommandError.CommandFailed | CommandError.CommandTimeout
 			> => {
 				const [subArgs, noPager] = TagMode.$match(mode, {
 					Create: ({ name, message }) => [[name, "-m", message], false] as const,
@@ -25,7 +25,7 @@ const Live: Layer.Layer<TagExecutor.TagExecutor, never, CommandExecutor.CommandE
 				return Base.make({
 					directory,
 					noPager,
-					subCommand: "tag",
+					command: "tag",
 					subArgs,
 					timeout,
 					errorMatcher: Match.value,

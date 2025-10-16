@@ -17,7 +17,7 @@ class PushExecutor extends Context.Tag(TagFactory.make(`executor`, `push`))<
 	PushExecutor,
 	(
 		args: Arguments
-	) => Effect.Effect<void, GitCommandError.GitCommandFailed | GitCommandError.GitCommandTimeout>
+	) => Effect.Effect<void, CommandError.CommandFailed | CommandError.CommandTimeout>
 >() {}
 
 export { PushExecutor }

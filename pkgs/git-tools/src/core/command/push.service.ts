@@ -32,10 +32,12 @@ class PushCommand extends Effect.Service<PushCommand>()(TagFactory.make(`command
 
 		const handler: (
 			args: Arguments
-		) => Effect.Effect<
-			void,
-			GitCommandError.GitCommandFailed | GitCommandError.GitCommandTimeout
-		> = ({ ref, forceWithLease = false, remote = defaultRemote, timeout = "2 seconds" }) =>
+		) => Effect.Effect<void, CommandError.CommandFailed | CommandError.CommandTimeout> = ({
+			ref,
+			forceWithLease = false,
+			remote = defaultRemote,
+			timeout = "2 seconds",
+		}) =>
 			executor({ directory, timeout, forceWithLease, ref, remote }).pipe(
 				ExecutorTimer.duration({ tags: { "executor.name": "git.push" } })
 			)

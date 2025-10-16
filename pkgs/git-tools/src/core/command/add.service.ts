@@ -1,7 +1,7 @@
 import { Effect, type Duration, pipe } from "effect"
 import { LogSpan } from "@duncan3142/effect"
 import { AddExecutor } from "#duncan3142/git-tools/core/executor"
-import type { GitCommandError } from "#duncan3142/git-tools/core/domain"
+import type { CommandError } from "@duncan3142/effect"
 import { TagFactory } from "#duncan3142/git-tools/internal"
 import { RepositoryContext } from "#duncan3142/git-tools/core/context"
 import { ExecutorTimer } from "#duncan3142/git-tools/core/telemetry"
@@ -24,10 +24,9 @@ class AddCommand extends Effect.Service<AddCommand>()(TagFactory.make(`command`,
 
 		const handler: (
 			args?: Arguments
-		) => Effect.Effect<
-			void,
-			GitCommandError.GitCommandFailed | GitCommandError.GitCommandTimeout
-		> = ({ timeout = "2 seconds" } = {}) =>
+		) => Effect.Effect<void, CommandError.CommandFailed | CommandError.CommandTimeout> = ({
+			timeout = "2 seconds",
+		} = {}) =>
 			executor({ directory, timeout }).pipe(
 				ExecutorTimer.duration({ tags: { "executor.name": "git.add" } })
 			)

@@ -17,7 +17,7 @@ const Live: Layer.Layer<ResetExecutor.ResetExecutor, never, CommandExecutor.Comm
 				timeout,
 			}: ResetExecutor.Arguments): Effect.Effect<
 				void,
-				GitCommandError.GitCommandFailed | GitCommandError.GitCommandTimeout
+				CommandError.CommandFailed | CommandError.CommandTimeout
 			> => {
 				const modeArg = ResetMode.$match(mode, {
 					Hard: () => "--hard",
@@ -27,8 +27,8 @@ const Live: Layer.Layer<ResetExecutor.ResetExecutor, never, CommandExecutor.Comm
 
 				return Base.make({
 					directory,
-					subCommand: "reset",
-					subArgs: [modeArg, ref],
+					command: "reset",
+					args: [modeArg, ref],
 					timeout,
 					errorMatcher: Match.value,
 				}).pipe(

@@ -15,10 +15,7 @@ class RevParseExecutor extends Context.Tag(TagFactory.make(`executor`, `rev-pars
 	RevParseExecutor,
 	(
 		args: Arguments
-	) => Effect.Effect<
-		string,
-		GitCommandError.GitCommandFailed | GitCommandError.GitCommandTimeout
-	>
+	) => Effect.Effect<string, CommandError.CommandFailed | CommandError.CommandTimeout>
 >() {}
 
 export { RevParseExecutor }

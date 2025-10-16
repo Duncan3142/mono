@@ -15,7 +15,7 @@ class RemoteExecutor extends Context.Tag(TagFactory.make(`executor`, `remote`))<
 	RemoteExecutor,
 	(
 		args: Arguments
-	) => Effect.Effect<void, GitCommandError.GitCommandFailed | GitCommandError.GitCommandTimeout>
+	) => Effect.Effect<void, CommandError.CommandFailed | CommandError.CommandTimeout>
 >() {}
 
 export { RemoteExecutor }

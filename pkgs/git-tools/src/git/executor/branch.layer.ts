@@ -16,7 +16,7 @@ const Live: Layer.Layer<BranchExecutor.BranchExecutor, never, CommandExecutor.Co
 				timeout,
 			}: BranchExecutor.Arguments): Effect.Effect<
 				void,
-				GitCommandError.GitCommandFailed | GitCommandError.GitCommandTimeout
+				CommandError.CommandFailed | CommandError.CommandTimeout
 			> => {
 				const subArgs = BranchMode.$match(mode, {
 					Print: () => ["-a", "-v", "-v"],
@@ -24,7 +24,7 @@ const Live: Layer.Layer<BranchExecutor.BranchExecutor, never, CommandExecutor.Co
 				return Base.make({
 					directory,
 					noPager: true,
-					subCommand: "branch",
+					command: "branch",
 					subArgs,
 					timeout,
 					errorMatcher: Match.value,

@@ -29,7 +29,7 @@ class RevParseCommand extends Effect.Service<RevParseCommand>()(
 				args: Arguments
 			) => Effect.Effect<
 				Reference.SHA,
-				GitCommandError.GitCommandFailed | GitCommandError.GitCommandTimeout
+				CommandError.CommandFailed | CommandError.CommandTimeout
 			> = ({ ref, timeout = "2 seconds" }) =>
 				executor({ ref, directory, timeout }).pipe(
 					ExecutorTimer.duration({ tags: { "executor.name": "git.rev-parse" } })

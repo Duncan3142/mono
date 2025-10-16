@@ -37,8 +37,8 @@ const Live: Layer.Layer<
 
 			return Base.make({
 				directory,
-				subCommand: "checkout",
-				subArgs: ["--progress", ...createBranchArg, ref],
+				command: "checkout",
+				args: ["--progress", ...createBranchArg, ref],
 				timeout,
 				errorMatcher: (errorCode: Base.ErrorCode) =>
 					pipe(

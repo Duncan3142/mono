@@ -32,10 +32,10 @@ class RemoteCommand extends Effect.Service<RemoteCommand>()(
 
 			const handler: (
 				args?: Arguments
-			) => Effect.Effect<
-				void,
-				GitCommandError.GitCommandFailed | GitCommandError.GitCommandTimeout
-			> = ({ mode = RemoteMode.Add({ remote: defaultRemote }), timeout = "2 seconds" } = {}) =>
+			) => Effect.Effect<void, CommandError.CommandFailed | CommandError.CommandTimeout> = ({
+				mode = RemoteMode.Add({ remote: defaultRemote }),
+				timeout = "2 seconds",
+			} = {}) =>
 				executor({ directory, timeout, mode }).pipe(
 					ExecutorTimer.duration({ tags: { "executor.name": "git.remote" } })
 				)

@@ -15,7 +15,7 @@ class BranchExecutor extends Context.Tag(TagFactory.make(`executor`, `branch`))<
 	BranchExecutor,
 	(
 		args: Arguments
-	) => Effect.Effect<void, GitCommandError.GitCommandFailed | GitCommandError.GitCommandTimeout>
+	) => Effect.Effect<void, CommandError.CommandFailed | CommandError.CommandTimeout>
 >() {}
 
 export { BranchExecutor }

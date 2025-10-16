@@ -20,7 +20,7 @@ class ConfigExecutor extends Context.Tag(TagFactory.make(`executor`, `config`))<
 	ConfigExecutor,
 	(
 		args: Arguments
-	) => Effect.Effect<void, GitCommandError.GitCommandFailed | GitCommandError.GitCommandTimeout>
+	) => Effect.Effect<void, CommandError.CommandFailed | CommandError.CommandTimeout>
 >() {}
 
 export { ConfigExecutor }

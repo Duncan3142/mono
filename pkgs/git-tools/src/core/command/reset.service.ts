@@ -30,10 +30,11 @@ class ResetCommand extends Effect.Service<ResetCommand>()(TagFactory.make(`comma
 
 		const handler: (
 			args: Arguments
-		) => Effect.Effect<
-			void,
-			GitCommandError.GitCommandFailed | GitCommandError.GitCommandTimeout
-		> = ({ ref, mode = ResetMode.Hard(), timeout = "2 seconds" }) =>
+		) => Effect.Effect<void, CommandError.CommandFailed | CommandError.CommandTimeout> = ({
+			ref,
+			mode = ResetMode.Hard(),
+			timeout = "2 seconds",
+		}) =>
 			executor({ ref, mode, directory, timeout }).pipe(
 				ExecutorTimer.duration({ tags: { "executor.name": "git.reset" } })
 			)

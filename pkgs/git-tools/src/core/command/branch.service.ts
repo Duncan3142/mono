@@ -27,10 +27,10 @@ class BranchCommand extends Effect.Service<BranchCommand>()(
 
 			const handler: (
 				args?: Arguments
-			) => Effect.Effect<
-				void,
-				GitCommandError.GitCommandFailed | GitCommandError.GitCommandTimeout
-			> = ({ mode = BranchMode.Print(), timeout = "2 seconds" } = {}) =>
+			) => Effect.Effect<void, CommandError.CommandFailed | CommandError.CommandTimeout> = ({
+				mode = BranchMode.Print(),
+				timeout = "2 seconds",
+			} = {}) =>
 				executor({ mode, directory, timeout }).pipe(
 					ExecutorTimer.duration({ tags: { "executor.name": "git.branch" } })
 				)

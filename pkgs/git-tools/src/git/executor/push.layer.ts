@@ -2,7 +2,7 @@ import { CommandExecutor } from "@effect/platform"
 import { Layer, Effect, Match, Stream } from "effect"
 import * as Base from "./base.ts"
 import { PushExecutor } from "#duncan3142/git-tools/core/executor"
-import type { GitCommandError } from "#duncan3142/git-tools/core/domain"
+import type { CommandError } from "@duncan3142/effect"
 
 const Live: Layer.Layer<PushExecutor.PushExecutor, never, CommandExecutor.CommandExecutor> =
 	Layer.effect(
@@ -17,13 +17,13 @@ const Live: Layer.Layer<PushExecutor.PushExecutor, never, CommandExecutor.Comman
 				timeout,
 			}: PushExecutor.Arguments): Effect.Effect<
 				void,
-				GitCommandError.GitCommandFailed | GitCommandError.GitCommandTimeout
+				CommandError.CommandFailed | CommandError.CommandTimeout
 			> => {
 				const fwl = forceWithLease ? ["--force-with-lease"] : []
 				return Base.make({
 					directory,
-					subCommand: "push",
-					subArgs: [...fwl, remote, ref],
+					command: "push",
+					args: [...fwl, remote, ref],
 					timeout,
 					errorMatcher: Match.value,
 				}).pipe(

@@ -2,7 +2,7 @@ import { CommandExecutor } from "@effect/platform"
 import { Layer, Effect, Match, Stream } from "effect"
 import * as Base from "./base.ts"
 import { InitExecutor } from "#duncan3142/git-tools/core/executor"
-import type { GitCommandError } from "#duncan3142/git-tools/core/domain"
+import type { CommandError } from "@duncan3142/effect"
 
 const Live: Layer.Layer<InitExecutor.InitExecutor, never, CommandExecutor.CommandExecutor> =
 	Layer.effect(
@@ -16,13 +16,13 @@ const Live: Layer.Layer<InitExecutor.InitExecutor, never, CommandExecutor.Comman
 				initBranch,
 			}: InitExecutor.Arguments): Effect.Effect<
 				void,
-				GitCommandError.GitCommandFailed | GitCommandError.GitCommandTimeout
+				CommandError.CommandFailed | CommandError.CommandTimeout
 			> => {
 				const bareArg = bare ? ["--bare"] : []
 				return Base.make({
 					directory,
-					subCommand: "init",
-					subArgs: [...bareArg, `--initial-branch=${initBranch}`],
+					command: "init",
+					args: [...bareArg, `--initial-branch=${initBranch}`],
 					timeout,
 					errorMatcher: Match.value,
 				}).pipe(

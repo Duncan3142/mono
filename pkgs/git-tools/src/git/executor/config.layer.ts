@@ -20,7 +20,7 @@ const Live: Layer.Layer<ConfigExecutor.ConfigExecutor, never, CommandExecutor.Co
 				timeout,
 			}: ConfigExecutor.Arguments): Effect.Effect<
 				void,
-				GitCommandError.GitCommandFailed | GitCommandError.GitCommandTimeout
+				CommandError.CommandFailed | CommandError.CommandTimeout
 			> => {
 				const scopeArgs = ConfigScope.$match(scope, {
 					Global: () => ["--global"],
@@ -33,8 +33,8 @@ const Live: Layer.Layer<ConfigExecutor.ConfigExecutor, never, CommandExecutor.Co
 				})
 				return Base.make({
 					directory,
-					subCommand: "config",
-					subArgs: [...scopeArgs, ...modeArgs],
+					command: "config",
+					args: [...scopeArgs, ...modeArgs],
 					timeout,
 					errorMatcher: Match.value,
 				}).pipe(

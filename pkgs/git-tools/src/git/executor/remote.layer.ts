@@ -15,14 +15,14 @@ const Live: Layer.Layer<RemoteExecutor.RemoteExecutor, never, CommandExecutor.Co
 				mode,
 			}: RemoteExecutor.Arguments): Effect.Effect<
 				void,
-				GitCommandError.GitCommandFailed | GitCommandError.GitCommandTimeout
+				CommandError.CommandFailed | CommandError.CommandTimeout
 			> => {
 				const subArgs = RemoteMode.$match(mode, {
 					Add: ({ remote: { name, url } }) => ["add", name, url],
 				})
 				return Base.make({
 					directory,
-					subCommand: "remote",
+					command: "remote",
 					subArgs,
 					timeout,
 					errorMatcher: Match.value,

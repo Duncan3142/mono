@@ -2,7 +2,7 @@ import { CommandExecutor } from "@effect/platform"
 import { Layer, Effect, Match, Chunk, Stream } from "effect"
 import * as Base from "./base.ts"
 import { RevParseExecutor } from "#duncan3142/git-tools/core/executor"
-import type { GitCommandError } from "#duncan3142/git-tools/core/domain"
+import type { CommandError } from "@duncan3142/effect"
 
 const Live: Layer.Layer<
 	RevParseExecutor.RevParseExecutor,
@@ -19,12 +19,12 @@ const Live: Layer.Layer<
 			timeout,
 		}: RevParseExecutor.Arguments): Effect.Effect<
 			string,
-			GitCommandError.GitCommandFailed | GitCommandError.GitCommandTimeout
+			CommandError.CommandFailed | CommandError.CommandTimeout
 		> =>
 			Base.make({
 				directory,
-				subCommand: "rev-parse",
-				subArgs: [rev],
+				command: "rev-parse",
+				args: [rev],
 				timeout,
 				errorMatcher: Match.value,
 			}).pipe(

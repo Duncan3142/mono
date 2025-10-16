@@ -32,8 +32,8 @@ const Live: Layer.Layer<
 		> =>
 			Base.make({
 				directory,
-				subCommand: "merge-base",
-				subArgs: [baseRef, headRef],
+				command: "merge-base",
+				args: [baseRef, headRef],
 				timeout,
 				errorMatcher: (errorCode: Base.ErrorCode) =>
 					pipe(

@@ -25,10 +25,10 @@ class TagCommand extends Effect.Service<TagCommand>()(TagFactory.make(`command`,
 
 		const handler: (
 			args?: Arguments
-		) => Effect.Effect<
-			void,
-			GitCommandError.GitCommandFailed | GitCommandError.GitCommandTimeout
-		> = ({ mode = TagMode.Print(), timeout = "2 seconds" } = {}) =>
+		) => Effect.Effect<void, CommandError.CommandFailed | CommandError.CommandTimeout> = ({
+			mode = TagMode.Print(),
+			timeout = "2 seconds",
+		} = {}) =>
 			executor({ mode, directory, timeout }).pipe(
 				ExecutorTimer.duration({ tags: { "executor.name": "git.tag" } })
 			)
