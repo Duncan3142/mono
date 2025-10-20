@@ -1,5 +1,11 @@
 # @duncan3142/effect
 
+## 0.1.8
+
+### Patch Changes
+
+- 471e028: update deps
+
 ## 0.1.7
 
 ### Patch Changes
