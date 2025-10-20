@@ -1,6 +1,6 @@
 import { CommandExecutor } from "@effect/platform"
 import { Layer, Effect, Stream } from "effect"
-import type { CommandError } from "@duncan3142/effect"
+import { CommandErrorMatcher, type CommandError } from "@duncan3142/effect"
 import * as Base from "./base.ts"
 import { AddExecutor } from "#duncan3142/git-tools/core/executor"
 
@@ -21,7 +21,7 @@ const Live: Layer.Layer<AddExecutor.AddExecutor, never, CommandExecutor.CommandE
 					command: "add",
 					args: ["."],
 					timeout,
-					errorMatcher: Base.errorMatcherNoOp,
+					errorMatcher: CommandErrorMatcher.noOp,
 				}).pipe(
 					Effect.andThen(Stream.runDrain),
 					Effect.scoped,
