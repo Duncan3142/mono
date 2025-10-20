@@ -1,5 +1,11 @@
 # @duncan3142/git-tools
 
+## 0.1.6
+
+### Patch Changes
+
+- ac4c1c9: base command
+
 ## 0.1.5
 
 ### Patch Changes
