@@ -1,10 +1,6 @@
 import { type Duration, Effect, pipe } from "effect"
-import { LogSpan } from "@duncan3142/effect"
-import {
-	type Reference,
-	type GitCommandError,
-	ResetMode,
-} from "#duncan3142/git-tools/core/domain"
+import { type CommandError, LogSpan } from "@duncan3142/effect"
+import { type Reference, ResetMode } from "#duncan3142/git-tools/core/domain"
 import { TagFactory } from "#duncan3142/git-tools/internal"
 import { RepositoryContext } from "#duncan3142/git-tools/core/context"
 import { ResetExecutor } from "#duncan3142/git-tools/core/executor"

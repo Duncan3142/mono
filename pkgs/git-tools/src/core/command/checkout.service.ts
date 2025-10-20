@@ -1,9 +1,8 @@
 import { type Duration, Effect, pipe } from "effect"
-import { LogSpan } from "@duncan3142/effect"
+import { type CommandError, LogSpan } from "@duncan3142/effect"
 import {
 	type Reference,
 	type CheckoutError,
-	type GitCommandError,
 	CheckoutMode,
 } from "#duncan3142/git-tools/core/domain"
 import { TagFactory } from "#duncan3142/git-tools/internal"
@@ -36,8 +35,8 @@ class CheckoutCommand extends Effect.Service<CheckoutCommand>()(
 			) => Effect.Effect<
 				void,
 				| CheckoutError.CheckoutRefNotFound
-				| GitCommandError.GitCommandFailed
-				| GitCommandError.GitCommandTimeout
+				| CommandError.CommandFailed
+				| CommandError.CommandTimeout
 			> = ({ ref, mode = CheckoutMode.Standard(), timeout = "2 seconds" }) =>
 				executor({ ref, directory, mode, timeout }).pipe(
 					ExecutorTimer.duration({ tags: { "executor.name": "git.checkout" } })

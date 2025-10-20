@@ -35,17 +35,19 @@ import { FetchDepth, FetchDepthFactory } from "#duncan3142/git-tools/core/state"
 
 const console = MockConsole.make()
 
-const makeFile = (name: string) =>
-	Effect.gen(function* () {
-		const { directory } = yield* RepositoryContext.RepositoryContext
-		const fs = yield* FileSystem.FileSystem
-		const path = yield* Path.Path
+const File = {
+	make: (name: string) =>
+		Effect.gen(function* () {
+			const { directory } = yield* RepositoryContext.RepositoryContext
+			const fs = yield* FileSystem.FileSystem
+			const path = yield* Path.Path
 
-		const filePath = path.join(directory, name)
-		yield* fs.writeFileString(filePath, "", {
-			flag: "wx+",
-		})
-	})
+			const filePath = path.join(directory, name)
+			yield* fs.writeFileString(filePath, "", {
+				flag: "wx+",
+			})
+		}),
+}
 
 const otel = MockOtel.make({ serviceName: "git-tools-test" })
 
@@ -78,12 +80,12 @@ const setupA = Effect.gen(function* () {
 	yield* config({ mode: ConfigMode.Set({ key: "user.name", value: "Test User" }) })
 	yield* config({ mode: ConfigMode.Set({ key: "user.email", value: "test@test.com" }) })
 	yield* remote()
-	yield* makeFile("one.md")
+	yield* File.make("one.md")
 	yield* add()
 	yield* commit({ message: "Initial commit" })
 	yield* tag({ mode: TagMode.Create({ name: "1.0.0", message: "Version 1.0.0" }) })
 	yield* checkout({ ref: Reference.Branch({ name: "feature" }), mode: CheckoutMode.Create() })
-	yield* makeFile("two.md")
+	yield* File.make("two.md")
 	yield* add()
 	yield* commit({ message: "Feature commit A" })
 	yield* tag({ mode: TagMode.Create({ name: "2.0.0", message: "Version 2.0.0" }) })
@@ -124,7 +126,7 @@ const setupB = Effect.gen(function* () {
 		],
 	}).pipe(Effect.provideServiceEffect(FetchDepth.FetchDepth, fetchDepthFactory))
 	yield* checkout({ ref: Reference.Branch({ name: "feature" }), mode: CheckoutMode.Standard() })
-	yield* makeFile("three.md")
+	yield* File.make("three.md")
 	yield* add()
 	yield* commit({ message: "Feature commit B" })
 	yield* push({ ref: Reference.Branch({ name: "feature" }) })

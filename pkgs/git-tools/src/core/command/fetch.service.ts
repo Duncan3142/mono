@@ -1,12 +1,11 @@
 import { type Array, type Duration, Effect, pipe } from "effect"
-import { LogSpan } from "@duncan3142/effect"
+import { type CommandError, LogSpan } from "@duncan3142/effect"
 import { FetchExecutor } from "#duncan3142/git-tools/core/executor"
 import { TagFactory } from "#duncan3142/git-tools/internal"
 import {
 	type Remote,
 	type FetchError,
 	type Reference,
-	type GitCommandError,
 	FetchMode,
 } from "#duncan3142/git-tools/core/domain"
 import { FetchDepth } from "#duncan3142/git-tools/core/state"
@@ -50,8 +49,8 @@ class FetchCommand extends Effect.Service<FetchCommand>()(TagFactory.make(`comma
 			void,
 			| FetchError.FetchDepthExceeded
 			| FetchError.FetchRefsNotFound
-			| GitCommandError.GitCommandFailed
-			| GitCommandError.GitCommandTimeout,
+			| CommandError.CommandFailed
+			| CommandError.CommandTimeout,
 			FetchDepth.FetchDepth
 		> = ({
 			refs,

@@ -1,10 +1,7 @@
 import { type Duration, type Effect, Context } from "effect"
+import type { CommandError } from "@duncan3142/effect"
 import { TagFactory } from "#duncan3142/git-tools/internal"
-import type {
-	GitCommandError,
-	Reference,
-	MergeBaseError,
-} from "#duncan3142/git-tools/core/domain"
+import type { Reference, MergeBaseError } from "#duncan3142/git-tools/core/domain"
 
 interface Arguments {
 	readonly headRef: Reference.Reference
@@ -22,9 +19,7 @@ class MergeBaseExecutor extends Context.Tag(TagFactory.make(`executor`, `merge-b
 		args: Arguments
 	) => Effect.Effect<
 		Reference.SHA,
-		| MergeBaseError.MergeBaseNotFound
-		| GitCommandError.GitCommandFailed
-		| GitCommandError.GitCommandTimeout
+		MergeBaseError.MergeBaseNotFound | CommandError.CommandFailed | CommandError.CommandTimeout
 	>
 >() {}
 

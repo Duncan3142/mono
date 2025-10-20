@@ -1,6 +1,6 @@
 import { type Duration, type Effect, Context } from "effect"
-import { TagFactory } from "#duncan3142/git-tools/internal"
 import type { CommandError } from "@duncan3142/effect"
+import { TagFactory } from "#duncan3142/git-tools/internal"
 
 interface Arguments {
 	readonly directory: string

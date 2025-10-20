@@ -1,7 +1,6 @@
 import { Effect, pipe, type Duration } from "effect"
-import { LogSpan } from "@duncan3142/effect"
+import { LogSpan, type CommandError } from "@duncan3142/effect"
 import { StatusExecutor } from "#duncan3142/git-tools/core/executor"
-import type { CommandError } from "@duncan3142/effect"
 import { TagFactory } from "#duncan3142/git-tools/internal"
 import { RepositoryContext } from "#duncan3142/git-tools/core/context"
 import { ExecutorTimer } from "#duncan3142/git-tools/core/telemetry"
