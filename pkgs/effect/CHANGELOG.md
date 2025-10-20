@@ -1,5 +1,11 @@
 # @duncan3142/effect
 
+## 0.1.7
+
+### Patch Changes
+
+- ac4c1c9: command error matcher
+
 ## 0.1.6
 
 ### Patch Changes
