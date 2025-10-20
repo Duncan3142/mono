@@ -1,7 +1,7 @@
 import { Effect, pipe, type Duration } from "effect"
-import { LogSpan } from "@duncan3142/effect"
+import { type CommandError, LogSpan } from "@duncan3142/effect"
 import { RemoteExecutor } from "#duncan3142/git-tools/core/executor"
-import { RemoteMode, type GitCommandError } from "#duncan3142/git-tools/core/domain"
+import { RemoteMode } from "#duncan3142/git-tools/core/domain"
 import { TagFactory } from "#duncan3142/git-tools/internal"
 import { RepositoryContext } from "#duncan3142/git-tools/core/context"
 import { RepositoryConfig } from "#duncan3142/git-tools/core/config"
@@ -32,10 +32,10 @@ class RemoteCommand extends Effect.Service<RemoteCommand>()(
 
 			const handler: (
 				args?: Arguments
-			) => Effect.Effect<
-				void,
-				GitCommandError.GitCommandFailed | GitCommandError.GitCommandTimeout
-			> = ({ mode = RemoteMode.Add({ remote: defaultRemote }), timeout = "2 seconds" } = {}) =>
+			) => Effect.Effect<void, CommandError.CommandFailed | CommandError.CommandTimeout> = ({
+				mode = RemoteMode.Add({ remote: defaultRemote }),
+				timeout = "2 seconds",
+			} = {}) =>
 				executor({ directory, timeout, mode }).pipe(
 					ExecutorTimer.duration({ tags: { "executor.name": "git.remote" } })
 				)

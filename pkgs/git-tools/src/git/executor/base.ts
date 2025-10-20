@@ -1,128 +1,73 @@
-import { type Error as PlatformError, type CommandExecutor, Command } from "@effect/platform"
-import { type Duration, type Scope, Effect, Stream, pipe, Console, Match, Option } from "effect"
-import { GitCommandError } from "#duncan3142/git-tools/core/domain"
+import type { CommandExecutor } from "@effect/platform"
+import {
+	type Effect,
+	type Cause,
+	type Duration,
+	type Scope,
+	Stream,
+	Console,
+	Match,
+} from "effect"
+import { type CommandError, Command } from "@duncan3142/effect"
 
-type ErrorMatcher<ECode extends ErrorCode, Error> = (
-	ecode: ErrorCode
-) => Match.Matcher<
-	ErrorCode,
-	Match.Types.Without<ECode>,
-	ErrorCode,
-	Effect.Effect<never, Error>,
-	ErrorCode
->
-
-interface Arguments<ECode extends ErrorCode, Error> {
-	readonly subCommand: string
-	readonly subArgs?: ReadonlyArray<string>
+interface Arguments<ECode extends ErrorCode, Error extends Cause.YieldableError> {
 	readonly directory: string
+	readonly command: string
+	readonly args?: ReadonlyArray<string>
 	readonly timeout: Duration.DurationInput
-	readonly noPager?: boolean
-	readonly errorMatcher: ErrorMatcher<ECode, Error>
+	readonly errorMatcher: Command.ErrorMatcher<ECode, Error>
 }
 
-const SUCCESS_CODE = 0
-
 type ErrorCode = number
+
+const NO_PAGER = "--no-pager"
+
+/**
+ * Default error matcher that simply matches on the exit code.
+ * @param args - The arguments containing the exit code.
+ * @param args.exitCode - The exit code of the command.
+ * @returns An effect that matches the exit code.
+ */
+const errorMatcherNoOp: Command.ErrorMatcher<never, never> = ({ exitCode }) =>
+	Match.value(exitCode)
 
 /**
  * Factory function to create a command executor for git commands.
  * @param args - The arguments for the command executor.
- * @param args.subCommand - The sub-command to run (e.g., "fetch").
- * @param args.subArgs - The arguments to pass to the git subcommand.
+ * @param args.command - The sub-command to run (e.g., "fetch").
+ * @param args.args - The arguments to pass to the git subcommand.
  * @param args.directory - The working directory for the git command.
  * @param args.timeout - The timeout for the command execution.
  * @param args.errorMatcher - A matcher to handle specific error codes.
- * @param args.noPager - Whether to disable the pager for git commands.
  * @returns A function that executes the git command and returns an effect.
  */
-const make = <ECode extends ErrorCode = never, Error = never>({
+const make = <ECode extends ErrorCode = never, Error extends Cause.YieldableError = never>({
 	directory,
-	subCommand,
-	subArgs = [],
+	command,
+	args = [],
 	timeout,
 	errorMatcher,
-	noPager = false,
 }: Arguments<ECode, Error>): Effect.Effect<
-	Stream.Stream<
-		string,
-		GitCommandError.GitCommandFailed | Error | GitCommandError.GitCommandTimeout
-	>,
-	GitCommandError.GitCommandFailed,
+	Stream.Stream<string, CommandError.CommandFailed | Error | CommandError.CommandTimeout>,
+	CommandError.CommandFailed,
 	CommandExecutor.CommandExecutor | Scope.Scope
-> => {
-	const options = noPager ? ["--no-pager"] : []
-	// eslint-disable-next-line @typescript-eslint/prefer-readonly-parameter-types -- Effect type
-	const errorHandler = (error: PlatformError.PlatformError) =>
-		new GitCommandError.GitCommandFailed({
-			exitCode: Option.none(),
-			options,
-			command: subCommand,
-			args: subArgs,
-			cause: error,
-		})
-
-	return pipe(
-		Command.make("git", ...options, subCommand, ...subArgs),
-		Command.workingDirectory(directory),
-		Command.stdout("pipe"),
-		Command.stderr("pipe"),
-		Command.start,
-		Effect.mapError(errorHandler),
-		Effect.flatMap(({ exitCode, stdout, stderr }) => {
-			const exitCodeStream = exitCode
-				.pipe(
-					Effect.mapError(errorHandler),
-					Effect.timeoutFail({
-						duration: timeout,
-						onTimeout: () =>
-							new GitCommandError.GitCommandTimeout({
-								timeout,
-								options,
-								command: subCommand,
-								args: subArgs,
-							}),
-					}),
-					Effect.flatMap((code) =>
-						code === SUCCESS_CODE
-							? Effect.void
-							: errorMatcher(code).pipe(
-									Match.orElse((errCode) =>
-										Effect.fail(
-											new GitCommandError.GitCommandFailed({
-												exitCode: Option.some(errCode),
-												options,
-												command: subCommand,
-												args: subArgs,
-											})
-										)
-									)
-								)
-					)
-				)
-				.pipe(Stream.fromEffect, Stream.drain)
-
-			const stderrStream = stderr.pipe(
+> =>
+	Command.make({
+		directory,
+		command: "git",
+		args: [NO_PAGER, command, ...args],
+		timeout,
+		errorMatcher,
+		stdoutPipe: (stdErr) =>
+			stdErr.pipe(Stream.decodeText(), Stream.splitLines, Stream.tap(Console.log)),
+		stderrPipe: (stdErr) =>
+			stdErr.pipe(
 				Stream.decodeText(),
 				Stream.splitLines,
 				Stream.tap(Console.error),
 				Stream.drain
-			)
+			),
+	})
 
-			const stdoutStream = stdout.pipe(
-				Stream.decodeText(),
-				Stream.splitLines,
-				Stream.tap(Console.log)
-			)
-
-			const stdStream = Stream.merge(stdoutStream, stderrStream).pipe(
-				Stream.mapError(errorHandler)
-			)
-
-			return Effect.succeed(Stream.concat(stdStream, exitCodeStream))
-		})
-	)
-}
-
-export { make }
+export { make, errorMatcherNoOp }
 export type { ErrorCode, Arguments }

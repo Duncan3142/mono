@@ -1,7 +1,7 @@
 import { Effect, pipe, type Duration } from "effect"
-import { LogSpan } from "@duncan3142/effect"
+import { type CommandError, LogSpan } from "@duncan3142/effect"
 import { TagExecutor } from "#duncan3142/git-tools/core/executor"
-import { type GitCommandError, TagMode } from "#duncan3142/git-tools/core/domain"
+import { TagMode } from "#duncan3142/git-tools/core/domain"
 import { TagFactory } from "#duncan3142/git-tools/internal"
 import { RepositoryContext } from "#duncan3142/git-tools/core/context"
 import { ExecutorTimer } from "#duncan3142/git-tools/core/telemetry"
@@ -25,10 +25,10 @@ class TagCommand extends Effect.Service<TagCommand>()(TagFactory.make(`command`,
 
 		const handler: (
 			args?: Arguments
-		) => Effect.Effect<
-			void,
-			GitCommandError.GitCommandFailed | GitCommandError.GitCommandTimeout
-		> = ({ mode = TagMode.Print(), timeout = "2 seconds" } = {}) =>
+		) => Effect.Effect<void, CommandError.CommandFailed | CommandError.CommandTimeout> = ({
+			mode = TagMode.Print(),
+			timeout = "2 seconds",
+		} = {}) =>
 			executor({ mode, directory, timeout }).pipe(
 				ExecutorTimer.duration({ tags: { "executor.name": "git.tag" } })
 			)

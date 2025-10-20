@@ -1,5 +1,6 @@
 import { type Duration, type Effect, Context } from "effect"
-import type { Reference, GitCommandError } from "#duncan3142/git-tools/core/domain"
+import type { CommandError } from "@duncan3142/effect"
+import type { Reference } from "#duncan3142/git-tools/core/domain"
 import { TagFactory } from "#duncan3142/git-tools/internal"
 
 interface Arguments {
@@ -15,10 +16,7 @@ class RevParseExecutor extends Context.Tag(TagFactory.make(`executor`, `rev-pars
 	RevParseExecutor,
 	(
 		args: Arguments
-	) => Effect.Effect<
-		string,
-		GitCommandError.GitCommandFailed | GitCommandError.GitCommandTimeout
-	>
+	) => Effect.Effect<string, CommandError.CommandFailed | CommandError.CommandTimeout>
 >() {}
 
 export { RevParseExecutor }

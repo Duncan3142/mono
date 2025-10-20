@@ -1,6 +1,6 @@
 import { type Duration, Effect, pipe } from "effect"
-import { LogSpan } from "@duncan3142/effect"
-import type { Reference, GitCommandError } from "#duncan3142/git-tools/core/domain"
+import { type CommandError, LogSpan } from "@duncan3142/effect"
+import type { Reference } from "#duncan3142/git-tools/core/domain"
 import { TagFactory } from "#duncan3142/git-tools/internal"
 import { RepositoryContext } from "#duncan3142/git-tools/core/context"
 import { RevParseExecutor } from "#duncan3142/git-tools/core/executor"
@@ -29,7 +29,7 @@ class RevParseCommand extends Effect.Service<RevParseCommand>()(
 				args: Arguments
 			) => Effect.Effect<
 				Reference.SHA,
-				GitCommandError.GitCommandFailed | GitCommandError.GitCommandTimeout
+				CommandError.CommandFailed | CommandError.CommandTimeout
 			> = ({ ref, timeout = "2 seconds" }) =>
 				executor({ ref, directory, timeout }).pipe(
 					ExecutorTimer.duration({ tags: { "executor.name": "git.rev-parse" } })

@@ -1,11 +1,7 @@
 import { type Duration, Effect, pipe } from "effect"
-import { LogSpan } from "@duncan3142/effect"
+import { type CommandError, LogSpan } from "@duncan3142/effect"
 import { TagFactory } from "#duncan3142/git-tools/internal"
-import type {
-	MergeBaseError,
-	Reference,
-	GitCommandError,
-} from "#duncan3142/git-tools/core/domain"
+import type { MergeBaseError, Reference } from "#duncan3142/git-tools/core/domain"
 import { MergeBaseExecutor } from "#duncan3142/git-tools/core/executor"
 import { RepositoryContext } from "#duncan3142/git-tools/core/context"
 import { ExecutorTimer } from "#duncan3142/git-tools/core/telemetry"
@@ -34,8 +30,8 @@ class MergeBaseCommand extends Effect.Service<MergeBaseCommand>()(
 				args: Arguments
 			) => Effect.Effect<
 				Reference.SHA,
-				| GitCommandError.GitCommandFailed
-				| GitCommandError.GitCommandTimeout
+				| CommandError.CommandFailed
+				| CommandError.CommandTimeout
 				| MergeBaseError.MergeBaseNotFound
 			> = ({ headRef, baseRef, timeout = "2 seconds" }) =>
 				executor({

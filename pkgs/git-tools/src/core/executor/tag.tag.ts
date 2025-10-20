@@ -1,6 +1,7 @@
 import { type Duration, type Effect, Context } from "effect"
+import type { CommandError } from "@duncan3142/effect"
 import { TagFactory } from "#duncan3142/git-tools/internal"
-import type { GitCommandError, TagMode } from "#duncan3142/git-tools/core/domain"
+import type { TagMode } from "#duncan3142/git-tools/core/domain"
 
 interface Arguments {
 	readonly mode: TagMode.TagMode
@@ -15,7 +16,7 @@ class TagExecutor extends Context.Tag(TagFactory.make(`executor`, `tag`))<
 	TagExecutor,
 	(
 		args: Arguments
-	) => Effect.Effect<void, GitCommandError.GitCommandFailed | GitCommandError.GitCommandTimeout>
+	) => Effect.Effect<void, CommandError.CommandFailed | CommandError.CommandTimeout>
 >() {}
 
 export { TagExecutor }

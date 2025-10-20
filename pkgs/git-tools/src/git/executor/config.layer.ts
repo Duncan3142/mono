@@ -1,12 +1,9 @@
 import { CommandExecutor } from "@effect/platform"
-import { Layer, Effect, Match, Stream } from "effect"
+import { Layer, Effect, Stream } from "effect"
+import type { CommandError } from "@duncan3142/effect"
 import * as Base from "./base.ts"
 import { ConfigExecutor } from "#duncan3142/git-tools/core/executor"
-import {
-	type GitCommandError,
-	ConfigMode,
-	ConfigScope,
-} from "#duncan3142/git-tools/core/domain"
+import { ConfigMode, ConfigScope } from "#duncan3142/git-tools/core/domain"
 
 const Live: Layer.Layer<ConfigExecutor.ConfigExecutor, never, CommandExecutor.CommandExecutor> =
 	Layer.effect(
@@ -20,7 +17,7 @@ const Live: Layer.Layer<ConfigExecutor.ConfigExecutor, never, CommandExecutor.Co
 				timeout,
 			}: ConfigExecutor.Arguments): Effect.Effect<
 				void,
-				GitCommandError.GitCommandFailed | GitCommandError.GitCommandTimeout
+				CommandError.CommandFailed | CommandError.CommandTimeout
 			> => {
 				const scopeArgs = ConfigScope.$match(scope, {
 					Global: () => ["--global"],
@@ -33,10 +30,10 @@ const Live: Layer.Layer<ConfigExecutor.ConfigExecutor, never, CommandExecutor.Co
 				})
 				return Base.make({
 					directory,
-					subCommand: "config",
-					subArgs: [...scopeArgs, ...modeArgs],
+					command: "config",
+					args: [...scopeArgs, ...modeArgs],
 					timeout,
-					errorMatcher: Match.value,
+					errorMatcher: Base.errorMatcherNoOp,
 				}).pipe(
 					Effect.andThen(Stream.runDrain),
 					Effect.scoped,

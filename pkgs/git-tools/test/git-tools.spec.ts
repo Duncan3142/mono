@@ -3,6 +3,7 @@ import { expect, describe, it } from "@effect/vitest"
 import { NodeContext } from "@effect/platform-node"
 import { ConfigProvider, Effect, Layer, Logger } from "effect"
 import { MockConsole, MockOtel } from "@duncan3142/effect"
+import { FileSystem, Path } from "@effect/platform"
 import { GitToolsLive } from "#duncan3142/git-tools"
 import {
 	TagMode,
@@ -30,10 +31,23 @@ import {
 	StatusCommand,
 } from "#duncan3142/git-tools/core/command"
 import { RepositoryContext } from "#duncan3142/git-tools/core/context"
-import { TestRepoDir, TestRepoFile } from "#duncan3142/git-tools/test/setup"
 import { FetchDepth, FetchDepthFactory } from "#duncan3142/git-tools/core/state"
 
 const console = MockConsole.make()
+
+const File = {
+	make: (name: string) =>
+		Effect.gen(function* () {
+			const { directory } = yield* RepositoryContext.RepositoryContext
+			const fs = yield* FileSystem.FileSystem
+			const path = yield* Path.Path
+
+			const filePath = path.join(directory, name)
+			yield* fs.writeFileString(filePath, "", {
+				flag: "wx+",
+			})
+		}),
+}
 
 const otel = MockOtel.make({ serviceName: "git-tools-test" })
 
@@ -66,12 +80,12 @@ const setupA = Effect.gen(function* () {
 	yield* config({ mode: ConfigMode.Set({ key: "user.name", value: "Test User" }) })
 	yield* config({ mode: ConfigMode.Set({ key: "user.email", value: "test@test.com" }) })
 	yield* remote()
-	yield* TestRepoFile.make("one.md")
+	yield* File.make("one.md")
 	yield* add()
 	yield* commit({ message: "Initial commit" })
 	yield* tag({ mode: TagMode.Create({ name: "1.0.0", message: "Version 1.0.0" }) })
 	yield* checkout({ ref: Reference.Branch({ name: "feature" }), mode: CheckoutMode.Create() })
-	yield* TestRepoFile.make("two.md")
+	yield* File.make("two.md")
 	yield* add()
 	yield* commit({ message: "Feature commit A" })
 	yield* tag({ mode: TagMode.Create({ name: "2.0.0", message: "Version 2.0.0" }) })
@@ -112,7 +126,7 @@ const setupB = Effect.gen(function* () {
 		],
 	}).pipe(Effect.provideServiceEffect(FetchDepth.FetchDepth, fetchDepthFactory))
 	yield* checkout({ ref: Reference.Branch({ name: "feature" }), mode: CheckoutMode.Standard() })
-	yield* TestRepoFile.make("three.md")
+	yield* File.make("three.md")
 	yield* add()
 	yield* commit({ message: "Feature commit B" })
 	yield* push({ ref: Reference.Branch({ name: "feature" }) })
@@ -190,10 +204,12 @@ describe("Integration", () => {
 		() =>
 			Effect.gen(function* () {
 				expect.assertions(61)
-				const remoteDir = yield* TestRepoDir.make
-				const localA = yield* TestRepoDir.make
-				const localB = yield* TestRepoDir.make
-				const localC = yield* TestRepoDir.make
+				const fs = yield* FileSystem.FileSystem
+				const remoteDir = yield* fs.makeTempDirectoryScoped({ prefix: "test-repo-" })
+
+				const localA = yield* fs.makeTempDirectoryScoped({ prefix: "test-repo-" })
+				const localB = yield* fs.makeTempDirectoryScoped({ prefix: "test-repo-" })
+				const localC = yield* fs.makeTempDirectoryScoped({ prefix: "test-repo-" })
 
 				yield* setupBare.pipe(
 					Effect.provideService(
@@ -527,6 +543,7 @@ describe("Integration", () => {
 				expect(console.log).toHaveBeenNthCalledWith(33, expect.stringMatching(/^$/))
 			}).pipe(
 				Effect.withSpan("git-tools-test"),
+				Effect.provide(NodeContext.layer),
 				Effect.provide(otel.layer),
 				Effect.provide(Logger.json),
 				Effect.withConsole(console)

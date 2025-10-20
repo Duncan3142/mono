@@ -1,7 +1,7 @@
 import { Effect, pipe, type Duration } from "effect"
-import { LogSpan } from "@duncan3142/effect"
+import { type CommandError, LogSpan } from "@duncan3142/effect"
 import { BranchExecutor } from "#duncan3142/git-tools/core/executor"
-import { type GitCommandError, BranchMode } from "#duncan3142/git-tools/core/domain"
+import { BranchMode } from "#duncan3142/git-tools/core/domain"
 import { TagFactory } from "#duncan3142/git-tools/internal"
 import { RepositoryContext } from "#duncan3142/git-tools/core/context"
 import { ExecutorTimer } from "#duncan3142/git-tools/core/telemetry"
@@ -27,10 +27,10 @@ class BranchCommand extends Effect.Service<BranchCommand>()(
 
 			const handler: (
 				args?: Arguments
-			) => Effect.Effect<
-				void,
-				GitCommandError.GitCommandFailed | GitCommandError.GitCommandTimeout
-			> = ({ mode = BranchMode.Print(), timeout = "2 seconds" } = {}) =>
+			) => Effect.Effect<void, CommandError.CommandFailed | CommandError.CommandTimeout> = ({
+				mode = BranchMode.Print(),
+				timeout = "2 seconds",
+			} = {}) =>
 				executor({ mode, directory, timeout }).pipe(
 					ExecutorTimer.duration({ tags: { "executor.name": "git.branch" } })
 				)

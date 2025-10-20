@@ -1,10 +1,7 @@
 import { type Duration, type Effect, Context } from "effect"
+import type { CommandError } from "@duncan3142/effect"
 import { TagFactory } from "#duncan3142/git-tools/internal"
-import type {
-	GitCommandError,
-	ConfigMode,
-	ConfigScope,
-} from "#duncan3142/git-tools/core/domain"
+import type { ConfigMode, ConfigScope } from "#duncan3142/git-tools/core/domain"
 
 interface Arguments {
 	readonly directory: string
@@ -20,7 +17,7 @@ class ConfigExecutor extends Context.Tag(TagFactory.make(`executor`, `config`))<
 	ConfigExecutor,
 	(
 		args: Arguments
-	) => Effect.Effect<void, GitCommandError.GitCommandFailed | GitCommandError.GitCommandTimeout>
+	) => Effect.Effect<void, CommandError.CommandFailed | CommandError.CommandTimeout>
 >() {}
 
 export { ConfigExecutor }

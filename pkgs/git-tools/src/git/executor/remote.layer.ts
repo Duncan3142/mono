@@ -1,8 +1,9 @@
 import { CommandExecutor } from "@effect/platform"
-import { Layer, Effect, Match, Stream } from "effect"
+import { Layer, Effect, Stream } from "effect"
+import type { CommandError } from "@duncan3142/effect"
 import * as Base from "./base.ts"
 import { RemoteExecutor } from "#duncan3142/git-tools/core/executor"
-import { type GitCommandError, RemoteMode } from "#duncan3142/git-tools/core/domain"
+import { RemoteMode } from "#duncan3142/git-tools/core/domain"
 
 const Live: Layer.Layer<RemoteExecutor.RemoteExecutor, never, CommandExecutor.CommandExecutor> =
 	Layer.effect(
@@ -15,17 +16,17 @@ const Live: Layer.Layer<RemoteExecutor.RemoteExecutor, never, CommandExecutor.Co
 				mode,
 			}: RemoteExecutor.Arguments): Effect.Effect<
 				void,
-				GitCommandError.GitCommandFailed | GitCommandError.GitCommandTimeout
+				CommandError.CommandFailed | CommandError.CommandTimeout
 			> => {
-				const subArgs = RemoteMode.$match(mode, {
+				const args = RemoteMode.$match(mode, {
 					Add: ({ remote: { name, url } }) => ["add", name, url],
 				})
 				return Base.make({
 					directory,
-					subCommand: "remote",
-					subArgs,
+					command: "remote",
+					args,
 					timeout,
-					errorMatcher: Match.value,
+					errorMatcher: Base.errorMatcherNoOp,
 				}).pipe(
 					Effect.andThen(Stream.runDrain),
 					Effect.scoped,
