@@ -1,8 +1,9 @@
 import { CommandExecutor } from "@effect/platform"
-import { Layer, Effect, Match, Stream } from "effect"
+import { Layer, Effect, Stream } from "effect"
+import type { CommandError } from "@duncan3142/effect"
 import * as Base from "./base.ts"
 import { ResetExecutor } from "#duncan3142/git-tools/core/executor"
-import { type GitCommandError, ResetMode } from "#duncan3142/git-tools/core/domain"
+import { ResetMode } from "#duncan3142/git-tools/core/domain"
 
 const Live: Layer.Layer<ResetExecutor.ResetExecutor, never, CommandExecutor.CommandExecutor> =
 	Layer.effect(
@@ -30,7 +31,7 @@ const Live: Layer.Layer<ResetExecutor.ResetExecutor, never, CommandExecutor.Comm
 					command: "reset",
 					args: [modeArg, ref],
 					timeout,
-					errorMatcher: Match.value,
+					errorMatcher: Base.errorMatcherNoOp,
 				}).pipe(
 					Effect.andThen(Stream.runDrain),
 					Effect.scoped,

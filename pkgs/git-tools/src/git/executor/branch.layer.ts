@@ -20,11 +20,10 @@ const Live: Layer.Layer<BranchExecutor.BranchExecutor, never, CommandExecutor.Co
 				CommandError.CommandFailed | CommandError.CommandTimeout
 			> => {
 				const args = BranchMode.$match(mode, {
-					Print: () => [Base.NO_PAGER, "-a", "-v", "-v"],
+					Print: () => ["-a", "-v", "-v"],
 				})
 				return Base.make({
 					directory,
-
 					command: "branch",
 					args,
 					timeout,

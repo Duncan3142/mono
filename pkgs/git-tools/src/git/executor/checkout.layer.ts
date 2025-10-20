@@ -1,12 +1,9 @@
 import { CommandExecutor } from "@effect/platform"
 import { Layer, pipe, Effect, Match, Stream } from "effect"
+import type { CommandError } from "@duncan3142/effect"
 import * as Base from "./base.ts"
 import { CheckoutExecutor } from "#duncan3142/git-tools/core/executor"
-import {
-	type GitCommandError,
-	CheckoutError,
-	CheckoutMode,
-} from "#duncan3142/git-tools/core/domain"
+import { CheckoutError, CheckoutMode } from "#duncan3142/git-tools/core/domain"
 
 const CHECKOUT_REF_NOT_FOUND_CODE = 1
 
@@ -27,10 +24,10 @@ const Live: Layer.Layer<
 		}: CheckoutExecutor.Arguments): Effect.Effect<
 			void,
 			| CheckoutError.CheckoutRefNotFound
-			| GitCommandError.GitCommandFailed
-			| GitCommandError.GitCommandTimeout
+			| CommandError.CommandFailed
+			| CommandError.CommandTimeout
 		> => {
-			const createBranchArg = CheckoutMode.$match(mode, {
+			const modeArgs = CheckoutMode.$match(mode, {
 				Create: () => ["-b"],
 				Standard: () => [],
 			})
@@ -38,11 +35,11 @@ const Live: Layer.Layer<
 			return Base.make({
 				directory,
 				command: "checkout",
-				args: ["--progress", ...createBranchArg, ref],
+				args: ["--progress", ...modeArgs, ref],
 				timeout,
-				errorMatcher: (errorCode: Base.ErrorCode) =>
+				errorMatcher: ({ exitCode }) =>
 					pipe(
-						Match.value(errorCode),
+						Match.value(exitCode),
 						Match.when(CHECKOUT_REF_NOT_FOUND_CODE, () =>
 							Effect.fail(
 								new CheckoutError.CheckoutRefNotFound({

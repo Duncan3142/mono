@@ -1,8 +1,9 @@
 import { CommandExecutor } from "@effect/platform"
-import { Layer, Effect, Match, Stream } from "effect"
+import { Layer, Effect, Stream } from "effect"
+import type { CommandError } from "@duncan3142/effect"
 import * as Base from "./base.ts"
 import { TagExecutor } from "#duncan3142/git-tools/core/executor"
-import { type GitCommandError, TagMode } from "#duncan3142/git-tools/core/domain"
+import { TagMode } from "#duncan3142/git-tools/core/domain"
 
 const Live: Layer.Layer<TagExecutor.TagExecutor, never, CommandExecutor.CommandExecutor> =
 	Layer.effect(
@@ -18,17 +19,16 @@ const Live: Layer.Layer<TagExecutor.TagExecutor, never, CommandExecutor.CommandE
 				void,
 				CommandError.CommandFailed | CommandError.CommandTimeout
 			> => {
-				const [subArgs, noPager] = TagMode.$match(mode, {
-					Create: ({ name, message }) => [[name, "-m", message], false] as const,
-					Print: () => [[], true] as const,
+				const args = TagMode.$match(mode, {
+					Create: ({ name, message }) => [name, "-m", message],
+					Print: () => [],
 				})
 				return Base.make({
 					directory,
-					noPager,
 					command: "tag",
-					subArgs,
+					args,
 					timeout,
-					errorMatcher: Match.value,
+					errorMatcher: Base.errorMatcherNoOp,
 				}).pipe(
 					Effect.andThen(Stream.runDrain),
 					Effect.scoped,

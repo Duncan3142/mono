@@ -1,8 +1,8 @@
 import { CommandExecutor } from "@effect/platform"
-import { Layer, Effect, Match, Stream } from "effect"
+import { Layer, Effect, Stream } from "effect"
+import type { CommandError } from "@duncan3142/effect"
 import * as Base from "./base.ts"
 import { CommitExecutor } from "#duncan3142/git-tools/core/executor"
-import type { CommandError } from "@duncan3142/effect"
 
 const Live: Layer.Layer<CommitExecutor.CommitExecutor, never, CommandExecutor.CommandExecutor> =
 	Layer.effect(
@@ -22,7 +22,7 @@ const Live: Layer.Layer<CommitExecutor.CommitExecutor, never, CommandExecutor.Co
 					command: "commit",
 					args: ["-m", message],
 					timeout,
-					errorMatcher: Match.value,
+					errorMatcher: Base.errorMatcherNoOp,
 				}).pipe(
 					Effect.andThen(Stream.runDrain),
 					Effect.scoped,

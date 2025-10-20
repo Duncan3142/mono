@@ -1,13 +1,8 @@
 import { CommandExecutor } from "@effect/platform"
 import { Effect, Match, pipe, Layer, Array, Stream } from "effect"
-import { Radix } from "@duncan3142/effect"
+import { type CommandError, Radix } from "@duncan3142/effect"
 import * as Base from "./base.ts"
-import {
-	type GitCommandError,
-	ReferenceSpec,
-	FetchError,
-	FetchMode,
-} from "#duncan3142/git-tools/core/domain"
+import { ReferenceSpec, FetchError, FetchMode } from "#duncan3142/git-tools/core/domain"
 import { FetchExecutor } from "#duncan3142/git-tools/core/executor"
 
 const FETCH_NOT_FOUND_CODE = 128
@@ -26,9 +21,7 @@ const Live: Layer.Layer<FetchExecutor.FetchExecutor, never, CommandExecutor.Comm
 				timeout,
 			}: FetchExecutor.Arguments): Effect.Effect<
 				void,
-				| FetchError.FetchRefsNotFound
-				| GitCommandError.GitCommandFailed
-				| GitCommandError.GitCommandTimeout
+				FetchError.FetchRefsNotFound | CommandError.CommandFailed | CommandError.CommandTimeout
 			> => {
 				const { name: remoteName } = remote
 				const refStrings = pipe(
@@ -45,17 +38,17 @@ const Live: Layer.Layer<FetchExecutor.FetchExecutor, never, CommandExecutor.Comm
 					Depth: ({ depth }) => `--depth=${numberToString(depth)}`,
 				})
 
-				const subCommand = "fetch"
-				const subArgs = [modeArg, remoteName, ...refStrings]
+				const command = "fetch"
+				const args = [modeArg, remoteName, ...refStrings]
 
 				return Base.make({
 					directory,
-					subCommand,
-					subArgs,
+					command,
+					args,
 					timeout,
-					errorMatcher: (errorCode: Base.ErrorCode) =>
+					errorMatcher: ({ exitCode }) =>
 						pipe(
-							Match.value(errorCode),
+							Match.value(exitCode),
 							Match.when(FETCH_NOT_FOUND_CODE, () =>
 								Effect.fail(
 									new FetchError.FetchRefsNotFound({

@@ -55,7 +55,7 @@ const make = <ECode extends ErrorCode = never, Error extends Cause.YieldableErro
 	Command.make({
 		directory,
 		command: "git",
-		args: [command, ...args],
+		args: [NO_PAGER, command, ...args],
 		timeout,
 		errorMatcher,
 		stdoutPipe: (stdErr) =>
@@ -69,5 +69,5 @@ const make = <ECode extends ErrorCode = never, Error extends Cause.YieldableErro
 			),
 	})
 
-export { make, NO_PAGER, errorMatcherNoOp }
+export { make, errorMatcherNoOp }
 export type { ErrorCode, Arguments }
