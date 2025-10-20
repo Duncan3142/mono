@@ -1,35 +1,19 @@
 import type { CommandExecutor } from "@effect/platform"
-import {
-	type Effect,
-	type Cause,
-	type Duration,
-	type Scope,
-	Stream,
-	Console,
-	Match,
-} from "effect"
-import { type CommandError, Command } from "@duncan3142/effect"
+import { type Effect, type Cause, type Duration, type Scope, Stream, Console } from "effect"
+import { type CommandErrorMatcher, type CommandError, Command } from "@duncan3142/effect"
 
-interface Arguments<ECode extends ErrorCode, Error extends Cause.YieldableError> {
+interface Arguments<
+	ECode extends CommandErrorMatcher.ErrorCode,
+	Error extends Cause.YieldableError,
+> {
 	readonly directory: string
 	readonly command: string
 	readonly args?: ReadonlyArray<string>
 	readonly timeout: Duration.DurationInput
-	readonly errorMatcher: Command.ErrorMatcher<ECode, Error>
+	readonly errorMatcher: CommandErrorMatcher.ErrorMatcher<ECode, Error>
 }
 
-type ErrorCode = number
-
 const NO_PAGER = "--no-pager"
-
-/**
- * Default error matcher that simply matches on the exit code.
- * @param args - The arguments containing the exit code.
- * @param args.exitCode - The exit code of the command.
- * @returns An effect that matches the exit code.
- */
-const errorMatcherNoOp: Command.ErrorMatcher<never, never> = ({ exitCode }) =>
-	Match.value(exitCode)
 
 /**
  * Factory function to create a command executor for git commands.
@@ -41,7 +25,10 @@ const errorMatcherNoOp: Command.ErrorMatcher<never, never> = ({ exitCode }) =>
  * @param args.errorMatcher - A matcher to handle specific error codes.
  * @returns A function that executes the git command and returns an effect.
  */
-const make = <ECode extends ErrorCode = never, Error extends Cause.YieldableError = never>({
+const make = <
+	ECode extends CommandErrorMatcher.ErrorCode = never,
+	Error extends Cause.YieldableError = never,
+>({
 	directory,
 	command,
 	args = [],
@@ -69,5 +56,5 @@ const make = <ECode extends ErrorCode = never, Error extends Cause.YieldableErro
 			),
 	})
 
-export { make, errorMatcherNoOp }
-export type { ErrorCode, Arguments }
+export { make }
+export type { Arguments }

@@ -1,6 +1,6 @@
 import { CommandExecutor } from "@effect/platform"
 import { Layer, Effect, Stream } from "effect"
-import type { CommandError } from "@duncan3142/effect"
+import { CommandErrorMatcher, type CommandError } from "@duncan3142/effect"
 import * as Base from "./base.ts"
 import { ConfigExecutor } from "#duncan3142/git-tools/core/executor"
 import { ConfigMode, ConfigScope } from "#duncan3142/git-tools/core/domain"
@@ -33,7 +33,7 @@ const Live: Layer.Layer<ConfigExecutor.ConfigExecutor, never, CommandExecutor.Co
 					command: "config",
 					args: [...scopeArgs, ...modeArgs],
 					timeout,
-					errorMatcher: Base.errorMatcherNoOp,
+					errorMatcher: CommandErrorMatcher.noOp,
 				}).pipe(
 					Effect.andThen(Stream.runDrain),
 					Effect.scoped,

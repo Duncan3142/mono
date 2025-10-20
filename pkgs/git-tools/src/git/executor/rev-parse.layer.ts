@@ -1,6 +1,6 @@
 import { CommandExecutor } from "@effect/platform"
 import { Layer, Effect, Chunk, Stream } from "effect"
-import type { CommandError } from "@duncan3142/effect"
+import { CommandErrorMatcher, type CommandError } from "@duncan3142/effect"
 import * as Base from "./base.ts"
 import { RevParseExecutor } from "#duncan3142/git-tools/core/executor"
 
@@ -26,7 +26,7 @@ const Live: Layer.Layer<
 				command: "rev-parse",
 				args: [rev],
 				timeout,
-				errorMatcher: Base.errorMatcherNoOp,
+				errorMatcher: CommandErrorMatcher.noOp,
 			}).pipe(
 				Effect.andThen(Stream.runCollect),
 				Effect.map(Chunk.join("")),

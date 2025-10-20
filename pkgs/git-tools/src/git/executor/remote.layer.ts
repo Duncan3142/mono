@@ -1,6 +1,6 @@
 import { CommandExecutor } from "@effect/platform"
 import { Layer, Effect, Stream } from "effect"
-import type { CommandError } from "@duncan3142/effect"
+import { CommandErrorMatcher, type CommandError } from "@duncan3142/effect"
 import * as Base from "./base.ts"
 import { RemoteExecutor } from "#duncan3142/git-tools/core/executor"
 import { RemoteMode } from "#duncan3142/git-tools/core/domain"
@@ -26,7 +26,7 @@ const Live: Layer.Layer<RemoteExecutor.RemoteExecutor, never, CommandExecutor.Co
 					command: "remote",
 					args,
 					timeout,
-					errorMatcher: Base.errorMatcherNoOp,
+					errorMatcher: CommandErrorMatcher.noOp,
 				}).pipe(
 					Effect.andThen(Stream.runDrain),
 					Effect.scoped,
