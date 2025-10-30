@@ -12,18 +12,9 @@ runs:
         set -ueC
         set -o pipefail
 
-        LBIN=/home/runner/.local/bin
-        mkdir -p "$LBIN"
-        LLIB=/home/runner/.local/mono
-        mkdir -p "$LLIB"
-        MONO_LOGS_ROOT=/tmp/mono/logs
-        mkdir -p "$MONO_LOGS_ROOT"
         FORCE_COLOR=3
         GIT_REMOTE=origin
 
-        echo "LBIN=$LBIN" >> "$GITHUB_ENV"
-        echo "LLIB=$LLIB" >> "$GITHUB_ENV"
-        echo "MONO_LOGS_ROOT=$MONO_LOGS_ROOT" >> "$GITHUB_ENV"
         echo "FORCE_COLOR=$FORCE_COLOR" >> "$GITHUB_ENV"
         echo "GIT_REMOTE=$GIT_REMOTE" >> "$GITHUB_ENV"
 

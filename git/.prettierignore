@@ -1,0 +1,21 @@
+# Directories
+*/
+
+# Dev Container
+!.devcontainer/
+
+# GitHub
+!.github/
+
+# Husky
+!.husky/
+.husky/_
+
+# VS Code
+!.vscode/
+
+# Actions
+!actions/
+
+# NPM
+package-lock.json
