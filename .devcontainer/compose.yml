@@ -31,7 +31,7 @@ services:
   #      OTel-LGTM      #
   # ------------------- #
   otel-lgtm:
-    image: grafana/otel-lgtm:0.11.10
+    image: grafana/otel-lgtm:0.11.14
     container_name: otel-lgtm
     restart: unless-stopped
     ports:
