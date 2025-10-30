@@ -1,6 +1,6 @@
 {
-	"name": "@duncan3142/github",
-	"description": "GitHub",
+	"name": "@duncan3142/github-workflows",
+	"description": "GitHub Workflows",
 	"private": true,
 	"author": "Duncan Giles",
 	"type": "module",

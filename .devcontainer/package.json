@@ -1,5 +1,5 @@
 {
-	"name": "@duncan3142/devcontainer",
+	"name": "@duncan3142/mono-devcontainer",
 	"description": "Mono Dev Container",
 	"private": true,
 	"author": "Duncan Giles",
