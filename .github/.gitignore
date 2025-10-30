@@ -4,28 +4,9 @@ node_modules
 # Hidden
 .*
 
-# Config
-!.config/
-
-# GitHub
-!.github/
-
-# Husky
-!.husky/
-.husky/_
-
-# VS Code
-!.vscode/
-
-# Dev Container
-!.devcontainer/
-
 # Git
 !.gitignore
 !.gitkeep
-
-# Env Example
-!.env.example
 
 # NPM
 !.npmrc

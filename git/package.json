@@ -1,6 +1,6 @@
 {
-  "name": "@duncan3142/mono",
-  "description": "GitHub All The Things",
+  "name": "@duncan3142/git",
+  "description": "Git",
   "private": true,
   "author": "Duncan Giles",
   "type": "module",
@@ -10,7 +10,6 @@
     "npm": ">=11"
   },
   "scripts": {
-    "prepare": "./.husky/install.sh",
     "clean": "rm -rf .prettier",
     "format": "prettier --check --cache --cache-location='.prettier/cache' --cache-strategy content .",
     "format:fix": "prettier --write --cache --cache-location='.prettier/cache' --cache-strategy content ."
@@ -18,12 +17,12 @@
   "devDependencies": {
     "@commitlint/cli": "^20.1.0",
     "@commitlint/config-conventional": "^20.0.0",
-    "@duncan3142/prettier-config": "^0.1.8",
+    "@duncan3142/prettier-config": "^0.1.10",
     "husky": "^9.1.7",
     "prettier": "^3.6.2"
   },
   "volta": {
-    "node": "22.20.0",
+    "node": "24.11.0",
     "npm": "11.6.2"
   }
 }
