@@ -4,9 +4,6 @@ node_modules
 # Hidden
 .*
 
-# VS Code
-!.vscode
-
 # Git
 !.gitignore
 !.gitkeep
@@ -18,6 +15,3 @@ node_modules
 # Prettier
 !.prettierignore
 !.prettierrc.js
-
-# Changesets
-!.changeset

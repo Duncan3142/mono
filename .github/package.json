@@ -1,0 +1,25 @@
+{
+	"name": "@duncan3142/github-workflows",
+	"description": "GitHub Workflows",
+	"private": true,
+	"author": "Duncan Giles",
+	"type": "module",
+	"license": "AGPL-3.0-only",
+	"engines": {
+		"node": ">=24",
+		"npm": ">=11"
+	},
+	"scripts": {
+		"clean": "rm -rf .prettier",
+		"format": "prettier --check --cache --cache-location='.prettier/cache' --cache-strategy content .",
+		"format:fix": "prettier --write --cache --cache-location='.prettier/cache' --cache-strategy content ."
+	},
+	"devDependencies": {
+		"@duncan3142/prettier-config": "^0.1.10",
+		"prettier": "^3.6.2"
+	},
+	"volta": {
+		"node": "24.11.0",
+		"npm": "11.6.2"
+	}
+}

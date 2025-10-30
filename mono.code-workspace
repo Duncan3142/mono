@@ -9,8 +9,12 @@
       "path": ".devcontainer",
     },
     {
-      "name": "workflows",
-      "path": ".github/workflows",
+      "name": ".github",
+      "path": ".github",
+    },
+		{
+      "name": "git",
+      "path": "git",
     },
     {
       "name": "actions/gh-cli",

@@ -1,3 +1,4 @@
 #!/usr/bin/env sh
 
+# cd git
 # npm exec -- commitlint --edit ${1}
