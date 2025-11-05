@@ -8,7 +8,7 @@
 *** https://www.markdownguide.org/basic-syntax/#reference-style-links
 -->
 
-[![MIT License][license-shield]][license-url]
+[![AGPL License][license-shield]][license-url]
 [![LinkedIn][linkedin-shield]][linkedin-url]
 
 <!-- PROJECT LOGO -->
@@ -106,7 +106,7 @@ npm ci
 
 ## License
 
-Distributed under the MIT License. See [LICENSE.txt](./LICENSE.txt) for more information.
+Distributed under the AGPL License. See [LICENSE.txt](./LICENSE.txt) for more information.
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
