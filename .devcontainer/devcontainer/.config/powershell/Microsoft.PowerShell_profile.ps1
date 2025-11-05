@@ -12,5 +12,8 @@ Set-PSReadLineKeyHandler -Chord 'Ctrl+DownArrow' -Function HistorySearchForward
 Set-PSReadLineKeyHandler -Chord 'Shift+Ctrl+UpArrow' -Function ReverseSearchHistory
 Set-PSReadLineKeyHandler -Chord 'Shift+Ctrl+DownArrow' -Function ForwardSearchHistory
 
+# Mise
+mise activate pwsh | Out-String | Invoke-Expression
+
 # Oh My PoSh
 oh-my-posh init pwsh | Invoke-Expression # Must come last

@@ -7,28 +7,15 @@
 	"service": "mono-devcon",
 	"workspaceFolder": "/workspace",
 
-	// Features
 	"features": {},
 
-	// Use 'forwardPorts' to make a list of ports inside the container available locally.
-	// "forwardPorts": [],
+	"postCreateCommand": "./.devcontainer/command/post-create.sh",
+	"postStartCommand": "./.devcontainer/command/post-start.sh",
 
-	// Use 'postCreateCommand' to run commands after the container is created.
-	// "postCreateCommand": "./.devcontainer/postCreate.sh",
-
-	// Use 'postCreateCommand' to run commands after the container is created.
-	// "postStartCommand": "./.devcontainer/postStart.sh",
-
-	// User with which to build the container
 	"containerUser": "root",
-
-	// User with which to run the image
 	"remoteUser": "root",
-
-	// Use 'updateRemoteUserUID' to set the UID of the remote user to match the host user.
 	"updateRemoteUserUID": true,
 
-	// Configure tool-specific properties.
 	"customizations": {
 		"vscode": {
 			"extensions": [
